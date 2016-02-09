@@ -1,4 +1,4 @@
-=== WooCommerce PayPal Express Integrated Payment Gateway ===
+=== WooCommerce PayPal Express Checkout Payment Gateway ===
 Contributors: automattic, woothemes, allendav, slash1andy, woosteve, spraveenitpro, mikedmoore, fernashes, shellbeezy
 Tags: ecommerce, e-commerce, commerce, woothemes, wordpress ecommerce, store, sales, sell, shop, shopping, cart, checkout, configurable, paypal
 Requires at least: 4.4
@@ -11,9 +11,9 @@ Accept PayPal, Credit Cards and Debit Cards on your WooCommerce store.
 
 == Description ==
 
-This is a PayPal Express Integrated Payment Gateway for WooCommerce.
+This is a PayPal Express Payment Gateway for WooCommerce.
 
-PayPal Express Integrated allows you to securely sell your products and subscriptions online using In-Context Checkout to help you meet security requirements without causing your theme to suffer.  In-Context Checkout uses a modal iFrame, hosted on PayPal's servers, that overlays the checkout form and provides a secure means for your customers to enter their account information.
+PayPal Express allows you to securely sell your products and subscriptions online using In-Context Checkout to help you meet security requirements without causing your theme to suffer.  In-Context Checkout uses a modal iFrame, hosted on PayPal's servers, that overlays the checkout form and provides a secure means for your customers to enter their account information.
 
 Also, with Integrated PayPal Setup, connecting to PayPal is as simple as clicking a button - no complicated API keys to cut and paste.
 
@@ -27,7 +27,7 @@ Also, with Integrated PayPal Setup, connecting to PayPal is as simple as clickin
 
 Automatic installation is the easiest option as WordPress handles the file transfers itself and you don’t need to leave your web browser. To do an automatic install of, log in to your WordPress dashboard, navigate to the Plugins menu and click Add New.
 
-In the search field type "WooCommerce PayPal Express Integrated" and click Search Plugins. Once you’ve found our plugin you can view details about it such as the point release, rating and description. Most importantly of course, you can install it by simply clicking “Install Now”.
+In the search field type "WooCommerce PayPal Express Checkout" and click Search Plugins. Once you’ve found our plugin you can view details about it such as the point release, rating and description. Most importantly of course, you can install it by simply clicking “Install Now”.
 
 = Manual installation =
 
@@ -60,7 +60,7 @@ Yes it does - production and sandbox mode is driven by how you connect.  You may
 
 = Where can I find documentation? =
 
-For help setting up and configuring, please refer to our [user guide](http://docs.woothemes.com/document/woocommerce-gateway-paypal-express-integrated/)
+For help setting up and configuring, please refer to our [user guide](http://docs.woothemes.com/document/woocommerce-gateway-paypal-express-checkout/)
 
 = Where can I get support or talk to other users? =
 
