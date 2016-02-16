@@ -188,7 +188,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 			woo_pp_async_generate_private_key();
 		}
 
-		if ( 'true' == $_GET['start-ips-keygen'] ) {
+		if ( isset( $_GET['start-ips-keygen'] ) && 'true' == $_GET['start-ips-keygen'] ) {
 			woo_pp_generate_private_key();
 			exit;
 		}
@@ -198,16 +198,18 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 		// woocommerce_before_cart_totals executes, and there is already output sent to the browser by
 		// this point.  So, to get around this issue, we'll enable output buffering to prevent WP from
 		// sending anything back to the browser.
-		if ( 'true' == $_GET['startcheckout'] ) {
+		if ( isset( $_GET['startcheckout'] ) && 'true' == $_GET['startcheckout'] ) {
 			ob_start();
 		}
 
 		// Also start buffering if we're on an admin page and the merchant is trying to use Easy Signup.
-		if ( is_admin() && ( 'true' == $_GET['ips-signup'] || 'true' == $_GET['ips-return'] ) ) {
+		$is_ips_signup = isset( $_GET['ips-signup'] ) && 'true' == $_GET['ips-signup'];
+		$is_ips_return = isset( $_GET['ips-return'] ) && 'true' == $_GET['ips-return'];
+		if ( is_admin() && ( $is_ips_signup || $is_ips_return ) ) {
 			ob_start();
 		}
 
-		if ( 'true' == $_GET['woo-paypal-return'] ) {
+		if ( isset( $_GET['woo-paypal-return'] ) && 'true' == $_GET['woo-paypal-return'] ) {
 			// call get ec and do ec
 			// Make sure we have our token and payer ID
 			if ( array_key_exists( 'token', $_GET ) && array_key_exists( 'PayerID', $_GET ) &&
@@ -307,8 +309,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 
 	function woo_pp_payment_gateways( $methods ) {
 		// If the buyer already went through the PP checkout, then filter out the option they didn't select.
-		global $woocommerce;
-		$session = $woocommerce->session->paypal;
+		$session = is_admin() ? false : WC()->session->get( 'paypal' );
 		if ( ( is_checkout() || is_ajax() ) && $session && is_a( $session, 'WooCommerce_PayPal_Session_Data' ) &&
 				$session->checkout_completed && $session->expiry_time >= time() &&
 				$session->payerID ) {

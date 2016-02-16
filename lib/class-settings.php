@@ -50,8 +50,10 @@ abstract class PayPal_Settings {
 			$func_name = '_sanitize_' . $name;
 			if ( method_exists( $this, $func_name ) ) {
 				return $this->$func_name( $this->params[ $name ] );
-			} else {
+			} else if ( array_key_exists( $name, $this->params ) ) {
 				return $this->params[ $name ];
+			} else {
+				return null;
 			}
 		} else {
 			// START: Compatibility with previous versions

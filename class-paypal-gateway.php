@@ -39,68 +39,70 @@ function woo_pp_plugins_loaded() {
 			// add_action( 'woocommerce_update_options_payment_gateways', array( &$this, 'process_admin_options' ) );
 
 			// Do we need to auto-select this payment method?
-			$session = $woocommerce->session->paypal;
-			if ( null != $session && is_a( $session, 'WooCommerce_PayPal_Session_Data' ) && $session->checkout_completed && $session->expiry_time >= time() && $session->payerID ) {
-				if ( $session->checkout_details && is_a( $session->checkout_details, 'PayPal_Checkout_Details' ) && ( is_checkout() || is_ajax() ) && self::$use_buyer_email ) {
-					$this->buyer_email = $session->checkout_details->payer_details->email;
-					$this->title .= ' - ' . esc_html( $this->buyer_email );
-				}
-				if ( ! $session->checkout_details->payer_details->billing_address ) {
-					add_action( 'woocommerce_before_checkout_billing_form', function( $checkout ) {
-						$checkout->checkout_fields['billing'] = array(
-							'billing_first_name' => $checkout->checkout_fields['billing']['billing_first_name'],
-							'billing_last_name'  => $checkout->checkout_fields['billing']['billing_last_name'],
-							'billing_country'    => $checkout->checkout_fields['billing']['billing_country'],
-							'billing_email'      => $checkout->checkout_fields['billing']['billing_email'],
-							'billing_phone'      => $checkout->checkout_fields['billing']['billing_phone']
-						);
-					});						
-				}
-
-				$posted = array(
-					'billing_first_name'  => $session->checkout_details->payer_details->first_name,
-					'billing_last_name'   => $session->checkout_details->payer_details->last_name,
-					'billing_email'       => $session->checkout_details->payer_details->email,
-					'billing_phone'       => $session->checkout_details->payer_details->phone_number,
-					'billing_country'     => $session->checkout_details->payer_details->country
-				);
-
-				if ( $session->shipping_required ) {
-					if ( false === strpos( $session->checkout_details->payments[0]->shipping_address->getName(), ' ' ) ) {
-						$posted['shipping_first_name'] = $session->checkout_details->payer_details->first_name;
-						$posted['shipping_last_name']  = $session->checkout_details->payer_details->last_name;
-						$posted['shipping_company']    = $session->checkout_details->payments[0]->shipping_address->getName();
-					} else {
-						$name = explode( ' ', $session->checkout_details->payments[0]->shipping_address->getName() );
-						$posted['shipping_first_name'] = $name[0];
-						array_shift( $name );
-						$posted['shipping_last_name'] = implode( ' ', $name );
+			if ( ! is_admin() ) {
+				$session = WC()->session->get( 'paypal' );
+				if ( null != $session && is_a( $session, 'WooCommerce_PayPal_Session_Data' ) && $session->checkout_completed && $session->expiry_time >= time() && $session->payerID ) {
+					if ( $session->checkout_details && is_a( $session->checkout_details, 'PayPal_Checkout_Details' ) && ( is_checkout() || is_ajax() ) && self::$use_buyer_email ) {
+						$this->buyer_email = $session->checkout_details->payer_details->email;
+						$this->title .= ' - ' . esc_html( $this->buyer_email );
+					}
+					if ( ! $session->checkout_details->payer_details->billing_address ) {
+						add_action( 'woocommerce_before_checkout_billing_form', function( $checkout ) {
+							$checkout->checkout_fields['billing'] = array(
+								'billing_first_name' => $checkout->checkout_fields['billing']['billing_first_name'],
+								'billing_last_name'  => $checkout->checkout_fields['billing']['billing_last_name'],
+								'billing_country'    => $checkout->checkout_fields['billing']['billing_country'],
+								'billing_email'      => $checkout->checkout_fields['billing']['billing_email'],
+								'billing_phone'      => $checkout->checkout_fields['billing']['billing_phone']
+							);
+						});
 					}
 
-					$posted = array_merge( $posted, array(
-						'shipping_company'          => $session->checkout_details->payer_details->business_name,
-						'shipping_address_1'        => $session->checkout_details->payments[0]->shipping_address->getStreet1(),
-						'shipping_address_2'        => $session->checkout_details->payments[0]->shipping_address->getStreet2(),
-						'shipping_city'             => $session->checkout_details->payments[0]->shipping_address->getCity(),
-						'shipping_state'            => $session->checkout_details->payments[0]->shipping_address->getState(),
-						'shipping_postcode'         => $session->checkout_details->payments[0]->shipping_address->getZip(),
-						'shipping_country'          => $session->checkout_details->payments[0]->shipping_address->getCountry(),
-						'ship_to_different_address' => true
-					) );
+					$posted = array(
+						'billing_first_name'  => $session->checkout_details->payer_details->first_name,
+						'billing_last_name'   => $session->checkout_details->payer_details->last_name,
+						'billing_email'       => $session->checkout_details->payer_details->email,
+						'billing_phone'       => $session->checkout_details->payer_details->phone_number,
+						'billing_country'     => $session->checkout_details->payer_details->country
+					);
 
-				} else {
-					$posted['ship_to_different_address'] = false;
+					if ( $session->shipping_required ) {
+						if ( false === strpos( $session->checkout_details->payments[0]->shipping_address->getName(), ' ' ) ) {
+							$posted['shipping_first_name'] = $session->checkout_details->payer_details->first_name;
+							$posted['shipping_last_name']  = $session->checkout_details->payer_details->last_name;
+							$posted['shipping_company']    = $session->checkout_details->payments[0]->shipping_address->getName();
+						} else {
+							$name = explode( ' ', $session->checkout_details->payments[0]->shipping_address->getName() );
+							$posted['shipping_first_name'] = $name[0];
+							array_shift( $name );
+							$posted['shipping_last_name'] = implode( ' ', $name );
+						}
+
+						$posted = array_merge( $posted, array(
+							'shipping_company'          => $session->checkout_details->payer_details->business_name,
+							'shipping_address_1'        => $session->checkout_details->payments[0]->shipping_address->getStreet1(),
+							'shipping_address_2'        => $session->checkout_details->payments[0]->shipping_address->getStreet2(),
+							'shipping_city'             => $session->checkout_details->payments[0]->shipping_address->getCity(),
+							'shipping_state'            => $session->checkout_details->payments[0]->shipping_address->getState(),
+							'shipping_postcode'         => $session->checkout_details->payments[0]->shipping_address->getZip(),
+							'shipping_country'          => $session->checkout_details->payments[0]->shipping_address->getCountry(),
+							'ship_to_different_address' => true
+						) );
+
+					} else {
+						$posted['ship_to_different_address'] = false;
+					}
+
+					$_POST = array_merge( $_POST, $posted );
+
+					// Make sure the proper option is selected based on what the buyer picked
+					if ( ! ( $session->using_ppc xor is_a( $this, 'PayPal_Credit_Gateway' ) ) ) {
+						$this->chosen = true;
+					} else {
+						$this->chosen = false;
+					}
 				}
-
-				$_POST = array_merge( $_POST, $posted );
-
-				// Make sure the proper option is selected based on what the buyer picked
-				if ( ! ( $session->using_ppc xor is_a( $this, 'PayPal_Credit_Gateway' ) ) ) {
-					$this->chosen = true;
-				} else {
-					$this->chosen = false;
-				}
-			}		
+			}
 		}
 
 		public function init_form_fields() {
@@ -115,7 +117,7 @@ function woo_pp_plugins_loaded() {
 			// Check the session.  Are we going to just complete an existing payment, or are we going to
 			// send the user over PayPal to pay?
 
-			$session = $woocommerce->session->paypal;
+			$session = WC()->session->get( 'paypal' );
 			if ( ! $session || ! is_a( $session, 'WooCommerce_PayPal_Session_Data' ) ||
 					! $session->checkout_completed || $session->expiry_time < time() ||
 					! $session->payerID ) {
@@ -529,12 +531,12 @@ function woo_pp_plugins_loaded() {
 			global $woocommerce;
 			$enable_ips = in_array( $woocommerce->countries->get_base_country(), $this->get_ips_enabled_countries() ) && function_exists( 'openssl_pkey_new' );
 
-			if ( 'true' == $_GET['ips-signup'] ) {
+			if ( isset( $_GET['ips-signup'] ) && 'true' == $_GET['ips-signup'] ) {
 				$this->ips_signup();
 				WC_Admin_Settings::show_messages();
 			}
 
-			if ( 'true' == $_GET['ips-return'] ) {
+			if ( isset( $_GET['ips-return'] ) && 'true' == $_GET['ips-return'] ) {
 				$this->ips_return();
 			}
 
@@ -941,27 +943,27 @@ function woo_pp_plugins_loaded() {
 			$live_account_enabled_for_billing_address = false;
 			$sb_account_enabled_for_billing_address   = false;
 
-			if ( 'true' == $_POST['woo_pp_enabled'] ) {
+			if ( isset( $_POST['woo_pp_enabled'] ) && 'true' == $_POST['woo_pp_enabled'] ) {
 				$enabled = true;
 			}
 
-			if ( 'true' == $_POST['woo_pp_ppc_enabled'] ) {
+			if ( isset( $_POST['woo_pp_ppc_enabled'] ) && 'true' == $_POST['woo_pp_ppc_enabled'] ) {
 				$ppc_enabled = true;
 			}
 
-			if ( 'true' == $_POST['woo_pp_allow_guest_checkout'] ) {
+			if ( isset( $_POST['woo_pp_allow_guest_checkout'] ) && 'true' == $_POST['woo_pp_allow_guest_checkout'] ) {
 				$allow_guest_checkout = true;
 			}
 
-			if ( 'true' == $_POST['woo_pp_block_echecks'] ) {
+			if ( isset( $_POST['woo_pp_block_echecks'] ) && 'true' == $_POST['woo_pp_block_echecks'] ) {
 				$block_echecks = true;
 			}
 
-			if ( 'true' == $_POST['woo_pp_req_billing_address'] ) {
+			if ( isset( $_POST['woo_pp_req_billing_address'] ) && 'true' == $_POST['woo_pp_req_billing_address'] ) {
 				$require_billing_address = true;
 			}
 			
-			if ( 'true' == $_POST['woo_pp_icc_enabled'] ) {
+			if ( isset( $_POST['woo_pp_icc_enabled'] ) && 'true' == $_POST['woo_pp_icc_enabled'] ) {
 				$icc_enabled = true;
 			}
 
