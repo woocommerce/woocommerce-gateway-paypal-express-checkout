@@ -1,7 +1,7 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) { 
-    exit; // Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
 }
 
 /**
@@ -11,13 +11,13 @@ abstract class PayPal_Credentials {
 
 	protected $params;
 	protected $validParams = array( 'apiUsername', 'apiPassword', 'subject', 'payerID' );
-	
+
 	public function __set( $name, $value ) {
 		if ( in_array( $name, $this->validParams ) ) {
 			$this->params[ $name ] = $value;
 		}
 	}
-	
+
 	public function __get( $name ) {
 		if ( in_array( $name, $this->validParams ) ) {
 			return $this->params[ $name ];
@@ -25,7 +25,7 @@ abstract class PayPal_Credentials {
 			return null;
 		}
 	}
-	
+
 	public function __isset( $name ) {
 		if ( in_array( $name, $this->validParams ) ) {
 			return true;
@@ -56,14 +56,14 @@ abstract class PayPal_Credentials {
 			'USER' => $this->apiUsername,
 			'PWD'  => $this->apiPassword
 		);
-		
+
 		if ( $this->subject ) {
 			$params['SUBJECT'] = $this->subject;
 		}
-		
+
 		return $params;
 	}
-	
+
 	public function __construct() {}
 
 }

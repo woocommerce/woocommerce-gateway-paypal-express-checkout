@@ -1,7 +1,7 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) { 
-    exit; // Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
 }
 
 require_once( 'class-credentials.php' );
@@ -14,11 +14,11 @@ class PayPal_Certificate_Credentials extends PayPal_Credentials {
 
 	public function setApiCertificateFromFile( $filename ) {
 		$this->apiCertificate = file_get_contents( $filename );
-		
+
 		if ( FALSE === $this->apiCertificate ) {
 			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -29,7 +29,7 @@ class PayPal_Certificate_Credentials extends PayPal_Credentials {
 	public function getApiCredentialParameters() {
 		return parent::getApiCredentialParameters();
 	}
-	
+
 	/**
 	 * Configures a cURL handle to make it usable with the type of credentials this object will store.
 	 * @param resource &$curl The cURL handle to which the settings will be applied.
@@ -50,7 +50,7 @@ class PayPal_Certificate_Credentials extends PayPal_Credentials {
 				// TODO: Add some logging
 				return false;
 			}
-			
+
 			// If we're using SecureTransport, we have to translate the certificate to PKCS12 before passing it to cURL.
 			// Damn you SecureTransport...
 
@@ -63,7 +63,7 @@ class PayPal_Certificate_Credentials extends PayPal_Credentials {
 					// TODO: Add some logging
 					return false;
 				}
-				
+
 				if ( ! openssl_pkcs12_export_to_file( $this->apiCertificate, $tempFile, $private_key, $password ) ) {
 					// Failed to export the PKCS12 file
 					// TODO: Add some logging
@@ -80,17 +80,17 @@ class PayPal_Certificate_Credentials extends PayPal_Credentials {
 					return false;
 				}
 			}
-		
+
 			$this->_apiCertificateFilename = $tempFile;
-			
+
 		}
-			
+
 		if ( FALSE === curl_setopt( $curl, CURLOPT_SSLCERT, $this->_apiCertificateFilename ) ) {
 			// cURL didn't accept the cert for some reason
 			// TODO: Add some logging
 			return false;
 		}
-		
+
 		if ( $this->_isUsingSecureTransport ) {
 			if ( FALSE === curl_setopt( $curl, CURLOPT_SSLCERTPASSWD, $this->_apiCertificatePassword ) ) {
 				// cURL didn't accept the cert password...for some reason
@@ -98,11 +98,11 @@ class PayPal_Certificate_Credentials extends PayPal_Credentials {
 				return false;
 			}
 		}
-		
+
 		return true;
-		
+
 	}
-	
+
 	/**
 	 * Retrieves the hostname of the endpoint which should be used for this type of credentials.
 	 * @return string The unqualified hostname of the appropriate endpoint.  This object always returns "api".
@@ -110,17 +110,17 @@ class PayPal_Certificate_Credentials extends PayPal_Credentials {
 	public function getApiEndpoint() {
 		return 'api';
 	}
-	
+
 	public function __construct( $username, $password, $certString, $subject = false ) {
 		parent::__construct();
-		
+
 		$this->validParams[]  = 'apiCertificate';
 		$this->apiUsername    = $username;
 		$this->apiPassword    = $password;
 		$this->apiCertificate = $certString;
 		$this->subject        = $subject;
 	}
-	
+
 	function __destruct() {
 		if ( $_apiCertificateFilename ) {
 			unlink( $_apiCertificateFilename );

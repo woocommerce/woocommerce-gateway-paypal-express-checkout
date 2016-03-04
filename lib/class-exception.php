@@ -1,7 +1,7 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) { 
-    exit; // Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
 }
 
 class PayPal_API_Error {
@@ -9,14 +9,14 @@ class PayPal_API_Error {
 	public $short_message;
 	public $long_message;
 	public $severity_code;
-	
+
 	public function __construct( $error_code, $short_message, $long_message, $severity_code ) {
 		$this->error_code    = $error_code;
 		$this->short_message = $short_message;
 		$this->long_message  = $long_message;
 		$this->severity_code = $severity_code;
 	}
-	
+
 	public function mapToBuyerFriendlyError() {
 		switch ( $this->error_code ) {
 			case '-1':    return 'Unable to communicate with PayPal.  Please try your payment again.';
@@ -59,13 +59,13 @@ class PayPal_API_Error {
 class PayPal_API_Exception extends Exception {
 	public $errors;
 	public $correlation_id;
-	
+
 	// This constructor takes the API response received from PayPal, parses out the errors in the response,
 	// then places those errors into the $errors property.  It also captures correlation ID and places that
 	// in the $correlation_id property.
 	public function __construct( $response ) {
 		parent::__construct( 'An error occurred while calling the PayPal API.' );
-		
+
 		$errors = array();
 		foreach ( $response as $index => $value ) {
 			if ( preg_match( '/^L_ERRORCODE(\d+)$/', $index, $matches ) ) {
@@ -80,12 +80,12 @@ class PayPal_API_Exception extends Exception {
 				$this->correlation_id = $value;
 			}
 		}
-		
+
 		$error_objects = array();
 		foreach ( $errors as $value ) {
 			$error_objects[] = new PayPal_API_Error( $value['code'], $value['message'], $value['long'], $value['severity'] );
 		}
-		
+
 		$this->errors = $error_objects;
 	}
 }

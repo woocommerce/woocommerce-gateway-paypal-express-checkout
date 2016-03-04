@@ -1,7 +1,7 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) { 
-    exit; // Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
 }
 
 class PayPal_Address {
@@ -15,104 +15,104 @@ class PayPal_Address {
 	protected $_phoneNumber;
 	protected $_addressOwner;
 	protected $_addressStatus;
-	
+
 	const AddressStatusNone                      = 'none';
 	const AddressStatusConfirmed                 = 'Confirmed';
 	const AddressStatusUnconfirmed               = 'Unconfirmed';
-	
+
 	public function setName( $name ) {
 		$this->_name = $name;
 	}
-	
+
 	public function getName() {
 		return $this->_name;
 	}
-	
+
 	public function setStreet1( $street1 ) {
 		$this->_street1 = $street1;
 	}
-	
+
 	public function getStreet1() {
 		return $this->_street1;
 	}
-	
+
 	public function setStreet2( $street2 ) {
 		$this->_street2 = $street2;
 	}
-	
+
 	public function getStreet2() {
 		return $this->_street2;
 	}
-	
+
 	public function setCity( $city ) {
 		$this->_city = $city;
 	}
-	
+
 	public function getCity() {
 		return $this->_city;
 	}
-	
+
 	public function setState( $state ) {
 		$this->_state = $state;
 	}
-	
+
 	public function getState() {
 		return $this->_state;
 	}
-	
+
 	public function setZip( $zip ) {
 		$this->_zip = $zip;
 	}
-	
+
 	public function getZip() {
 		return $this->_zip;
 	}
-	
+
 	public function setCountry( $country ) {
 		$this->_country = $country;
 	}
-	
+
 	public function getCountry() {
 		return $this->_country;
 	}
-	
+
 	public function setPhoneNumber( $phoneNumber ) {
 		$this->_phoneNumber = $phoneNumber;
 	}
-	
+
 	public function getPhoneNumber() {
 		return $this->_phoneNumber;
 	}
-	
+
 	public function setAddressOwner( $addressOwner ) {
 		$this->_addressOwner = $addressOwner;
 	}
-	
+
 	public function getAddressOwner() {
 		return $this->_addressOwner;
 	}
-	
+
 	public function setAddressStatus( $addressStatus ) {
 		$this->_addressStatus = $addressStatus;
 	}
-	
+
 	public function getAddressStatus() {
 		return $this->_addressStatus;
 	}
-	
+
 	public function normalizeAddress() {
 		$this->normalizeCountry();
 		$this->normalizeState();
 		$this->normalizeZip();
 	}
-	
+
 	public function normalizeCountry() {
 		// Since many shopping carts might use the full country name for their internal representation of
 		// the country, and since PayPal expects the ISO 3166-1 alpha-2 identifier, we'll attempt to
 		// translate from the various internal representations that might be used.  Child classes can
 		// override this method to provide language-specific or cart-specific translations.  Many Bothans
 		// died to bring us this information...
-		
+
 		// This list was taken from https://developer.paypal.com/docs/classic/api/country_codes/.
 
 		$translation_table = array(
@@ -335,28 +335,28 @@ class PayPal_Address {
 			// This one is here because some carts will make the mistake of using 'uk' instead of 'gb'.
 			'uk'                               => 'GB'
 		);
-		
+
 		// And now, the actual translation is as simple as...
 		if ( array_key_exists( strtolower( trim( $this->_country ) ), $translation_table ) ) {
 			$this->_country = $translation_table[ strtolower( trim( $this->_country ) ) ];
 		}
 	}
-	
+
 	public function normalizeState() {
 		// Since some shopping carts might use the full state name for their internal representation of the
 		// state, and since PayPal expects the 2-character state/province abbreviation (for US/Canada
 		// addresses, at least), we'll attempt to translate from the various internal representations
 		// that might be used.  Child classes can override this method to provide additional
 		// language-specific or cart-specific translations.
-		
+
 		// This call should be made AFTER normalizeCountry() has been called, so that the country can be
 		// properly detected.
 
 		// PayPal's documentation also defines state codes for Italy and the Netherlands, so we'll provide
 		// translations for those as well.
-		
+
 		$translation_table = array();
-		
+
 		if ( 'US' == $this->_countryCode ) {
 			$translation_table = array(
 				'alabama'                                 => 'AL',
@@ -435,7 +435,7 @@ class PayPal_Address {
 				'u.s. virgin islands'                     => 'VI',
 				'u s virgin islands'                      => 'VI',
 				'u. s. virgin islands'                    => 'VI'
-			);			
+			);
 		} elseif ( 'CA' == $this->_country ) {
 			$translation_table = array(
 				'alberta'               => 'AB',
@@ -582,17 +582,17 @@ class PayPal_Address {
 				'zuid-holland'  => 'ZH'
 			);
 		}
-		
+
 		if ( array_key_exists( strtolower( trim( $this->_state ) ), $translation_table ) ) {
 			$this->_state = $translation_table[ strtolower( trim( $this->_state ) ) ];
 		}
-		
+
 	}
-	
+
 	public function normalizeZip() {
 		// TODO: Try to do some ZIP code normalization
 	}
-	
+
 	public function getAddressParams( $prefix = '' ) {
 		$params = array(
 			$prefix . 'NAME' => $this->_name,
@@ -603,10 +603,10 @@ class PayPal_Address {
 			$prefix . 'ZIP' => $this->_zip,
 			$prefix . 'COUNTRYCODE' => $this->_country
 		);
-		
+
 		return $params;
 	}
-	
+
 	public function loadFromGetECResponse( $getECResponse, $prefix, $isBillingAddress = false ) {
 		$map = array(
 			'NAME'          => '_name',
@@ -625,9 +625,9 @@ class PayPal_Address {
 		} else {
 			$map['COUNTRYCODE'] = '_country';
 		}
-		
+
 		$found_any = false;
-		
+
 		foreach ( $map as $index => $value ) {
 			$var_name = $prefix . $index;
 			if ( array_key_exists( $var_name, $getECResponse ) ) {
@@ -640,7 +640,7 @@ class PayPal_Address {
 				}
 			}
 		}
-		
+
 		return $found_any;
 	}
 }

@@ -1,7 +1,7 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) { 
-    exit; // Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
 }
 
 require_once( 'class-api.php' );
@@ -28,7 +28,7 @@ class PayPal_Transaction {
 		$params['AMT']           = $amount;
 		$params['CURRENCYCODE']  = $currency;
 		$params['NOTE']          = $reason;
-		
+
 		// do API call
 		$response = $api->RefundTransaction( $params );
 		// look at ACK to see if success or failure
