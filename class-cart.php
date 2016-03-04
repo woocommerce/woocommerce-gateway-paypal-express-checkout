@@ -1,13 +1,13 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) { 
+if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly
 }
 
 require_once( 'lib/class-cart.php' );
 
 class WooCommerce_PayPal_Cart extends PayPal_Cart {
-	
+
 	// Currencies that support 0 decimal places -- "zero decimal place" currencies
 	protected $zdp_currencies = array( 'HUF', 'JPY', 'TWD' );
 
@@ -18,25 +18,24 @@ class WooCommerce_PayPal_Cart extends PayPal_Cart {
 
 		// load all cart items into an array
 		$roundedPayPalTotal = 0;
-		
+
 		$is_zdp_currency = in_array( get_woocommerce_currency(), $this->zdp_currencies );
 		if ( $is_zdp_currency ) {
 			$decimals = 0;
 		} else {
 			$decimals = 2;
 		}
-	
+
 		$discounts = round( $woocommerce->cart->get_order_discount_total(), $decimals );
 		foreach ( $woocommerce->cart->cart_contents as $cart_item_key => $values ) {
 			$amount = round( $values['line_total'] / $values['quantity'] , $decimals );
-
-			$item = array(
+			$item   = array(
 				'name'        => $values['data']->post->post_title,
 				'description' => $values['data']->post->post_content,
 				'quantity'    => $values['quantity'],
-				'amount'      => $amount
+				'amount'      => $amount,
 			);
-			
+
 			$this->items[] = $item;
 
 			$roundedPayPalTotal += round( $amount * $values['quantity'], $decimals );
@@ -49,7 +48,7 @@ class WooCommerce_PayPal_Cart extends PayPal_Cart {
 		}
 		$this->totalItemAmount = round( $woocommerce->cart->cart_contents_total, $decimals );
 		$this->orderTotal = $this->totalItemAmount + $this->orderTax + $this->shipping;
-		
+
 		// need to compare WC totals with what PayPal will calculate to see if they match
 		// if they do not match, check to see what the merchant would like to do
 		// options are to remove line items or add a line item to adjust for the difference
@@ -77,15 +76,15 @@ class WooCommerce_PayPal_Cart extends PayPal_Cart {
 				// Omit line items altogether
 				unset($this->items);
 			}
-						
+
 		}
-		
+
 		// enter discount shenanigans. item total cannot be 0 so make modifications accordingly
 		if ( $this->totalItemAmount == $discounts ) {
 			$settings = new WooCommerce_PayPal_Settings();
 			$settings->loadSettings();
 			$behavior = $settings->zeroSubtotalBehavior;
-			
+
 			if ( WooCommerce_PayPal_Settings::zeroSubtotalBehaviorModifyItems == $behavior ) {
 				// ...
 				// Go ahead and pass the discounts with the cart, but then add in a 0.01 line
@@ -96,7 +95,7 @@ class WooCommerce_PayPal_Cart extends PayPal_Cart {
 					'quantity'    => 1,
 					'amount'      => $discounts
 				);
-				
+
 				$this->items[] = $discountLineItme;
 
 				if ( $is_zdp_currency ) {
@@ -154,7 +153,7 @@ class WooCommerce_PayPal_Cart extends PayPal_Cart {
 			$this->shipping = 0;
 
 	}
-	
+
 	public function loadOrderDetails( $order_id ) {
 		global $woocommerce;
 
@@ -164,25 +163,23 @@ class WooCommerce_PayPal_Cart extends PayPal_Cart {
 
 		// load all cart items into an array
 		$roundedPayPalTotal = 0;
-		
+
 		$is_zdp_currency = in_array( get_woocommerce_currency(), $this->zdp_currencies );
 		if ( $is_zdp_currency ) {
 			$decimals = 0;
 		} else {
 			$decimals = 2;
 		}
-	
+
 		$discounts = round( $order->get_total_discount(), $decimals );
 		foreach ( $order->get_items() as $cart_item_key => $values ) {
 			$amount = round( $values['line_total'] / $values['qty'] , $decimals );
-
-			$item = array(
-				'name'        => $values['data']->post->post_title,
-				//'description' => $values['data']->post->post_content, --> doesn't seem to be included in the Order details
-				'quantity'    => $values['qty'],
-				'amount'      => $amount
+			$item   = array(
+				'name'     => $values['name'],
+				'quantity' => $values['qty'],
+				'amount'   => $amount,
 			);
-			
+
 			$this->items[] = $item;
 
 			$roundedPayPalTotal += round( $amount * $values['qty'], $decimals );
@@ -195,7 +192,7 @@ class WooCommerce_PayPal_Cart extends PayPal_Cart {
 		// }
 		$this->totalItemAmount = round( $order->get_subtotal(), $decimals );
 		$this->orderTotal = $this->totalItemAmount + $this->orderTax + $this->shipping;
-		
+
 		// need to compare WC totals with what PayPal will calculate to see if they match
 		// if they do not match, check to see what the merchant would like to do
 		// options are to remove line items or add a line item to adjust for the difference
@@ -223,15 +220,15 @@ class WooCommerce_PayPal_Cart extends PayPal_Cart {
 				// Omit line items altogether
 				unset($this->items);
 			}
-						
+
 		}
-		
+
 		// enter discount shenanigans. item total cannot be 0 so make modifications accordingly
 		if ( $this->totalItemAmount == $discounts ) {
 			$settings = new WooCommerce_PayPal_Settings();
 			$settings->loadSettings();
 			$behavior = $settings->zeroSubtotalBehavior;
-			
+
 			if ( WooCommerce_PayPal_Settings::zeroSubtotalBehaviorModifyItems == $behavior ) {
 				// ...
 				// Go ahead and pass the discounts with the cart, but then add in a 0.01 line
@@ -242,7 +239,7 @@ class WooCommerce_PayPal_Cart extends PayPal_Cart {
 					'quantity'    => 1,
 					'amount'      => $discounts
 				);
-				
+
 				$this->items[] = $discountLineItme;
 
 				if ( $is_zdp_currency ) {
@@ -298,7 +295,7 @@ class WooCommerce_PayPal_Cart extends PayPal_Cart {
 
 		if ( ! is_numeric( $this->shipping ) )
 			$this->shipping = 0;
-		
+
 	}
 
 }

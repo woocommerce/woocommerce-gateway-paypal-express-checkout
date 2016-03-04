@@ -11,7 +11,7 @@
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-if ( ! defined( 'ABSPATH' ) ) { 
+if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly
 }
 
@@ -72,7 +72,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	function woo_pp_async_generate_private_key() {
 		$nonce = uniqid();
 		set_transient( 'pp_woo_ipsGenNonce', $nonce, 30 );
-		$args = array( 
+		$args = array(
 			'timeout' => 1,
 			'blocking' => false
 		);
@@ -97,7 +97,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 			'private_key_type' => OPENSSL_KEYTYPE_RSA
 		);
 
-		$private_key = openssl_pkey_new( $ssl_config );	
+		$private_key = openssl_pkey_new( $ssl_config );
 		if ( ! openssl_pkey_export( $private_key, $private_key_export ) ) {
 			update_option( 'pp_woo_ipsPrivateKey', 'generation_failed' );
 		} else {
@@ -124,12 +124,12 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 			wp_register_style( 'woo_pp_css', plugins_url( 'content/css/paypal.css', __FILE__ ) );
 			wp_enqueue_style( 'woo_pp_css' );
 		}
-		
+
 		// If in-context checkout is enabled, add the PayPal JS to the page
 		if( is_cart() || is_checkout() ) {
 			$settings = new WooCommerce_PayPal_Settings();
 			$settings->loadSettings();
-			
+
 			if( 'yes' == $settings->enabled && $settings->enableInContextCheckout && $settings->getActiveApiCredentials()->payerID ) {
 				if( is_cart() ) {
 					wp_enqueue_script( 'paypal-checkout-js', 'https://www.paypalobjects.com/api/checkout.js', array(), false, true );
@@ -188,7 +188,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 			woo_pp_async_generate_private_key();
 		}
 
-		if ( 'true' == $_GET['start-ips-keygen'] ) {
+		if ( isset( $_GET['start-ips-keygen'] ) && 'true' == $_GET['start-ips-keygen'] ) {
 			woo_pp_generate_private_key();
 			exit;
 		}
@@ -198,16 +198,18 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 		// woocommerce_before_cart_totals executes, and there is already output sent to the browser by
 		// this point.  So, to get around this issue, we'll enable output buffering to prevent WP from
 		// sending anything back to the browser.
-		if ( 'true' == $_GET['startcheckout'] ) {
+		if ( isset( $_GET['startcheckout'] ) && 'true' == $_GET['startcheckout'] ) {
 			ob_start();
 		}
 
 		// Also start buffering if we're on an admin page and the merchant is trying to use Easy Signup.
-		if ( is_admin() && ( 'true' == $_GET['ips-signup'] || 'true' == $_GET['ips-return'] ) ) {
+		$is_ips_signup = isset( $_GET['ips-signup'] ) && 'true' == $_GET['ips-signup'];
+		$is_ips_return = isset( $_GET['ips-return'] ) && 'true' == $_GET['ips-return'];
+		if ( is_admin() && ( $is_ips_signup || $is_ips_return ) ) {
 			ob_start();
 		}
 
-		if ( 'true' == $_GET['woo-paypal-return'] ) {
+		if ( isset( $_GET['woo-paypal-return'] ) && 'true' == $_GET['woo-paypal-return'] ) {
 			// call get ec and do ec
 			// Make sure we have our token and payer ID
 			if ( array_key_exists( 'token', $_GET ) && array_key_exists( 'PayerID', $_GET ) &&
@@ -307,8 +309,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 
 	function woo_pp_payment_gateways( $methods ) {
 		// If the buyer already went through the PP checkout, then filter out the option they didn't select.
-		global $woocommerce;
-		$session = $woocommerce->session->paypal;
+		$session = is_admin() ? false : WC()->session->get( 'paypal' );
 		if ( ( is_checkout() || is_ajax() ) && $session && is_a( $session, 'WooCommerce_PayPal_Session_Data' ) &&
 				$session->checkout_completed && $session->expiry_time >= time() &&
 				$session->payerID ) {
@@ -333,10 +334,8 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	add_filter( 'woocommerce_get_sections_checkout', 'woo_pp_filter_payment_gateways' );
 
 	function woo_pp_check_for_checkout() {
-		//check for startcheckout=true
-		//if there then call start_checkout() else do nothing so page loads as normal
-
-		if ( 'true' == $_GET['startcheckout'] ) {
+		// if there then call start_checkout() else do nothing so page loads as normal
+		if ( ! empty( $_GET['startcheckout'] ) && 'true' === $_GET['startcheckout'] ) {
 			$_GET['startcheckout'] = 'false'; // trying to prevent auto running checkout when back button is pressed from PayPal page
 			woo_pp_start_checkout();
 		}
@@ -358,7 +357,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 				$final_output .= '<li>' . __( $error->mapToBuyerFriendlyError(), 'woo_pp' ) . '</li>';
 			}
 			wc_add_notice( __( 'Payment error:', 'woo_pp' ) . $final_output, 'error' );
-			
+
 			$redirect_url = $woocommerce->cart->get_cart_url();
 			$settings = new WooCommerce_PayPal_Settings();
 			$settings->loadSettings();
@@ -368,7 +367,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 				?>
 				<script type="text/javascript">
 					if( ( window.opener != null ) && ( window.opener !== window ) &&
-							( typeof window.opener.paypal != "undefined" ) && 
+							( typeof window.opener.paypal != "undefined" ) &&
 							( typeof window.opener.paypal.checkout != "undefined" ) ) {
 						window.opener.location.assign( "<?php echo $redirect_url; ?>" );
 						window.close();
@@ -393,7 +392,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 		global $woocommerce;
 		$settings = new WooCommerce_PayPal_Settings();
 		$settings->loadSettings();
-		
+
 		if( 'yes' != $settings->enabled ) {
 			return;
 		}
@@ -433,7 +432,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 		}
 
 		echo '</div>';
-		
+
 		if( 'yes' == $settings->enabled && $settings->enableInContextCheckout && $settings->getActiveApiCredentials()->payerID ) {
 			$payer_id = $settings->getActiveApiCredentials()->payerID;
 			?>
@@ -455,7 +454,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	} else {
 		add_action( 'woocommerce_after_cart_totals', 'woo_pp_display_paypal_button' );
 	}
-	
+
 	function woo_pp_before_checkout_process() {
 		// Turn off use of the buyer email in the payment method title so that it doesn't appear in emails
 		PayPal_Express_Checkout_Gateway::$use_buyer_email = false;
@@ -466,7 +465,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 		global $woocommerce;
 		$settings = new WooCommerce_PayPal_Settings();
 		$settings->loadSettings();
-	
+
 		if( 'yes' == $settings->enabled && $settings->enableInContextCheckout && $settings->getActiveApiCredentials()->payerID ) {
 			$session = $woocommerce->session->paypal;
 			if ( ! $session || ! is_a( $session, 'WooCommerce_PayPal_Session_Data' ) ||

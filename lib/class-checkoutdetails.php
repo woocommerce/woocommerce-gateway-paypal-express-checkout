@@ -1,6 +1,6 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) { 
+if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly
 }
 
@@ -12,34 +12,34 @@ class PayPal_Checkout_Details {
 	public $invnum                          = false;
 	public $phone_number                    = false;
 	public $billing_agreement_accepted      = false;
-	
+
 	const BillingAgreementNotAccepted       = '0';
 	const BillingAgreementAccepted          = '1';
-	
+
 	public $paypal_adjustment               = false;
 	public $redirect_required_after_payment = false;
 	public $checkout_status                 = false;
-	
+
 	const PaymentNotAttempted               = 'PaymentActionNotInitiated';
 	const PaymentFailed                     = 'PaymentActionFailed';
 	const PaymentInProgress                 = 'PaymentActionInProgress';
 	const PaymentCompleted                  = 'PaymentActionCompleted';
-	
+
 	public $gift_details                    = false;
 
 	public $buyer_marketing_email           = false;
 	public $survey_question                 = false;
 	public $survey_choice_selected          = false;
-	
+
 	public $payer_details                   = false;
 	public $wallets                         = false;
-	
+
 	public $instrument_details              = false;
-	
+
 	public $shipping_option_details         = false;
-	
+
 	public $payments                        = false;
-	
+
 	public function loadFromGetECResponse( $getECResponse ) {
 		$map = array(
 			'TOKEN'                          => 'token',
@@ -54,33 +54,33 @@ class PayPal_Checkout_Details {
 			'SURVEYQUESTION'                 => 'survey_question',
 			'SURVEYCHOICESELECTED'           => 'survey_choice_selected'
 		);
-		
+
 		foreach ( $getECResponse as $index => $value ) {
 			if ( array_key_exists( $index, $map ) ) {
 				$this->$map[ $index ] = $value;
 			}
 		}
-		
+
 		$this->gift_details = new PayPal_Checkout_Gift_Details();
 		if ( ! $this->gift_details->loadFromGetECResponse( $getECResponse ) ) {
 			$this->gift_details = false;
 		}
-		
+
 		$this->payer_details = new PayPal_Checkout_Payer_Details();
 		if ( ! $this->payer_details->loadFromGetECResponse( $getECResponse ) ) {
 			$this->payer_details = false;
 		}
-		
+
 		$this->instrument_details = new PayPal_Checkout_Instrument_Details();
 		if ( ! $this->instrument_details->loadFromGetECResponse( $getECResponse ) ) {
 			$this->instrument_details = false;
 		}
-		
+
 		$this->shipping_option_details = new PayPal_Checkout_Shipping_Option_Details();
 		if ( ! $this->shipping_option_details->loadFromGetECResponse( $getECResponse ) ) {
 			$this->shipping_option_details = false;
 		}
-		
+
 		$max_wallet_num = -1;
 		$max_payment_num = -1;
 		foreach ( $getECResponse as $index => $value ) {
@@ -95,7 +95,7 @@ class PayPal_Checkout_Details {
 				}
 			}
 		}
-		
+
 		if ( $max_wallet_num > -1 ) {
 			$this->wallets = array();
 			for ( $i = 0; $i <= $max_wallet_num; $i++ ) {
@@ -103,7 +103,7 @@ class PayPal_Checkout_Details {
 				$this->wallets[ $i ]->loadFromGetECResponse( $getECResponse, $i );
 			}
 		}
-		
+
 		if ( $max_payment_num > -1 ) {
 			$this->payments = array();
 			for ( $i = 0; $i <= $max_payment_num; $i++ ) {
@@ -111,7 +111,7 @@ class PayPal_Checkout_Details {
 				$this->payments[ $i ]->loadFromGetECResponse( $getECResponse, $i );
 			}
 		}
-		
+
 	}
 
 }
@@ -119,17 +119,17 @@ class PayPal_Checkout_Details {
 class PayPal_Checkout_Payment_Details {
 	public $shipping_address                      = false;
 	public $shipping_address_confirmed            = false;
-	
+
 	public $shipping_address_normalization_status = false;
-	
+
 	const AddressNormalizationNone                = 'None';
 	const AddressNormalizationNormalized          = 'Normalized';
 	const AddressNormalizationUnnormalized        = 'Unnormalized';
 	const AddressNormalizationUserPreferred       = 'UserPreferred';
-	
+
 	public $amount                                = false;
 	public $currency_code                         = false;
-	
+
 	public $item_amount                           = false;
 	public $shipping_amount                       = false;
 	public $insurance_amount                      = false;
@@ -144,17 +144,17 @@ class PayPal_Checkout_Payment_Details {
 	public $note_text                             = false;
 	public $transaction_id                        = false;
 	public $allowed_payment_method                = false;
-	
+
 	const AllowedPaymentMethodInstantPaymentOnly  = 'InstantPaymentOnly';
-	
+
 	public $payment_request_id                    = false;
 	public $bucket_category_type                  = false;
-	
+
 	const BucketCategoryInternationalShipping     = '1';
 	const BucketCategoryLocalDelivery             = '2';
-	
+
 	public $items                                 = false;
-	
+
 	public function loadFromGetECResponse( $getECResponse, $bucketNum ) {
 		$map = array(
 			'AMT'                        => 'amount',
@@ -186,18 +186,18 @@ class PayPal_Checkout_Payment_Details {
 				$found_any = true;
 			}
 		}
-		
+
 		// See if we have any line items that need to be parsed
 		$max_line_item_num = -1;
 		foreach ( $getECResponse as $index => $value ) {
-			if ( preg_match( '/^L_PAYMENTREQUEST_' . $bucketNum . '_(NAME|DESC|AMT|NUMBER|QTY|TAXAMT|ITEMWEIGHTVALUE|ITEMWEIGHTUNIT|ITEMLENGTHVALUE|ITEMLENGTHUNIT|ITEMWIDTHVALUE|ITEMWIDTHUNIT|ITEMHEIGHTVALUE|ITEMHEIGHTUNIT|ITEMCATEGORY|EBAYITEMNUMBER|EBAYITEMAUCTIONTXNID|EBAYITEMORDERID|EBAYITEMCARTID)(\d+)$/', $index ) ) {
-				if ( $matches[2] > $max_line_item_num ) {
+			if ( preg_match( '/^L_PAYMENTREQUEST_' . $bucketNum . '_(NAME|DESC|AMT|NUMBER|QTY|TAXAMT|ITEMWEIGHTVALUE|ITEMWEIGHTUNIT|ITEMLENGTHVALUE|ITEMLENGTHUNIT|ITEMWIDTHVALUE|ITEMWIDTHUNIT|ITEMHEIGHTVALUE|ITEMHEIGHTUNIT|ITEMCATEGORY|EBAYITEMNUMBER|EBAYITEMAUCTIONTXNID|EBAYITEMORDERID|EBAYITEMCARTID)(\d+)$/', $index, $matches ) ) {
+				if ( isset( $matches[2] ) && $matches[2] > $max_line_item_num ) {
 					$max_line_item_num = $matches[2];
 				}
 			}
 		}
-		
-		if ( $max_line_item_num > -1 ) {		
+
+		if ( $max_line_item_num > -1 ) {
 			$found_any = true;
 			$this->items = array();
 			for ( $i = 0; $i <= $max_line_item_num; $i++ ) {
@@ -205,14 +205,14 @@ class PayPal_Checkout_Payment_Details {
 				$items[ $i ]->loadFromGetECResponse( $getECResponse, $bucketNum, $i );
 			}
 		}
-		
+
 		$this->shipping_address = new PayPal_Address();
 		if ( ! $this->shipping_address->loadFromGetECResponse( $getECResponse, 'PAYMENTREQUEST_' . $bucketNum . '_SHIPTO' ) ) {
 			$this->shipping_address = false;
 		} else {
 			$found_any = true;
 		}
-		
+
 		return $found_any;
 	}
 }
@@ -224,10 +224,10 @@ class PayPal_Checkout_Payment_Item_Details {
 	public $item_number = false;
 	public $quantity = false;
 	public $tax_amount = false;
-	
+
 	public $physical_details = false;
 	public $ebay_item_details = false;
-	
+
 	public function loadFromGetECResponse( $getECResponse, $bucketNum, $itemNum ) {
 		$map = array(
 			'NAME' => 'name',
@@ -237,19 +237,19 @@ class PayPal_Checkout_Payment_Item_Details {
 			'QTY' => 'quantity',
 			'TAXAMT' => 'tax_amount'
 		);
-		
+
 		foreach ( $map as $index => $value ) {
 			$var_name = 'L_PAYMENTREQUEST_' . $bucketNum . '_' . $index . $itemNum;
 			if ( array_key_exists( $var_name, $getECResponse ) ) {
 				$this->$value = $getECResponse[ $var_name ];
 			}
 		}
-		
+
 		$this->physical_details = new PayPal_Checkout_Payment_Item_Physical_Details();
 		if ( ! $this->physical_details->loadFromGetECResponse( $getECResponse, $bucketNum, $itemNum ) ) {
 			$this->physical_details = false;
 		}
-		
+
 		$this->ebay_item_details = new PayPal_Checkout_Payment_Item_Ebay_Item_Details();
 		if ( ! $this->ebay_item_details->loadFromGetECResponse( $getECResponse, $bucketNum, $itemNum ) ) {
 			$this->ebay_item_details = false;
@@ -260,16 +260,16 @@ class PayPal_Checkout_Payment_Item_Details {
 class PayPal_Checkout_Payment_Item_Physical_Details {
 	public $weight;
 	public $weight_units;
-	
+
 	public $length;
 	public $length_units;
-	
+
 	public $width;
 	public $width_units;
-	
+
 	public $height;
 	public $height_units;
-	
+
 	public function loadFromGetECDetails( $getECResponse, $bucketNum, $itemNum ) {
 		$map = array(
 			'WEIGHTVALUE' => 'weight',
@@ -282,7 +282,7 @@ class PayPal_Checkout_Payment_Item_Physical_Details {
 			'HEIGHTUNIT'  => 'height_units'
 		);
 		$found_any = false;
-		
+
 		foreach ( $map as $index => $value ) {
 			$var_name = 'L_PAYMENTREQUEST_' . $bucketNum . '_ITEM' . $index . $itemNum;
 			if ( array_key_exists( $var_name, $getECResponse ) ) {
@@ -290,7 +290,7 @@ class PayPal_Checkout_Payment_Item_Physical_Details {
 				$found_any = true;
 			}
 		}
-		
+
 		return $found_any;
 	}
 }
@@ -300,7 +300,7 @@ class PayPal_Checkout_Payment_Item_Ebay_Item_Details {
 	public $auction_transaction_id = false;
 	public $order_id               = false;
 	public $cart_id                = false;
-	
+
 	public function loadFromGetECDetails( $getECResponse, $bucketNum, $itemNum ) {
 		$map = array(
 			'ITEMNUMBER'   => 'item_number',
@@ -308,7 +308,7 @@ class PayPal_Checkout_Payment_Item_Ebay_Item_Details {
 			'ORDERID'      => 'order_id',
 			'CARTID'       => 'cart_id'
 		);
-		
+
 		$found_any = false;
 		foreach ( $map as $index => $value ) {
 			$var_name = 'L_PAYMENTREQUEST_' . $bucketNum . '_' . $index . $itemNum;
@@ -317,25 +317,25 @@ class PayPal_Checkout_Payment_Item_Ebay_Item_Details {
 				$found_any = true;
 			}
 		}
-		
+
 		return $found_any;
 	}
 }
 
 class PayPal_Checkout_Shipping_Option_Details {
 	public $calculation_mode  = false;
-	
+
 	const CalculationModeCallback = 'Callback';
 	const CalculationModeFlatrate = 'FlatRate';
-	
+
 	public $insurance_option_selected  = false;
 	public $shipping_option_is_default = false;
 	public $shipping_option_amount     = false;
 	public $shipping_option_name       = false;
-	
+
 	// Returns true to indicate that the getECResponse array contained variables that were pertinent to this object.
 	// If not, it returns false to indicate that the caller can destroy this object.
-	public function loadFromGetECResponse( $getECResponse ) { 
+	public function loadFromGetECResponse( $getECResponse ) {
 		$map = array(
 			'SHIPPINGCALCULATIONMODE' => 'calculation_mode',
 			'INSURANCEOPTIONSELECTED' => 'insurance_option_selected',
@@ -350,19 +350,19 @@ class PayPal_Checkout_Shipping_Option_Details {
 				$found_any = true;
 			}
 		}
-		
+
 		return $found_any;
 	}
 }
 
 class PayPal_Checkout_Instrument_Details {
 	public $instrument_category          = false;
-	
+
 	const InstrumentCategoryPayPalCredit = '1';
 	const InstrumentCategoryPrivateCard  = '2';
-	
+
 	public $instrument_id                = false;
-	
+
 	// Returns true to indicate that the getECResponse array contained variables that were pertinent to this object.
 	// If not, it returns false to indicate that the caller can destroy this object.
 	public function loadFromGetECResponse( $getECResponse ) {
@@ -371,34 +371,34 @@ class PayPal_Checkout_Instrument_Details {
 			'INSTRUMENTID'       => 'instrument_id'
 		);
 		$found_any = false;
-		
+
 		foreach ( $getECResponse as $index => $value ) {
 			if ( array_key_exists( $index, $map ) ) {
 				$this->$map[ $index ] = $value;
 				$found_any = true;
 			}
 		}
-		
+
 		return $found_any;
 	}
 }
 
 class PayPal_Checkout_Wallet_Details {
 	public $wallet_type                     = false;
-	
+
 	const WalletTypeLoyaltyCard             = 'LOYALTY_CARD';
 	const WalletTypeMerchantCoupon          = 'MERCHANT_COUPON';
 	const WalletTypeMerchantClosedLoopOffer = 'MERCHANT_CLOSED_LOOP_OFFER';
-	
+
 	public $wallet_id                       = false;
 	public $wallet_description              = false;
-	
+
 	public function __construct( $wallet_type = false, $wallet_id = false, $wallet_description = false ) {
 		$this->wallet_type        = $wallet_type;
 		$this->wallet_id          = $wallet_id;
 		$this->wallet_description = $wallet_description;
 	}
-	
+
 	// Returns true to indicate that the getECResponse array contained variables that were pertinent to this object.
 	// If not, it returns false to indicate that the caller can destroy this object.
 	public function loadFromGetECResponse( $getECResponse, $wallet_num ) {
@@ -415,7 +415,7 @@ class PayPal_Checkout_Wallet_Details {
 				$found_any = true;
 			}
 		}
-		
+
 		return $found_any;
 	}
 }
@@ -425,19 +425,19 @@ class PayPal_Checkout_Payer_Details {
 	public $email               = false;
 	public $payer_id            = false;
 	public $payer_status        = false;
-	
+
 	const PayerStatusVerified   = 'verified';
 	const PayerStatusUnverified = 'unverified';
-	
+
 	public $country             = false;
 	public $business_name       = false;
 	public $first_name          = false;
 	public $last_name           = false;
 	public $middle_name         = false;
 	public $suffix              = false;
-	
+
 	public $billing_address     = false;
-	
+
 	// Returns true to indicate that the getECResponse array contained variables that were pertinent to this object.
 	// If not, it returns false to indicate that the caller can destroy this object.
 	public function loadFromGetECResponse( $getECResponse ) {
@@ -454,10 +454,10 @@ class PayPal_Checkout_Payer_Details {
 			'SUFFIX'      => 'suffix'
 		);
 		$found_any = false;
-		
+
 		// At the same time, see if we have a billing address that needs to be parsed out.
 		$billing_address_present = false;
-		
+
 		foreach ( $getECResponse as $index => $value ) {
 			if ( array_key_exists( $index, $map ) ) {
 				$this->$map[ $index ] = $value;
@@ -467,7 +467,7 @@ class PayPal_Checkout_Payer_Details {
 				$billing_address_present = true;
 			}
 		}
-		
+
 		if ( $billing_address_present ) {
 			$this->billing_address = new PayPal_Address();
 			if ( $this->billing_address->loadFromGetECResponse( $getECResponse, '', true ) ) {
@@ -476,10 +476,10 @@ class PayPal_Checkout_Payer_Details {
 				$this->billing_address = false;
 			}
 		}
-		
+
 		return $found_any;
 	}
-	
+
 }
 
 class PayPal_Checkout_Gift_Details {
@@ -487,7 +487,7 @@ class PayPal_Checkout_Gift_Details {
 	public $gift_receipt_enabled = false;
 	public $gift_wrap_name       = false;
 	public $gift_wrap_amount     = false;
-	
+
 	// Returns true to indicate that the getECResponse array contained variables that were pertinent to this object.
 	// If not, it returns false to indicate that the caller can destroy this object.
 	public function loadFromGetECResponse( $getECResponse ) {
@@ -498,14 +498,14 @@ class PayPal_Checkout_Gift_Details {
 			'GIFTWRAPAMOUNT'    => 'gift_wrap_amount'
 		);
 		$found_any = false;
-		
+
 		foreach ( $getECResponse as $index => $value ) {
 			if ( array_key_exists( $index, $map ) ) {
 				$this->$map[ $index ] = $value;
 				$found_any = true;
 			}
 		}
-		
+
 		return $found_any;
 	}
 }

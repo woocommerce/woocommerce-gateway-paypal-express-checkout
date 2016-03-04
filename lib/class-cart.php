@@ -1,11 +1,11 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) { 
+if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly
 }
 
 abstract class PayPal_Cart {
-	
+
 	protected $orderTotal;
 	protected $orderTax;
 	protected $shipping;
@@ -38,9 +38,9 @@ abstract class PayPal_Cart {
 			foreach ( $this->items as $line_item_key => $values ) {
 				$lineItemParams = array(
 					'L_PAYMENTREQUEST_0_NAME' . $count => $values['name'],
-					'L_PAYMENTREQUEST_0_DESC' . $count => $values['description'],
+					'L_PAYMENTREQUEST_0_DESC' . $count => ! empty( $values['description'] ) ? $values['description'] : '',
 					'L_PAYMENTREQUEST_0_QTY' . $count => $values['quantity'],
-					'L_PAYMENTREQUEST_0_AMT' . $count => $values['amount'] 
+					'L_PAYMENTREQUEST_0_AMT' . $count => $values['amount']
 				);
 
 				$stdParams = array_merge( $stdParams, $lineItemParams );
