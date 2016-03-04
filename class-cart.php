@@ -29,12 +29,11 @@ class WooCommerce_PayPal_Cart extends PayPal_Cart {
 		$discounts = round( $woocommerce->cart->get_order_discount_total(), $decimals );
 		foreach ( $woocommerce->cart->cart_contents as $cart_item_key => $values ) {
 			$amount = round( $values['line_total'] / $values['quantity'] , $decimals );
-
-			$item = array(
+			$item   = array(
 				'name'        => $values['data']->post->post_title,
 				'description' => $values['data']->post->post_content,
 				'quantity'    => $values['quantity'],
-				'amount'      => $amount
+				'amount'      => $amount,
 			);
 
 			$this->items[] = $item;
