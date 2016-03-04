@@ -1,7 +1,7 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) { 
-    exit; // Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
 }
 
 require_once 'class-checkout.php';
@@ -12,7 +12,7 @@ function woo_pp_plugins_loaded() {
 
 		private static $process_admin_options_already_run = false;
 		private static $process_admin_options_validation_error = false;
-		
+
 		protected $buyer_email = false;
 		public static $use_buyer_email = true;
 
@@ -599,7 +599,7 @@ function woo_pp_plugins_loaded() {
 				if ( ! empty( $_POST['woo_pp_ppc_enabled'] ) && 'true' == $_POST['woo_pp_ppc_enabled'] ) {
 					$ppc_enabled = true;
 				}
-				
+
 				if ( ! empty( $_POST['woo_pp_icc_enabled'] ) && 'true' == $_POST['woo_pp_icc_enabled'] ) {
 					$icc_enabled = true;
 				}
@@ -648,7 +648,7 @@ function woo_pp_plugins_loaded() {
 				if ( 'signature' == $sb_style ) {
 					$masked_sb_api_sig = $_POST['woo_pp_sb_api_signature'];
 				} else {
-					if ( array_key_exists( 'woo_pp_sb_api_certificate', $_FILES ) && array_key_exists( 'tmp_name', $_FILES['woo_pp_sb_api_certificate'] ) 
+					if ( array_key_exists( 'woo_pp_sb_api_certificate', $_FILES ) && array_key_exists( 'tmp_name', $_FILES['woo_pp_sb_api_certificate'] )
 						&& array_key_exists( 'size', $_FILES['woo_pp_sb_api_certificate'] ) && $_FILES['woo_pp_sb_api_certificate']['size'] ) {
 						$sb_cert = file_get_contents( $_FILES['woo_pp_sb_api_certificate']['tmp_name'] );
 						$sb_cert_info = $this->get_certificate_info( $sb_cert );
@@ -716,7 +716,7 @@ function woo_pp_plugins_loaded() {
 				$enabled                    = $settings->enabled;
 				$ppc_enabled                = $settings->ppcEnabled;
 				$icc_enabled                = $settings->enableInContextCheckout;
-				$environment                = $settings->environment;			
+				$environment                = $settings->environment;
 				$button_size                = $settings->buttonSize;
 				$mark_size                  = $settings->markSize;
 				$logo_image_url             = $settings->logoImageUrl;
@@ -790,7 +790,7 @@ function woo_pp_plugins_loaded() {
 					// Make sure we have a password on file.  If we don't, this value is invalid.
 					if ( $settings->$creds_name ) {
 						if ( empty( $settings->$creds_name->apiPassword ) ) {
-							$content = 
+							$content =
 							WC_Admin_Settings::add_error( sprintf( __( 'Error: The %s API password you provided is not valid.', 'woo_pp' ), __( $full_env, 'woo_pp' ) ) );
 							return false;
 						}
@@ -962,7 +962,7 @@ function woo_pp_plugins_loaded() {
 			if ( isset( $_POST['woo_pp_req_billing_address'] ) && 'true' == $_POST['woo_pp_req_billing_address'] ) {
 				$require_billing_address = true;
 			}
-			
+
 			if ( isset( $_POST['woo_pp_icc_enabled'] ) && 'true' == $_POST['woo_pp_icc_enabled'] ) {
 				$icc_enabled = true;
 			}
@@ -988,7 +988,7 @@ function woo_pp_plugins_loaded() {
 				if ( ( 'live' == $environment && ! $live_api_credentials ) || ( 'sandbox' == $environment && ! $sb_api_credentials ) ) {
 					WC_Admin_Settings::add_error( __( 'Error: You must supply a valid set of credentials before enabling the plugin.', 'woo_pp' ) );
 					self::$process_admin_options_validation_error = true;
-					return false;						
+					return false;
 				}
 			}
 
@@ -1130,7 +1130,7 @@ function woo_pp_plugins_loaded() {
 						return new WP_Error( 'paypal_refund_error', $final_output );
 					}
 
-				} 
+				}
 
 			}
 
@@ -1144,7 +1144,7 @@ function woo_pp_plugins_loaded() {
 						$refundTxnID = $refundTransaction->doRefund( $amount, 'Partial', $reason, $order->get_order_currency() );
 						$txnData['refundable_txns'][ $key ]['refunded_amount'] += $amount;
 						$order->add_order_note( sprintf( __( 'PayPal refund completed; transaction ID = %s', 'woo_pp' ), $refundTxnID ) );
-						update_post_meta( $order_id, '_woo_pp_txnData', $txnData );		
+						update_post_meta( $order_id, '_woo_pp_txnData', $txnData );
 
 						return true;
 
@@ -1154,7 +1154,7 @@ function woo_pp_plugins_loaded() {
 						}
 
 						return new WP_Error( 'paypal_refund_error', $final_output );
-					}			    			
+					}
 
 				}
 			}
@@ -1214,7 +1214,7 @@ function woo_pp_plugins_loaded() {
 			$this->title = __( 'PayPal', 'woo_pp' );
 		}
 
-	}	
+	}
 	// end class PayPal_Express_Checkout_Gateway
 }
 add_action( 'plugins_loaded', 'woo_pp_plugins_loaded' );

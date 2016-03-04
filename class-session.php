@@ -1,7 +1,7 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) { 
-    exit; // Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
 }
 
 class WooCommerce_PayPal_Session_Data {
@@ -15,7 +15,7 @@ class WooCommerce_PayPal_Session_Data {
 	public $payerID                   = false; // The buyer's payer ID, once they come back from PayPal
 	public $expiry_time               = false; // The time at which the token will expire
 	public $using_ppc                 = false; // Whether the buyer is checking out with PayPal Credit
-	
+
 	public function __construct( $token, $leftFrom = 'cart', $order_id = false, $shipping_required = true, $billingAgreementRequested = false, $expires_in = 10800, $using_ppc = false ) {
 		if ( 'cart' == $leftFrom || 'order' == $leftFrom ) {
 			$this->leftFrom = $leftFrom;
@@ -23,13 +23,13 @@ class WooCommerce_PayPal_Session_Data {
 		if ( 'order' == $leftFrom ) {
 			$this->order_id = $order_id;
 		}
-		
+
 		$this->token = $token;
 		$this->shipping_required = $shipping_required;
 		$this->billingAgreementRequested = $billingAgreementRequested;
-		
+
 		$this->expiry_time = time() + $expires_in;
-		
+
 		$this->using_ppc = $using_ppc;
 	}
 }

@@ -12,7 +12,7 @@
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-    exit; // Exit if accessed directly
+	exit; // Exit if accessed directly
 }
 
 // class-paypal-credit-gateway.php includes everything else we need
@@ -340,7 +340,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 			woo_pp_start_checkout();
 		}
 	}
-    add_action( 'woocommerce_before_cart_totals', 'woo_pp_check_for_checkout' );
+	add_action( 'woocommerce_before_cart_totals', 'woo_pp_check_for_checkout' );
 
 	function woo_pp_start_checkout() {
 
@@ -386,9 +386,9 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 
 	}
 
-    function woo_pp_display_paypal_button() {
+	function woo_pp_display_paypal_button() {
 
-    	// get permalink & add startcheckout=true for button redirect
+		// get permalink & add startcheckout=true for button redirect
 		global $woocommerce;
 		$settings = new WooCommerce_PayPal_Settings();
 		$settings->loadSettings();
@@ -397,7 +397,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 			return;
 		}
 
-    	$redirect = get_permalink();
+		$redirect = get_permalink();
 		if ( false !== strpos( $redirect, '?' ) ) {
 			$redirect .= '&';
 		} else {

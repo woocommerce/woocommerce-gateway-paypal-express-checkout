@@ -1,7 +1,7 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) { 
-    exit; // Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
 }
 
 require_once( 'lib/class-settings.php' );
@@ -13,14 +13,14 @@ class WooCommerce_PayPal_Settings extends PayPal_Settings {
 	const zeroSubtotalBehaviorModifyItems                   = 'modifyItems';
 	const zeroSubtotalBehaviorOmitLineItems                 = 'omitLineItems';
 	const zeroSubtotalBehaviorPassCouponsAsShippingDiscount = 'passCouponsAsShippingDiscount';
-	
+
 	const subtotalMismatchBehaviorAddLineItem   = 'addLineItem';
 	const subtotalMismatchBehaviorDropLineItems = 'dropLineItems';
-	
+
 	const buttonSizeSmall  = 'small';
 	const buttonSizeMedium = 'medium';
 	const buttonSizeLarge  = 'large';
-	
+
 	const markSizeSmall  = 'small';
 	const markSizeMedium = 'medium';
 	const markSizeLarge  = 'large';
@@ -28,14 +28,14 @@ class WooCommerce_PayPal_Settings extends PayPal_Settings {
 	public function getSetECShortcutParameters() {
 		return $this->getBaseSetECShortcutParameters();
 	}
-	
+
 	public function getSetECMarkParameters() {
 		return $this->getBaseSetECMarkParameters();
 	}
 	public function getDoECParameters() {
 		return $this->getBaseDoECParameters();
 	}
-	
+
 	protected function _sanitize_zeroSubtotalBehavior( $behavior ) {
 		if ( self::zeroSubtotalBehaviorModifyItems == $behavior ||
 				self::zeroSubtotalBehaviorOmitLineItems == $behavior ||
@@ -45,7 +45,7 @@ class WooCommerce_PayPal_Settings extends PayPal_Settings {
 			return self::zeroSubtotalBehaviorModifyItems;
 		}
 	}
-	
+
 	protected function _sanitize_subtotalMismatchBehavior( $behavior ) {
 		if ( self::subtotalMismatchBehaviorAddLineItem == $behavior ||
 				self::subtotalMismatchBehaviorDropLineItems == $behavior ) {
@@ -54,7 +54,7 @@ class WooCommerce_PayPal_Settings extends PayPal_Settings {
 			return self::subtotalMismatchBehaviorAddLineItem;
 		}
 	}
-	
+
 	protected function _sanitize_buttonSize( $size ) {
 		if ( self::buttonSizeSmall == $size ||
 				self::buttonSizeMedium == $size ||
@@ -74,7 +74,7 @@ class WooCommerce_PayPal_Settings extends PayPal_Settings {
 			return self::markSizeSmall;
 		}
 	}
-	
+
 	public function loadSettings() {
 		$this->enabled                               = unserialize( get_option( 'pp_woo_enabled'                               ) );
 		$this->ppcEnabled                            = unserialize( get_option( 'pp_woo_ppc_enabled'                           ) );
@@ -96,7 +96,7 @@ class WooCommerce_PayPal_Settings extends PayPal_Settings {
 		$this->sbAccountIsEnabledForBillingAddress   = unserialize( get_option( 'pp_woo_sbAccountIsEnabledForBillingAddress'   ) );
 		$this->ipsPrivateKey                         =              get_option( 'pp_woo_ipsPrivateKey'                           );
 	}
-	
+
 	public function saveSettings() {
 		update_option( 'pp_woo_enabled'                              , serialize( $this->enabled                               ) );
 		update_option( 'pp_woo_ppc_enabled'                          , serialize( $this->ppcEnabled                            ) );
@@ -118,12 +118,12 @@ class WooCommerce_PayPal_Settings extends PayPal_Settings {
 		update_option( 'pp_woo_sbAccountIsEnabledForBillingAddress'  , serialize( $this->sbAccountIsEnabledForBillingAddress   ) );
 		update_option( 'pp_woo_ipsPrivateKey'                        ,            $this->ipsPrivateKey                           );
 	}
-	
+
 	public function getECTokenSessionLength() {
 		// Really, we should map this to a merchant-configurable setting, but for now, we'll just set it to the default (3 hours).
 		return 10800;
 	}
-	
+
 	public function __construct() {
 		$this->validParams = array_merge( $this->validParams, array(
 			'enabled',

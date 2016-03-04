@@ -1,19 +1,19 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) { 
-    exit; // Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
 }
 
 abstract class PayPal_Checkout {
 	protected $_cart;
 	protected $_suppressShippingAddress;
-	
+
 	// $_shippingAddress can be a single PayPal_Address object, or an array of PayPal_Address objects
 	// (for the purposes of doing parallel payments).
 	protected $_shippingAddress;
 	protected $_requestBillingAgreement;
 	protected $_enablePayPalCredit;
-	
+
 	public function enablePayPalCredit( $enable = true ) {
 		$this->_enablePayPalCredit = $enable;
 	}
@@ -25,7 +25,7 @@ abstract class PayPal_Checkout {
 			$this->_suppressShippingAddress = false;
 		}
 	}
-	
+
 	public function setShippingAddress( $address ) {
 		if ( is_a( $address, 'PayPal_Address' ) ) {
 			$this->_shippingAddress = $address;
@@ -42,11 +42,11 @@ abstract class PayPal_Checkout {
 					return;
 				}
 			}
-			
+
 			$this->_shippingAddress = $address;
 		}
 	}
-	
+
 	public function requestBillingAgreement( $request = true ) {
 		if ( $request ) {
 			$this->_requestBillingAgreement = true;
@@ -54,31 +54,31 @@ abstract class PayPal_Checkout {
 			$this->_requestBillingAgreement = false;
 		}
 	}
-	
+
 	public function __construct() {
 		$this->_cart = false;
 		$this->_suppressShippingAddress = false;
 		$this->_shippingAddress = false;
 		$this->_requestBillingAgreement = false;
 	}
-	
+
 	public function getSetExpressCheckoutParameters() {
 		// First off, get the cart parameters
 		$params = $this->_cart->setECParams();
-		
+
 		// Now work through the checkout-level variables.
 		if ( $this->_suppressShippingAddress ) {
 			$params['NOSHIPPING'] = 1;
 		}
-		
+
 		if ( $this->_requestBillingAgreement ) {
 			$params['BILLINGTYPE'] = 'MerchantInitiatedBilling';
 		}
-		
+
 		if ( $this->_enablePayPalCredit ) {
 			$params['USERSELECTEDFUNDINGSOURCE'] = 'Finance';
 		}
-		
+
 		if ( false !== $this->_shippingAddress ) {
 			if ( is_array( $this->_shippingAddress ) ) {
 				foreach ( $this->_shippingAddress as $index => $value ) {
@@ -91,10 +91,10 @@ abstract class PayPal_Checkout {
 
 		return $params;
 	}
-	
+
 	public function getDoExpressCheckoutParameters( $token, $payer_id ) {
 		$params = $this->_cart->setECParams();
-		
+
 		if ( false !== $this->_shippingAddress ) {
 			if ( is_array( $this->_shippingAddress ) ) {
 				foreach ( $this->_shippingAddress as $index => $value ) {
@@ -104,13 +104,13 @@ abstract class PayPal_Checkout {
 				$params = array_merge( $params, $this->_shippingAddress->getAddressParams( 'PAYMENTREQUEST_0_SHIPTO' ) );
 			}
 		}
-		
+
 		$params['TOKEN'] = $token;
 		$params['PAYERID'] = $payer_id;
-		
+
 		return $params;
 	}
-	
+
 	protected function isSuccess( $response ) {
 		if ( 'Success' == $response['ACK'] || 'SuccessWithWarning' == $response['ACK'] ) {
 			return true;
@@ -118,7 +118,7 @@ abstract class PayPal_Checkout {
 			return false;
 		}
 	}
-	
+
 	abstract protected function GetReturnUrl();
 	abstract protected function GetCancelUrl();
 

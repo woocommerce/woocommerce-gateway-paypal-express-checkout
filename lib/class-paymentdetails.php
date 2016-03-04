@@ -1,7 +1,7 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) { 
-    exit; // Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
 }
 
 class PayPal_Payment_Details {
@@ -12,9 +12,9 @@ class PayPal_Payment_Details {
 	public $note                    = false;
 
 	public $payments                = false;
-	
+
 	public $shipping_option_details = false;
-	
+
 	public function loadFromDoECResponse( $doECResponse ) {
 		$map = array(
 			'TOKEN'                        => 'token',
@@ -23,9 +23,9 @@ class PayPal_Payment_Details {
 			'SUCCESSPAGEREDIRECTREQUESTED' => 'redirect_requested',
 			'NOTE'                         => 'note'
 		);
-		
+
 		$max_payment_num = -1;
-		
+
 		foreach ( $doECResponse as $index => $value ) {
 			if ( array_key_exists( $index, $map ) ) {
 				$this->$map[ $index ] = $value;
@@ -37,7 +37,7 @@ class PayPal_Payment_Details {
 				}
 			}
 		}
-		
+
 		if ( $max_payment_num >= 0 ) {
 			$this->payments = array();
 			for ( $i = 0; $i <= $max_payment_num; $i++ ) {
@@ -45,18 +45,18 @@ class PayPal_Payment_Details {
 				$this->payments[ $i ]->loadFromDoECResponse( $doECResponse, $i );
 			}
 		}
-		
+
 		$this->shipping_option_details = new PayPal_Payment_Shipping_Option_Details();
 		if ( ! $this->shipping_option_details->loadFromDoECResponse( $doECResponse ) ) {
 			$this->shipping_option_details = false;
 		}
-		
+
 	}
 }
 
 class PayPal_Payment_Payment_FMF_Details {
 	public $filters = false;
-	
+
 	function loadFromDoECResponse( $doECResponse, $bucketNum ) {
 		$max_filter_num = array(
 			'PENDING' => -1,
@@ -64,8 +64,8 @@ class PayPal_Payment_Payment_FMF_Details {
 			'DENY'    => -1,
 			'ACCEPT'  => -1
 		);
-		
-		$found_any = false;	
+
+		$found_any = false;
 		foreach ( $doECResponse as $index => $value ) {
 			if ( preg_match( '/^L_PAYMENTINFO_' . $bucketNum . '_FMF(PENDING|REPORT|DENY|ACCEPT)(ID|NAME)(\d+)$/', $index, $matches ) ) {
 				$found_any = true;
@@ -74,12 +74,12 @@ class PayPal_Payment_Payment_FMF_Details {
 				}
 			}
 		}
-		
+
 		// If we didn't find anything in the initial scan, bail out now.
 		if ( ! $found_any ) {
 			return false;
 		}
-		
+
 		$this->filters = array();
 		foreach ( $max_filter_num as $index => $value ) {
 			for ( $i = 0; $i <= $value; $i++ ) {
@@ -89,7 +89,7 @@ class PayPal_Payment_Payment_FMF_Details {
 				}
 			}
 		}
-		
+
 		return true;
 	}
 }
@@ -98,12 +98,12 @@ class PayPal_Payment_Fraud_Management_Filter {
 	public $name;
 	public $id;
 	public $status;
-	
+
 	const FraudManagementFilterPending = 'PENDING';
 	const FraudManagementFilterReport  = 'REPORT';
 	const FraudManagementFilterDeny    = 'DENY';
 	const FraudManagementFilterAccept  = 'ACCEPT';
-	
+
 	public function __construct( $name, $id, $status ) {
 		$this->name   = $name;
 		$this->id     = $id;
@@ -117,7 +117,7 @@ class PayPal_Payment_Shipping_Option_Details {
 	public $shipping_option_is_default = false;
 	public $shipping_option_amount = false;
 	public $shipping_option_name = false;
-	
+
 	public function loadFromDoECResponse( $doECResponse ) {
 		$map = array(
 			'SHIPPINGCALCULATIONMODE' => 'calculation_mode',
@@ -126,7 +126,7 @@ class PayPal_Payment_Shipping_Option_Details {
 			'SHIPPINGOPTIONAMOUNT'    => 'shipping_option_amount',
 			'SHIPPINGOPTIONNAME'      => 'shipping_option_name'
 		);
-		
+
 		$found_any = false;
 		foreach ( $map as $index => $value ) {
 			if ( array_key_exists( $index, $doECResponse ) ) {
@@ -134,7 +134,7 @@ class PayPal_Payment_Shipping_Option_Details {
 				$found_any = true;
 			}
 		}
-		
+
 		return $found_any;
 	}
 }
@@ -145,16 +145,16 @@ class PayPal_Payment_Payment_Details {
 	public $parent_transaction_id            = false;
 	public $receipt_id                       = false;
 	public $transaction_type                 = false;
-	
+
 	const TransactionTypeCart                = 'cart';
 	const TransactionTypeExpressCheckout     = 'express-checkout';
-	
+
 	public $payment_type                     = false;
-	
+
 	const PaymentTypeNone                    = 'none';
 	const PaymentTypeEcheck                  = 'echeck';
 	const PaymentTypeInstant                 = 'instant';
-	
+
 	public $expected_echeck_clear_date       = false;
 	public $order_time                       = false;
 	public $amount                           = false;
@@ -164,7 +164,7 @@ class PayPal_Payment_Payment_Details {
 	public $tax_amount                       = false;
 	public $exchange_rate                    = false;
 	public $payment_status = false;
-	
+
 	const PaymentStatusNone                  = 'None';
 	const PaymentStatusCanceledReversal      = 'Canceled-Reversal';
 	const PaymentStatusCompleted             = 'Completed';
@@ -179,9 +179,9 @@ class PayPal_Payment_Payment_Details {
 	const PaymentStatusProcessed             = 'Processed';
 	const PaymentStatusVoided                = 'Voided';
 	const PaymentStatusCompletedFundsHeld    = 'Completed-Funds-Held';
-	
+
 	public $pending_reason                   = false;
-	
+
 	const PendingReasonNone                  = 'none';
 	const PendingReasonAddress               = 'address';
 	const PendingReasonAuthorization         = 'authorization';
@@ -194,37 +194,37 @@ class PayPal_Payment_Payment_Details {
 	const PendingReasonUnilateral            = 'unilateral';
 	const PendingReasonVerify                = 'verify';
 	const PendingReasonOther                 = 'other';
-	
+
 	public $reason_code                      = false;
-	
+
 	const ReasonCodeNone                     = 'none';
 	const ReasonCodeChargeback               = 'chargeback';
 	const ReasonCodeGuarantee                = 'guarantee';
 	const ReasonCodeBuyerComplaint           = 'buyer-complaint';
 	const ReasonCodeRefund                   = 'refund';
 	const ReasonCodeOther                    = 'other';
-	
+
 	public $hold_decision = false;
-	
+
 	const HoldDecisionNewSellerPaymentHold   = 'newsellerpaymenthold';
 	const HoldDecisionPaymentHold            = 'paymenthold';
-	
+
 	public $shipping_method                  = false;
-	
+
 	public $protection_eligibility_details   = false;
 	public $receipt_reference_number         = false;
 	public $shipping_amount                  = false;
-	
+
 	public $handling_amount                  = false;
-	
+
 	public $payment_request_id               = false;
 	public $instrument_details               = false;
-	
+
 	public $offer_details                    = false;
 	public $error_details                    = false;
 	public $seller_details                   = false;
 	public $fmf_details                      = false;
-		
+
 	public function loadFromDoECResponse( $doECResponse, $bucketNum ) {
 		$map = array(
 			'TRANSACTIONID'           => 'transaction_id',
@@ -251,7 +251,7 @@ class PayPal_Payment_Payment_Details {
 			'HANDLINGAMT'             => 'handling_amount',
 			'PAYMENTREQUESTID'        => 'payment_request_id'
 		);
-		
+
 		$found_any = false;
 		foreach ( $map as $index => $value ) {
 			$var_name = 'PAYMENTINFO_' . $bucketNum . '_' . $index;
@@ -260,43 +260,43 @@ class PayPal_Payment_Payment_Details {
 				$found_any = true;
 			}
 		}
-		
+
 		$this->protection_eligibility_details = new PayPal_Payment_Payment_Protection_Eligibility_Details();
 		if ( ! $this->protection_eligibility_details->loadFromDoECResponse( $doECResponse, $bucketNum ) ) {
 			$this->protection_eligibility_details = false;
 		}
-		
+
 		$this->instrument_details = new PayPal_Payment_Payment_Instrument_Details();
 		if ( ! $this->instrument_details->loadFromDoECResponse( $doECResponse, $bucketNum ) ) {
 			$this->instrument_details = false;
 		}
-		
+
 		$this->offer_details = new PayPal_Payment_Payment_Offer_Details();
 		if ( ! $this->offer_details->loadFromDoECResponse( $doECResponse, $bucketNum ) ) {
 			$this->offer_details = false;
 		}
-		
+
 		$this->error_details = new PayPal_Payment_Payment_Error_Details();
 		if ( ! $this->error_details->loadFromDoECResponse( $doECResponse, $bucketNum ) ) {
 			$this->error_details = false;
 		}
-		
+
 		$this->seller_details = new PayPal_Payment_Payment_Seller_Details();
 		if ( ! $this->seller_details->loadFromDoECResponse( $doECResponse, $bucketNum ) ) {
 			$this->seller_details = false;
 		}
-		
+
 		$this->fmf_details = new PayPal_Payment_Payment_FMF_Details();
 		if ( ! $this->fmf_details->loadFromDoECResponse( $doECResponse, $bucketNum ) ) {
 			$this->fmf_details = false;
 		}
 	}
-	
+
 }
 
 class PayPal_Payment_Payment_Protection_Eligibility_Details {
 	public $protection_eligibility                             = false;
-	
+
 	const ProtectionEligibilityEligible                        = 'Eligible';
 	const ProtectionEligibilityPartiallyEligible               = 'PartiallyEligible';
 	const ProtectionEligibilityIneligible                      = 'Ineligible';
@@ -306,7 +306,7 @@ class PayPal_Payment_Payment_Protection_Eligibility_Details {
 	const ProtectionEligibilityTypeItemNotReceivedEligible     = 'ItemNotReceivedEligible';
 	const ProtectionEligibilityTypeUnauthorizedPaymentEligible = 'UnauthorizedPaymentEligible';
 	const ProtectionEligibilityTypeIneligible                  = 'Ineligible';
-	
+
 	public function isItemNotReceivedEligible() {
 		$types = explode( ',', $this->protection_eligibility_type );
 		foreach ( $types as $value ) {
@@ -316,7 +316,7 @@ class PayPal_Payment_Payment_Protection_Eligibility_Details {
 		}
 		return false;
 	}
-	
+
 	public function isUnauthorizedPaymentEligible() {
 		$types = explode( ',', $this->protection_eligibility_type );
 		foreach ( $types as $value ) {
@@ -326,15 +326,15 @@ class PayPal_Payment_Payment_Protection_Eligibility_Details {
 		}
 		return false;
 	}
-	
+
 	public function loadFromDoECResponse( $doECResponse, $bucketNum ) {
 		$map = array(
 			'PROTECTIONELIGIBILITY'     => 'protection_eligibility',
 			'PROTECTIONELIGIBILITYTYPE' => 'protection_eligibility_type'
 		);
-		
+
 		$found_any = false;
-		
+
 		foreach ( $map as $index => $value ) {
 			$var_name = 'PAYMENTINFO_' . $bucketNum . '_' . $index;
 			if ( array_key_exists( $var_name, $doECResponse ) ) {
@@ -342,19 +342,19 @@ class PayPal_Payment_Payment_Protection_Eligibility_Details {
 				$found_any = true;
 			}
 		}
-		
+
 		return $found_any;
 	}
 }
 
 class PayPal_Payment_Payment_Instrument_Details {
 	public $instrument_category          = false;
-	
+
 	const InstrumentCategoryPayPalCredit = '1';
 	const InstrumentCategoryPrivateCard  = '2';
-	
+
 	public $instrument_id                = false;
-	
+
 	// Returns true to indicate that the getECResponse array contained variables that were pertinent to this object.
 	// If not, it returns false to indicate that the caller can destroy this object.
 	public function loadFromDoECResponse( $doECResponse, $bucketNum ) {
@@ -363,7 +363,7 @@ class PayPal_Payment_Payment_Instrument_Details {
 			'INSTRUMENTID'       => 'instrument_id'
 		);
 		$found_any = false;
-		
+
 		foreach ( $map as $index => $value ) {
 			$var_name = 'PAYMENTINFO_' . $bucketNum . '_' . $index;
 			if ( array_key_exists( $var_name, $doECResponse ) ) {
@@ -371,7 +371,7 @@ class PayPal_Payment_Payment_Instrument_Details {
 				$found_any = true;
 			}
 		}
-		
+
 		return $found_any;
 	}
 }
@@ -379,7 +379,7 @@ class PayPal_Payment_Payment_Instrument_Details {
 class PayPal_Payment_Payment_Offer_Details {
 	public $offer_code        = false;
 	public $offer_tracking_id = false;
-	
+
 	public function loadFromDoECResponse( $doECResponse, $bucketNum ) {
 		$map = array(
 			'OFFERCODE'       => 'offer_code',
@@ -394,7 +394,7 @@ class PayPal_Payment_Payment_Error_Details {
 	public $error_code    = false;
 	public $severity_code = false;
 	public $ack           = false;
-	
+
 	public function loadFromDoECResponse( $doECResponse, $bucketNum ) {
 		$map = array(
 			'SHORTMESSAGE' => 'short_message',
@@ -403,7 +403,7 @@ class PayPal_Payment_Payment_Error_Details {
 			'SEVERITYCODE' => 'severity_code',
 			'ACK'          => 'ack'
 		);
-		
+
 		$found_any = false;
 		foreach ( $map as $index => $value ) {
 			$var_name = 'PAYMENTINFO_' . $bucketNum . '_' . $index;
@@ -412,7 +412,7 @@ class PayPal_Payment_Payment_Error_Details {
 				$found_any = true;
 			}
 		}
-		
+
 		return $found_any;
 	}
 }
@@ -423,7 +423,7 @@ class PayPal_Payment_Payment_Seller_Details {
 	public $seller_id                  = false;
 	public $user_name                  = false;
 	public $registration_date          = false;
-	
+
 	public function loadFromDoECResponse( $doECResponse, $bucketNum ) {
 		$map = array(
 			'SELLERPAYPALACCOUNTID'   => 'paypal_account_id',
@@ -432,7 +432,7 @@ class PayPal_Payment_Payment_Seller_Details {
 			'SELLERUSERNAME'          => 'user_name',
 			'SELLERREGISTRATIONDATE'  => 'registration_date'
 		);
-		
+
 		$found_any = false;
 		foreach ( $map as $index => $value ) {
 			$var_name = 'PAYMENTINFO_' . $bucketNum . '_' . $index;
@@ -441,7 +441,7 @@ class PayPal_Payment_Payment_Seller_Details {
 				$found_any = true;
 			}
 		}
-		
+
 		return $found_any;
 	}
 }
