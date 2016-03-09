@@ -1,6 +1,6 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) { 
+if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly
 }
 
@@ -86,7 +86,7 @@ if ( $sb_cert ) {
 	<tr class="woo_pp_live">
 		<th>
 			<?php _e( 'Easy Setup', 'woo_pp' ); ?>
-			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_easy_setup_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woo_pp' ); ?>"></a>			
+			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_easy_setup_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woo_pp' ); ?>"></a>
 		</th>
 		<td>
 			<div id="woo_pp_easy_setup_help" style="display: none;">
@@ -216,7 +216,7 @@ if ( $sb_cert ) {
 	<tr class="woo_pp_sb">
 		<th>
 			<?php _e( 'Easy Setup', 'woo_pp' ); ?>
-			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_easy_setup_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woo_pp' ); ?>"></a>			
+			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_easy_setup_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woo_pp' ); ?>"></a>
 		</th>
 		<td>
 			<a href="<?php echo $ips_url; ?>&mode=signature&env=sandbox" style="font-size: 120%;"><?php _e( 'Click Here to Set Up Your PayPal Account', 'woo_pp' ); ?></a><br>
@@ -346,7 +346,8 @@ if ( $sb_cert ) {
 				<p>
 					<h2><?php _e( 'Enable In-Context Checkout', 'woo_pp' ); ?></h2>
 					<?php _e( '<p>PayPal offers a new in-context checkout experience, which allows you to show the PayPal checkout in a minibrowser on top of your checkout.  This experience can help to improve conversion on your store by reassuring buyers that they have not left your store.</p><p>More information on in-context checkout is available from <a href="https://developer.paypal.com/docs/classic/express-checkout/in-context/">the PayPal Developer Portal</a>.</p><p>If you want to use the new in-context checkout, enable this setting.</p>', 'woo_pp' ); ?>
-					<img src="<?php echo plugins_url( 'img/in-context-composite.png', __FILE__ ); ?>" width="378" height"299">
+
+					<img src="<?php echo esc_url( wc_gateway_ppec()->plugin_url . 'assets/img/in-context-composite.png' ); ?>" width="378" height"299">
 				</p>
 			</div>
 			<fieldset>
@@ -371,9 +372,9 @@ if ( $sb_cert ) {
 			<fieldset>
 				<legend class="screen-reader-text"><span><?php _e( 'Button size', 'woo_pp' ); ?></span></legend>
 				<select name="woo_pp_button_size">
-					<option value="<?php echo WooCommerce_PayPal_Settings::buttonSizeSmall; ?>"<?php selected( $button_size, WooCommerce_PayPal_Settings::buttonSizeSmall ); ?>><?php _e( 'Small', 'woo_pp' ); ?></option>
-					<option value="<?php echo WooCommerce_PayPal_Settings::buttonSizeMedium; ?>"<?php selected( $button_size, WooCommerce_PayPal_Settings::buttonSizeMedium ); ?>><?php _e( 'Medium', 'woo_pp' ); ?></option>
-					<option value="<?php echo WooCommerce_PayPal_Settings::buttonSizeLarge; ?>"<?php selected( $button_size, WooCommerce_PayPal_Settings::buttonSizeLarge ); ?>><?php _e( 'Large', 'woo_pp' ); ?></option>
+					<option value="<?php echo WC_Gateway_PPEC_Settings::buttonSizeSmall; ?>"<?php selected( $button_size, WC_Gateway_PPEC_Settings::buttonSizeSmall ); ?>><?php _e( 'Small', 'woo_pp' ); ?></option>
+					<option value="<?php echo WC_Gateway_PPEC_Settings::buttonSizeMedium; ?>"<?php selected( $button_size, WC_Gateway_PPEC_Settings::buttonSizeMedium ); ?>><?php _e( 'Medium', 'woo_pp' ); ?></option>
+					<option value="<?php echo WC_Gateway_PPEC_Settings::buttonSizeLarge; ?>"<?php selected( $button_size, WC_Gateway_PPEC_Settings::buttonSizeLarge ); ?>><?php _e( 'Large', 'woo_pp' ); ?></option>
 				</select>
 			</fieldset>
 		</td>
@@ -393,9 +394,9 @@ if ( $sb_cert ) {
 			<fieldset>
 				<legend class="screen-reader-text"><span><?php _e( 'Mark size', 'woo_pp' ); ?></span></legend>
 				<select name="woo_pp_mark_size">
-					<option value="<?php echo WooCommerce_PayPal_Settings::markSizeSmall; ?>"<?php selected( $mark_size, WooCommerce_PayPal_Settings::markSizeSmall ); ?>><?php _e( 'Small', 'woo_pp' ); ?></option>
-					<option value="<?php echo WooCommerce_PayPal_Settings::markSizeMedium; ?>"<?php selected( $mark_size, WooCommerce_PayPal_Settings::markSizeMedium ); ?>><?php _e( 'Medium', 'woo_pp' ); ?></option>
-					<option value="<?php echo WooCommerce_PayPal_Settings::markSizeLarge; ?>"<?php selected( $mark_size, WooCommerce_PayPal_Settings::markSizeLarge ); ?>><?php _e( 'Large', 'woo_pp' ); ?></option>
+					<option value="<?php echo WC_Gateway_PPEC_Settings::markSizeSmall; ?>"<?php selected( $mark_size, WC_Gateway_PPEC_Settings::markSizeSmall ); ?>><?php _e( 'Small', 'woo_pp' ); ?></option>
+					<option value="<?php echo WC_Gateway_PPEC_Settings::markSizeMedium; ?>"<?php selected( $mark_size, WC_Gateway_PPEC_Settings::markSizeMedium ); ?>><?php _e( 'Medium', 'woo_pp' ); ?></option>
+					<option value="<?php echo WC_Gateway_PPEC_Settings::markSizeLarge; ?>"<?php selected( $mark_size, WC_Gateway_PPEC_Settings::markSizeLarge ); ?>><?php _e( 'Large', 'woo_pp' ); ?></option>
 				</select>
 			</fieldset>
 	</tr>
@@ -517,9 +518,9 @@ if ( $live_account_is_enabled_for_billing_address || $sb_account_is_enabled_for_
 			<fieldset>
 				<legend class="screen-reader-text"><span><?php _e( 'Zero subtotal behavior', 'woo_pp' ); ?></span></legend>
 				<select name="woo_pp_zero_subtotal_behavior" id="woo_pp_zero_subtotal_behavior">
-					<option value="<?php echo WooCommerce_PayPal_Settings::zeroSubtotalBehaviorModifyItems; ?>"<?php selected( $zero_subtotal_behavior, WooCommerce_PayPal_Settings::zeroSubtotalBehaviorModifyItems ); ?>><?php _e( 'Modify line item prices and add a shipping discount', 'woo_pp' ); ?></option>
-					<option value="<?php echo WooCommerce_PayPal_Settings::zeroSubtotalBehaviorOmitLineItems; ?>"<?php selected( $zero_subtotal_behavior, WooCommerce_PayPal_Settings::zeroSubtotalBehaviorOmitLineItems ); ?>><?php _e( 'Don\'t send line items to PayPal', 'woo_pp' ); ?></option>
-					<option value="<?php echo WooCommerce_PayPal_Settings::zeroSubtotalBehaviorPassCouponsAsShippingDiscount; ?>"<?php selected( $zero_subtotal_behavior, WooCommerce_PayPal_Settings::zeroSubtotalBehaviorPassCouponsAsShippingDiscount ); ?>><?php _e( 'Send the coupons to PayPal as a shipping discount', 'woo_pp' ); ?></option>
+					<option value="<?php echo WC_Gateway_PPEC_Settings::zeroSubtotalBehaviorModifyItems; ?>"<?php selected( $zero_subtotal_behavior, WC_Gateway_PPEC_Settings::zeroSubtotalBehaviorModifyItems ); ?>><?php _e( 'Modify line item prices and add a shipping discount', 'woo_pp' ); ?></option>
+					<option value="<?php echo WC_Gateway_PPEC_Settings::zeroSubtotalBehaviorOmitLineItems; ?>"<?php selected( $zero_subtotal_behavior, WC_Gateway_PPEC_Settings::zeroSubtotalBehaviorOmitLineItems ); ?>><?php _e( 'Don\'t send line items to PayPal', 'woo_pp' ); ?></option>
+					<option value="<?php echo WC_Gateway_PPEC_Settings::zeroSubtotalBehaviorPassCouponsAsShippingDiscount; ?>"<?php selected( $zero_subtotal_behavior, WC_Gateway_PPEC_Settings::zeroSubtotalBehaviorPassCouponsAsShippingDiscount ); ?>><?php _e( 'Send the coupons to PayPal as a shipping discount', 'woo_pp' ); ?></option>
 				</select>
 			</fieldset>
 		</td>
@@ -539,12 +540,12 @@ if ( $live_account_is_enabled_for_billing_address || $sb_account_is_enabled_for_
 			<fieldset>
 				<legend class="screen-reader-text"><span><?php _e( 'Subtotal mismatch behavior', 'woo_pp' ); ?></span></legend>
 				<select name="woo_pp_subtotal_mismatch_behavior" id="woo_pp_subtotal_mismatch_behavior">
-					<option value="<?php echo WooCommerce_PayPal_Settings::subtotalMismatchBehaviorAddLineItem; ?>"<?php selected( $subtotal_mismatch_behavior, WooCommerce_PayPal_Settings::subtotalMismatchBehaviorAddLineItem ); ?>><?php _e( 'Add another line item', 'woo_pp' ); ?></option>
-					<option value="<?php echo WooCommerce_PayPal_Settings::subtotalMismatchBehaviorDropLineItems; ?>"<?php selected( $subtotal_mismatch_behavior, WooCommerce_PayPal_Settings::subtotalMismatchBehaviorDropLineItems ); ?>><?php _e( 'Don\'t send line items to PayPal', 'woo_pp' ); ?>'</option>
+					<option value="<?php echo WC_Gateway_PPEC_Settings::subtotalMismatchBehaviorAddLineItem; ?>"<?php selected( $subtotal_mismatch_behavior, WC_Gateway_PPEC_Settings::subtotalMismatchBehaviorAddLineItem ); ?>><?php _e( 'Add another line item', 'woo_pp' ); ?></option>
+					<option value="<?php echo WC_Gateway_PPEC_Settings::subtotalMismatchBehaviorDropLineItems; ?>"<?php selected( $subtotal_mismatch_behavior, WC_Gateway_PPEC_Settings::subtotalMismatchBehaviorDropLineItems ); ?>><?php _e( 'Don\'t send line items to PayPal', 'woo_pp' ); ?>'</option>
 				</select>
 			</fieldset>
 		</td>
 	</tr>
 </table>
 
-<script type="text/javascript" src="<?php echo plugins_url( 'js/settings.js', __FILE__ ); ?>"></script>
+<script type="text/javascript" src="<?php echo esc_url( wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-admin-settings.js' ); ?>"></script>

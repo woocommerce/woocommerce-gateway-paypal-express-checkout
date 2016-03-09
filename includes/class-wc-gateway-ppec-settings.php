@@ -8,7 +8,7 @@ require_once( 'lib/class-settings.php' );
 require_once( 'lib/class-signature.php' );
 require_once( 'lib/class-certificate.php' );
 
-class WooCommerce_PayPal_Settings extends PayPal_Settings {
+class WC_Gateway_PPEC_Settings extends PayPal_Settings {
 
 	const zeroSubtotalBehaviorModifyItems                   = 'modifyItems';
 	const zeroSubtotalBehaviorOmitLineItems                 = 'omitLineItems';
@@ -24,6 +24,27 @@ class WooCommerce_PayPal_Settings extends PayPal_Settings {
 	const markSizeSmall  = 'small';
 	const markSizeMedium = 'medium';
 	const markSizeLarge  = 'large';
+
+	/**
+	 * Flag to indicate setting has been loaded from DB.
+	 *
+	 * @var bool
+	 */
+	private $_is_setting_loaded = false;
+
+	public function __construct() {
+		$this->validParams = array_merge( $this->validParams, array(
+			'enabled',
+			'ppcEnabled',
+			'buttonSize',
+			'markSize',
+			'zeroSubtotalBehavior',
+			'subtotalMismatchBehavior',
+			'liveAccountIsEnabledForBillingAddress',
+			'sbAccountIsEnabledForBillingAddress',
+			'ipsPrivateKey'
+		) );
+	}
 
 	public function getSetECShortcutParameters() {
 		return $this->getBaseSetECShortcutParameters();
@@ -75,7 +96,18 @@ class WooCommerce_PayPal_Settings extends PayPal_Settings {
 		}
 	}
 
-	public function loadSettings() {
+	/**
+	 * Load settings from DB.
+	 *
+	 * @param bool $force_reload Force reload, ignore
+	 *
+	 * @return WC_Gateway_PPEC_Settings Instance of WC_Gateway_PPEC_Settings
+	 */
+	public function loadSettings( $force_reload = false ) {
+		if ( $this->_is_setting_loaded && ! $force_reload ) {
+			return $this;
+		}
+
 		$this->enabled                               = unserialize( get_option( 'pp_woo_enabled'                               ) );
 		$this->ppcEnabled                            = unserialize( get_option( 'pp_woo_ppc_enabled'                           ) );
 		$this->buttonSize                            =              get_option( 'pp_woo_button_size'                             );
@@ -95,6 +127,10 @@ class WooCommerce_PayPal_Settings extends PayPal_Settings {
 		$this->liveAccountIsEnabledForBillingAddress = unserialize( get_option( 'pp_woo_liveAccountIsEnabledForBillingAddress' ) );
 		$this->sbAccountIsEnabledForBillingAddress   = unserialize( get_option( 'pp_woo_sbAccountIsEnabledForBillingAddress'   ) );
 		$this->ipsPrivateKey                         =              get_option( 'pp_woo_ipsPrivateKey'                           );
+
+		$this->_is_setting_loaded = true;
+
+		return $this;
 	}
 
 	public function saveSettings() {
@@ -124,17 +160,25 @@ class WooCommerce_PayPal_Settings extends PayPal_Settings {
 		return 10800;
 	}
 
-	public function __construct() {
-		$this->validParams = array_merge( $this->validParams, array(
-			'enabled',
-			'ppcEnabled',
-			'buttonSize',
-			'markSize',
-			'zeroSubtotalBehavior',
-			'subtotalMismatchBehavior',
-			'liveAccountIsEnabledForBillingAddress',
-			'sbAccountIsEnabledForBillingAddress',
-			'ipsPrivateKey'
-		) );
+	/**
+	 * Whether currency has decimal restriction for PPCE to functions?
+	 *
+	 * @return bool True if it has restriction otherwise false
+	 */
+	public function currency_has_decimal_restriction() {
+		// Because PayPal will not accept HUF, TWD, or JPY with any decimal places,
+		// we'll have to make sure that Woo uses 0 decimal places if the merchant
+		// is using any of these three currencies.
+		$currency = get_woocommerce_currency();
+		$decimals = absint( get_option( 'woocommerce_price_num_decimals', 2 ) );
+		$settings = $this->loadSettings();
+
+		return (
+			$settings->enabled
+			&&
+			in_array( $currency, array( 'HUF', 'TWD', 'JPY' ) )
+			&&
+			0 !== $decimals
+		);
 	}
 }

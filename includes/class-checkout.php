@@ -4,15 +4,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-require_once( 'lib/class-checkout.php'        );
-require_once( 'class-cart.php'                );
-require_once( 'lib/class-api.php'             );
-require_once( 'class-settings.php'            );
-require_once( 'class-session.php'             );
-require_once( 'lib/class-checkoutdetails.php' );
-require_once( 'lib/class-exception.php'       );
-require_once( 'lib/class-paymentdetails.php'  );
-require_once( 'lib/class-address.php'         );
+$includes_path = wc_gateway_ppec()->includes_path;
+
+require_once( $includes_path . 'lib/class-checkout.php'        );
+require_once( $includes_path . 'class-cart.php'                );
+require_once( $includes_path . 'lib/class-api.php'             );
+require_once( $includes_path . 'class-wc-gateway-ppec-settings.php'            );
+require_once( $includes_path . 'class-session.php'             );
+require_once( $includes_path . 'lib/class-checkoutdetails.php' );
+require_once( $includes_path . 'lib/class-exception.php'       );
+require_once( $includes_path . 'lib/class-paymentdetails.php'  );
+require_once( $includes_path . 'lib/class-address.php'         );
 
 class WooCommerce_PayPal_Checkout extends PayPal_Checkout {
 
@@ -57,7 +59,7 @@ class WooCommerce_PayPal_Checkout extends PayPal_Checkout {
 
 		$this->_cart->loadCartDetails();
 
-		$settings = new WooCommerce_PayPal_Settings();
+		$settings = new WC_Gateway_PPEC_Settings();
 		$settings->loadSettings();
 
 		$needs_shipping = $woocommerce->cart->needs_shipping();
@@ -109,7 +111,7 @@ class WooCommerce_PayPal_Checkout extends PayPal_Checkout {
 
 		$this->_cart->loadOrderDetails( $order_id );
 
-		$settings = new WooCommerce_PayPal_Settings();
+		$settings = new WC_Gateway_PPEC_Settings();
 		$settings->loadSettings();
 
 		//new wc order > get address from that order > new pp address > assign address from order to new pp address > $this->setShippingAddress(pp address object)
@@ -172,7 +174,7 @@ class WooCommerce_PayPal_Checkout extends PayPal_Checkout {
 	public function getCheckoutDetails( $token = false ) {
 		global $woocommerce;
 
-		$settings = new WooCommerce_PayPal_Settings();
+		$settings = new WC_Gateway_PPEC_Settings();
 		$settings->loadSettings();
 
 		$api = new PayPal_API(
@@ -230,7 +232,7 @@ class WooCommerce_PayPal_Checkout extends PayPal_Checkout {
 
 		$this->_cart->loadOrderDetails( $order_id );
 
-		$settings = new WooCommerce_PayPal_Settings();
+		$settings = new WC_Gateway_PPEC_Settings();
 		$settings->loadSettings();
 
 		$order = new WC_Order($order_id);

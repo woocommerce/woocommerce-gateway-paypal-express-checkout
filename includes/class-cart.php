@@ -4,13 +4,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-require_once( 'lib/class-cart.php' );
+require_once( wc_gateway_ppec()->includes_path . 'lib/class-cart.php' );
 
 class WooCommerce_PayPal_Cart extends PayPal_Cart {
 
-	// Currencies that support 0 decimal places -- "zero decimal place" currencies
+	/**
+	 * Currencies that support 0 decimal places -- "zero decimal place" currencies
+	 *
+	 * @var array
+	 */
 	protected $zdp_currencies = array( 'HUF', 'JPY', 'TWD' );
 
+	/**
+	 * Load cart details.
+	 */
 	public function loadCartDetails() {
 		global $woocommerce;
 		$this->totalItemAmount = 0;
@@ -53,11 +60,11 @@ class WooCommerce_PayPal_Cart extends PayPal_Cart {
 		// if they do not match, check to see what the merchant would like to do
 		// options are to remove line items or add a line item to adjust for the difference
 		if ( $this->totalItemAmount != $roundedPayPalTotal ) {
-			$settings = new WooCommerce_PayPal_Settings();
+			$settings = new WC_Gateway_PPEC_Settings();
 			$settings->loadSettings();
 			$subtotalBehavior = $settings->subtotalMismatchBehavior;
 
-			if ( WooCommerce_PayPal_Settings::subtotalMismatchBehaviorAddLineItem == $subtotalBehavior ) {
+			if ( WC_Gateway_PPEC_Settings::subtotalMismatchBehaviorAddLineItem == $subtotalBehavior ) {
 				// ...
 				// Add line item to make up different between WooCommerce calculations and PayPal calculations
 				$cartItemAmountDifference = $this->totalItemAmount - $roundedPayPalTotal;
@@ -71,7 +78,7 @@ class WooCommerce_PayPal_Cart extends PayPal_Cart {
 
 				$this->items[] = $modifyLineItem;
 
-			} elseif ( WooCommerce_PayPal_Settings::subtotalMismatchBehaviorDropLineItems == $subtotalBehavior ) {
+			} elseif ( WC_Gateway_PPEC_Settings::subtotalMismatchBehaviorDropLineItems == $subtotalBehavior ) {
 				// ...
 				// Omit line items altogether
 				unset($this->items);
@@ -81,11 +88,10 @@ class WooCommerce_PayPal_Cart extends PayPal_Cart {
 
 		// enter discount shenanigans. item total cannot be 0 so make modifications accordingly
 		if ( $this->totalItemAmount == $discounts ) {
-			$settings = new WooCommerce_PayPal_Settings();
-			$settings->loadSettings();
+			$settings = wc_gateway_ppec()->loadSettings();
 			$behavior = $settings->zeroSubtotalBehavior;
 
-			if ( WooCommerce_PayPal_Settings::zeroSubtotalBehaviorModifyItems == $behavior ) {
+			if ( WC_Gateway_PPEC_Settings::zeroSubtotalBehaviorModifyItems == $behavior ) {
 				// ...
 				// Go ahead and pass the discounts with the cart, but then add in a 0.01 line
 				// item and add a 0.01 shipping discount.
@@ -114,7 +120,7 @@ class WooCommerce_PayPal_Cart extends PayPal_Cart {
 				$this->items[] = $modifyLineItem;
 				$this->shipDiscountAmount = $discount;
 
-			} elseif ( WooCommerce_PayPal_Settings::zeroSubtotalBehaviorOmitLineItems == $behavior ) {
+			} elseif ( WC_Gateway_PPEC_Settings::zeroSubtotalBehaviorOmitLineItems == $behavior ) {
 				// ...
 				// Omit line items altogether
 				unset($this->items);
@@ -197,11 +203,11 @@ class WooCommerce_PayPal_Cart extends PayPal_Cart {
 		// if they do not match, check to see what the merchant would like to do
 		// options are to remove line items or add a line item to adjust for the difference
 		if ( $this->totalItemAmount != $roundedPayPalTotal ) {
-			$settings = new WooCommerce_PayPal_Settings();
+			$settings = new WC_Gateway_PPEC_Settings();
 			$settings->loadSettings();
 			$subtotalBehavior = $settings->subtotalMismatchBehavior;
 
-			if ( WooCommerce_PayPal_Settings::subtotalMismatchBehaviorAddLineItem == $subtotalBehavior ) {
+			if ( WC_Gateway_PPEC_Settings::subtotalMismatchBehaviorAddLineItem == $subtotalBehavior ) {
 				// ...
 				// Add line item to make up different between WooCommerce calculations and PayPal calculations
 				$cartItemAmountDifference = $this->totalItemAmount - $roundedPayPalTotal;
@@ -215,7 +221,7 @@ class WooCommerce_PayPal_Cart extends PayPal_Cart {
 
 				$this->items[] = $modifyLineItem;
 
-			} elseif ( WooCommerce_PayPal_Settings::subtotalMismatchBehaviorDropLineItems == $subtotalBehavior ) {
+			} elseif ( WC_Gateway_PPEC_Settings::subtotalMismatchBehaviorDropLineItems == $subtotalBehavior ) {
 				// ...
 				// Omit line items altogether
 				unset($this->items);
@@ -225,11 +231,11 @@ class WooCommerce_PayPal_Cart extends PayPal_Cart {
 
 		// enter discount shenanigans. item total cannot be 0 so make modifications accordingly
 		if ( $this->totalItemAmount == $discounts ) {
-			$settings = new WooCommerce_PayPal_Settings();
+			$settings = new WC_Gateway_PPEC_Settings();
 			$settings->loadSettings();
 			$behavior = $settings->zeroSubtotalBehavior;
 
-			if ( WooCommerce_PayPal_Settings::zeroSubtotalBehaviorModifyItems == $behavior ) {
+			if ( WC_Gateway_PPEC_Settings::zeroSubtotalBehaviorModifyItems == $behavior ) {
 				// ...
 				// Go ahead and pass the discounts with the cart, but then add in a 0.01 line
 				// item and add a 0.01 shipping discount.
@@ -258,7 +264,7 @@ class WooCommerce_PayPal_Cart extends PayPal_Cart {
 				$this->items[] = $modifyLineItem;
 				$this->shipDiscountAmount = $discount;
 
-			} elseif ( WooCommerce_PayPal_Settings::zeroSubtotalBehaviorOmitLineItems == $behavior ) {
+			} elseif ( WC_Gateway_PPEC_Settings::zeroSubtotalBehaviorOmitLineItems == $behavior ) {
 				// ...
 				// Omit line items altogether
 				unset($this->items);
