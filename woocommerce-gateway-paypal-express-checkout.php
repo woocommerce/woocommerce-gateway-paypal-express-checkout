@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: PayPal Checkout Express
+ * Plugin Name: WooCommerce PayPal Express Checkout Gateway
  */
 /**
  * Copyright (c) 2015 PayPal, Inc.
