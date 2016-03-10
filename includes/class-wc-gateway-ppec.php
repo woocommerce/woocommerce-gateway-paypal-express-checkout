@@ -17,80 +17,104 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 	public static $use_buyer_email = true;
 
 	public function __construct() {
+
 		$this->id                 = 'paypal_express_checkout';
-		$this->has_fields         = false;
-		$this->method_title       = __( 'PayPal Express Checkout', 'woo_pp' );
-		$this->method_description = __( 'Process payments quickly and securely with PayPal.', 'woo_pp' );
+		$this->has_fields         = true;
+		$this->method_title       = __( 'PayPal Express Checkout', 'woocommerce-gateway-ppec' );
+		$this->method_description = __( 'Process payments quickly and securely with PayPal.', 'woocommerce-gateway-ppec' );
 		$this->supports[]         = 'refunds';
 
 		$this->init_form_fields();
 		$this->init_settings();
 
 		$settings = new WC_Gateway_PPEC_Settings();
-		$settings->loadSettings();
+		$settings->load_settings();
 
 		$this->icon    = 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/pp-acceptance-' . $settings->markSize . '.png';
 		$this->enabled = $settings->enabled ? 'yes' : 'no';
 
 		$this->set_payment_title();
+
+		// this auto select
+		$this->setup_none_admin_data();
+
+		// Hooks
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
+		add_filter( 'woocommerce_get_sections_checkout',                        array( $this, 'filter_sections_checkout' ) );
+		add_action( 'wp_enqueue_scripts',                                       array( $this, 'payment_scripts' ) );
+		add_action( 'woocommerce_update_options_general',                       array( $this, 'force_zero_decimal' ) );
+		add_action( 'admin_notices',                                            array( $this, 'admin_notices' ) );
 
+	}
+
+	/**
+	 * Things for the front end.
+	 */
+	public function setup_none_admin_data(){
 		// Do we need to auto-select this payment method?
-		if ( ! is_admin() ) {
-			$session = WC()->session->get( 'paypal' );
-			if ( null != $session && is_a( $session, 'WooCommerce_PayPal_Session_Data' ) && $session->checkout_completed && $session->expiry_time >= time() && $session->payerID ) {
-				if ( $session->checkout_details && is_a( $session->checkout_details, 'PayPal_Checkout_Details' ) && ( is_checkout() || is_ajax() ) && self::$use_buyer_email ) {
-					$this->buyer_email = $session->checkout_details->payer_details->email;
-					$this->title .= ' - ' . esc_html( $this->buyer_email );
-				}
-				if ( ! $session->checkout_details->payer_details->billing_address ) {
-					add_action( 'woocommerce_before_checkout_billing_form', array( $this, 'before_checkout_billing_form' ) );
-				}
+		if ( is_admin() ) {
+			return;
+		}
 
-				$posted = array(
-					'billing_first_name'  => $session->checkout_details->payer_details->first_name,
-					'billing_last_name'   => $session->checkout_details->payer_details->last_name,
-					'billing_email'       => $session->checkout_details->payer_details->email,
-					'billing_phone'       => $session->checkout_details->payer_details->phone_number,
-					'billing_country'     => $session->checkout_details->payer_details->country
-				);
+		$session = WC()->session->get( 'paypal' );
 
-				if ( $session->shipping_required ) {
-					if ( false === strpos( $session->checkout_details->payments[0]->shipping_address->getName(), ' ' ) ) {
-						$posted['shipping_first_name'] = $session->checkout_details->payer_details->first_name;
-						$posted['shipping_last_name']  = $session->checkout_details->payer_details->last_name;
-						$posted['shipping_company']    = $session->checkout_details->payments[0]->shipping_address->getName();
-					} else {
-						$name = explode( ' ', $session->checkout_details->payments[0]->shipping_address->getName() );
-						$posted['shipping_first_name'] = $name[0];
-						array_shift( $name );
-						$posted['shipping_last_name'] = implode( ' ', $name );
-					}
+		if ( null == $session || ! is_a( $session, 'WooCommerce_PayPal_Session_Data' )
+		     || ! $session->checkout_completed || $session->expiry_time < time() || ! $session->payerID ) {
 
-					$posted = array_merge( $posted, array(
-						'shipping_company'          => $session->checkout_details->payer_details->business_name,
-						'shipping_address_1'        => $session->checkout_details->payments[0]->shipping_address->getStreet1(),
-						'shipping_address_2'        => $session->checkout_details->payments[0]->shipping_address->getStreet2(),
-						'shipping_city'             => $session->checkout_details->payments[0]->shipping_address->getCity(),
-						'shipping_state'            => $session->checkout_details->payments[0]->shipping_address->getState(),
-						'shipping_postcode'         => $session->checkout_details->payments[0]->shipping_address->getZip(),
-						'shipping_country'          => $session->checkout_details->payments[0]->shipping_address->getCountry(),
-						'ship_to_different_address' => true
-					) );
+			return;
 
-				} else {
-					$posted['ship_to_different_address'] = false;
-				}
+		}
 
-				$_POST = array_merge( $_POST, $posted );
+		if ( $session->checkout_details && is_a( $session->checkout_details, 'PayPal_Checkout_Details' ) && ( is_checkout() || is_ajax() ) && self::$use_buyer_email ) {
+			$this->buyer_email = $session->checkout_details->payer_details->email;
+			$this->title .= ' - ' . esc_html( $this->buyer_email );
+		}
+		if ( ! $session->checkout_details->payer_details->billing_address ) {
+			add_action( 'woocommerce_before_checkout_billing_form', array( $this, 'before_checkout_billing_form' ) );
+		}
 
-				// Make sure the proper option is selected based on what the buyer picked
-				if ( ! ( $session->using_ppc xor is_a( $this, 'PayPal_Credit_Gateway' ) ) ) {
-					$this->chosen = true;
-				} else {
-					$this->chosen = false;
-				}
+		$posted = array(
+			'billing_first_name'  => $session->checkout_details->payer_details->first_name,
+			'billing_last_name'   => $session->checkout_details->payer_details->last_name,
+			'billing_email'       => $session->checkout_details->payer_details->email,
+			'billing_phone'       => $session->checkout_details->payer_details->phone_number,
+			'billing_country'     => $session->checkout_details->payer_details->country
+		);
+
+		if ( $session->shipping_required ) {
+			if ( false === strpos( $session->checkout_details->payments[0]->shipping_address->getName(), ' ' ) ) {
+				$posted['shipping_first_name'] = $session->checkout_details->payer_details->first_name;
+				$posted['shipping_last_name']  = $session->checkout_details->payer_details->last_name;
+				$posted['shipping_company']    = $session->checkout_details->payments[0]->shipping_address->getName();
+			} else {
+				$name = explode( ' ', $session->checkout_details->payments[0]->shipping_address->getName() );
+				$posted['shipping_first_name'] = $name[0];
+				array_shift( $name );
+				$posted['shipping_last_name'] = implode( ' ', $name );
 			}
+
+			$posted = array_merge( $posted, array(
+				'shipping_company'          => $session->checkout_details->payer_details->business_name,
+				'shipping_address_1'        => $session->checkout_details->payments[0]->shipping_address->getStreet1(),
+				'shipping_address_2'        => $session->checkout_details->payments[0]->shipping_address->getStreet2(),
+				'shipping_city'             => $session->checkout_details->payments[0]->shipping_address->getCity(),
+				'shipping_state'            => $session->checkout_details->payments[0]->shipping_address->getState(),
+				'shipping_postcode'         => $session->checkout_details->payments[0]->shipping_address->getZip(),
+				'shipping_country'          => $session->checkout_details->payments[0]->shipping_address->getCountry(),
+				'ship_to_different_address' => true
+			) );
+
+		} else {
+			$posted['ship_to_different_address'] = false;
+		}
+
+		$_POST = array_merge( $_POST, $posted );
+
+		// Make sure the proper option is selected based on what the buyer picked
+		if ( ! ( $session->using_ppc xor is_a( $this, 'PayPal_Credit_Gateway' ) ) ) {
+			$this->chosen = true;
+		} else {
+			$this->chosen = false;
 		}
 	}
 
@@ -104,8 +128,272 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 		);
 	}
 
+	/**
+	 * Initialise Gateway Settings Form Fields
+	 */
 	public function init_form_fields() {
-		$this->form_fields = array();
+
+		$settings = array(
+			'enabled' => array(
+				'title'       => __( 'Enable/Disable', 'woocommerce-gateway-ppec' ),
+				'label'       => __( 'Enable PayPal Express Checkout', 'woocommerce-gateway-ppec' ),
+				'type'        => 'checkbox',
+				'description' => __( 'If this setting is enabled, buyers will be allowed to pay for their purchases using PayPal Express Checkout', 'woocommerce-gateway-ppec' ),
+				'desc_tip'    => true,
+				'default'     => 'no'
+			),
+			'enable_credit' => array(
+				'title'       => __( 'PayPal Credit', 'woocommerce-gateway-ppec' ),
+				'label'       => __( 'Enable PayPal Credit', 'woocommerce-gateway-ppec' ),
+				'type'        => 'checkbox',
+				'description' => __( 'This controls the title which the user sees during checkout.', 'woocommerce-gateway-ppec' ),
+				'desc_tip'    => true,
+				'default'     => 'no'
+			),
+			'environment' => array(
+				'title'       => __( 'Environment', 'woocommerce-gateway-ppec' ),
+				'type'        => 'select',
+				'class'       => 'wc-enhanced-select',
+				'description' => '',
+				'default'     => 'live',
+				'options'     => array(
+					'live' => __( 'Auto', 'woocommerce-gateway-ppec' ),
+					'sb'   => __( 'Simplified Chinese', 'woocommerce-gateway-ppec' ),
+				), ),
+			'easy_setup' => array(
+				'title'       => __( 'Easy Setup', 'woocommerce-gateway-ppec' ),
+				'type'        => 'text',
+				'class'       => 'wc-ppec-easy-setup',
+			),
+
+			'credentials_type' => array(
+				'title'       => __( 'Environment', 'woocommerce-gateway-ppec' ),
+				'type'        => 'select',
+				'class'       => 'wc-enhanced-select',
+				'description' => '',
+				'default'     => 'live',
+				'options'     => array(
+					'signature' => __( 'API signature', 'woocommerce-gateway-ppec' ),
+					'certificate'   => __( 'API certificate', 'woocommerce-gateway-ppec' ),
+				) ),
+
+			'live_api_username' => array(
+				'title'       => __( 'Live API username', 'woocommerce-gateway-ppec' ),
+				'label'       => __( 'Enable Test Mode', 'woocommerce-gateway-ppec' ),
+				'type'        => 'text',
+				'default'     => ''
+			),
+			'live_api_password' => array(
+				'title'       => __( 'Live API password', 'woocommerce-gateway-ppec' ),
+				'type'        => 'password',
+				'default'     => ''
+			),
+			'live_api_signature' => array(
+				'title'       => __( 'Live Publishable Key', 'woocommerce-gateway-ppec' ),
+				'type'        => 'text',
+				'description' => __( 'Get your API keys from your stripe account.', 'woocommerce-gateway-ppec' ),
+				'default'     => ''
+			),
+			'live_api_subject' => array(
+				'title'       => __( 'Live Subject', 'woocommerce-gateway-ppec' ),
+				'type'        => 'text',
+				'default'     => ''
+			),
+			'live_api_certificate' => array(
+				'title'       => __( 'Live API certificate ', 'woocommerce-gateway-ppec' ),
+				'type'        => 'file_upload',
+				'description' => __( 'Upload a new certificate: .', 'woocommerce-gateway-ppec' ),
+				'default'     => ''
+			),
+			'sb_api_username' => array(
+				'title'       => __( 'Sandbox API username', 'woocommerce-gateway-ppec' ),
+				'label'       => __( 'Enable Test Mode', 'woocommerce-gateway-ppec' ),
+				'type'        => 'text',
+				'default'     => ''
+			),
+			'sb_api_password' => array(
+				'title'       => __( 'Sandbox API password', 'woocommerce-gateway-ppec' ),
+				'type'        => 'password',
+				'default'     => ''
+			),
+			'sb_api_signature' => array(
+				'title'       => __( 'Sandbox Publishable Key', 'woocommerce-gateway-ppec' ),
+				'type'        => 'text',
+				'description' => __( 'Get your API keys from your stripe account.', 'woocommerce-gateway-ppec' ),
+				'default'     => ''
+			),
+			'sb_api_subject' => array(
+				'title'       => __( 'Sandbox Subject', 'woocommerce-gateway-ppec' ),
+				'type'        => 'text',
+				'default'     => ''
+			),
+			'sb_api_certificate' => array(
+				'title'       => __( 'Sandbox API certificate ', 'woocommerce-gateway-ppec' ),
+				'type'        => 'file_upload',
+				'description' => __( 'Upload a new certificate: .', 'woocommerce-gateway-ppec' ),
+				'default'     => ''
+			),
+			'in_context_checkout' => array(
+				'title'       => __( 'Enable in context checkout', 'woocommerce-gateway-ppec' ),
+				'type'        => 'checkbox',
+				'desc_tip'    => true,
+				'default'     => 'no'
+			),
+			'button_size' => array(
+				'title'       => __( 'Environment', 'woocommerce-gateway-ppec' ),
+				'type'        => 'select',
+				'class'       => 'wc-enhanced-select',
+				'description' => '',
+				'default'     => 'medium',
+				'options'     => array(
+					'small' => __( 'Small', 'woocommerce-gateway-ppec' ),
+					'medium'   => __( 'Medium', 'woocommerce-gateway-ppec' ),
+					'large'   => __( 'Large', 'woocommerce-gateway-ppec' ),
+				) ),
+			'mark_size' => array(
+				'title'       => __( 'Mark Size', 'woocommerce-gateway-ppec' ),
+				'type'        => 'select',
+				'class'       => 'wc-enhanced-select',
+				'description' => '',
+				'default'     => 'small',
+				'options'     => array(
+					'small' => __( 'Small', 'woocommerce-gateway-ppec' ),
+					'medium'   => __( 'Medium', 'woocommerce-gateway-ppec' ),
+					'large'   => __( 'Large', 'woocommerce-gateway-ppec' ),
+				) ),
+
+			'logo_image_url' => array(
+				'title'       => __( 'Logo image url', 'woocommerce-gateway-ppec' ),
+				'type'        => 'text',
+				'default'     => ''
+			),
+
+			'payment_type' => array(
+				'title'       => __( 'Mark Size', 'woocommerce-gateway-ppec' ),
+				'type'        => 'select',
+				'class'       => 'wc-enhanced-select',
+				'description' => '',
+				'default'     => 'small',
+				'options'     => array(
+					'sale'          => __( 'Sale', 'woocommerce-gateway-ppec' ),
+					'authorization' => __( 'Authorization', 'woocommerce-gateway-ppec' ),
+					'order'         => __( 'Order', 'woocommerce-gateway-ppec' ),
+				)
+			),
+
+			'Guest_payments' => array(
+				'title'       => __( 'Enable guest payments', 'woocommerce-gateway-ppec' ),
+				'type'        => 'checkbox',
+				'desc_tip'    => true,
+				'default'     => 'no'
+			),
+
+			'instant_payments' => array(
+				'title'       => __( 'Enable instant payments', 'woocommerce-gateway-ppec' ),
+				'type'        => 'checkbox',
+				'desc_tip'    => true,
+				'default'     => 'no'
+			),
+
+			'woo_pp_zero_subtotal_behavior' => array(
+				'title'       => __( 'Sub total behaviour', 'woocommerce-gateway-ppec' ),
+				'type'        => 'select',
+				'class'       => 'wc-enhanced-select',
+				'description' => '',
+				'default'     => 'small',
+				'options'     => array(
+					'modifyItems'                   => __( 'Modify line item prices and add a shipping discount', 'woocommerce-gateway-ppec' ),
+					'omitLineItems'                 => __( "Don't send line items to PayPal", 'woocommerce-gateway-ppec' ),
+					'passCouponsAsShippingDiscount' => __( 'Send the coupons to PayPal as a shipping discount', 'woocommerce-gateway-ppec' ),
+				) ),
+			'woo_pp_subtotal_mismatch_behavior' => array(
+				'title'       => __( 'Mark Size', 'woocommerce-gateway-ppec' ),
+				'type'        => 'select',
+				'class'       => 'wc-enhanced-select',
+				'description' => '',
+				'default'     => 'small',
+				'options'     => array(
+					'addLineItem'   => __( 'Add another line item', 'woocommerce-gateway-ppec' ),
+					'dropLineItems' => __( "Don't send line items to PayPal", 'woocommerce-gateway-ppec' ),
+				) ),
+
+			'stripe_checkout' => array(
+				'title'       => __( 'Stripe Checkout', 'woocommerce-gateway-ppec' ),
+				'label'       => __( 'Enable Stripe Checkout', 'woocommerce-gateway-ppec' ),
+				'type'        => 'checkbox',
+				'description' => __( 'If enabled, this option shows a "pay" button and modal credit card form on the checkout, instead of credit card fields directly on the page.', 'woocommerce-gateway-ppec' ),
+				'default'     => 'no'
+			),
+			'stripe_checkout_locale' => array(
+				'title'       => __( 'Stripe Checkout locale', 'woocommerce-gateway-ppec' ),
+				'type'        => 'select',
+				'class'       => 'wc-enhanced-select',
+				'description' => __( 'Language to display in Stripe Checkout modal. Specify Auto to display Checkout in the user\'s preferred language, if available. English will be used by default.', 'woocommerce-gateway-ppec' ),
+				'default'     => 'en',
+				'desc_tip'    => true,
+				'options'     => array(
+					'auto' => __( 'Auto', 'woocommerce-gateway-ppec' ),
+					'zh'   => __( 'Simplified Chinese', 'woocommerce-gateway-ppec' ),
+					'nl'   => __( 'Dutch', 'woocommerce-gateway-ppec' ),
+					'en'   => __( 'English', 'woocommerce-gateway-ppec' ),
+					'fr'   => __( 'French', 'woocommerce-gateway-ppec' ),
+					'de'   => __( 'German', 'woocommerce-gateway-ppec' ),
+					'it'   => __( 'Italian', 'woocommerce-gateway-ppec' ),
+					'ja'   => __( 'Japanese', 'woocommerce-gateway-ppec' ),
+					'es'   => __( 'Spanish', 'woocommerce-gateway-ppec' ),
+				)
+			),
+
+			'stripe_bitcoin' => array(
+				'title'       => __( 'Bitcoin Currency', 'woocommerce-gateway-ppec' ),
+				'label'       => __( 'Enable Bitcoin Currency', 'woocommerce-gateway-ppec' ),
+				'type'        => 'checkbox',
+				'description' => __( 'If enabled, an option to accept bitcoin will show on the checkout modal.  Note: Stripe Checkout needs to be enabled and store currency must be set to USD.', 'woocommerce-gateway-ppec' ),
+				'default'     => 'no'
+			),
+			'stripe_checkout_image' => array(
+				'title'       => __( 'Stripe Checkout Image', 'woocommerce-gateway-ppec' ),
+				'description' => __( 'Optionally enter the URL to a 128x128px image of your brand or product. e.g. <code>https://yoursite.com/wp-content/uploads/2013/09/yourimage.jpg</code>', 'woocommerce-gateway-ppec' ),
+				'type'        => 'text',
+				'default'     => ''
+			),
+			'saved_cards' => array(
+				'title'       => __( 'Saved Cards', 'woocommerce-gateway-ppec' ),
+				'label'       => __( 'Enable Payment via Saved Cards', 'woocommerce-gateway-ppec' ),
+				'type'        => 'checkbox',
+				'description' => __( 'If enabled, users will be able to pay with a saved card during checkout. Card details are saved on Stripe servers, not on your store.', 'woocommerce-gateway-ppec' ),
+				'default'     => 'no'
+			),
+		);
+
+		/**
+		 * Filter the PayPal Express Checkout settings
+		 * @since 1.9.0
+		 * @param array $settings
+		 */
+		$this->form_fields = apply_filters( 'wc_ppec_settings', $settings );
+
+	}
+
+	/**
+	 * get_icon function.
+	 *
+	 * @access public
+	 * @return string
+	 */
+	public function get_icon() {
+
+		$icon  = '<img src="' . WC_HTTPS::force_https_url( WC()->plugin_url() . '/assets/images/icons/credit-cards/visa.png' ) . '" alt="Visa" />';
+		$icon .= '<img src="' . WC_HTTPS::force_https_url( WC()->plugin_url() . '/assets/images/icons/credit-cards/mastercard.png' ) . '" alt="Mastercard" />';
+		$icon .= '<img src="' . WC_HTTPS::force_https_url( WC()->plugin_url() . '/assets/images/icons/credit-cards/amex.png' ) . '" alt="Amex" />';
+
+		if ( 'USD' === get_woocommerce_currency() ) {
+			$icon .= '<img src="' . WC_HTTPS::force_https_url( WC()->plugin_url() . '/assets/images/icons/credit-cards/discover.png' ) . '" alt="Discover" />';
+			$icon .= '<img src="' . WC_HTTPS::force_https_url( WC()->plugin_url() . '/assets/images/icons/credit-cards/jcb.png' ) . '" alt="JCB" />';
+			$icon .= '<img src="' . WC_HTTPS::force_https_url( plugins_url( '/assets/images/diners.png', dirname( __FILE__ ) ) ) . '" alt="Diners" />';
+		}
+
+		return apply_filters( 'woocommerce_gateway_icon', $icon, $this->id );
 	}
 
 	public function process_payment( $order_id ) {
@@ -149,7 +437,7 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 				// TODO: Handle things like eChecks, giropay, etc.
 				$order = new WC_Order( $order_id );
 				$order->payment_complete( $transaction_id );
-				$order->add_order_note( sprintf( __( 'PayPal transaction completed; transaction ID = %s', 'woo_pp' ), $transaction_id ) );
+				$order->add_order_note( sprintf( __( 'PayPal transaction completed; transaction ID = %s', 'woocommerce-gateway-ppec' ), $transaction_id ) );
 				$order->reduce_order_stock();
 				WC()->cart->empty_cart();
 				unset( WC()->session->paypal );
@@ -160,7 +448,7 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 				);
 			} catch( PayPal_Missing_Session_Exception $e ) {
 				// For some reason, our session data is missing.  Generally, if we've made it this far, this shouldn't happen.
-				wc_add_notice( __( 'Sorry, an error occurred while trying to process your payment.  Please try again.', 'woo_pp' ), 'error' );
+				wc_add_notice( __( 'Sorry, an error occurred while trying to process your payment.  Please try again.', 'woocommerce-gateway-ppec' ), 'error' );
 			} catch( PayPal_API_Exception $e ) {
 				// Did we get a 10486 or 10422 back from PayPal?  If so, this means we need to send the buyer back over to
 				// PayPal to have them pick out a new funding method.
@@ -189,7 +477,7 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 						$final_output .= '<li>' . $error->maptoBuyerFriendlyError() . '</li>';
 					}
 					$final_output .= '</ul>';
-					wc_add_notice( __( 'Payment error:', 'woo_pp' ) . $final_output, 'error' );
+					wc_add_notice( __( 'Payment error:', 'woocommerce-gateway-ppec' ) . $final_output, 'error' );
 					return;
 				}
 			}
@@ -198,7 +486,7 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 
 	private function get_certificate_info( $cert_string ) {
 		if ( ! strlen( $cert_string ) ) {
-			return __( 'No API certificate on file.', 'woo_pp' );
+			return __( 'No API certificate on file.', 'woocommerce-gateway-ppec' );
 		}
 
 		$cert = openssl_x509_read( $cert_string );
@@ -208,22 +496,22 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 				$valid_until = $certinfo['validTo_time_t'];
 				if ( $valid_until < time() ) {
 					// Display in red if the cert is already expired
-					$expires = '<span style="color: red;">' . __( 'expired on %s', 'woo_pp' ) . '</span>';
+					$expires = '<span style="color: red;">' . __( 'expired on %s', 'woocommerce-gateway-ppec' ) . '</span>';
 				} elseif ( $valid_until < ( time() - 2592000 ) ) {
 					// Also display in red if the cert is going to expire in the next 30 days
-					$expires = '<span style="color: red;">' . __( 'expires on %s', 'woo_pp' ) . '</span>';
+					$expires = '<span style="color: red;">' . __( 'expires on %s', 'woocommerce-gateway-ppec' ) . '</span>';
 				} else {
 					// Otherwise just display a normal message
-					$expires = __( 'expires on %s', 'woo_pp' );
+					$expires = __( 'expires on %s', 'woocommerce-gateway-ppec' );
 				}
 
 				$expires = sprintf( $out, date_i18n( get_option( 'date_format' ), $valid_until ) );
-				$out = sprintf( __( 'Certificate belongs to API username %1$s; %2$s', 'woo_pp' ), $certinfo['subject']['CN'], $expires );
+				$out = sprintf( __( 'Certificate belongs to API username %1$s; %2$s', 'woocommerce-gateway-ppec' ), $certinfo['subject']['CN'], $expires );
 			} else {
-				$out = __( 'The certificate on file is not valid.', 'woo_pp' );
+				$out = __( 'The certificate on file is not valid.', 'woocommerce-gateway-ppec' );
 			}
 		} else {
-			$out = __( 'The certificate on file is not valid.', 'woo_pp' );
+			$out = __( 'The certificate on file is not valid.', 'woocommerce-gateway-ppec' );
 		}
 
 		return $out;
@@ -238,13 +526,13 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 
 		$enable_ips = in_array( WC()->countries->get_base_country(), $this->get_ips_enabled_countries() );
 		if ( ! $enable_ips ) {
-			WC_Admin_Settings::add_error( __( 'Sorry, Easy Setup isn\'t available in your country.', 'woo_pp' ) );
+			WC_Admin_Settings::add_error( __( 'Sorry, Easy Setup isn\'t available in your country.', 'woocommerce-gateway-ppec' ) );
 			ob_end_flush();
 			return;
 		}
 
 		if ( ! function_exists( 'openssl_pkey_new' ) ) {
-			WC_Admin_Settings::add_error( __( 'Easy Setup requires OpenSSL, but your copy of PHP doesn\'t support it.  Please contact your website administrator for assistance.', 'woo_pp' ) );
+			WC_Admin_Settings::add_error( __( 'Easy Setup requires OpenSSL, but your copy of PHP doesn\'t support it.  Please contact your website administrator for assistance.', 'woocommerce-gateway-ppec' ) );
 			ob_end_flush();
 			return;
 		}
@@ -255,21 +543,21 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 		if ( ! $settings->ipsPrivateKey ) {
 			// For some reason, the private key isn't there...at all.  Try to generate a new one and bail out.
 			woo_pp_async_generate_private_key();
-			WC_Admin_Settings::add_error( __( 'Sorry, Easy Setup isn\'t available right now.  Please try again in a few minutes.', 'woo_pp' ) );
+			WC_Admin_Settings::add_error( __( 'Sorry, Easy Setup isn\'t available right now.  Please try again in a few minutes.', 'woocommerce-gateway-ppec' ) );
 			ob_end_flush();
 			return;
 		} elseif ( 'not_generated' == $settings->ipsPrivateKey ) {
 			woo_pp_async_generate_private_key();
-			WC_Admin_Settings::add_error( __( 'Sorry, Easy Setup isn\'t available right now.  Please try again in a few minutes.', 'woo_pp' ) );
+			WC_Admin_Settings::add_error( __( 'Sorry, Easy Setup isn\'t available right now.  Please try again in a few minutes.', 'woocommerce-gateway-ppec' ) );
 			ob_end_flush();
 			return;
 		} elseif ( 'generation_started' == $settings->ipsPrivateKey ) {
-			WC_Admin_Settings::add_error( __( 'Sorry, Easy Setup isn\'t available right now.  Please try again in a few minutes.', 'woo_pp' ) );
+			WC_Admin_Settings::add_error( __( 'Sorry, Easy Setup isn\'t available right now.  Please try again in a few minutes.', 'woocommerce-gateway-ppec' ) );
 			ob_end_flush();
 			return;
 		} elseif ( 'generation_failed' == $settings->ipsPrivateKey ) {
 			woo_pp_async_generate_private_key();
-			WC_Admin_Settings::add_error( __( 'Easy Setup encountered an error while trying to initialize.  Easy Setup will try to initialize again; however, if you continue to encounter this error, you may want to ask your website administrator to verify that OpenSSL is working properly on your server.', 'woo_pp' ) );
+			WC_Admin_Settings::add_error( __( 'Easy Setup encountered an error while trying to initialize.  Easy Setup will try to initialize again; however, if you continue to encounter this error, you may want to ask your website administrator to verify that OpenSSL is working properly on your server.', 'woocommerce-gateway-ppec' ) );
 			ob_end_flush();
 			return;
 		}
@@ -277,7 +565,7 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 		$private_key = openssl_pkey_get_private( $settings->ipsPrivateKey );
 		if ( false === $private_key ) {
 			woo_pp_async_generate_private_key();
-			WC_Admin_Settings::add_error( __( 'Sorry, Easy Setup isn\'t available right now.  Please try again in a few minutes.', 'woo_pp' ) );
+			WC_Admin_Settings::add_error( __( 'Sorry, Easy Setup isn\'t available right now.  Please try again in a few minutes.', 'woocommerce-gateway-ppec' ) );
 			ob_end_flush();
 			return;
 		}
@@ -318,7 +606,7 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 		$response = curl_exec( $curl );
 
 		if ( ! $response ) {
-			WC_Admin_Settings::add_error( __( 'Sorry, an error occurred while initializing Easy Setup.  Please try again.', 'woo_pp' ) );
+			WC_Admin_Settings::add_error( __( 'Sorry, an error occurred while initializing Easy Setup.  Please try again.', 'woocommerce-gateway-ppec' ) );
 			ob_end_flush();
 			return;
 		}
@@ -326,19 +614,19 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 		$resp_obj = json_decode( $response );
 
 		if ( false === $resp_obj ) {
-			WC_Admin_Settings::add_error( __( 'Sorry, an error occurred while initializing Easy Setup.  Please try again.', 'woo_pp' ) );
+			WC_Admin_Settings::add_error( __( 'Sorry, an error occurred while initializing Easy Setup.  Please try again.', 'woocommerce-gateway-ppec' ) );
 			ob_end_flush();
 			return;
 		}
 
 		if ( ! property_exists( $resp_obj, 'result' ) || 'success' != $resp_obj->result ) {
-			WC_Admin_Settings::add_error( __( 'Sorry, an error occurred while initializing Easy Setup.  Please try again.', 'woo_pp' ) );
+			WC_Admin_Settings::add_error( __( 'Sorry, an error occurred while initializing Easy Setup.  Please try again.', 'woocommerce-gateway-ppec' ) );
 			ob_end_flush();
 			return;
 		}
 
 		if ( ! property_exists( $resp_obj, 'merchant_id' ) || ! property_exists( $resp_obj, 'redirect_url' ) || ! property_exists( $resp_obj, 'expires_in' ) ) {
-			WC_Admin_Settings::add_error( __( 'Sorry, an error occurred while initializing Easy Setup.  Please try again.', 'woo_pp' ) );
+			WC_Admin_Settings::add_error( __( 'Sorry, an error occurred while initializing Easy Setup.  Please try again.', 'woocommerce-gateway-ppec' ) );
 			ob_end_flush();
 			return;
 		}
@@ -374,7 +662,7 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 
 		// Make sure we have the merchant ID.
 		if ( empty( $_GET['merchantId'] ) || empty( $_GET[ 'merchantIdInPayPal'] ) || empty( $_GET['env'] ) ) {
-			$this->ips_redirect_and_die( __( 'Some required information that was needed to complete Easy Setup is missing.  Please try Easy Setup again.', 'woo_pp' ) );
+			$this->ips_redirect_and_die( __( 'Some required information that was needed to complete Easy Setup is missing.  Please try Easy Setup again.', 'woocommerce-gateway-ppec' ) );
 		}
 
 		$merchant_id = trim( $_GET['merchantId'] );
@@ -383,29 +671,29 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 
 		// Validate the merchant ID.
 		if ( strlen( $merchant_id ) != 32 || ! preg_match( '/^[0-9a-f]+$/', $merchant_id ) ) {
-			$this->ips_redirect_and_die( __( 'Some required information that was needed to complete Easy Setup is invalid.  Please try Easy Setup again.', 'woo_pp' ) );
+			$this->ips_redirect_and_die( __( 'Some required information that was needed to complete Easy Setup is invalid.  Please try Easy Setup again.', 'woocommerce-gateway-ppec' ) );
 		}
 
 		// Validate the payer ID.
 		if ( strlen( $payer_id ) != 13 || ! preg_match( '/^[0-9A-Z]+$/', $payer_id ) ) {
-			$this->ips_redirect_and_die( __( 'Some required information that was needed to complete Easy Setup is invalid.  Please try Easy Setup again.', 'woo_pp' ) );
+			$this->ips_redirect_and_die( __( 'Some required information that was needed to complete Easy Setup is invalid.  Please try Easy Setup again.', 'woocommerce-gateway-ppec' ) );
 		}
 
 		// Validate the environment.
 		if ( 'live' != $env && 'sandbox' != $env ) {
-			$this->ips_redirect_and_die( __( 'Some required information that was needed to complete Easy Setup is invalid.  Please try Easy Setup again.', 'woo_pp' ) );
+			$this->ips_redirect_and_die( __( 'Some required information that was needed to complete Easy Setup is invalid.  Please try Easy Setup again.', 'woocommerce-gateway-ppec' ) );
 		}
 
 		// Grab the private key for the merchant.
 		$raw_key = get_transient( 'ppips_' . $merchant_id );
 		if ( false === $raw_key ) {
-			$this->ips_redirect_and_die( __( 'Your Easy Setup session is invalid or has expired.  Please try Easy Setup again.', 'woo_pp' ) );
+			$this->ips_redirect_and_die( __( 'Your Easy Setup session is invalid or has expired.  Please try Easy Setup again.', 'woocommerce-gateway-ppec' ) );
 		}
 
 		// Validate that we can still read the key.
 		$key = openssl_pkey_get_private( $raw_key );
 		if ( false === $key ) {
-			$this->ips_redirect_and_die( __( 'Sorry, an internal error occurred.  Please try Easy Setup again.', 'woo_pp' ) );
+			$this->ips_redirect_and_die( __( 'Sorry, an internal error occurred.  Please try Easy Setup again.', 'woocommerce-gateway-ppec' ) );
 		}
 
 		// Make a request out to the IPS service to get a merchant ID.
@@ -424,49 +712,49 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 		$response = curl_exec( $curl );
 
 		if ( ! $response ) {
-			$this->ips_redirect_and_die( __( 'Sorry, Easy Setup encountered an error.  Please try again.', 'woo_pp' ) );
+			$this->ips_redirect_and_die( __( 'Sorry, Easy Setup encountered an error.  Please try again.', 'woocommerce-gateway-ppec' ) );
 		}
 
 		$resp_obj = json_decode( $response );
 
 		if ( false === $resp_obj ) {
-			$this->ips_redirect_and_die( __( 'Sorry, Easy Setup encountered an error.  Please try again.', 'woo_pp' ) );
+			$this->ips_redirect_and_die( __( 'Sorry, Easy Setup encountered an error.  Please try again.', 'woocommerce-gateway-ppec' ) );
 		}
 
 		if ( ! property_exists( $resp_obj, 'result' ) || 'success' != $resp_obj->result ) {
-			$this->ips_redirect_and_die( __( 'Sorry, Easy Setup encountered an error.  Please try again.', 'woo_pp' ) );
+			$this->ips_redirect_and_die( __( 'Sorry, Easy Setup encountered an error.  Please try again.', 'woocommerce-gateway-ppec' ) );
 		}
 
 		if ( ! property_exists( $resp_obj, 'credentials' ) || ! property_exists( $resp_obj, 'key' ) ) {
-			$this->ips_redirect_and_die( __( 'Sorry, Easy Setup encountered an error.  Please try again.', 'woo_pp' ) );
+			$this->ips_redirect_and_die( __( 'Sorry, Easy Setup encountered an error.  Please try again.', 'woocommerce-gateway-ppec' ) );
 		}
 
 		if ( ! openssl_open( base64_decode( $resp_obj->credentials ), $credentials_json, base64_decode( $resp_obj->key ), $key ) ) {
-			$this->ips_redirect_and_die( __( 'Sorry, Easy Setup encountered an error.  Please try again.', 'woo_pp' ) );
+			$this->ips_redirect_and_die( __( 'Sorry, Easy Setup encountered an error.  Please try again.', 'woocommerce-gateway-ppec' ) );
 		}
 
 		$credentials = json_decode( $credentials_json );
 		if ( false === $credentials ) {
-			$this->ips_redirect_and_die( __( 'Sorry, Easy Setup encountered an error.  Please try again.', 'woo_pp' ) );
+			$this->ips_redirect_and_die( __( 'Sorry, Easy Setup encountered an error.  Please try again.', 'woocommerce-gateway-ppec' ) );
 		}
 
 		if ( ! property_exists( $credentials, 'style' ) ) {
-			$this->ips_redirect_and_die( __( 'Sorry, Easy Setup encountered an error.  Please try again.', 'woo_pp' ) );
+			$this->ips_redirect_and_die( __( 'Sorry, Easy Setup encountered an error.  Please try again.', 'woocommerce-gateway-ppec' ) );
 		}
 
 		if ( 'certificate' != $credentials->style && 'signature' != $credentials->style ) {
-			$this->ips_redirect_and_die( __( 'Sorry, Easy Setup encountered an error.  Please try again.', 'woo_pp' ) );
+			$this->ips_redirect_and_die( __( 'Sorry, Easy Setup encountered an error.  Please try again.', 'woocommerce-gateway-ppec' ) );
 		}
 
 		if ( 'signature' == $credentials->style ) {
 			if ( ! property_exists( $credentials, 'username' ) || ! property_exists( $credentials, 'password' ) || ! property_exists( $credentials, 'signature' ) ) {
-				$this->ips_redirect_and_die( __( 'Sorry, Easy Setup encountered an error.  Please try again.', 'woo_pp' ) );
+				$this->ips_redirect_and_die( __( 'Sorry, Easy Setup encountered an error.  Please try again.', 'woocommerce-gateway-ppec' ) );
 			}
 
 			$creds = new PayPal_Signature_Credentials( $credentials->username, $credentials->password, $credentials->signature );
 		} elseif ( 'certificate' == $credentials->style ) {
 			if ( ! property_exists( $credentials, 'username' ) || ! property_exists( $credentials, 'password' ) || ! property_exists( $credentials, 'certificate' ) ) {
-				$this->ips_redirect_and_die( __( 'Sorry, Easy Setup encountered an error.  Please try again.', 'woo_pp' ) );
+				$this->ips_redirect_and_die( __( 'Sorry, Easy Setup encountered an error.  Please try again.', 'woocommerce-gateway-ppec' ) );
 			}
 
 			$creds = new PayPal_Certificate_Credentials( $credentials->username, $credentials->password, $credentials->certificate );
@@ -477,12 +765,12 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 		try {
 			$payer_id = $this->test_api_credentials( $creds, $env );
 			if ( ! $payer_id ) {
-				$this->ips_redirect_and_die( __( 'Easy Setup was able to obtain your API credentials, but was unable to verify that they work correctly.  Please make sure your PayPal account is set up properly and try Easy Setup again.', 'woo_pp' ) );
+				$this->ips_redirect_and_die( __( 'Easy Setup was able to obtain your API credentials, but was unable to verify that they work correctly.  Please make sure your PayPal account is set up properly and try Easy Setup again.', 'woocommerce-gateway-ppec' ) );
 			}
 			$creds->payerID = $payer_id;
 		} catch( PayPal_API_Exception $ex ) {
 			$error_msgs[] = array(
-				'warning' => __( 'Easy Setup was able to obtain your API credentials, but an error occurred while trying to verify that they work correctly.  Please try Easy Setup again.', 'woo_pp' )
+				'warning' => __( 'Easy Setup was able to obtain your API credentials, but an error occurred while trying to verify that they work correctly.  Please try Easy Setup again.', 'woocommerce-gateway-ppec' )
 			);
 		}
 
@@ -491,23 +779,23 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 			$is_enabled_for_billing_address = $this->test_for_billing_address_enabled( $creds, $env );
 		} catch( PayPal_API_Exception $ex ) {
 			$error_msgs[] = array(
-				'warning' => __( 'Easy Setup encountered an error while trying to determine which features are enabled on your PayPal account.  You may not see all of the features below that are enabled for your PayPal account.  To try again, click "Save Changes".', 'woo_pp' )
+				'warning' => __( 'Easy Setup encountered an error while trying to determine which features are enabled on your PayPal account.  You may not see all of the features below that are enabled for your PayPal account.  To try again, click "Save Changes".', 'woocommerce-gateway-ppec' )
 			);
 		}
 
 		if ( strlen( trim( $_GET['returnMessage'] ) ) ) {
 			$error_msgs[] = array(
-				'success' => sprintf( __( 'PayPal has the following message for you: %s', 'woo_pp' ), $_GET['returnMessage'] )
+				'success' => sprintf( __( 'PayPal has the following message for you: %s', 'woocommerce-gateway-ppec' ), $_GET['returnMessage'] )
 			);
 		}
 
 		$error_msgs[] = array(
-			'success' => __( 'Success!  Your PayPal account has been set up successfully.', 'woo_pp' )
+			'success' => __( 'Success!  Your PayPal account has been set up successfully.', 'woocommerce-gateway-ppec' )
 		);
 
 		if ( ! $settings->enabled ) {
 			$error_msgs[] = array(
-				'warning' => __( 'PayPal Express Checkout is not enabled.  To allow your buyers to pay with PayPal, make sure "Enable PayPal Express Checkout" is checked.', 'woo_pp' )
+				'warning' => __( 'PayPal Express Checkout is not enabled.  To allow your buyers to pay with PayPal, make sure "Enable PayPal Express Checkout" is checked.', 'woocommerce-gateway-ppec' )
 			);
 		}
 
@@ -578,8 +866,8 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 		$live_cert            = false;
 		$sb_cert              = false;
 
-		$live_cert_info       = __( 'No API certificate on file', 'woo_pp' );
-		$sb_cert_info         = __( 'No API certificate on file', 'woo_pp' );
+		$live_cert_info       = __( 'No API certificate on file', 'woocommerce-gateway-ppec' );
+		$sb_cert_info         = __( 'No API certificate on file', 'woocommerce-gateway-ppec' );
 
 		$environment          = 'sandbox';
 
@@ -775,13 +1063,13 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 				$api_cert = base64_decode( $_POST[ 'woo_pp_' . $environment . '_api_cert_string' ] );
 			}
 		} else {
-			WC_Admin_Settings::add_error( sprintf( __( 'Error: You selected an invalid credential type for your %s API credentials.', 'woo_pp' ), __( $full_env, 'woo_pp' ) ) );
+			WC_Admin_Settings::add_error( sprintf( __( 'Error: You selected an invalid credential type for your %s API credentials.', 'woocommerce-gateway-ppec' ), __( $full_env, 'woocommerce-gateway-ppec' ) ) );
 			return false;
 		}
 
 		if ( ! empty( $api_user ) ) {
 			if ( empty( $api_pass ) ) {
-				WC_Admin_Settings::add_error( sprintf( __( 'Error: You must enter a %s API password.' ), __( $full_env, 'woo_pp' ) ) );
+				WC_Admin_Settings::add_error( sprintf( __( 'Error: You must enter a %s API password.' ), __( $full_env, 'woocommerce-gateway-ppec' ) ) );
 				return false;
 			}
 
@@ -790,12 +1078,12 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 				if ( $settings->$creds_name ) {
 					if ( empty( $settings->$creds_name->apiPassword ) ) {
 						$content =
-						WC_Admin_Settings::add_error( sprintf( __( 'Error: The %s API password you provided is not valid.', 'woo_pp' ), __( $full_env, 'woo_pp' ) ) );
+						WC_Admin_Settings::add_error( sprintf( __( 'Error: The %s API password you provided is not valid.', 'woocommerce-gateway-ppec' ), __( $full_env, 'woocommerce-gateway-ppec' ) ) );
 						return false;
 					}
 					$api_pass = $settings->$creds_name->apiPassword;
 				} else {
-					WC_Admin_Settings::add_error( sprintf( __( 'Error: The %s API password you provided is not valid.', 'woo_pp' ), __( $full_env, 'woo_pp' ) ) );
+					WC_Admin_Settings::add_error( sprintf( __( 'Error: The %s API password you provided is not valid.', 'woocommerce-gateway-ppec' ), __( $full_env, 'woocommerce-gateway-ppec' ) ) );
 					return false;
 				}
 			}
@@ -806,12 +1094,12 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 						// Make sure we have a signature on file.  If we don't, this value is invalid.
 						if ( $settings->$creds_name && is_a( $settings->$creds_name, 'PayPal_Signature_Credentials' ) ) {
 							if ( empty( $settings->$creds_name->apiSignature ) ) {
-								WC_Admin_Settings::add_error( sprintf( __( 'Error: The %s API signature you provided is not valid.', 'woo_pp' ), __( $full_env, 'woo_pp' ) ) );
+								WC_Admin_Settings::add_error( sprintf( __( 'Error: The %s API signature you provided is not valid.', 'woocommerce-gateway-ppec' ), __( $full_env, 'woocommerce-gateway-ppec' ) ) );
 								return false;
 							}
 							$api_sig = $settings->$creds_name->apiSignature;
 						} else {
-							WC_Admin_Settings::add_error( sprintf( __( 'Error: The %s API signature you provided is not valid.', 'woo_pp' ), __( $full_env, 'woo_pp' ) ) );
+							WC_Admin_Settings::add_error( sprintf( __( 'Error: The %s API signature you provided is not valid.', 'woocommerce-gateway-ppec' ), __( $full_env, 'woocommerce-gateway-ppec' ) ) );
 							return false;
 						}
 					}
@@ -821,24 +1109,24 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 					try {
 						$payer_id = $this->test_api_credentials( $api_credentials, $full_env );
 						if ( ! $payer_id ) {
-							WC_Admin_Settings::add_error( sprintf( __( 'Error: The %s credentials you provided are not valid.  Please double-check that you entered them correctly and try again.', 'woo_pp' ), __( $full_env, 'woo_pp' ) ) );
+							WC_Admin_Settings::add_error( sprintf( __( 'Error: The %s credentials you provided are not valid.  Please double-check that you entered them correctly and try again.', 'woocommerce-gateway-ppec' ), __( $full_env, 'woocommerce-gateway-ppec' ) ) );
 							return false;
 						}
 						$api_credentials->payerID = $payer_id;
 					} catch( PayPal_API_Exception $ex ) {
-						$this->display_warning( sprintf( __( 'An error occurred while trying to validate your %s API credentials.  Unable to verify that your API credentials are correct.', 'woo_pp' ), __( $full_env, 'woo_pp' ) ) );
+						$this->display_warning( sprintf( __( 'An error occurred while trying to validate your %s API credentials.  Unable to verify that your API credentials are correct.', 'woocommerce-gateway-ppec' ), __( $full_env, 'woocommerce-gateway-ppec' ) ) );
 					}
 
 					$credentials = $api_credentials;
 				} else {
-					WC_Admin_Settings::add_error( sprintf( __( 'Error: You must provide a %s API signature.', 'woo_pp' ), __( $full_env, 'woo_pp' ) ) );
+					WC_Admin_Settings::add_error( sprintf( __( 'Error: You must provide a %s API signature.', 'woocommerce-gateway-ppec' ), __( $full_env, 'woocommerce-gateway-ppec' ) ) );
 					return false;
 				}
 			} else {
 				if ( ! empty( $api_cert ) ) {
 					$cert = openssl_x509_read( $api_cert );
 					if ( false === $cert ) {
-						WC_Admin_Settings::add_error( sprintf( __( 'Error: The %s API certificate is not valid.', 'woo_pp' ), __( $full_env, 'woo_pp' ) ) );
+						WC_Admin_Settings::add_error( sprintf( __( 'Error: The %s API certificate is not valid.', 'woocommerce-gateway-ppec' ), __( $full_env, 'woocommerce-gateway-ppec' ) ) );
 						self::$process_admin_options_validation_error = true;
 						return false;
 					}
@@ -846,24 +1134,24 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 					$cert_info = openssl_x509_parse( $cert );
 					$valid_until = $cert_info['validTo_time_t'];
 					if ( $valid_until < time() ) {
-						WC_Admin_Settings::add_error( sprintf( __( 'Error: The %s API certificate has expired.', 'woo_pp' ), __( $full_env, 'woo_pp' ) ) );
+						WC_Admin_Settings::add_error( sprintf( __( 'Error: The %s API certificate has expired.', 'woocommerce-gateway-ppec' ), __( $full_env, 'woocommerce-gateway-ppec' ) ) );
 						return false;
 					}
 
 					if ( $cert_info['subject']['CN'] != $api_user ) {
-						WC_Admin_Settings::add_error( __( 'Error: The API username does not match the name in the API certificate.  Make sure that you have the correct API certificate.', 'woo_pp' ) );
+						WC_Admin_Settings::add_error( __( 'Error: The API username does not match the name in the API certificate.  Make sure that you have the correct API certificate.', 'woocommerce-gateway-ppec' ) );
 						return false;
 					}
 				} else {
 					// If we already have a cert on file, don't require one.
 					if ( $settings->$creds_name && is_a( $settings->$creds_name, 'PayPal_Certificate_Credentials' ) ) {
 						if ( ! $settings->$creds_name->apiCertificate ) {
-							WC_Admin_Settings::add_error( sprintf( __( 'Error: You must provide a %s API certificate.', 'woo_pp' ), __( $full_env, 'woo_pp' ) ) );
+							WC_Admin_Settings::add_error( sprintf( __( 'Error: You must provide a %s API certificate.', 'woocommerce-gateway-ppec' ), __( $full_env, 'woocommerce-gateway-ppec' ) ) );
 							return false;
 						}
 						$api_cert = $settings->$creds_name->apiCertificate;
 					} else {
-						WC_Admin_Settings::add_error( sprintf( __( 'Error: You must provide a %s API certificate.', 'woo_pp' ), __( $full_env, 'woo_pp' ) ) );
+						WC_Admin_Settings::add_error( sprintf( __( 'Error: You must provide a %s API certificate.', 'woocommerce-gateway-ppec' ), __( $full_env, 'woocommerce-gateway-ppec' ) ) );
 						return false;
 					}
 				}
@@ -872,12 +1160,12 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 				try {
 					$payer_id = $this->test_api_credentials( $api_credentials, $full_env );
 					if ( ! $payer_id ) {
-						WC_Admin_Settings::add_error( sprintf( __( 'Error: The %s credentials you provided are not valid.  Please double-check that you entered them correctly and try again.', 'woo_pp' ), __( $full_env, 'woo_pp' ) ) );
+						WC_Admin_Settings::add_error( sprintf( __( 'Error: The %s credentials you provided are not valid.  Please double-check that you entered them correctly and try again.', 'woocommerce-gateway-ppec' ), __( $full_env, 'woocommerce-gateway-ppec' ) ) );
 						return false;
 					}
 					$api_credentials->payerID = $payer_id;
 				} catch( PayPal_API_Exception $ex ) {
-					$this->display_warning( sprintf( __( 'An error occurred while trying to validate your %s API credentials.  Unable to verify that your API credentials are correct.', 'woo_pp' ), __( $full_env, 'woo_pp' ) ) );
+					$this->display_warning( sprintf( __( 'An error occurred while trying to validate your %s API credentials.  Unable to verify that your API credentials are correct.', 'woocommerce-gateway-ppec' ), __( $full_env, 'woocommerce-gateway-ppec' ) ) );
 				}
 
 				$credentials = $api_credentials;
@@ -901,30 +1189,37 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 		$environment = $_POST['woo_pp_environment'];
 
 		if ( 'live' != $environment && 'sandbox' != $environment ) {
-			WC_Admin_Settings::add_error( __( 'Error: The environment you selected is not valid.', 'woo_pp' ) );
+			WC_Admin_Settings::add_error( __( 'Error: The environment you selected is not valid.', 'woocommerce-gateway-ppec' ) );
 			return false;
 		}
 
 		if ( ! $this->validate_credentials( 'live', $live_api_credentials ) ) {
-			if ( array_key_exists( 'woo_pp_sb_api_certificate', $_FILES ) && array_key_exists( 'tmp_name', $_FILES['woo_pp_sb_api_certificate'] )
-				&& array_key_exists( 'size', $_FILES['woo_pp_sb_api_certificate'] ) && $_FILES['woo_pp_sb_api_certificate']['size'] ) {
-				$_POST['woo_pp_sb_api_cert_string'] = base64_encode( file_get_contents( $_FILES['woo_pp_sb_api_certificate']['tmp_name'] ) );
-				unlink( $_FILES['woo_pp_sb_api_certificate']['tmp_name'] );
-				unset( $_FILES['woo_pp_sb_api_certificate'] );
-			}
+				if ( array_key_exists( 'woo_pp_sb_api_certificate', $_FILES ) && array_key_exists( 'tmp_name', $_FILES['woo_pp_sb_api_certificate'] )
+					&& array_key_exists( 'size', $_FILES['woo_pp_sb_api_certificate'] ) && $_FILES['woo_pp_sb_api_certificate']['size'] ) {
+					$_POST['woo_pp_sb_api_cert_string'] = base64_encode( file_get_contents( $_FILES['woo_pp_sb_api_certificate']['tmp_name'] ) );
+					unlink( $_FILES['woo_pp_sb_api_certificate']['tmp_name'] );
+					unset( $_FILES['woo_pp_sb_api_certificate'] );
+				}
+
 			self::$process_admin_options_validation_error = true;
-			return false;
 		}
 
 		if ( ! $this->validate_credentials( 'sb', $sb_api_credentials ) ) {
+
 			self::$process_admin_options_validation_error = true;
+
+		}
+
+		if( self::$process_admin_options_validation_error  ){
+
 			return false;
+
 		}
 
 		// Validate the URL.
 		$logo_image_url = trim( $_POST['woo_pp_logo_image_url'] );
 		if ( ! empty( $logo_image_url ) && ! preg_match( '/https?:\/\/[a-zA-Z0-9][a-zA-Z0-9.-]+[a-zA-Z0-9](\/[a-zA-Z0-9.\/?&%#]*)?/', $logo_image_url ) ) {
-			WC_Admin_Settings::add_error( __( 'Error: The logo image URL you provided is not valid.', 'woo_pp' ) );
+			WC_Admin_Settings::add_error( __( 'Error: The logo image URL you provided is not valid.', 'woocommerce-gateway-ppec' ) );
 			self::$process_admin_options_validation_error = true;
 			return false;
 		}
@@ -970,7 +1265,7 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 			try {
 				$live_account_enabled_for_billing_address = $this->test_for_billing_address_enabled( $live_api_credentials, 'live' );
 			} catch( PayPal_API_Exception $ex ) {
-				$this->display_warning( __( 'An error occurred while trying to determine which features are enabled on your live account.  You may not have access to all of the settings allowed by your PayPal account.  Please click "Save Changes" to try again.', 'woo_pp' ) );
+				$this->display_warning( __( 'An error occurred while trying to determine which features are enabled on your live account.  You may not have access to all of the settings allowed by your PayPal account.  Please click "Save Changes" to try again.', 'woocommerce-gateway-ppec' ) );
 			}
 		}
 
@@ -978,14 +1273,14 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 			try {
 				$sb_account_enabled_for_billing_address = $this->test_for_billing_address_enabled( $sb_api_credentials, 'sandbox' );
 			} catch( PayPal_API_Exception $ex ) {
-				$this->display_warning( __( 'An error occurred while trying to determine which features are enabled on your sandbox account.  You may not have access to all of the settings allowed by your PayPal account.  Please click "Save Changes" to try again.', 'woo_pp' ) );
+				$this->display_warning( __( 'An error occurred while trying to determine which features are enabled on your sandbox account.  You may not have access to all of the settings allowed by your PayPal account.  Please click "Save Changes" to try again.', 'woocommerce-gateway-ppec' ) );
 			}
 		}
 
 		// If the plugin is enabled, a valid set of credentials must be present.
 		if ( $enabled ) {
 			if ( ( 'live' == $environment && ! $live_api_credentials ) || ( 'sandbox' == $environment && ! $sb_api_credentials ) ) {
-				WC_Admin_Settings::add_error( __( 'Error: You must supply a valid set of credentials before enabling the plugin.', 'woo_pp' ) );
+				WC_Admin_Settings::add_error( __( 'Error: You must supply a valid set of credentials before enabling the plugin.', 'woocommerce-gateway-ppec' ) );
 				self::$process_admin_options_validation_error = true;
 				return false;
 			}
@@ -1091,7 +1386,7 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 		$order = new WC_Order( $order_id );
 
 		if ( 0 == $amount || null == $amount ) {
-			return new WP_Error( 'paypal_refund_error', __( 'Refund Error: You need to specify a refund amount.', 'woo_pp' ) );
+			return new WP_Error( 'paypal_refund_error', __( 'Refund Error: You need to specify a refund amount.', 'woocommerce-gateway-ppec' ) );
 		}
 
 		// load up refundable_txns from Post Meta
@@ -1115,14 +1410,14 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 				try {
 					$refundTxnID = $refundTransaction->doRefund( $amount, $refundType, $reason, $order->get_order_currency() );
 					$txnData['refundable_txns'][ $key ]['refunded_amount'] += $amount;
-					$order->add_order_note( sprintf( $refundTxnID, __( 'PayPal refund completed; transaction ID = %s', 'woo_pp' ), $refundTxnID ) );
+					$order->add_order_note( sprintf( $refundTxnID, __( 'PayPal refund completed; transaction ID = %s', 'woocommerce-gateway-ppec' ), $refundTxnID ) );
 					update_post_meta( $order_id, '_woo_pp_txnData', $txnData );
 
 					return true;
 
 				} catch( PayPal_API_Exception $e ) {
 					foreach ( $e->errors as $error ) {
-						$final_output .= sprintf( __( 'Error: %1$s - %2$s', 'woo_pp' ), $error->error_code, $error->long_message );
+						$final_output .= sprintf( __( 'Error: %1$s - %2$s', 'woocommerce-gateway-ppec' ), $error->error_code, $error->long_message );
 					}
 
 					return new WP_Error( 'paypal_refund_error', $final_output );
@@ -1141,14 +1436,14 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 				try {
 					$refundTxnID = $refundTransaction->doRefund( $amount, 'Partial', $reason, $order->get_order_currency() );
 					$txnData['refundable_txns'][ $key ]['refunded_amount'] += $amount;
-					$order->add_order_note( sprintf( __( 'PayPal refund completed; transaction ID = %s', 'woo_pp' ), $refundTxnID ) );
+					$order->add_order_note( sprintf( __( 'PayPal refund completed; transaction ID = %s', 'woocommerce-gateway-ppec' ), $refundTxnID ) );
 					update_post_meta( $order_id, '_woo_pp_txnData', $txnData );
 
 					return true;
 
 				} catch( PayPal_API_Exception $e ) {
 					foreach ( $e->errors as $error ) {
-						$final_output .= sprintf( __( 'Error: %1$s - %2$s', 'woo_pp' ), $error->error_code, $error->long_message );
+						$final_output .= sprintf( __( 'Error: %1$s - %2$s', 'woocommerce-gateway-ppec' ), $error->error_code, $error->long_message );
 					}
 
 					return new WP_Error( 'paypal_refund_error', $final_output );
@@ -1165,9 +1460,9 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 
 		if ( $totalRefundableAmount < $amount ) {
 			if ( 0 == $totalRefundableAmount ) {
-				return new WP_Error( 'paypal_refund_error', __( 'Refund Error: All transactions have been fully refunded. There is no amount left to refund', 'woo_pp' ) );
+				return new WP_Error( 'paypal_refund_error', __( 'Refund Error: All transactions have been fully refunded. There is no amount left to refund', 'woocommerce-gateway-ppec' ) );
 			} else {
-				return new WP_Error( 'paypal_refund_error', sprintf( __( 'Refund Error: The requested refund amount is too large. The refund amount must be less than or equal to %s.', 'woo_pp' ), html_entity_decode( get_woocommerce_currency_symbol() ) . $totalRefundableAmount ) );
+				return new WP_Error( 'paypal_refund_error', sprintf( __( 'Refund Error: The requested refund amount is too large. The refund amount must be less than or equal to %s.', 'woocommerce-gateway-ppec' ), html_entity_decode( get_woocommerce_currency_symbol() ) . $totalRefundableAmount ) );
 			}
 		} else {
 			$total_to_refund = $amount;
@@ -1192,13 +1487,13 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 						$refundTxnID = $refundTransaction->doRefund( $amount_to_refund, $refundType, $reason, $order->get_order_currency() );
 						$total_to_refund -= $amount_to_refund;
 						$txnData['refundable_txns'][ $key ]['refunded_amount'] += $amount_to_refund;
-						$order->add_order_note( sprintf( __( 'PayPal refund completed; transaction ID = %s', 'woo_pp' ), $refundTxnID ) );
+						$order->add_order_note( sprintf( __( 'PayPal refund completed; transaction ID = %s', 'woocommerce-gateway-ppec' ), $refundTxnID ) );
 						update_post_meta( $order_id, '_woo_pp_txnData', $txnData );
 
 						return true;
 					} catch( PayPal_API_Exception $e ) {
 						foreach ( $e->errors as $error ) {
-							$final_output .= sprintf( __( 'Error: %1$s - %2$s', 'woo_pp' ), $error->error_code, $error->long_message );
+							$final_output .= sprintf( __( 'Error: %1$s - %2$s', 'woocommerce-gateway-ppec' ), $error->error_code, $error->long_message );
 						}
 
 						return new WP_Error( 'paypal_refund_error', $final_output );
@@ -1209,7 +1504,59 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 	}
 
 	protected function set_payment_title() {
-		$this->title = __( 'PayPal', 'woo_pp' );
+		$this->title = __( 'PayPal', 'woocommerce-gateway-ppec' );
 	}
 
+	/**
+	 * Force zero decimal on specific currencies.
+	 */
+	public function force_zero_decimal() {
+		$settings = wc_gateway_ppec()->settings;
+		if ( $settings->currency_has_decimal_restriction() ) {
+			update_option( 'woocommerce_price_num_decimals', 0 );
+			update_option( 'wc_gateway_ppce_display_decimal_msg', true );
+		}
+	}
+
+	/**
+	 * Prevent PayPal Credit showing up in the admin, because it shares its settings
+	 * with the PayPal Express Checkout class.
+	 *
+	 * @param array $sections List of sections in checkout
+	 *
+	 * @return array Sections in checkout
+	 */
+	public function filter_sections_checkout( $sections ) {
+		unset( $sections['paypal_credit'] );
+		return $sections;
+	}
+
+	/**
+	 * All admin notices
+	 */
+	public function admin_notices(){
+
+		$dependencies_message = get_option( 'wc_gateway_ppce_bootstrap_warning_message', '' );
+		if ( ! empty( $dependencies_message ) ) {
+			?>
+			<div class="error fade">
+				<p>
+					<strong><?php echo esc_html( $dependencies_message ); ?></strong>
+				</p>
+			</div>
+			<?php
+		}
+
+		if ( get_option( 'wc_gateway_ppce_display_decimal_msg', false ) ) {
+			?>
+			<div class="updated fade">
+				<p>
+					<strong><?php _e( 'NOTE: PayPal does not accept decimal places for the currency in which you are transacting.  The "Number of Decimals" option in WooCommerce has automatically been set to 0 for you.', 'woocommerce-gateway-ppec' ); ?></strong>
+				</p>
+			</div>
+			<?php
+			delete_option( 'wc_gateway_ppce_display_decimal_msg' );
+		}
+
+	}
 }

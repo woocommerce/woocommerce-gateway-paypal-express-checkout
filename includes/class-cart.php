@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-require_once( wc_gateway_ppec()->includes_path . 'lib/class-cart.php' );
+require_once( 'lib/class-cart.php' );
 
 class WooCommerce_PayPal_Cart extends PayPal_Cart {
 
