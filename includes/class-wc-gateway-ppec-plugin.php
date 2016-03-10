@@ -153,6 +153,7 @@ class WC_Gateway_PPEC_Plugin {
 
 
 		if ( ! isset( $this->setings ) ) {
+			require_once( $this->includes_path . 'class-wc-gateway-ppec-settings.php' );
 			$settings = new WC_Gateway_PPEC_Settings();
 		} else {
 			$settings = $this->settings;
