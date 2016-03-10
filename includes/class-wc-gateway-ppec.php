@@ -345,7 +345,7 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 		set_transient( 'ppips_' . $resp_obj->merchant_id, $settings->ipsPrivateKey, $resp_obj->expires_in );
 
 		// Redirect the merchant.
-		header( 'Location: ' . $resp_obj->redirect_url );
+		wp_safe_redirect( $resp_obj->redirect_url );
 		exit;
 	}
 
@@ -361,7 +361,7 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 		}
 
 		add_option( 'woo_pp_admin_error', $error_msgs );
-		header( 'Location: ' . $redirect_url );
+		wp_safe_redirect( $redirect_url );
 		exit;
 	}
 
