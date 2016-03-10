@@ -272,7 +272,7 @@ class WC_Gateway_PPEC_Plugin {
 					WC()->cart->empty_cart();
 					unset( WC()->session->paypal );
 
-					header( 'Location: ' . $order->get_checkout_order_received_url() );
+					wp_safe_redirect( $order->get_checkout_order_received_url() );
 					exit;
 				} catch( PayPal_Missing_Session_Exception $e ) {
 					// For some reason, our session data is missing.  Generally, if we've made it this far,
@@ -294,7 +294,7 @@ class WC_Gateway_PPEC_Plugin {
 						$session->leftFrom = 'order';
 						$session->order_id = $order_id;
 						WC()->session->paypal = $session;
-						header( 'Location: ' . $settings->getPayPalRedirectUrl( $session->token, true ) );
+						wp_safe_redirect( $settings->getPayPalRedirectUrl( $session->token, true ) );
 						exit;
 					} else {
 						$final_output = '<ul>';

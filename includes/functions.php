@@ -41,7 +41,7 @@ function woo_pp_start_checkout() {
 
 	try {
 		$redirect_url = $checkout->startCheckoutFromCart();
-		header( 'Location: ' . $redirect_url );
+		wp_safe_redirect( $redirect_url );
 		exit;
 	} catch( PayPal_API_Exception $e ) {
 		$final_output = '';
@@ -70,7 +70,7 @@ function woo_pp_start_checkout() {
 			<?php
 			exit;
 		} else {
-			header( 'Location: ' . $redirect_url );
+			wp_safe_redirect( $redirect_url );
 			exit;
 		}
 
