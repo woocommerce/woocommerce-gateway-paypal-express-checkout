@@ -27,18 +27,17 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Required functions
  */
 if ( ! function_exists( 'woothemes_queue_update' ) ) {
-	require_once( 'includes/lib/woo-includes/woo-functions.php' );
+	require_once( 'woo-includes/woo-functions.php' );
 }
 
 /**
  * Plugin updates
  */
-//woothemes_queue_update( plugin_basename( __FILE__ ), 'b022f53cd049144bfd02586bdc0928cd', '18627' );
-
+woothemes_queue_update( plugin_basename( __FILE__ ), '', '' );
 
 
 /**
- * Main Stripe class which sets the gateway up for us
+ * Main PayPal Express Checkout class which sets the gateway up for us
  */
 class WC_Gateway_PPEC {
 
@@ -68,13 +67,15 @@ class WC_Gateway_PPEC {
 	 * @return array
 	 */
 	public function plugin_action_links( $links ) {
-		$addons = ( class_exists( 'WC_Subscriptions_Order' ) || class_exists( 'WC_Pre_Orders_Order' ) ) ? '_addons' : '';
+
 		$plugin_links = array(
 			'<a href="' . admin_url( 'admin.php?page=wc-settings&tab=checkout&section=paypal_express_checkout_gateway' . $addons ) . '">' . __( 'Settings', 'woocommerce-gateway-ppec' ) . '</a>',
 			'<a href="http://support.woothemes.com/">' . __( 'Support', 'woocommerce-gateway-ppec' ) . '</a>',
-			'<a href="http://docs.woothemes.com/document/stripe/">' . __( 'Docs', 'woocommerce-gateway-ppec' ) . '</a>',
+			'<a href="http://docs.woothemes.com/">' . __( 'Docs', 'woocommerce-gateway-ppec' ) . '</a>',
 		);
+
 		return array_merge( $plugin_links, $links );
+
 	}
 
 	/**
