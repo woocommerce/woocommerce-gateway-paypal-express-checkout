@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-$includes_path = wc_gateway_ppec()->includes_path;
+$includes_path = '';
 
 require_once( $includes_path . 'lib/class-checkout.php'        );
 require_once( $includes_path . 'class-cart.php'                );

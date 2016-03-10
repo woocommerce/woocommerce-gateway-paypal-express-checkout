@@ -124,4 +124,13 @@ class WC_Gateway_PPEC {
 	}
 }
 
-new WC_Gateway_PPEC();
+// for bc while we restructure the plugin issue created to remove ths later
+global $ppec;
+$ppec = new WC_Gateway_PPEC();
+
+function wc_gateway_ppec(){
+
+	global $ppec;
+	return $ppec;
+
+}
