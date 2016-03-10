@@ -19,7 +19,7 @@ class WooCommerce_PayPal_Cart extends PayPal_Cart {
 	 * Load cart details.
 	 */
 	public function loadCartDetails() {
-		global $woocommerce;
+
 		$this->totalItemAmount = 0;
 		$this->items = array();
 
@@ -33,8 +33,8 @@ class WooCommerce_PayPal_Cart extends PayPal_Cart {
 			$decimals = 2;
 		}
 
-		$discounts = round( $woocommerce->cart->get_order_discount_total(), $decimals );
-		foreach ( $woocommerce->cart->cart_contents as $cart_item_key => $values ) {
+		$discounts = round( WC()->cart->get_order_discount_total(), $decimals );
+		foreach ( WC()->cart->cart_contents as $cart_item_key => $values ) {
 			$amount = round( $values['line_total'] / $values['quantity'] , $decimals );
 			$item   = array(
 				'name'        => $values['data']->post->post_title,
@@ -48,12 +48,12 @@ class WooCommerce_PayPal_Cart extends PayPal_Cart {
 			$roundedPayPalTotal += round( $amount * $values['quantity'], $decimals );
 		}
 
-		$this->orderTax = round( $woocommerce->cart->tax_total, $decimals );
-		$this->shipping = round( $woocommerce->cart->shipping_total, $decimals );
-		if ( $woocommerce->cart->shipping_tax_total != 0 ) {
-			$this->orderTax += round( $woocommerce->cart->shipping_tax_total, $decimals );
+		$this->orderTax = round( WC()->cart->tax_total, $decimals );
+		$this->shipping = round( WC()->cart->shipping_total, $decimals );
+		if ( WC()->cart->shipping_tax_total != 0 ) {
+			$this->orderTax += round( WC()->cart->shipping_tax_total, $decimals );
 		}
-		$this->totalItemAmount = round( $woocommerce->cart->cart_contents_total, $decimals );
+		$this->totalItemAmount = round( WC()->cart->cart_contents_total, $decimals );
 		$this->orderTotal = $this->totalItemAmount + $this->orderTax + $this->shipping;
 
 		// need to compare WC totals with what PayPal will calculate to see if they match
@@ -129,7 +129,7 @@ class WooCommerce_PayPal_Cart extends PayPal_Cart {
 			} else {
 				// ...
 				// Increase SHIPDISCAMT by the amount of all the coupons in the cart
-				$this->shipDiscountAmount = round( $woocommerce->cart->get_order_discount_total(), $decimals );
+				$this->shipDiscountAmount = round( WC()->cart->get_order_discount_total(), $decimals );
 
 			}
 		} else {
@@ -161,7 +161,6 @@ class WooCommerce_PayPal_Cart extends PayPal_Cart {
 	}
 
 	public function loadOrderDetails( $order_id ) {
-		global $woocommerce;
 
 		$order = new WC_Order( $order_id );
 		$this->totalItemAmount = 0;
@@ -273,7 +272,7 @@ class WooCommerce_PayPal_Cart extends PayPal_Cart {
 			} else {
 				// ...
 				// Increase SHIPDISCAMT by the amount of all the coupons in the cart
-				$this->shipDiscountAmount = round( $woocommerce->cart->get_order_discount_total(), $decimals );
+				$this->shipDiscountAmount = round( WC()->cart->get_order_discount_total(), $decimals );
 
 			}
 		} else {
