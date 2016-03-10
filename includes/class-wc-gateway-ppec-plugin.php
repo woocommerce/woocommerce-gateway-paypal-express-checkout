@@ -96,20 +96,6 @@ class WC_Gateway_PPEC_Plugin {
 			delete_option( 'wc_gateway_ppce_bootstrap_warning_message' );
 		} catch ( Exception $e ) {
 			update_option( 'wc_gateway_ppce_bootstrap_warning_message', $e->getMessage() );
-			add_action( 'admin_notices', array( $this, 'show_bootstrap_warning' ) );
-		}
-	}
-
-	public function show_bootstrap_warning() {
-		$dependencies_message = get_option( 'wc_gateway_ppce_bootstrap_warning_message', '' );
-		if ( ! empty( $dependencies_message ) ) {
-			?>
-			<div class="error fade">
-				<p>
-					<strong><?php echo esc_html( $dependencies_message ); ?></strong>
-				</p>
-			</div>
-			<?php
 		}
 	}
 

@@ -23,4 +23,3 @@ class PayPal_Credit_Gateway extends PayPal_Express_Checkout_Gateway {
 		$this->title = __( 'PayPal Credit', 'woocommerce-gateway-ppec' );
 	}
 }
-

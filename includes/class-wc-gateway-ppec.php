@@ -34,6 +34,12 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 
 		$this->set_payment_title();
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
+		add_filter( 'woocommerce_get_sections_checkout',                        array( $this, 'filter_sections_checkout' ) );
+		add_action( 'wp_enqueue_scripts',                                       array( $this, 'payment_scripts' ) );
+		add_action( 'woocommerce_update_options_general',                       array( $this, 'force_zero_decimal' ) );
+		add_action( 'admin_notices',                                            array( $this, 'admin_notices' ) );
+
+	}
 
 		// Do we need to auto-select this payment method?
 		if ( ! is_admin() ) {
@@ -1219,4 +1225,56 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 		$this->title = __( 'PayPal', 'woocommerce-gateway-ppec' );
 	}
 
+	/**
+	 * Force zero decimal on specific currencies.
+	 */
+	public function force_zero_decimal() {
+		$settings = wc_gateway_ppec()->settings;
+		if ( $settings->currency_has_decimal_restriction() ) {
+			update_option( 'woocommerce_price_num_decimals', 0 );
+			update_option( 'wc_gateway_ppce_display_decimal_msg', true );
+		}
+	}
+
+	/**
+	 * Prevent PayPal Credit showing up in the admin, because it shares its settings
+	 * with the PayPal Express Checkout class.
+	 *
+	 * @param array $sections List of sections in checkout
+	 *
+	 * @return array Sections in checkout
+	 */
+	public function filter_sections_checkout( $sections ) {
+		unset( $sections['paypal_credit'] );
+		return $sections;
+	}
+
+	/**
+	 * All admin notices
+	 */
+	public function admin_notices(){
+
+		$dependencies_message = get_option( 'wc_gateway_ppce_bootstrap_warning_message', '' );
+		if ( ! empty( $dependencies_message ) ) {
+			?>
+			<div class="error fade">
+				<p>
+					<strong><?php echo esc_html( $dependencies_message ); ?></strong>
+				</p>
+			</div>
+			<?php
+		}
+
+		if ( get_option( 'wc_gateway_ppce_display_decimal_msg', false ) ) {
+			?>
+			<div class="updated fade">
+				<p>
+					<strong><?php _e( 'NOTE: PayPal does not accept decimal places for the currency in which you are transacting.  The "Number of Decimals" option in WooCommerce has automatically been set to 0 for you.', 'woocommerce-gateway-ppec' ); ?></strong>
+				</p>
+			</div>
+			<?php
+			delete_option( 'wc_gateway_ppce_display_decimal_msg' );
+		}
+
+	}
 }
