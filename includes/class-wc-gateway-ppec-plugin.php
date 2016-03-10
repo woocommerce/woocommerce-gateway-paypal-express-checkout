@@ -86,7 +86,7 @@ class WC_Gateway_PPEC_Plugin {
 	public function bootstrap() {
 		try {
 			if ( $this->_bootstrapped ) {
-				throw new Exception( __( '%s in WooCommerce Gateway PayPal Express Checkout plugin can only be called once', 'wc-gateway-ppce' ) );
+				throw new Exception( __( '%s in WooCommerce Gateway PayPal Express Checkout plugin can only be called once', 'woocommerce-gateway-ppec' ) );
 			}
 
 			$this->_check_dependencies();
@@ -120,11 +120,11 @@ class WC_Gateway_PPEC_Plugin {
 	 */
 	protected function _check_dependencies() {
 		if ( ! function_exists( 'WC' ) ) {
-			throw new Exception( __( 'WooCommerce Gateway PayPal Express Checkout requires WooCommerce to be activated', 'wc-gateway-ppce' ) );
+			throw new Exception( __( 'WooCommerce Gateway PayPal Express Checkout requires WooCommerce to be activated', 'woocommerce-gateway-ppec' ) );
 		}
 
 		if ( version_compare( WC()->version, '2.5', '<' ) ) {
-			throw new Exception( __( 'WooCommerce Gateway PayPal Express Checkout requires WooCommerce version 2.5 or greater', 'wc-gateway-ppce' ) );
+			throw new Exception( __( 'WooCommerce Gateway PayPal Express Checkout requires WooCommerce version 2.5 or greater', 'woocommerce-gateway-ppec' ) );
 		}
 	}
 
@@ -231,17 +231,17 @@ class WC_Gateway_PPEC_Plugin {
 			try {
 				$checkout_details = $checkout->getCheckoutDetails( $token );
 			} catch( PayPal_API_Exception $e ) {
-				wc_add_notice( __( 'Sorry, an error occurred while trying to retrieve your information from PayPal.  Please try again.', 'woo_pp' ), 'error' );
+				wc_add_notice( __( 'Sorry, an error occurred while trying to retrieve your information from PayPal.  Please try again.', 'woocommerce-gateway-ppec' ), 'error' );
 				return;
 			} catch( PayPal_Missing_Session_Exception $e ) {
-				wc_add_notice( __( 'Your PayPal checkout session has expired.  Please check out again.', 'woo_pp' ), 'error' );
+				wc_add_notice( __( 'Your PayPal checkout session has expired.  Please check out again.', 'woocommerce-gateway-ppec' ), 'error' );
 				return;
 			}
 
 			$session = WC()->session->paypal;
 			if ( ! $session || ! is_a( $session, 'WooCommerce_PayPal_Session_Data' ) ||
 					$session->expiry_time < time() || $token != $session->token ) {
-				wc_add_notice( __( 'Your PayPal checkout session has expired.  Please check out again.', 'woo_pp' ), 'error' );
+				wc_add_notice( __( 'Your PayPal checkout session has expired.  Please check out again.', 'woocommerce-gateway-ppec' ), 'error' );
 				return;
 			}
 
@@ -267,7 +267,7 @@ class WC_Gateway_PPEC_Plugin {
 					// TODO: Handle things like eChecks, giropay, etc.
 					$order = new WC_Order( $order_id );
 					$order->payment_complete( $transaction_id );
-					$order->add_order_note( sprintf( __( 'PayPal transaction completed; transaction ID = %s', 'woo_pp' ), $transaction_id ) );
+					$order->add_order_note( sprintf( __( 'PayPal transaction completed; transaction ID = %s', 'woocommerce-gateway-ppec' ), $transaction_id ) );
 					$order->reduce_order_stock();
 					WC()->cart->empty_cart();
 					unset( WC()->session->paypal );
@@ -277,7 +277,7 @@ class WC_Gateway_PPEC_Plugin {
 				} catch( PayPal_Missing_Session_Exception $e ) {
 					// For some reason, our session data is missing.  Generally, if we've made it this far,
 					// this shouldn't happen.
-					wc_add_notice( __( 'Sorry, an error occurred while trying to process your payment.  Please try again.', 'woo_pp' ), 'error' );
+					wc_add_notice( __( 'Sorry, an error occurred while trying to process your payment.  Please try again.', 'woocommerce-gateway-ppec' ), 'error' );
 				} catch( PayPal_API_Exception $e ) {
 					// Did we get a 10486 or 10422 back from PayPal?  If so, this means we need to send the buyer back over to
 					// PayPal to have them pick out a new funding method.
@@ -300,10 +300,10 @@ class WC_Gateway_PPEC_Plugin {
 						$final_output = '<ul>';
 						foreach ( $e->errors as $error ) {
 							// These strings are located in lib/class-exception.php
-							$final_output .= '<li>' . __( $error->maptoBuyerFriendlyError(), 'woo_pp' ) . '</li>';
+							$final_output .= '<li>' . __( $error->maptoBuyerFriendlyError(), 'woocommerce-gateway-ppec' ) . '</li>';
 						}
 						$final_output .= '</ul>';
-						wc_add_notice( __( 'Payment error:', 'woo_pp' ) . $final_output, 'error' );
+						wc_add_notice( __( 'Payment error:', 'woocommerce-gateway-ppec' ) . $final_output, 'error' );
 						return;
 					}
 				}
