@@ -44,15 +44,7 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 					$this->title .= ' - ' . esc_html( $this->buyer_email );
 				}
 				if ( ! $session->checkout_details->payer_details->billing_address ) {
-					add_action( 'woocommerce_before_checkout_billing_form', function( $checkout ) {
-						$checkout->checkout_fields['billing'] = array(
-							'billing_first_name' => $checkout->checkout_fields['billing']['billing_first_name'],
-							'billing_last_name'  => $checkout->checkout_fields['billing']['billing_last_name'],
-							'billing_country'    => $checkout->checkout_fields['billing']['billing_country'],
-							'billing_email'      => $checkout->checkout_fields['billing']['billing_email'],
-							'billing_phone'      => $checkout->checkout_fields['billing']['billing_phone']
-						);
-					});
+					add_action( 'woocommerce_before_checkout_billing_form', array( $this, 'before_checkout_billing_form' ) );
 				}
 
 				$posted = array(
@@ -100,6 +92,16 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 				}
 			}
 		}
+	}
+
+	public function before_checkout_billing_form( $checkout ) {
+		$checkout->checkout_fields['billing'] = array(
+			'billing_first_name' => $checkout->checkout_fields['billing']['billing_first_name'],
+			'billing_last_name'  => $checkout->checkout_fields['billing']['billing_last_name'],
+			'billing_country'    => $checkout->checkout_fields['billing']['billing_country'],
+			'billing_email'      => $checkout->checkout_fields['billing']['billing_email'],
+			'billing_phone'      => $checkout->checkout_fields['billing']['billing_phone']
+		);
 	}
 
 	public function init_form_fields() {
