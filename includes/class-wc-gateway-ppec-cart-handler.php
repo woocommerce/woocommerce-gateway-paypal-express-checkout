@@ -16,9 +16,9 @@ class WC_Gateway_PPEC_Cart_Handler {
 		add_action( 'woocommerce_before_cart_totals', array( $this, 'before_cart_totals' ) );
 
 		if ( version_compare( WC()->version, '2.3', '>=' ) ) {
-			add_action( 'woocommerce_after_cart_totals', 'display_paypal_button' );
+			add_action( 'woocommerce_after_cart_totals', array( $this, 'display_paypal_button' ) );
 		} else {
-			add_action( 'woocommerce_proceed_to_checkout', 'display_paypal_button' );
+			add_action( 'woocommerce_proceed_to_checkout', array( $this, 'display_paypal_button' ) );
 		}
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
@@ -109,7 +109,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 		wp_enqueue_style( 'wc-gateway-ppec-frontend-cart', wc_gateway_ppec()->plugin_url . 'assets/css/wc-gateway-ppec-frontend-cart.css' );
 
 		$settings = wc_gateway_ppec()->settings->loadSettings();
-		if ( 'yes' === $settings->enabled && $settings->enableInContextCheckout && $settings->getActiveApiCredentials()->payerID ) {
+		if ( $settings->enabled && $settings->enableInContextCheckout && $settings->getActiveApiCredentials()->payerID ) {
 			wp_enqueue_script( 'paypal-checkout-js', 'https://www.paypalobjects.com/api/checkout.js', array(), null, true );
 		}
 	}
