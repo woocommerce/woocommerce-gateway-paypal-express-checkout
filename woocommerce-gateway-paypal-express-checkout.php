@@ -70,9 +70,9 @@ class WC_Gateway_PPEC {
 	public function plugin_action_links( $links ) {
 		$addons = ( class_exists( 'WC_Subscriptions_Order' ) || class_exists( 'WC_Pre_Orders_Order' ) ) ? '_addons' : '';
 		$plugin_links = array(
-			'<a href="' . admin_url( 'admin.php?page=wc-settings&tab=checkout&section=paypal_express_checkout_gateway' . $addons ) . '">' . __( 'Settings', 'woocommerce-gateway-stripe' ) . '</a>',
-			'<a href="http://support.woothemes.com/">' . __( 'Support', 'woocommerce-gateway-stripe' ) . '</a>',
-			'<a href="http://docs.woothemes.com/document/stripe/">' . __( 'Docs', 'woocommerce-gateway-stripe' ) . '</a>',
+			'<a href="' . admin_url( 'admin.php?page=wc-settings&tab=checkout&section=paypal_express_checkout_gateway' . $addons ) . '">' . __( 'Settings', 'woocommerce-gateway-ppec' ) . '</a>',
+			'<a href="http://support.woothemes.com/">' . __( 'Support', 'woocommerce-gateway-ppec' ) . '</a>',
+			'<a href="http://docs.woothemes.com/document/stripe/">' . __( 'Docs', 'woocommerce-gateway-ppec' ) . '</a>',
 		);
 		return array_merge( $plugin_links, $links );
 	}
