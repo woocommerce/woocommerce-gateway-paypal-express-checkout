@@ -127,8 +127,272 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 		);
 	}
 
+	/**
+	 * Initialise Gateway Settings Form Fields
+	 */
 	public function init_form_fields() {
-		$this->form_fields = array();
+
+		$settings = array(
+			'enabled' => array(
+				'title'       => __( 'Enable/Disable', 'woocommerce-gateway-ppec' ),
+				'label'       => __( 'Enable PayPal Express Checkout', 'woocommerce-gateway-ppec' ),
+				'type'        => 'checkbox',
+				'description' => __( 'If this setting is enabled, buyers will be allowed to pay for their purchases using PayPal Express Checkout', 'woocommerce-gateway-ppec' ),
+				'desc_tip'    => true,
+				'default'     => 'no'
+			),
+			'enable_credit' => array(
+				'title'       => __( 'PayPal Credit', 'woocommerce-gateway-ppec' ),
+				'label'       => __( 'Enable PayPal Credit', 'woocommerce-gateway-ppec' ),
+				'type'        => 'checkbox',
+				'description' => __( 'This controls the title which the user sees during checkout.', 'woocommerce-gateway-ppec' ),
+				'desc_tip'    => true,
+				'default'     => 'no'
+			),
+			'environment' => array(
+				'title'       => __( 'Environment', 'woocommerce-gateway-ppec' ),
+				'type'        => 'select',
+				'class'       => 'wc-enhanced-select',
+				'description' => '',
+				'default'     => 'live',
+				'options'     => array(
+					'live' => __( 'Auto', 'woocommerce-gateway-ppec' ),
+					'sb'   => __( 'Simplified Chinese', 'woocommerce-gateway-ppec' ),
+				), ),
+			'easy_setup' => array(
+				'title'       => __( 'Easy Setup', 'woocommerce-gateway-ppec' ),
+				'type'        => 'text',
+				'class'       => 'wc-ppec-easy-setup',
+			),
+
+			'credentials_type' => array(
+				'title'       => __( 'Environment', 'woocommerce-gateway-ppec' ),
+				'type'        => 'select',
+				'class'       => 'wc-enhanced-select',
+				'description' => '',
+				'default'     => 'live',
+				'options'     => array(
+					'signature' => __( 'API signature', 'woocommerce-gateway-ppec' ),
+					'certificate'   => __( 'API certificate', 'woocommerce-gateway-ppec' ),
+				) ),
+
+			'live_api_username' => array(
+				'title'       => __( 'Live API username', 'woocommerce-gateway-ppec' ),
+				'label'       => __( 'Enable Test Mode', 'woocommerce-gateway-ppec' ),
+				'type'        => 'text',
+				'default'     => ''
+			),
+			'live_api_password' => array(
+				'title'       => __( 'Live API password', 'woocommerce-gateway-ppec' ),
+				'type'        => 'password',
+				'default'     => ''
+			),
+			'live_api_signature' => array(
+				'title'       => __( 'Live Publishable Key', 'woocommerce-gateway-ppec' ),
+				'type'        => 'text',
+				'description' => __( 'Get your API keys from your stripe account.', 'woocommerce-gateway-ppec' ),
+				'default'     => ''
+			),
+			'live_api_subject' => array(
+				'title'       => __( 'Live Subject', 'woocommerce-gateway-ppec' ),
+				'type'        => 'text',
+				'default'     => ''
+			),
+			'live_api_certificate' => array(
+				'title'       => __( 'Live API certificate ', 'woocommerce-gateway-ppec' ),
+				'type'        => 'file_upload',
+				'description' => __( 'Upload a new certificate: .', 'woocommerce-gateway-ppec' ),
+				'default'     => ''
+			),
+			'sb_api_username' => array(
+				'title'       => __( 'Sandbox API username', 'woocommerce-gateway-ppec' ),
+				'label'       => __( 'Enable Test Mode', 'woocommerce-gateway-ppec' ),
+				'type'        => 'text',
+				'default'     => ''
+			),
+			'sb_api_password' => array(
+				'title'       => __( 'Sandbox API password', 'woocommerce-gateway-ppec' ),
+				'type'        => 'password',
+				'default'     => ''
+			),
+			'sb_api_signature' => array(
+				'title'       => __( 'Sandbox Publishable Key', 'woocommerce-gateway-ppec' ),
+				'type'        => 'text',
+				'description' => __( 'Get your API keys from your stripe account.', 'woocommerce-gateway-ppec' ),
+				'default'     => ''
+			),
+			'sb_api_subject' => array(
+				'title'       => __( 'Sandbox Subject', 'woocommerce-gateway-ppec' ),
+				'type'        => 'text',
+				'default'     => ''
+			),
+			'sb_api_certificate' => array(
+				'title'       => __( 'Sandbox API certificate ', 'woocommerce-gateway-ppec' ),
+				'type'        => 'file_upload',
+				'description' => __( 'Upload a new certificate: .', 'woocommerce-gateway-ppec' ),
+				'default'     => ''
+			),
+			'in_context_checkout' => array(
+				'title'       => __( 'Enable in context checkout', 'woocommerce-gateway-ppec' ),
+				'type'        => 'checkbox',
+				'desc_tip'    => true,
+				'default'     => 'no'
+			),
+			'button_size' => array(
+				'title'       => __( 'Environment', 'woocommerce-gateway-ppec' ),
+				'type'        => 'select',
+				'class'       => 'wc-enhanced-select',
+				'description' => '',
+				'default'     => 'medium',
+				'options'     => array(
+					'small' => __( 'Small', 'woocommerce-gateway-ppec' ),
+					'medium'   => __( 'Medium', 'woocommerce-gateway-ppec' ),
+					'large'   => __( 'Large', 'woocommerce-gateway-ppec' ),
+				) ),
+			'mark_size' => array(
+				'title'       => __( 'Mark Size', 'woocommerce-gateway-ppec' ),
+				'type'        => 'select',
+				'class'       => 'wc-enhanced-select',
+				'description' => '',
+				'default'     => 'small',
+				'options'     => array(
+					'small' => __( 'Small', 'woocommerce-gateway-ppec' ),
+					'medium'   => __( 'Medium', 'woocommerce-gateway-ppec' ),
+					'large'   => __( 'Large', 'woocommerce-gateway-ppec' ),
+				) ),
+
+			'logo_image_url' => array(
+				'title'       => __( 'Logo image url', 'woocommerce-gateway-ppec' ),
+				'type'        => 'text',
+				'default'     => ''
+			),
+
+			'payment_type' => array(
+				'title'       => __( 'Mark Size', 'woocommerce-gateway-ppec' ),
+				'type'        => 'select',
+				'class'       => 'wc-enhanced-select',
+				'description' => '',
+				'default'     => 'small',
+				'options'     => array(
+					'sale'          => __( 'Sale', 'woocommerce-gateway-ppec' ),
+					'authorization' => __( 'Authorization', 'woocommerce-gateway-ppec' ),
+					'order'         => __( 'Order', 'woocommerce-gateway-ppec' ),
+				)
+			),
+
+			'Guest_payments' => array(
+				'title'       => __( 'Enable guest payments', 'woocommerce-gateway-ppec' ),
+				'type'        => 'checkbox',
+				'desc_tip'    => true,
+				'default'     => 'no'
+			),
+
+			'instant_payments' => array(
+				'title'       => __( 'Enable instant payments', 'woocommerce-gateway-ppec' ),
+				'type'        => 'checkbox',
+				'desc_tip'    => true,
+				'default'     => 'no'
+			),
+
+			'woo_pp_zero_subtotal_behavior' => array(
+				'title'       => __( 'Sub total behaviour', 'woocommerce-gateway-ppec' ),
+				'type'        => 'select',
+				'class'       => 'wc-enhanced-select',
+				'description' => '',
+				'default'     => 'small',
+				'options'     => array(
+					'modifyItems'                   => __( 'Modify line item prices and add a shipping discount', 'woocommerce-gateway-ppec' ),
+					'omitLineItems'                 => __( "Don't send line items to PayPal", 'woocommerce-gateway-ppec' ),
+					'passCouponsAsShippingDiscount' => __( 'Send the coupons to PayPal as a shipping discount', 'woocommerce-gateway-ppec' ),
+				) ),
+			'woo_pp_subtotal_mismatch_behavior' => array(
+				'title'       => __( 'Mark Size', 'woocommerce-gateway-ppec' ),
+				'type'        => 'select',
+				'class'       => 'wc-enhanced-select',
+				'description' => '',
+				'default'     => 'small',
+				'options'     => array(
+					'addLineItem'   => __( 'Add another line item', 'woocommerce-gateway-ppec' ),
+					'dropLineItems' => __( "Don't send line items to PayPal", 'woocommerce-gateway-ppec' ),
+				) ),
+
+			'stripe_checkout' => array(
+				'title'       => __( 'Stripe Checkout', 'woocommerce-gateway-ppec' ),
+				'label'       => __( 'Enable Stripe Checkout', 'woocommerce-gateway-ppec' ),
+				'type'        => 'checkbox',
+				'description' => __( 'If enabled, this option shows a "pay" button and modal credit card form on the checkout, instead of credit card fields directly on the page.', 'woocommerce-gateway-ppec' ),
+				'default'     => 'no'
+			),
+			'stripe_checkout_locale' => array(
+				'title'       => __( 'Stripe Checkout locale', 'woocommerce-gateway-ppec' ),
+				'type'        => 'select',
+				'class'       => 'wc-enhanced-select',
+				'description' => __( 'Language to display in Stripe Checkout modal. Specify Auto to display Checkout in the user\'s preferred language, if available. English will be used by default.', 'woocommerce-gateway-ppec' ),
+				'default'     => 'en',
+				'desc_tip'    => true,
+				'options'     => array(
+					'auto' => __( 'Auto', 'woocommerce-gateway-ppec' ),
+					'zh'   => __( 'Simplified Chinese', 'woocommerce-gateway-ppec' ),
+					'nl'   => __( 'Dutch', 'woocommerce-gateway-ppec' ),
+					'en'   => __( 'English', 'woocommerce-gateway-ppec' ),
+					'fr'   => __( 'French', 'woocommerce-gateway-ppec' ),
+					'de'   => __( 'German', 'woocommerce-gateway-ppec' ),
+					'it'   => __( 'Italian', 'woocommerce-gateway-ppec' ),
+					'ja'   => __( 'Japanese', 'woocommerce-gateway-ppec' ),
+					'es'   => __( 'Spanish', 'woocommerce-gateway-ppec' ),
+				)
+			),
+
+			'stripe_bitcoin' => array(
+				'title'       => __( 'Bitcoin Currency', 'woocommerce-gateway-ppec' ),
+				'label'       => __( 'Enable Bitcoin Currency', 'woocommerce-gateway-ppec' ),
+				'type'        => 'checkbox',
+				'description' => __( 'If enabled, an option to accept bitcoin will show on the checkout modal.  Note: Stripe Checkout needs to be enabled and store currency must be set to USD.', 'woocommerce-gateway-ppec' ),
+				'default'     => 'no'
+			),
+			'stripe_checkout_image' => array(
+				'title'       => __( 'Stripe Checkout Image', 'woocommerce-gateway-ppec' ),
+				'description' => __( 'Optionally enter the URL to a 128x128px image of your brand or product. e.g. <code>https://yoursite.com/wp-content/uploads/2013/09/yourimage.jpg</code>', 'woocommerce-gateway-ppec' ),
+				'type'        => 'text',
+				'default'     => ''
+			),
+			'saved_cards' => array(
+				'title'       => __( 'Saved Cards', 'woocommerce-gateway-ppec' ),
+				'label'       => __( 'Enable Payment via Saved Cards', 'woocommerce-gateway-ppec' ),
+				'type'        => 'checkbox',
+				'description' => __( 'If enabled, users will be able to pay with a saved card during checkout. Card details are saved on Stripe servers, not on your store.', 'woocommerce-gateway-ppec' ),
+				'default'     => 'no'
+			),
+		);
+
+		/**
+		 * Filter the PayPal Express Checkout settings
+		 * @since 1.9.0
+		 * @param array $settings
+		 */
+		$this->form_fields = apply_filters( 'wc_ppec_settings', $settings );
+
+	}
+
+	/**
+	 * get_icon function.
+	 *
+	 * @access public
+	 * @return string
+	 */
+	public function get_icon() {
+
+		$icon  = '<img src="' . WC_HTTPS::force_https_url( WC()->plugin_url() . '/assets/images/icons/credit-cards/visa.png' ) . '" alt="Visa" />';
+		$icon .= '<img src="' . WC_HTTPS::force_https_url( WC()->plugin_url() . '/assets/images/icons/credit-cards/mastercard.png' ) . '" alt="Mastercard" />';
+		$icon .= '<img src="' . WC_HTTPS::force_https_url( WC()->plugin_url() . '/assets/images/icons/credit-cards/amex.png' ) . '" alt="Amex" />';
+
+		if ( 'USD' === get_woocommerce_currency() ) {
+			$icon .= '<img src="' . WC_HTTPS::force_https_url( WC()->plugin_url() . '/assets/images/icons/credit-cards/discover.png' ) . '" alt="Discover" />';
+			$icon .= '<img src="' . WC_HTTPS::force_https_url( WC()->plugin_url() . '/assets/images/icons/credit-cards/jcb.png' ) . '" alt="JCB" />';
+			$icon .= '<img src="' . WC_HTTPS::force_https_url( plugins_url( '/assets/images/diners.png', dirname( __FILE__ ) ) ) . '" alt="Diners" />';
+		}
+
+		return apply_filters( 'woocommerce_gateway_icon', $icon, $this->id );
 	}
 
 	public function process_payment( $order_id ) {
