@@ -35,21 +35,20 @@ if ( ! function_exists( 'woothemes_queue_update' ) ) {
  */
 woothemes_queue_update( plugin_basename( __FILE__ ), '', '' );
 
-
 /**
  * Main PayPal Express Checkout class which sets the gateway up for us
  */
-class WC_Gateway_PPEC {
+class WC_PPEC {
 
 	/**
 	 * Constructor
 	 */
 	public function __construct() {
 
-		define( 'WC_PP_EXPRESS_VERSION', '1.0.0' );
-		define( 'WC_PP_EXPRESS_TEMPLATE_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) . '/templates/' );
-		define( 'WC_PP_EXPRESS_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
-		define( 'WC_PP_EXPRESS_MAIN_FILE', __FILE__ );
+		define( 'WC_PPEC_VERSION', '1.0.0' );
+		define( 'WC_PPEC_TEMPLATE_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) . '/templates/' );
+		define( 'WC_PPEC_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
+		define( 'WC_PPEC_MAIN_FILE', __FILE__ );
 
 		// Actions
 		add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ) );
@@ -69,7 +68,7 @@ class WC_Gateway_PPEC {
 	public function plugin_action_links( $links ) {
 
 		$plugin_links = array(
-			'<a href="' . admin_url( 'admin.php?page=wc-settings&tab=checkout&section=paypal_express_checkout_gateway' . $addons ) . '">' . __( 'Settings', 'woocommerce-gateway-ppec' ) . '</a>',
+			'<a href="' . admin_url( 'admin.php?page=wc-settings&tab=checkout&section=paypal_express_checkout_gateway' ) . '">' . __( 'Settings', 'woocommerce-gateway-ppec' ) . '</a>',
 			'<a href="http://support.woothemes.com/">' . __( 'Support', 'woocommerce-gateway-ppec' ) . '</a>',
 			'<a href="http://docs.woothemes.com/">' . __( 'Docs', 'woocommerce-gateway-ppec' ) . '</a>',
 		);
@@ -79,7 +78,7 @@ class WC_Gateway_PPEC {
 	}
 
 	/**
-	 * Init localisations and files
+	 * Init localizations and files
 	 */
 	public function init() {
 		if ( ! class_exists( 'WC_Payment_Gateway' ) ) {
@@ -87,10 +86,11 @@ class WC_Gateway_PPEC {
 		}
 
 		// Includes
+		include_once( 'includes/admin/class-wc-gateway-ppec-credential-validation.php' );
 		include_once( 'includes/class-wc-gateway-ppec.php' );
 
-		// Localisation
-		load_plugin_textdomain( 'woocommerce-gateway-pp-ec', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+		// Localization
+		load_plugin_textdomain( 'woocommerce-gateway-ppec', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 	}
 
 	/**
@@ -98,7 +98,7 @@ class WC_Gateway_PPEC {
 	 */
 	public function register_gateway( $methods ) {
 
-		$methods[] = 'PayPal_Express_Checkout_Gateway';
+		$methods[] = 'WC_Gateway_PPEC';
 
 		return $methods;
 	}
@@ -119,18 +119,7 @@ class WC_Gateway_PPEC {
 	 */
 	public function cancel_payment( $order_id ) {
 
-		$order = wc_get_order( $order_id );
-
 	}
 }
 
-// for bc while we restructure the plugin issue created to remove ths later
-global $ppec;
-$ppec = new WC_Gateway_PPEC();
-
-function wc_gateway_ppec(){
-
-	global $ppec;
-	return $ppec;
-
-}
+new WC_PPEC();
