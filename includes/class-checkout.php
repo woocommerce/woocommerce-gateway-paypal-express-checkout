@@ -25,9 +25,8 @@ class WooCommerce_PayPal_Checkout extends PayPal_Checkout {
 	}
 
 	protected function getReturnUrl() {
-		global $woocommerce;
 
-		$url = $woocommerce->cart->get_checkout_url();
+		$url = WC()->cart->get_checkout_url();
 		if ( strpos( $url, '?' ) ) {
 			$url .= '&';
 		} else {
@@ -40,9 +39,8 @@ class WooCommerce_PayPal_Checkout extends PayPal_Checkout {
 	}
 
 	protected function getCancelUrl() {
-		global $woocommerce;
 
-		$url = $woocommerce->cart->get_cart_url();
+		$url = WC()->cart->get_cart_url();
 		if ( strpos( $url, '?' ) ) {
 			$url .= '&';
 		} else {
@@ -55,14 +53,13 @@ class WooCommerce_PayPal_Checkout extends PayPal_Checkout {
 	}
 
 	public function startCheckoutFromCart() {
-		global $woocommerce;
 
 		$this->_cart->loadCartDetails();
 
 		$settings = new WC_Gateway_PPEC_Settings();
 		$settings->loadSettings();
 
-		$needs_shipping = $woocommerce->cart->needs_shipping();
+		$needs_shipping = WC()->cart->needs_shipping();
 		$this->suppressShippingAddress( ! $needs_shipping );
 
 		$using_ppc = false;
@@ -90,7 +87,7 @@ class WooCommerce_PayPal_Checkout extends PayPal_Checkout {
 
 		if ( $this->isSuccess( $response ) ) {
 			// Save some data to the session.
-			$woocommerce->session->paypal = new WooCommerce_PayPal_Session_Data(
+			WC()->session->paypal = new WooCommerce_PayPal_Session_Data(
 				$response['TOKEN'],
 				'cart',
 				false,
@@ -107,7 +104,6 @@ class WooCommerce_PayPal_Checkout extends PayPal_Checkout {
 	}
 
 	public function startCheckoutFromCheckout( $order_id, $use_ppc = false ) {
-		global $woocommerce;
 
 		$this->_cart->loadOrderDetails( $order_id );
 
@@ -146,7 +142,7 @@ class WooCommerce_PayPal_Checkout extends PayPal_Checkout {
 			$params['BILLINGTYPE'] = 'MerchantInitiatedBilling';
 		}
 
-		$needs_shipping = $woocommerce->cart->needs_shipping();
+		$needs_shipping = WC()->cart->needs_shipping();
 		$this->suppressShippingAddress( $needs_shipping );
 
 		$response = $api->SetExpressCheckout( $params );
@@ -154,7 +150,7 @@ class WooCommerce_PayPal_Checkout extends PayPal_Checkout {
 
 		if ( $this->isSuccess( $response ) ) {
 			// Save some data to the session.
-			$woocommerce->session->paypal = new WooCommerce_PayPal_Session_Data(
+			WC()->session->paypal = new WooCommerce_PayPal_Session_Data(
 				$response['TOKEN'],
 				'order',
 				$order_id,
@@ -172,7 +168,6 @@ class WooCommerce_PayPal_Checkout extends PayPal_Checkout {
 	}
 
 	public function getCheckoutDetails( $token = false ) {
-		global $woocommerce;
 
 		$settings = new WC_Gateway_PPEC_Settings();
 		$settings->loadSettings();
@@ -192,14 +187,14 @@ class WooCommerce_PayPal_Checkout extends PayPal_Checkout {
 			$checkout_details = new PayPal_Checkout_Details();
 			$checkout_details->loadFromGetECResponse( $response );
 
-			$session_data = $woocommerce->session->paypal;
+			$session_data = WC()->session->paypal;
 			if ( null === $session_data ) {
 				throw new PayPal_Missing_Session_Exception();
 			}
 
 			if ( is_a( $session_data, 'WooCommerce_PayPal_Session_Data' ) && $token == $session_data->token ) {
 				$session_data->checkout_details = $checkout_details;
-				$woocommerce->session->paypal = $session_data;
+				WC()->session->paypal = $session_data;
 			} else {
 				throw new PayPal_Missing_Session_Exception();
 			}
@@ -211,16 +206,15 @@ class WooCommerce_PayPal_Checkout extends PayPal_Checkout {
 	}
 
 	public function completePayment( $order_id, $token, $payerID ) {
-		global $woocommerce;
 
 		// Make sure our session data is there before we do something we might regret later
-		$session_data = $woocommerce->session->paypal;
+		$session_data = WC()->session->paypal;
 		if ( null === $session_data ) {
 			throw new PayPal_Missing_Session_Exception();
 		}
 
 		if ( is_a( $session_data, 'WooCommerce_PayPal_Session_Data' ) && $token == $session_data->token ) {
-			$woocommerce->session->paypal = $session_data;
+			WC()->session->paypal = $session_data;
 		} else {
 			throw new PayPal_Missing_Session_Exception();
 		}

@@ -109,7 +109,7 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 	}
 
 	public function process_payment( $order_id ) {
-		global $woocommerce;
+
 		$order = new WC_Order( $order_id );
 		$checkout = new WooCommerce_PayPal_Checkout();
 
@@ -151,8 +151,8 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 				$order->payment_complete( $transaction_id );
 				$order->add_order_note( sprintf( __( 'PayPal transaction completed; transaction ID = %s', 'woo_pp' ), $transaction_id ) );
 				$order->reduce_order_stock();
-				$woocommerce->cart->empty_cart();
-				unset( $woocommerce->session->paypal );
+				WC()->cart->empty_cart();
+				unset( WC()->session->paypal );
 
 				return array(
 					'result' => 'success',
@@ -178,7 +178,7 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 					$session->checkout_completed = false;
 					$session->leftFrom = 'order';
 					$session->order_id = $order_id;
-					$woocommerce->session->paypal = $session;
+					WC()->session->paypal = $session;
 					return array(
 						'result' => 'success',
 						'redirect' => $settings->getPayPalRedirectUrl( $session->token, true )
@@ -234,9 +234,9 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 	}
 
 	protected function ips_signup() {
-		global $woocommerce;
 
-		$enable_ips = in_array( $woocommerce->countries->get_base_country(), $this->get_ips_enabled_countries() );
+
+		$enable_ips = in_array( WC()->countries->get_base_country(), $this->get_ips_enabled_countries() );
 		if ( ! $enable_ips ) {
 			WC_Admin_Settings::add_error( __( 'Sorry, Easy Setup isn\'t available in your country.', 'woo_pp' ) );
 			ob_end_flush();
@@ -288,7 +288,7 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 		// Build our request.
 		$request = new stdClass();
 		$request->product = 'express_checkout';
-		$request->country = $woocommerce->countries->get_base_country();
+		$request->country = WC()->countries->get_base_country();
 		$request->display_mode = 'regular';
 
 		if ( 'certificate' == $_GET['mode'] ) {
@@ -368,7 +368,6 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 	}
 
 	protected function ips_return() {
-		global $woocommerce;
 
 		$settings = new WC_Gateway_PPEC_Settings();
 		$settings->loadSettings();
@@ -527,8 +526,8 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 	// We want to be able to do some magic JavaScript stuff that WooCommerce's settings API won't let us do, so we're just going
 	// to override how WooCommerce tells us it should be done.
 	public function admin_options() {
-		global $woocommerce;
-		$enable_ips = in_array( $woocommerce->countries->get_base_country(), $this->get_ips_enabled_countries() ) && function_exists( 'openssl_pkey_new' );
+
+		$enable_ips = in_array( WC()->countries->get_base_country(), $this->get_ips_enabled_countries() ) && function_exists( 'openssl_pkey_new' );
 
 		if ( isset( $_GET['ips-signup'] ) && 'true' == $_GET['ips-signup'] ) {
 			$this->ips_signup();
@@ -1084,7 +1083,6 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 	}
 
 	public function process_refund( $order_id, $amount = null, $reason = '' ) {
-		global $woocommerce;
 
 		// load settings
 		$settings = new WC_Gateway_PPEC_Settings();

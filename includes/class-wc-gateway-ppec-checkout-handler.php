@@ -36,10 +36,10 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		$session = WC()->session->paypal;
 		if ( null != $session && is_a( $session, 'WooCommerce_PayPal_Session_Data' ) && $session->checkout_completed && $session->expiry_time >= time() && $session->payerID ) {
 			if ( ! $session->checkout_details->payer_details->billing_address ) {
-				$woocommerce->checkout()->checkout_fields['billing']['billing_address_1']['required'] = false;
-				$woocommerce->checkout()->checkout_fields['billing']['billing_city'     ]['required'] = false;
-				$woocommerce->checkout()->checkout_fields['billing']['billing_state'    ]['required'] = false;
-				$woocommerce->checkout()->checkout_fields['billing']['billing_postcode' ]['required'] = false;
+				WC()->checkout()->checkout_fields['billing']['billing_address_1']['required'] = false;
+				WC()->checkout()->checkout_fields['billing']['billing_city'     ]['required'] = false;
+				WC()->checkout()->checkout_fields['billing']['billing_state'    ]['required'] = false;
+				WC()->checkout()->checkout_fields['billing']['billing_postcode' ]['required'] = false;
 			}
 		}
 	}
