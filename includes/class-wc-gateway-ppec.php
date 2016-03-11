@@ -30,6 +30,7 @@ class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
 		add_filter( 'woocommerce_get_sections_checkout', array( $this, 'filter_sections_checkout' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'payment_scripts' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'load_admin_scripts' ) );
 		add_action( 'woocommerce_update_options_general', array( $this, 'force_zero_decimal' ) );
 		add_action( 'admin_notices', array( $this, 'admin_notices' ) );
 
@@ -106,6 +107,26 @@ class WC_Gateway_PPEC extends WC_Payment_Gateway {
 			$this->chosen = false;
 		}
 	} // end function
+
+	/**
+	 * Loads all JS scripts for admin settings
+	 *
+	 * @access public
+	 * @since 1.0.0
+	 * @version 1.0.0
+	 * @return bool
+	 */
+	public function load_admin_scripts() {
+		$current_screen = get_current_screen();
+
+		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+
+		wp_register_script( 'wc-ppec-admin-scripts', WC_PPEC_PLUGIN_URL . '/assets/js/wc-gateway-ppec-admin' . $suffix . '.js', array( 'jquery' ), WC_PPEC_VERSION, true );
+
+		if ( 'woocommerce_page_wc-settings' === $current_screen->id ) {
+			wp_enqueue_script( 'wc-ppec-admin-scripts' );
+		}
+	}
 
 	public function before_checkout_billing_form( $checkout ) {
 		$checkout->checkout_fields['billing'] = array(
@@ -460,8 +481,6 @@ class WC_Gateway_PPEC extends WC_Payment_Gateway {
 
 		return $out;
 	}
-
-
 
 	public function process_admin_options() {
 
