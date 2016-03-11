@@ -123,9 +123,13 @@ class WC_Gateway_PPEC extends WC_Payment_Gateway {
 
 		wp_register_script( 'wc-ppec-admin-scripts', WC_PPEC_PLUGIN_URL . '/assets/js/wc-gateway-ppec-admin' . $suffix . '.js', array( 'jquery' ), WC_PPEC_VERSION, true );
 
-		if ( 'woocommerce_page_wc-settings' === $current_screen->id ) {
+		parse_str( $_SERVER['REQUEST_URI'] );
+
+		if ( 'woocommerce_page_wc-settings' === $current_screen->id && 'wc_gateway_ppec' === $section ) {
 			wp_enqueue_script( 'wc-ppec-admin-scripts' );
 		}
+
+		return true;
 	}
 
 	public function before_checkout_billing_form( $checkout ) {
