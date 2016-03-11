@@ -150,4 +150,30 @@ class WC_Gateway_PPEC_Credential_Validation {
 
 		return true;
 	}
+
+	function test_api_credentials( $credentials, $environment = 'sandbox' ) {
+		$api = new PayPal_API( $credentials, $environment );
+		$result = $api->GetPalDetails();
+		if ( 'Success' != $result['ACK'] && 'SuccessWithWarning' != $result['ACK'] ) {
+			// Look at the result a little more closely to make sure it's a credentialing issue.
+			$found_10002 = false;
+			foreach ( $result as $index => $value ) {
+				if ( preg_match( '/^L_ERRORCODE\d+$/', $index ) ) {
+					if ( '10002' == $value ) {
+						$found_10002 = true;
+					}
+				}
+			}
+
+			if ( $found_10002 ) {
+				return false;
+			} else {
+				// Call failed for some other reason.
+				throw new PayPal_API_Exception( $result );
+			}
+		}
+
+		return $result['PAL'];
+	}
+
 }
