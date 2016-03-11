@@ -6,9 +6,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 
 class WC_Gateway_PPEC extends WC_Payment_Gateway {
-	private static $process_admin_options_validation_error = false;
-	public static $use_buyer_email = true;
-
 	public function __construct() {
 
 		$this->id                 = 'paypal_express_checkout';
