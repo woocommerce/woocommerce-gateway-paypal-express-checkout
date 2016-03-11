@@ -87,6 +87,7 @@ class WC_PPEC {
 
 		// Includes
 		include_once( 'includes/admin/class-wc-gateway-ppec-credential-validation.php' );
+		include_once( 'includes/admin/class-wc-gateway-ppec-ips.php' );
 		include_once( 'includes/class-wc-gateway-ppec.php' );
 
 		// Localization
