@@ -213,7 +213,10 @@ class WC_Gateway_PPEC_Plugin {
 	 * @return array $domains Whitelisted domains for `wp_safe_redirect`
 	 */
 	public function whitelist_paypal_domains_for_redirect( $domains ) {
+		$domains[] = 'www.paypal.com';
 		$domains[] = 'paypal.com';
+		$domains[] = 'www.sandbox.paypal.com';
+		$domains[] = 'sandbox.paypal.com';
 
 		return $domains;
 	}
