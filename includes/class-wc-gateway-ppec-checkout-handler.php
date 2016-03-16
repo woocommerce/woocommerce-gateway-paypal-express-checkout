@@ -91,7 +91,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 				|| ! $session->checkout_completed || $session->expiry_time < time()
 				|| ! $session->payerID ) {
 
-				wp_enqueue_script( 'wc-gateway-ppec-frontend-checkout', wc_gateway_ppec()->plugin_url . 'assets/css/wc-gateway-ppec-frontend-checkout.js', array( 'jquery' ), false, true );
+				wp_enqueue_script( 'wc-gateway-ppec-frontend-checkout', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-frontend-checkout.js', array( 'jquery' ), false, true );
 
 				wp_enqueue_script( 'paypal-checkout-js', 'https://www.paypalobjects.com/api/checkout.js', array(), null, true );
 			}
