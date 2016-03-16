@@ -56,8 +56,7 @@ class WooCommerce_PayPal_Checkout extends PayPal_Checkout {
 
 		$this->_cart->loadCartDetails();
 
-		$settings = new WC_Gateway_PPEC_Settings();
-		$settings->loadSettings();
+		$settings = wc_gateway_ppec()->settings->loadSettings();
 
 		$needs_shipping = WC()->cart->needs_shipping();
 		$this->suppressShippingAddress( ! $needs_shipping );
@@ -107,8 +106,7 @@ class WooCommerce_PayPal_Checkout extends PayPal_Checkout {
 
 		$this->_cart->loadOrderDetails( $order_id );
 
-		$settings = new WC_Gateway_PPEC_Settings();
-		$settings->loadSettings();
+		$settings = wc_gateway_ppec()->settings->loadSettings();
 
 		//new wc order > get address from that order > new pp address > assign address from order to new pp address > $this->setShippingAddress(pp address object)
 		$getAddress = new WC_Order($order_id);
@@ -169,8 +167,7 @@ class WooCommerce_PayPal_Checkout extends PayPal_Checkout {
 
 	public function getCheckoutDetails( $token = false ) {
 
-		$settings = new WC_Gateway_PPEC_Settings();
-		$settings->loadSettings();
+		$settings = wc_gateway_ppec()->settings->loadSettings();
 
 		$api = new PayPal_API(
 			$settings->getActiveApiCredentials(),
@@ -226,8 +223,7 @@ class WooCommerce_PayPal_Checkout extends PayPal_Checkout {
 
 		$this->_cart->loadOrderDetails( $order_id );
 
-		$settings = new WC_Gateway_PPEC_Settings();
-		$settings->loadSettings();
+		$settings = wc_gateway_ppec()->settings->loadSettings();
 
 		$order = new WC_Order($order_id);
 		$shipAddressName = $order->shipping_first_name . ' ' . $order->shipping_last_name;

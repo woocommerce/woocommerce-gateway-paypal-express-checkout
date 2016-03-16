@@ -60,8 +60,7 @@ class WooCommerce_PayPal_Cart extends PayPal_Cart {
 		// if they do not match, check to see what the merchant would like to do
 		// options are to remove line items or add a line item to adjust for the difference
 		if ( $this->totalItemAmount != $roundedPayPalTotal ) {
-			$settings = new WC_Gateway_PPEC_Settings();
-			$settings->loadSettings();
+			$settings         = $settings = wc_gateway_ppec()->settings->loadSettings();
 			$subtotalBehavior = $settings->subtotalMismatchBehavior;
 
 			if ( WC_Gateway_PPEC_Settings::subtotalMismatchBehaviorAddLineItem == $subtotalBehavior ) {
@@ -202,8 +201,7 @@ class WooCommerce_PayPal_Cart extends PayPal_Cart {
 		// if they do not match, check to see what the merchant would like to do
 		// options are to remove line items or add a line item to adjust for the difference
 		if ( $this->totalItemAmount != $roundedPayPalTotal ) {
-			$settings = new WC_Gateway_PPEC_Settings();
-			$settings->loadSettings();
+			$settings         = wc_gateway_ppec()->settings->loadSettings();
 			$subtotalBehavior = $settings->subtotalMismatchBehavior;
 
 			if ( WC_Gateway_PPEC_Settings::subtotalMismatchBehaviorAddLineItem == $subtotalBehavior ) {
@@ -230,8 +228,7 @@ class WooCommerce_PayPal_Cart extends PayPal_Cart {
 
 		// enter discount shenanigans. item total cannot be 0 so make modifications accordingly
 		if ( $this->totalItemAmount == $discounts ) {
-			$settings = new WC_Gateway_PPEC_Settings();
-			$settings->loadSettings();
+			$settings = wc_gateway_ppec()->settings->loadSettings();
 			$behavior = $settings->zeroSubtotalBehavior;
 
 			if ( WC_Gateway_PPEC_Settings::zeroSubtotalBehaviorModifyItems == $behavior ) {

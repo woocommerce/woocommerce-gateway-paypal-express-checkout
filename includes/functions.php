@@ -51,8 +51,7 @@ function woo_pp_start_checkout() {
 		wc_add_notice( __( 'Payment error:', 'woocommerce-gateway-paypal-express-checkout' ) . $final_output, 'error' );
 
 		$redirect_url = WC()->cart->get_cart_url();
-		$settings = new WC_Gateway_PPEC_Settings();
-		$settings->loadSettings();
+		$settings = wc_gateway_ppec()->settings->loadSettings();
 
 		if( 'yes' == $settings->enabled && $settings->enableInContextCheckout && $settings->getActiveApiCredentials()->payerID ) {
 			ob_end_clean();

@@ -123,9 +123,8 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 			// Redirect them over to PayPal.
 			try {
 				$redirect_url = $checkout->startCheckoutFromCheckout( $order_id, 'paypal_credit' == $this->id );
-				$settings = new WC_Gateway_PPEC_Settings();
-				$settings->loadSettings();
-				if( $settings->enableInContextCheckout && $settings->getActiveApiCredentials()->payerID ) {
+				$settings     = wc_gateway_ppec()->settings->loadSettings();
+				if ( $settings->enableInContextCheckout && $settings->getActiveApiCredentials()->payerID ) {
 					$redirect_url = 'javascript:woo_pp_checkout_callback("' . urlencode( $redirect_url ) . '");';
 				}
 				return array(
@@ -174,7 +173,8 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 				if ( $need_to_redirect_back ) {
 					// We're explicitly not loading settings here because we don't want in-context checkout
 					// shown when we're redirecting back to PP for a funding source error.
-					$settings = new WC_Gateway_PPEC_Settings();
+					$settings = wc_gateway_ppec()->settings->loadSettings();
+
 					$session->checkout_completed = false;
 					$session->leftFrom = 'order';
 					$session->order_id = $order_id;
@@ -249,8 +249,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 			return;
 		}
 
-		$settings = new WC_Gateway_PPEC_Settings();
-		$settings->loadSettings();
+		$settings = wc_gateway_ppec()->settings->loadSettings();
 
 		if ( ! $settings->ipsPrivateKey ) {
 			// For some reason, the private key isn't there...at all.  Try to generate a new one and bail out.
@@ -369,8 +368,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 
 	protected function ips_return() {
 
-		$settings = new WC_Gateway_PPEC_Settings();
-		$settings->loadSettings();
+		$settings = wc_gateway_ppec()->settings->loadSettings();
 
 		// Make sure we have the merchant ID.
 		if ( empty( $_GET['merchantId'] ) || empty( $_GET[ 'merchantIdInPayPal'] ) || empty( $_GET['env'] ) ) {
@@ -556,8 +554,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 			delete_option( 'woo_pp_admin_error' );
 		}
 
-		$settings = new WC_Gateway_PPEC_Settings();
-		$settings->loadSettings();
+		$settings = wc_gateway_ppec()->settings->loadSettings();
 
 		$enabled              = false;
 		$ppc_enabled          = false;
@@ -739,8 +736,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 	// credentials at all, which isn't an error.  This way allows us to do it without returning an
 	// error because the user didn't fill in the credentials.
 	private function validate_credentials( $environment, &$credentials ) {
-		$settings = new WC_Gateway_PPEC_Settings();
-		$settings->loadSettings();
+		$settings = wc_gateway_ppec()->settings->loadSettings();
 		if ( 'sb' == $environment ) {
 			$full_env = 'sandbox';
 		} else {
@@ -895,8 +891,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 
 		self::$process_admin_options_already_run = true;
 
-		$settings = new WC_Gateway_PPEC_Settings();
-		$settings->loadSettings();
+		$settings = wc_gateway_ppec()->settings->loadSettings();
 
 		$environment = $_POST['woo_pp_environment'];
 
@@ -1084,9 +1079,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 
 	public function process_refund( $order_id, $amount = null, $reason = '' ) {
 
-		// load settings
-		$settings = new WC_Gateway_PPEC_Settings();
-		$settings->loadSettings();
+		$settings = wc_gateway_ppec()->settings->loadSettings();
 
 		$order = new WC_Order( $order_id );
 

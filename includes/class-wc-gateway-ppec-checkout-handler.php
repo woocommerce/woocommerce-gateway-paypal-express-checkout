@@ -48,10 +48,9 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 * After checkout form.
 	 */
 	public function after_checkout_form() {
-		$settings = new WC_Gateway_PPEC_Settings();
-		$settings->loadSettings();
+		$settings = wc_gateway_ppec()->settings->loadSettings();
 
-		if( $settings->enabled && $settings->enableInContextCheckout && $settings->getActiveApiCredentials()->payerID ) {
+		if ( $settings->enabled && $settings->enableInContextCheckout && $settings->getActiveApiCredentials()->payerID ) {
 			$session = WC()->session->paypal;
 			if ( ! $session ) {
 				return;
