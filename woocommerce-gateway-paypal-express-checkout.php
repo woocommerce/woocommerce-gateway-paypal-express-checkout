@@ -1,6 +1,14 @@
 <?php
 /**
  * Plugin Name: WooCommerce PayPal Express Checkout Gateway
+ * Plugin URI: https://woothemes.com
+ * Description: A payment gateway for PayPal Express Checkout ( https://www.paypal.com/us/webapps/mpp/express-checkout ). Requires WC 2.5+
+ * Version: 1.0.0
+ * Author: Automattic/WooCommerce
+ * Author URI: https://woocommerce.com
+ * Copyright: © 2016 WooCommerce / PayPal.
+ * License: GNU General Public License v3.0
+ * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  */
 /**
  * Copyright (c) 2015 PayPal, Inc.
