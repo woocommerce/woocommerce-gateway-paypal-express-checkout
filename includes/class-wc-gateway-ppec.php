@@ -26,7 +26,7 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 		$this->init_form_fields();
 		$this->init_settings();
 
-		$settings = wc_gateway_ppec()->loadSettings();
+		$settings = wc_gateway_ppec()->settings->loadSettings();
 
 		$this->icon    = 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/pp-acceptance-' . $settings->markSize . '.png';
 		$this->enabled = $settings->enabled ? 'yes' : 'no';
