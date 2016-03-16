@@ -68,19 +68,19 @@ class WC_Gateway_PPEC_Cart_Handler {
 		?>
 		<div class="<?php echo esc_attr( $class ); ?>">
 			<div class="<?php echo esc_attr( $inner_class ); ?>">
-				<?php _e( '- OR -', 'wc-gateway-ppce' ); ?>
+				<?php _e( '- OR -', 'woocommerce-gateway-paypal-express-checkout' ); ?>
 			</div>
 
 			<span style="float: right;">
 				<a href="<?php echo esc_url( $redirect ); ?>" id="woo_pp_ec_button">
-					<img src="<?php echo esc_url( $checkout_logo ); ?>" alt="<?php _e( 'Check out with PayPal', 'wc-gateway-ppce' ); ?>" style="width: auto; height: auto;">
+					<img src="<?php echo esc_url( $checkout_logo ); ?>" alt="<?php _e( 'Check out with PayPal', 'woocommerce-gateway-paypal-express-checkout' ); ?>" style="width: auto; height: auto;">
 				</a>
 			</span>
 
 			<?php if ( $settings->ppcEnabled ) : ?>
 				<span style="float: right; padding-right: 5px;">
 					<a href="<?php echo esc_url( $redirect ); ?>" id="woo_pp_ppc_button">
-						<img src="<?php echo esc_url( $credit_logo ); ?>" alt="<?php _e( 'Pay with PayPal Credit', 'wc-gateway-ppce' ); ?>" style="width: auto; height: auto;">
+						<img src="<?php echo esc_url( $credit_logo ); ?>" alt="<?php _e( 'Pay with PayPal Credit', 'woocommerce-gateway-paypal-express-checkout' ); ?>" style="width: auto; height: auto;">
 					</a>
 				</span>
 			<?php endif; ?>

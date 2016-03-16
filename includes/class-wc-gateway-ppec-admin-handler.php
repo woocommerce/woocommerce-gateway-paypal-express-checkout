@@ -37,7 +37,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 			?>
 			<div class="updated fade">
 				<p>
-					<strong><?php _e( 'NOTE: PayPal does not accept decimal places for the currency in which you are transacting.  The "Number of Decimals" option in WooCommerce has automatically been set to 0 for you.', 'woo_pp' ); ?></strong>
+					<strong><?php _e( 'NOTE: PayPal does not accept decimal places for the currency in which you are transacting.  The "Number of Decimals" option in WooCommerce has automatically been set to 0 for you.', 'woocommerce-gateway-paypal-express-checkout' ); ?></strong>
 				</p>
 			</div>
 			<?php

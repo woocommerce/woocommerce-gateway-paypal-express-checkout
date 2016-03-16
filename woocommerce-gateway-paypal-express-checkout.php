@@ -9,6 +9,8 @@
  * Copyright: © 2016 WooCommerce / PayPal.
  * License: GNU General Public License v3.0
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
+ * Text Domain: woocommerce-gateway-paypal-express-checkout
+ * Domain Path: /languages
  */
 /**
  * Copyright (c) 2015 PayPal, Inc.
