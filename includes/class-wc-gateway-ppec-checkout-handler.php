@@ -26,7 +26,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 * @return void
 	 */
 	public function before_checkout_process() {
-		PayPal_Express_Checkout_Gateway::$use_buyer_email = false;
+		WC_Gateway_PPEC::$use_buyer_email = false;
 	}
 
 	/**

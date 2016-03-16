@@ -8,7 +8,7 @@ require_once 'class-checkout.php';
 require_once 'lib/class-transaction.php';
 
 
-class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
+abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 
 	private static $process_admin_options_already_run = false;
 	private static $process_admin_options_validation_error = false;
@@ -17,24 +17,25 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 	public static $use_buyer_email = true;
 
 	public function __construct() {
-		$this->id                 = 'paypal_express_checkout';
-		$this->has_fields         = false;
+
+		$this->has_fields  = false;
+		$this->icon        = false;
+		$this->title       = '';
+		$this->description = '';
+		$this->supports[]  = 'refunds';
+
 		$this->method_title       = __( 'PayPal Express Checkout', 'woocommerce-gateway-paypal-express-checkout' );
 		$this->method_description = __( 'Process payments quickly and securely with PayPal.', 'woocommerce-gateway-paypal-express-checkout' );
-		$this->supports[]         = 'refunds';
 
 		$this->init_form_fields();
-		$this->init_settings();
 
 		$settings = wc_gateway_ppec()->settings->loadSettings();
 
-		$this->icon    = 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/pp-acceptance-' . $settings->markSize . '.png';
-		$this->enabled = $settings->enabled ? 'yes' : 'no';
 
-		$this->set_payment_title();
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
 
 		// Do we need to auto-select this payment method?
+		// TODO: Move this out to particular handler instead of gateway
 		if ( ! is_admin() ) {
 			$session = WC()->session->get( 'paypal' );
 			if ( null != $session && is_a( $session, 'WooCommerce_PayPal_Session_Data' ) && $session->checkout_completed && $session->expiry_time >= time() && $session->payerID ) {
@@ -84,7 +85,7 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 				$_POST = array_merge( $_POST, $posted );
 
 				// Make sure the proper option is selected based on what the buyer picked
-				if ( ! ( $session->using_ppc xor is_a( $this, 'PayPal_Credit_Gateway' ) ) ) {
+				if ( ! ( $session->using_ppc xor is_a( $this, 'WC_Gateway_PPEC_With_Card' ) ) ) {
 					$this->chosen = true;
 				} else {
 					$this->chosen = false;
@@ -1205,10 +1206,6 @@ class PayPal_Express_Checkout_Gateway extends WC_Payment_Gateway {
 				}
 			}
 		}
-	}
-
-	protected function set_payment_title() {
-		$this->title = __( 'PayPal', 'woocommerce-gateway-paypal-express-checkout' );
 	}
 
 }

@@ -193,7 +193,7 @@ class WC_Gateway_PPEC_Plugin {
 	 */
 	public function plugin_action_links( $links ) {
 
-		$section_slug = strtolower( 'PayPal_Express_Checkout_Gateway' );
+		$section_slug = strtolower( 'WC_Gateway_PPEC' );
 
 		$plugin_links = array(
 			'<a href="' . admin_url( 'admin.php?page=wc-settings&tab=checkout&section=' . $section_slug ) . '">' . __( 'Settings', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>',
