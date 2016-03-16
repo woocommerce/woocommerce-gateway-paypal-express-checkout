@@ -82,6 +82,7 @@ class WC_Gateway_PPEC_Plugin {
 
 		add_action( 'plugins_loaded', array( $this, 'bootstrap' ) );
 		add_filter( 'plugin_action_links_' . plugin_basename( $this->file ), array( $this, 'plugin_action_links' ) );
+		add_filter( 'allowed_redirect_hosts' , array( $this, 'whitelist_paypal_domains_for_redirect' ) );
 	}
 
 	public function bootstrap() {
@@ -200,6 +201,21 @@ class WC_Gateway_PPEC_Plugin {
 			'<a href="http://support.woothemes.com/">' . __( 'Support', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>',
 		);
 		return array_merge( $plugin_links, $links );
+	}
+
+	/**
+	 * Allow PayPal domains for redirect.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $domains Whitelisted domains for `wp_safe_redirect`
+	 *
+	 * @return array $domains Whitelisted domains for `wp_safe_redirect`
+	 */
+	public function whitelist_paypal_domains_for_redirect( $domains ) {
+		$domains[] = 'paypal.com';
+
+		return $domains;
 	}
 
 	/**
