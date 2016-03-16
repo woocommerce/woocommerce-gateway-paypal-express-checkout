@@ -109,7 +109,7 @@ class WooCommerce_PayPal_Checkout extends PayPal_Checkout {
 		$settings = wc_gateway_ppec()->settings->loadSettings();
 
 		//new wc order > get address from that order > new pp address > assign address from order to new pp address > $this->setShippingAddress(pp address object)
-		$getAddress = new WC_Order($order_id);
+		$getAddress = wc_get_order( $order_id );
 		$shipAddressName = $getAddress->shipping_first_name . ' ' . $getAddress->shipping_last_name;
 
 		$shipAddress = new PayPal_Address;
@@ -225,7 +225,7 @@ class WooCommerce_PayPal_Checkout extends PayPal_Checkout {
 
 		$settings = wc_gateway_ppec()->settings->loadSettings();
 
-		$order = new WC_Order($order_id);
+		$order = wc_get_order( $order_id );
 		$shipAddressName = $order->shipping_first_name . ' ' . $order->shipping_last_name;
 
 		$shipAddress = new PayPal_Address;

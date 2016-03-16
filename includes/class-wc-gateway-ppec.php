@@ -110,7 +110,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 
 	public function process_payment( $order_id ) {
 
-		$order = new WC_Order( $order_id );
+		$order = wc_get_order( $order_id );
 		$checkout = new WooCommerce_PayPal_Checkout();
 
 		// Check the session.  Are we going to just complete an existing payment, or are we going to
@@ -146,7 +146,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 				$transaction_id = $payment_details->payments[0]->transaction_id;
 
 				// TODO: Handle things like eChecks, giropay, etc.
-				$order = new WC_Order( $order_id );
+				$order = wc_get_order( $order_id );
 				$order->payment_complete( $transaction_id );
 				$order->add_order_note( sprintf( __( 'PayPal transaction completed; transaction ID = %s', 'woocommerce-gateway-paypal-express-checkout' ), $transaction_id ) );
 				$order->reduce_order_stock();
@@ -1081,7 +1081,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 
 		$settings = wc_gateway_ppec()->settings->loadSettings();
 
-		$order = new WC_Order( $order_id );
+		$order = wc_get_order( $order_id );
 
 		if ( 0 == $amount || null == $amount ) {
 			return new WP_Error( 'paypal_refund_error', __( 'Refund Error: You need to specify a refund amount.', 'woocommerce-gateway-paypal-express-checkout' ) );

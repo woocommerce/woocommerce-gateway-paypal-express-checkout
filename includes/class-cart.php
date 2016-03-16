@@ -161,7 +161,7 @@ class WooCommerce_PayPal_Cart extends PayPal_Cart {
 
 	public function loadOrderDetails( $order_id ) {
 
-		$order = new WC_Order( $order_id );
+		$order = wc_get_order( $order_id );
 		$this->totalItemAmount = 0;
 		$this->items = array();
 

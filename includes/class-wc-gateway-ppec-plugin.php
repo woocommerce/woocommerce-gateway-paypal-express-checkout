@@ -302,7 +302,7 @@ class WC_Gateway_PPEC_Plugin {
 					$transaction_id = $payment_details->payments[0]->transaction_id;
 
 					// TODO: Handle things like eChecks, giropay, etc.
-					$order = new WC_Order( $order_id );
+					$order = wc_get_order( $order_id );
 					$order->payment_complete( $transaction_id );
 					$order->add_order_note( sprintf( __( 'PayPal transaction completed; transaction ID = %s', 'woocommerce-gateway-paypal-express-checkout' ), $transaction_id ) );
 					$order->reduce_order_stock();
