@@ -1,19 +1,6 @@
-.woo_pp_cart_buttons_div {
-}
-
-.woo_pp_cart_buttons_inner_div {
-	margin: 15px 0;
-	text-align: right;
-}
-
 .woo_pp_checkout_buttons_div {
 	margin-top: -20px;
 }
-
-.woo_pp_checkout_buttons_inner_div {
-	text-align: right;
-}
-
 .paypal-button-hidden {
 	visibility: hidden;
 }

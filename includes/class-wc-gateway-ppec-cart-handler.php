@@ -46,11 +46,9 @@ class WC_Gateway_PPEC_Cart_Handler {
 		$redirect = add_query_arg( $redirect_arg );
 
 		if ( version_compare( WC()->version, '2.3', '>' ) ) {
-			$class       = 'woo_pp_cart_buttons_div';
-			$inner_class = 'woo_pp_cart_buttons_inner_div';
+			$class = 'woo_pp_cart_buttons_div';
 		} else {
-			$class       = 'woo_pp_checkout_buttons_div';
-			$inner_class = 'woo_pp_checkout_buttons_inner_div';
+			$class = 'woo_pp_checkout_buttons_div';
 		}
 
 		if ( $settings->enableInContextCheckout && $settings->getActiveApiCredentials()->payerID ) {
@@ -67,10 +65,6 @@ class WC_Gateway_PPEC_Cart_Handler {
 		$credit_logo   = 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/ppcredit-logo-' . $settings->buttonSize . '.png';
 		?>
 		<div class="<?php echo esc_attr( $class ); ?>">
-			<div class="<?php echo esc_attr( $inner_class ); ?>">
-				<?php _e( '- OR -', 'woocommerce-gateway-paypal-express-checkout' ); ?>
-			</div>
-
 			<span style="float: right;">
 				<a href="<?php echo esc_url( $redirect ); ?>" id="woo_pp_ec_button">
 					<img src="<?php echo esc_url( $checkout_logo ); ?>" alt="<?php _e( 'Check out with PayPal', 'woocommerce-gateway-paypal-express-checkout' ); ?>" style="width: auto; height: auto;">
@@ -79,6 +73,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 			<?php if ( $settings->ppcEnabled ) : ?>
 				<span style="float: right; padding-right: 5px;">
+
 					<a href="<?php echo esc_url( $redirect ); ?>" id="woo_pp_ppc_button">
 						<img src="<?php echo esc_url( $credit_logo ); ?>" alt="<?php _e( 'Pay with PayPal Credit', 'woocommerce-gateway-paypal-express-checkout' ); ?>" style="width: auto; height: auto;">
 					</a>
