@@ -38,7 +38,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		// TODO: Move this out to particular handler instead of gateway
 		if ( ! is_admin() ) {
 			$session = WC()->session->get( 'paypal' );
-			if ( null != $session && is_a( $session, 'WooCommerce_PayPal_Session_Data' ) && $session->checkout_completed && $session->expiry_time >= time() && $session->payerID ) {
+			if ( null != $session && is_a( $session, 'WC_Gateway_PPEC_Session_Data' ) && $session->checkout_completed && $session->expiry_time >= time() && $session->payerID ) {
 				if ( $session->checkout_details && is_a( $session->checkout_details, 'PayPal_Checkout_Details' ) && ( is_checkout() || is_ajax() ) && self::$use_buyer_email ) {
 					$this->buyer_email = $session->checkout_details->payer_details->email;
 					$this->title .= ' - ' . esc_html( $this->buyer_email );
@@ -117,7 +117,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		// send the user over PayPal to pay?
 
 		$session = WC()->session->get( 'paypal' );
-		if ( ! $session || ! is_a( $session, 'WooCommerce_PayPal_Session_Data' ) ||
+		if ( ! $session || ! is_a( $session, 'WC_Gateway_PPEC_Session_Data' ) ||
 				! $session->checkout_completed || $session->expiry_time < time() ||
 				! $session->payerID ) {
 			// Redirect them over to PayPal.

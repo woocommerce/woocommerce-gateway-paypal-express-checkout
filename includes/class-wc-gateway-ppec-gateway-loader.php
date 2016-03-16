@@ -23,7 +23,7 @@ class WC_Gateway_PPEC_Gateway_Loader {
 		// If the buyer already went through the PP checkout, then filter out the
 		// option they didn't select.
 		$session = is_admin() ? false : WC()->session->get( 'paypal' );
-		if ( ( is_checkout() || is_ajax() ) && $session && is_a( $session, 'WooCommerce_PayPal_Session_Data' ) &&
+		if ( ( is_checkout() || is_ajax() ) && $session && is_a( $session, 'WC_Gateway_PPEC_Session_Data' ) &&
 				$session->checkout_completed && $session->expiry_time >= time() &&
 				$session->payerID ) {
 			if ( $session->using_ppc ) {

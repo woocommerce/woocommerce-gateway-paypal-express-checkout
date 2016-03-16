@@ -34,7 +34,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 */
 	public function checkout_process() {
 		$session = WC()->session->paypal;
-		if ( null != $session && is_a( $session, 'WooCommerce_PayPal_Session_Data' ) && $session->checkout_completed && $session->expiry_time >= time() && $session->payerID ) {
+		if ( null != $session && is_a( $session, 'WC_Gateway_PPEC_Session_Data' ) && $session->checkout_completed && $session->expiry_time >= time() && $session->payerID ) {
 			if ( ! $session->checkout_details->payer_details->billing_address ) {
 				WC()->checkout()->checkout_fields['billing']['billing_address_1']['required'] = false;
 				WC()->checkout()->checkout_fields['billing']['billing_city'     ]['required'] = false;
@@ -56,7 +56,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 				return;
 			}
 
-			if ( ! is_a( $session, 'WooCommerce_PayPal_Session_Data' ) ) {
+			if ( ! is_a( $session, 'WC_Gateway_PPEC_Session_Data' ) ) {
 				return;
 			}
 
@@ -86,7 +86,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		if ( $settings->enableInContextCheckout && $settings->getActiveApiCredentials()->payerID ) {
 			$session = WC()->session->paypal;
 			if ( ! $session
-				|| ! is_a( $session, 'WooCommerce_PayPal_Session_Data' )
+				|| ! is_a( $session, 'WC_Gateway_PPEC_Session_Data' )
 				|| ! $session->checkout_completed || $session->expiry_time < time()
 				|| ! $session->payerID ) {
 

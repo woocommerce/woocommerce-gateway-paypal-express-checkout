@@ -276,7 +276,7 @@ class WC_Gateway_PPEC_Plugin {
 			}
 
 			$session = WC()->session->paypal;
-			if ( ! $session || ! is_a( $session, 'WooCommerce_PayPal_Session_Data' ) ||
+			if ( ! $session || ! is_a( $session, 'WC_Gateway_PPEC_Session_Data' ) ||
 					$session->expiry_time < time() || $token != $session->token ) {
 				wc_add_notice( __( 'Your PayPal checkout session has expired.  Please check out again.', 'woocommerce-gateway-paypal-express-checkout' ), 'error' );
 				return;

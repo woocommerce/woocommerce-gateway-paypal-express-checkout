@@ -9,8 +9,8 @@ $includes_path = wc_gateway_ppec()->includes_path;
 require_once( $includes_path . 'lib/class-checkout.php'        );
 require_once( $includes_path . 'class-cart.php'                );
 require_once( $includes_path . 'lib/class-api.php'             );
-require_once( $includes_path . 'class-wc-gateway-ppec-settings.php'            );
-require_once( $includes_path . 'class-session.php'             );
+require_once( $includes_path . 'class-wc-gateway-ppec-settings.php' );
+require_once( $includes_path . 'class-wc-gateway-ppec-session-data.php' );
 require_once( $includes_path . 'lib/class-checkoutdetails.php' );
 require_once( $includes_path . 'lib/class-exception.php'       );
 require_once( $includes_path . 'lib/class-paymentdetails.php'  );
@@ -86,7 +86,7 @@ class WooCommerce_PayPal_Checkout extends PayPal_Checkout {
 
 		if ( $this->isSuccess( $response ) ) {
 			// Save some data to the session.
-			WC()->session->paypal = new WooCommerce_PayPal_Session_Data(
+			WC()->session->paypal = new WC_Gateway_PPEC_Session_Data(
 				$response['TOKEN'],
 				'cart',
 				false,
@@ -148,7 +148,7 @@ class WooCommerce_PayPal_Checkout extends PayPal_Checkout {
 
 		if ( $this->isSuccess( $response ) ) {
 			// Save some data to the session.
-			WC()->session->paypal = new WooCommerce_PayPal_Session_Data(
+			WC()->session->paypal = new WC_Gateway_PPEC_Session_Data(
 				$response['TOKEN'],
 				'order',
 				$order_id,
@@ -189,7 +189,7 @@ class WooCommerce_PayPal_Checkout extends PayPal_Checkout {
 				throw new PayPal_Missing_Session_Exception();
 			}
 
-			if ( is_a( $session_data, 'WooCommerce_PayPal_Session_Data' ) && $token == $session_data->token ) {
+			if ( is_a( $session_data, 'WC_Gateway_PPEC_Session_Data' ) && $token == $session_data->token ) {
 				$session_data->checkout_details = $checkout_details;
 				WC()->session->paypal = $session_data;
 			} else {
@@ -210,7 +210,7 @@ class WooCommerce_PayPal_Checkout extends PayPal_Checkout {
 			throw new PayPal_Missing_Session_Exception();
 		}
 
-		if ( is_a( $session_data, 'WooCommerce_PayPal_Session_Data' ) && $token == $session_data->token ) {
+		if ( is_a( $session_data, 'WC_Gateway_PPEC_Session_Data' ) && $token == $session_data->token ) {
 			WC()->session->paypal = $session_data;
 		} else {
 			throw new PayPal_Missing_Session_Exception();
