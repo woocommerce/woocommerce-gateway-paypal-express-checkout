@@ -81,6 +81,7 @@ class WC_Gateway_PPEC_Plugin {
 		register_activation_hook( $this->file, array( $this, 'activate' ) );
 
 		add_action( 'plugins_loaded', array( $this, 'bootstrap' ) );
+		add_filter( 'plugin_action_links_' . plugin_basename( $this->file ), array( $this, 'plugin_action_links' ) );
 	}
 
 	public function bootstrap() {
@@ -182,6 +183,23 @@ class WC_Gateway_PPEC_Plugin {
 		$this->admin          = new WC_Gateway_PPEC_Admin_Handler();
 		$this->checkout       = new WC_Gateway_PPEC_Checkout_Handler();
 		$this->cart           = new WC_Gateway_PPEC_Cart_Handler();
+	}
+
+	/**
+	 * Adds plugin action links
+	 *
+	 * @since 1.0.0
+	 */
+	public function plugin_action_links( $links ) {
+
+		$section_slug = strtolower( 'PayPal_Express_Checkout_Gateway' );
+
+		$plugin_links = array(
+			'<a href="' . admin_url( 'admin.php?page=wc-settings&tab=checkout&section=' . $section_slug ) . '">' . __( 'Settings', 'wc-gateway-ppce' ) . '</a>',
+			'<a href="http://docs.woothemes.com/document/woocommerce-gateway-paypal-express-checkout/">' . __( 'Docs', 'wc-gateway-ppce' ) . '</a>',
+			'<a href="http://support.woothemes.com/">' . __( 'Support', 'wc-gateway-ppce' ) . '</a>',
+		);
+		return array_merge( $plugin_links, $links );
 	}
 
 	/**
