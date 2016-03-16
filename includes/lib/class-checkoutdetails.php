@@ -270,7 +270,7 @@ class PayPal_Checkout_Payment_Item_Physical_Details {
 	public $height;
 	public $height_units;
 
-	public function loadFromGetECDetails( $getECResponse, $bucketNum, $itemNum ) {
+	public function loadFromGetECResponse( $getECResponse, $bucketNum, $itemNum ) {
 		$map = array(
 			'WEIGHTVALUE' => 'weight',
 			'WEIGHTUNIT'  => 'weight_units',
@@ -301,7 +301,7 @@ class PayPal_Checkout_Payment_Item_Ebay_Item_Details {
 	public $order_id               = false;
 	public $cart_id                = false;
 
-	public function loadFromGetECDetails( $getECResponse, $bucketNum, $itemNum ) {
+	public function loadFromGetECResponse( $getECResponse, $bucketNum, $itemNum ) {
 		$map = array(
 			'ITEMNUMBER'   => 'item_number',
 			'AUCTIONTXNID' => 'auction_transaction_id',
