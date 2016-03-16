@@ -39,12 +39,6 @@ class WC_Gateway_PPEC_Cart_Handler {
 			return;
 		}
 
-		$redirect_arg = array( 'startcheckout' => 'true' );
-		if ( $settings->ppcEnabled ) {
-			$redirect_arg['use-ppc'] = 'true';
-		}
-		$redirect = add_query_arg( $redirect_arg );
-
 		if ( version_compare( WC()->version, '2.3', '>' ) ) {
 			$class = 'woo_pp_cart_buttons_div';
 		} else {
@@ -56,10 +50,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 		}
 
 		$redirect_arg = array( 'startcheckout' => 'true' );
-		if ( $settings->ppcEnabled ) {
-			$redirect_arg['use-ppc'] = 'true';
-		}
-		$redirect = add_query_arg( $redirect_arg );
+		$redirect     = add_query_arg( $redirect_arg );
 
 		$checkout_logo = 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-' . $settings->buttonSize . '.png';
 		$credit_logo   = 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/ppcredit-logo-' . $settings->buttonSize . '.png';
@@ -72,6 +63,9 @@ class WC_Gateway_PPEC_Cart_Handler {
 			</span>
 
 			<?php if ( $settings->ppcEnabled ) : ?>
+				<?php
+				$redirect = add_query_arg( array( 'use-ppc' => 'true' ), $redirect );
+				?>
 				<span style="float: right; padding-right: 5px;">
 
 					<a href="<?php echo esc_url( $redirect ); ?>" id="woo_pp_ppc_button">
