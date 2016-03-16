@@ -46,9 +46,9 @@ function woo_pp_start_checkout() {
 	} catch( PayPal_API_Exception $e ) {
 		$final_output = '';
 		foreach ( $e->errors as $error ) {
-			$final_output .= '<li>' . __( $error->mapToBuyerFriendlyError(), 'woo_pp' ) . '</li>';
+			$final_output .= '<li>' . __( $error->mapToBuyerFriendlyError(), 'woocommerce-gateway-paypal-express-checkout' ) . '</li>';
 		}
-		wc_add_notice( __( 'Payment error:', 'woo_pp' ) . $final_output, 'error' );
+		wc_add_notice( __( 'Payment error:', 'woocommerce-gateway-paypal-express-checkout' ) . $final_output, 'error' );
 
 		$redirect_url = WC()->cart->get_cart_url();
 		$settings = new WC_Gateway_PPEC_Settings();
