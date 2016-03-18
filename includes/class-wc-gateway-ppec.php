@@ -1201,4 +1201,21 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		}
 	}
 
+	/**
+	 * Get the transaction URL.
+	 *
+	 * @param  WC_Order $order
+	 * @return string
+	 */
+	public function get_transaction_url( $order ) {
+		$settings = wc_gateway_ppec()->settings->loadSettings();
+		if ( 'sandbox' === $settings->environment ) {
+			$this->view_transaction_url = 'https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_view-a-trans&id=%s';
+		} else {
+			$this->view_transaction_url = 'https://www.paypal.com/cgi-bin/webscr?cmd=_view-a-trans&id=%s';
+		}
+
+		return parent::get_transaction_url( $order );
+	}
+
 }
