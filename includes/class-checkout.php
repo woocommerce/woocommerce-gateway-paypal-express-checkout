@@ -15,6 +15,9 @@ require_once( $includes_path . 'lib/class-exception.php'       );
 require_once( $includes_path . 'lib/class-paymentdetails.php'  );
 require_once( $includes_path . 'lib/class-address.php'         );
 
+/**
+ * TODO: Merge this with class-wc-gateway-ppec-checkout-handler.php
+ */
 class WooCommerce_PayPal_Checkout {
 
 	protected $_cart;
