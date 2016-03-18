@@ -6,7 +6,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 $includes_path = wc_gateway_ppec()->includes_path;
 
-require_once( $includes_path . 'class-cart.php'                );
 require_once( $includes_path . 'lib/class-api.php'             );
 require_once( $includes_path . 'class-wc-gateway-ppec-settings.php' );
 require_once( $includes_path . 'class-wc-gateway-ppec-session-data.php' );
@@ -20,7 +19,6 @@ require_once( $includes_path . 'lib/class-address.php'         );
  */
 class WooCommerce_PayPal_Checkout {
 
-	protected $_cart;
 	protected $_suppressShippingAddress;
 
 	// $_shippingAddress can be a single PayPal_Address object, or an array of PayPal_Address objects
@@ -30,12 +28,9 @@ class WooCommerce_PayPal_Checkout {
 	protected $_enablePayPalCredit;
 
 	public function __construct() {
-		$this->_cart = false;
 		$this->_suppressShippingAddress = false;
 		$this->_shippingAddress = false;
 		$this->_requestBillingAgreement = false;
-
-		$this->_cart = new WooCommerce_PayPal_Cart();
 	}
 
 	public function enablePayPalCredit( $enable = true ) {
@@ -81,7 +76,7 @@ class WooCommerce_PayPal_Checkout {
 
 	public function getSetExpressCheckoutParameters() {
 		// First off, get the cart parameters
-		$params = $this->_cart->setECParams();
+		$params = wc_gateway_ppec()->cart->setECParams();
 
 		// Now work through the checkout-level variables.
 		if ( $this->_suppressShippingAddress ) {
@@ -110,7 +105,7 @@ class WooCommerce_PayPal_Checkout {
 	}
 
 	public function getDoExpressCheckoutParameters( $token, $payer_id ) {
-		$params = $this->_cart->setECParams();
+		$params = wc_gateway_ppec()->cart->setECParams();
 
 		if ( false !== $this->_shippingAddress ) {
 			if ( is_array( $this->_shippingAddress ) ) {
@@ -166,7 +161,7 @@ class WooCommerce_PayPal_Checkout {
 
 	public function startCheckoutFromCart() {
 
-		$this->_cart->loadCartDetails();
+		wc_gateway_ppec()->cart->loadCartDetails();
 
 		$settings = wc_gateway_ppec()->settings->loadSettings();
 
@@ -216,7 +211,7 @@ class WooCommerce_PayPal_Checkout {
 
 	public function startCheckoutFromCheckout( $order_id, $use_ppc = false ) {
 
-		$this->_cart->loadOrderDetails( $order_id );
+		wc_gateway_ppec()->cart->loadOrderDetails( $order_id );
 
 		$settings = wc_gateway_ppec()->settings->loadSettings();
 
@@ -333,7 +328,7 @@ class WooCommerce_PayPal_Checkout {
 			$this->getCheckoutDetails( $token );
 		}
 
-		$this->_cart->loadOrderDetails( $order_id );
+		wc_gateway_ppec()->cart->loadOrderDetails( $order_id );
 
 		$settings = wc_gateway_ppec()->settings->loadSettings();
 
