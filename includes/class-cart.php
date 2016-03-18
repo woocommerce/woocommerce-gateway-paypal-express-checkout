@@ -4,6 +4,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+/**
+ * TODO: Merge this with class-wc-gateway-ppec-cart-handler.php
+ */
 class WooCommerce_PayPal_Cart {
 
 	/**
