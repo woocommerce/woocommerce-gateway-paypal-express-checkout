@@ -264,9 +264,8 @@ class WC_Gateway_PPEC_Plugin {
 				return;
 			}
 
-			$checkout = new WooCommerce_PayPal_Checkout();
 			try {
-				$checkout_details = $checkout->getCheckoutDetails( $token );
+				$checkout_details = $this->checkout->getCheckoutDetails( $token );
 			} catch( PayPal_API_Exception $e ) {
 				wc_add_notice( __( 'Sorry, an error occurred while trying to retrieve your information from PayPal.  Please try again.', 'woocommerce-gateway-paypal-express-checkout' ), 'error' );
 				return;
@@ -296,10 +295,9 @@ class WC_Gateway_PPEC_Plugin {
 			if ( 'order' == $session->leftFrom && $session->order_id ) {
 				// Try to complete the payment now.
 				try {
-					$order_id = $session->order_id;
-					$checkout = new WooCommerce_PayPal_Checkout();
-					$payment_details = $checkout->completePayment( $order_id, $session->token, $session->payerID );
-					$transaction_id = $payment_details->payments[0]->transaction_id;
+					$order_id        = $session->order_id;
+					$payment_details = $this->checkout->completePayment( $order_id, $session->token, $session->payerID );
+					$transaction_id  = $payment_details->payments[0]->transaction_id;
 
 					// TODO: Handle things like eChecks, giropay, etc.
 					$order = wc_get_order( $order_id );

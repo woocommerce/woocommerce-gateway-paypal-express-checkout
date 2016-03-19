@@ -37,7 +37,7 @@ function woo_pp_generate_private_key() {
 }
 
 function woo_pp_start_checkout() {
-	$checkout = new WooCommerce_PayPal_Checkout();
+	$checkout = wc_gateway_ppec()->checkout;
 
 	try {
 		$redirect_url = $checkout->startCheckoutFromCart();

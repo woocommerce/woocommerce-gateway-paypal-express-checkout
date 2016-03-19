@@ -4,9 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-require_once 'class-checkout.php';
 require_once 'lib/class-transaction.php';
-
 
 abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 
@@ -111,7 +109,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 	public function process_payment( $order_id ) {
 
 		$order = wc_get_order( $order_id );
-		$checkout = new WooCommerce_PayPal_Checkout();
+		$checkout = wc_gateway_ppec()->checkout;
 
 		// Check the session.  Are we going to just complete an existing payment, or are we going to
 		// send the user over PayPal to pay?
