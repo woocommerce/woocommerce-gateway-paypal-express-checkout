@@ -170,7 +170,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 		// if they do not match, check to see what the merchant would like to do
 		// options are to remove line items or add a line item to adjust for the difference
 		if ( $this->totalItemAmount != $roundedPayPalTotal ) {
-			$settings         = $settings = wc_gateway_ppec()->settings->loadSettings();
+			$settings         = wc_gateway_ppec()->settings->loadSettings();
 			$subtotalBehavior = $settings->subtotalMismatchBehavior;
 
 			if ( WC_Gateway_PPEC_Settings::subtotalMismatchBehaviorAddLineItem == $subtotalBehavior ) {
