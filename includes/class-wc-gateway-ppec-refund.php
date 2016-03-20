@@ -4,25 +4,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-require_once( 'class-api.php' );
+require_once( 'lib/class-api.php' );
 
-class PayPal_Transaction {
+class WC_Gateway_PPEC_Refund {
 
-	public $txnID;
-	public $settings;
+	public static function refund_order( $order, $amount, $refundType, $reason, $currency ) {
+		$settings = wc_gateway_ppec()->settings->loadSettings();
 
-	public function __construct( $txnID, $settings ) {
-		$this->txnID = $txnID;
-		$this->settings = $settings;
-	}
-
-	public function doRefund( $amount, $refundType, $reason, $currency ) {
-
-		// create API object
-		$api = new PayPal_API( $this->settings->getActiveApiCredentials(), $this->settings->getActiveEnvironment() );
+		// create API object.
+		$api = new PayPal_API( $settings->getActiveApiCredentials(), $settings->environment );
 
 		// add refund params
-		$params['TRANSACTIONID'] = $this->txnID;
+		$params['TRANSACTIONID'] = $order->get_transaction_id();
 		$params['REFUNDTYPE']    = $refundType;
 		$params['AMT']           = $amount;
 		$params['CURRENCYCODE']  = $currency;
@@ -39,7 +32,6 @@ class PayPal_Transaction {
 		} else {
 			throw new PayPal_API_Exception( $response );
 		}
-
 	}
 
 }

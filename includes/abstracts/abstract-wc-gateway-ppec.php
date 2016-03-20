@@ -4,8 +4,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-require_once 'lib/class-transaction.php';
-
 abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 
 	private static $process_admin_options_already_run = false;
@@ -1102,9 +1100,9 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 				} else {
 					$refundType = 'Partial';
 				}
-				$refundTransaction = new PayPal_Transaction( $value['txnID'], $settings );
+
 				try {
-					$refundTxnID = $refundTransaction->doRefund( $amount, $refundType, $reason, $order->get_order_currency() );
+					$refundTxnID = WC_Gateway_PPEC_Refund::refund_order( $order, $amount, $refundType, $reason, $order->get_order_currency() );
 					$txnData['refundable_txns'][ $key ]['refunded_amount'] += $amount;
 					$order->add_order_note( sprintf( $refundTxnID, __( 'PayPal refund completed; transaction ID = %s', 'woocommerce-gateway-paypal-express-checkout' ), $refundTxnID ) );
 					update_post_meta( $order_id, '_woo_pp_txnData', $txnData );
@@ -1128,9 +1126,9 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 			$refundableAmount = $value['amount'] - $value['refunded_amount'];
 
 			if ( $amount < $refundableAmount ) {
-				$refundTransaction = new PayPal_Transaction( $value['txnID'], $settings );
+
 				try {
-					$refundTxnID = $refundTransaction->doRefund( $amount, 'Partial', $reason, $order->get_order_currency() );
+					$refundTxnID = WC_Gateway_PPEC_Refund::refund_order( $order, $amount, 'Partial', $reason, $order->get_order_currency() );
 					$txnData['refundable_txns'][ $key ]['refunded_amount'] += $amount;
 					$order->add_order_note( sprintf( __( 'PayPal refund completed; transaction ID = %s', 'woocommerce-gateway-paypal-express-checkout' ), $refundTxnID ) );
 					update_post_meta( $order_id, '_woo_pp_txnData', $txnData );
@@ -1178,9 +1176,9 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 					} else {
 						$refundType = 'Partial';
 					}
-					$refundTransaction = new PayPal_Transaction( $value['txnID'], $settings );
+
 					try {
-						$refundTxnID = $refundTransaction->doRefund( $amount_to_refund, $refundType, $reason, $order->get_order_currency() );
+						$refundTxnID = WC_Gateway_PPEC_Refund::refund_order( $order, $amount_to_refund, $refundType, $reason, $order->get_order_currency() );
 						$total_to_refund -= $amount_to_refund;
 						$txnData['refundable_txns'][ $key ]['refunded_amount'] += $amount_to_refund;
 						$order->add_order_note( sprintf( __( 'PayPal refund completed; transaction ID = %s', 'woocommerce-gateway-paypal-express-checkout' ), $refundTxnID ) );
