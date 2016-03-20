@@ -5,7 +5,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 require_once( 'class-api.php' );
-require_once( 'class-settings.php' );
 
 class PayPal_Transaction {
 

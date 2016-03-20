@@ -4,11 +4,37 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-require_once( 'lib/class-settings.php' );
 require_once( 'lib/class-signature.php' );
 require_once( 'lib/class-certificate.php' );
 
-class WC_Gateway_PPEC_Settings extends PayPal_Settings {
+class WC_Gateway_PPEC_Settings {
+
+	protected $params;
+	protected $validParams = array(
+		'enabled',
+		'ppcEnabled',
+		'environment',
+		'liveApiCredentials',
+		'sandboxApiCredentials',
+		'enableInContextCheckout',
+		'buttonSize',
+		'markSize',
+		'logoImageUrl',
+		'paymentAction',
+		'allowGuestCheckout',
+		'zeroSubtotalBehavior',
+		'subtotalMismatchBehavior',
+		'ipnUrl',
+		'blockEChecks',
+		'requireBillingAddress',
+		'liveAccountIsEnabledForBillingAddress',
+		'sbAccountIsEnabledForBillingAddress',
+		'ipsPrivateKey',
+	);
+
+	const PaymentActionSale          = 'Sale';
+	const PaymentActionAuthorization = 'Authorization';
+	const PaymentActionOrder         = 'Order';
 
 	const zeroSubtotalBehaviorModifyItems                   = 'modifyItems';
 	const zeroSubtotalBehaviorOmitLineItems                 = 'omitLineItems';
@@ -32,18 +58,117 @@ class WC_Gateway_PPEC_Settings extends PayPal_Settings {
 	 */
 	private $_is_setting_loaded = false;
 
-	public function __construct() {
-		$this->validParams = array_merge( $this->validParams, array(
-			'enabled',
-			'ppcEnabled',
-			'buttonSize',
-			'markSize',
-			'zeroSubtotalBehavior',
-			'subtotalMismatchBehavior',
-			'liveAccountIsEnabledForBillingAddress',
-			'sbAccountIsEnabledForBillingAddress',
-			'ipsPrivateKey'
-		) );
+	public function __get( $name ) {
+		if ( in_array( $name, $this->validParams ) ) {
+			// Run the value through sanitization functions, if they exist
+			$func_name = '_sanitize_' . $name;
+			if ( method_exists( $this, $func_name ) ) {
+				return $this->$func_name( $this->params[ $name ] );
+			} else if ( array_key_exists( $name, $this->params ) ) {
+				return $this->params[ $name ];
+			} else {
+				return null;
+			}
+		}
+
+		return null;
+	}
+
+	public function __set( $name, $value ) {
+		if ( in_array( $name, $this->validParams ) ) {
+			// Run the value through sanitization and validation functions, if they exist
+			$func_name = '_sanitize_' . $name;
+			if ( method_exists( $this, $func_name ) ) {
+				$value = $this->$func_name( $value );
+			}
+
+			$func_name = '_validate_' . $name;
+			if ( method_exists( $this, $func_name ) ) {
+				if ( $this->$func_name( $value ) ) {
+					$this->params[ $name ] = $value;
+				}
+			} else {
+				$this->params[ $name ] = $value;
+			}
+		}
+	}
+
+	public function __isset( $name ) {
+		if ( in_array( $name, $this->validParams ) ) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public function setApiSignatureCredentials( $username, $password, $signature, $subject = false, $environment = 'sandbox' ) {
+		if ( 'live' == $environment ) {
+			$this->liveApiCredentials = new PayPal_Signature_Credentials( $username, $password, $signature, $subject );
+		} else {
+			$this->sandboxApiCredentials = new PayPal_Signature_Credentials( $username, $password, $signature, $subject );
+		}
+	}
+
+	public function setApiCertificateCredentialsFromFile( $username, $password, $certFile, $subject = false, $environment = 'sandbox' ) {
+		$certString = file_get_contents( $certFile );
+		if ( FALSE === $cert ) {
+			// Failed to load the certificate
+			// TODO: Add some logging
+			return false;
+		}
+
+		$this->setApiCertificateCredentialsFromString( $username, $password, $certString, $subject, $environment );
+
+		return true;
+
+	}
+
+	public function setApiCertificateCredentialsFromString( $username, $password, $certString, $subject = false, $environment = 'sandbox' ) {
+		if ( 'live' == $environment ) {
+			$this->liveApiCredentials = new PayPal_Certificate_Credentials( $username, $password, $certString, $subject );
+		} else {
+			$this->sandboxApiCredentials = new PayPal_Certificate_Credentials( $username, $password, $certString, $subject );
+		}
+	}
+
+	public function getActiveApiCredentials() {
+		if ( $this->environment == 'live' ) {
+			return $this->liveApiCredentials;
+		} else {
+			return $this->sandboxApiCredentials;
+		}
+	}
+
+	public function getPayPalRedirectUrl( $token, $commit = false ) {
+		$url = 'https://www.';
+
+		if ( $this->environment != 'live' ) {
+			$url .= 'sandbox.';
+		}
+
+		$url .= 'paypal.com/';
+
+		if ( $this->enableInContextCheckout ) {
+			$url .= 'checkoutnow?';
+		} else {
+			$url .= 'cgi-bin/webscr?cmd=_express-checkout&';
+		}
+
+		$url .= 'token=' . urlencode( $token );
+
+		if ( $commit ) {
+			$url .= '&useraction=commit';
+		}
+
+		return $url;
+	}
+
+	protected function _validate_paymentAction( $value ) {
+		if ( self::PaymentActionSale != $value && self::PaymentActionAuthorization != $value && self::PaymentActionOrder != $value ) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 	public function getSetECShortcutParameters() {
@@ -55,6 +180,97 @@ class WC_Gateway_PPEC_Settings extends PayPal_Settings {
 	}
 	public function getDoECParameters() {
 		return $this->getBaseDoECParameters();
+	}
+
+	/**
+	 * TODO: Probably merge with getSetECShortcutParameters
+	 */
+	protected function getBaseSetECShortcutParameters( $buckets = 1 ) {
+		$params = array();
+
+		if ( $this->logoImageUrl ) {
+			$params['LOGOIMG'] = $this->logoImageUrl;
+		}
+
+		if ( $this->allowGuestCheckout ) {
+			$params['SOLUTIONTYPE'] = 'Sole';
+		}
+
+		if ( ! is_array( $buckets ) ) {
+			$numBuckets = $buckets;
+			$buckets = array();
+			for ( $i = 0; $i < $numBuckets; $i++ ) {
+				$buckets[] = $i;
+			}
+		}
+
+		if ( $this->requireBillingAddress ) {
+			$params['REQBILLINGADDRESS'] = '1';
+		}
+
+		foreach ( $buckets as $bucketNum ) {
+			$params[ 'PAYMENTREQUEST_' . $bucketNum . '_PAYMENTACTION' ] = $this->paymentAction;
+			if ( $this->blockEChecks ) $params[ 'PAYMENTREQUEST_' . $bucketNum . '_ALLOWEDPAYMENTMETHOD' ] = 'InstantPaymentOnly';
+		}
+
+		return $params;
+	}
+
+	/**
+	 * TODO: Probably merge with getSetECMarkParameters
+	 */
+	protected function getBaseSetECMarkParameters( $buckets = 1 ) {
+		$params = array();
+
+		if ( $this->logoImageUrl ) {
+			$params['LOGOIMG'] = $this->logoImageUrl;
+		}
+
+		if ( $this->allowGuestCheckout ) {
+			$params['SOLUTIONTYPE'] = 'Sole';
+		}
+
+		if ( ! is_array( $buckets ) ) {
+			$numBuckets = $buckets;
+			$buckets = array();
+			for ( $i = 0; $i < $numBuckets; $i++ ) {
+				$buckets[] = $i;
+			}
+		}
+
+		if ( $this->requireBillingAddress ) {
+			$params['REQBILLINGADDRESS'] = '1';
+		}
+
+		foreach ( $buckets as $bucketNum ) {
+			$params[ 'PAYMENTREQUEST_' . $bucketNum . '_PAYMENTACTION' ] = $this->paymentAction;
+			if ( $this->blockEChecks ) {
+				$params[ 'PAYMENTREQUEST_' . $bucketNum . '_ALLOWEDPAYMENTMETHOD' ] = 'InstantPaymentOnly';
+			}
+		}
+
+		return $params;
+	}
+
+	/**
+	 * TODO: Probably merge with getDoECParameters
+	 */
+	protected function getBaseDoECParameters( $buckets = 1 ) {
+		$params = array();
+		if ( ! is_array( $buckets ) ) {
+			$numBuckets = $buckets;
+			$buckets = array();
+			for ( $i = 0; $i < $numBuckets; $i++ ) {
+				$buckets[] = $i;
+			}
+		}
+
+		foreach ( $buckets as $bucketNum ) {
+			$params[ 'PAYMENTREQUEST_' . $bucketNum . '_NOTIFYURL' ] = $this->ipnUrl;
+			$params[ 'PAYMENTREQUEST_' . $bucketNum . '_PAYMENTACTION' ] = $this->paymentAction;
+		}
+
+		return $params;
 	}
 
 	protected function _sanitize_zeroSubtotalBehavior( $behavior ) {
