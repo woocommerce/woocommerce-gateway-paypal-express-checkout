@@ -27,23 +27,6 @@ abstract class PayPal_Settings {
 	const PaymentActionAuthorization = 'Authorization';
 	const PaymentActionOrder         = 'Order';
 
-	// START: Compatibility with previous versions
-	public function __call( $name, $arguments ) {
-		if ( 'get' == substr( $name, 0, 3 ) ) {
-			$varname = lcfirst( substr( $name, 3 ) );
-			if ( 'activeEnvironment' == $varname ) {
-				return $this->__get( 'environment' );
-			} else {
-				return $this->__get( $varname );
-			}
-		}
-		if ( 'set' == substr( $name, 0, 3 ) ) {
-			$varname = lcfirst( substr( $name, 3 ) );
-			$this->__set( $varname, $arguments[0] );
-		}
-	}
-	// END: Compatibility with previous versions
-
 	public function __get( $name ) {
 		if ( in_array( $name, $this->validParams ) ) {
 			// Run the value through sanitization functions, if they exist
@@ -55,15 +38,9 @@ abstract class PayPal_Settings {
 			} else {
 				return null;
 			}
-		} else {
-			// START: Compatibility with previous versions
-			if ( '_' == substr( $name, 0, 1 ) ) {
-				$actual_name = substr( $name, 1 );
-				return $this->__get( $actual_name );
-			}
-			// END: Compatibility with previous versions
-			return null;
 		}
+
+		return null;
 	}
 
 	public function __set( $name, $value ) {
