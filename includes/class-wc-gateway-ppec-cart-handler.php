@@ -143,7 +143,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 			$decimals = 2;
 		}
 
-		$discounts = round( WC()->cart->get_order_discount_total(), $decimals );
+		$discounts = round( WC()->cart->get_cart_discount_total(), $decimals );
 		foreach ( WC()->cart->cart_contents as $cart_item_key => $values ) {
 			$amount = round( $values['line_total'] / $values['quantity'] , $decimals );
 			$item   = array(
