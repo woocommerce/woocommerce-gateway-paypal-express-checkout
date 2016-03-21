@@ -236,13 +236,6 @@ class WC_Gateway_PPEC_IPS_Handler {
 		$request->merchant_payer_id = $payer_id;
 		$request->environment = $env;
 
-		// $curl = curl_init( 'http://ipsis-vip.ext.external.paypalc3.com/onboarding/end' );
-		// curl_setopt( $curl, CURLOPT_RETURNTRANSFER, TRUE );
-		// curl_setopt( $curl, CURLOPT_POST, TRUE );
-		// curl_setopt( $curl, CURLOPT_POSTFIELDS, json_encode( $request ) );
-		// curl_setopt( $curl, CURLOPT_CAINFO, __DIR__ . '/pem/falconmm.pem' );
-		// curl_setopt( $curl, CURLOPT_SSL_CIPHER_LIST, 'TLSv1' );
-
 		$request_args = array(
 			'method'      => 'POST',
 			'body'        => json_encode( $request ),
@@ -251,7 +244,6 @@ class WC_Gateway_PPEC_IPS_Handler {
 		);
 
 		$response = wp_safe_remote_post( WC_Gateway_PPEC_IPS_Handler::ONBOARDING_END_URL, $request_args );
-
 
 		if ( is_wp_error( $response ) ) {
 			$this->ips_redirect_and_die( __( 'Sorry, Easy Setup encountered an error.  Please try again.', 'woocommerce-gateway-paypal-express-checkout' ) );
