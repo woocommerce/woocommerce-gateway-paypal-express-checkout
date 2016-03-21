@@ -136,9 +136,6 @@ class WC_Gateway_PPEC_Plugin {
 	protected function _run() {
 		require_once( $this->includes_path . 'functions.php' );
 		$this->_load_handlers();
-
-		// TODO: move this out to specific handler, not in this class.
-		add_action( 'woocommerce_init', array( $this, 'woocommerce_init' ) );
 	}
 
 	/**
@@ -184,6 +181,7 @@ class WC_Gateway_PPEC_Plugin {
 		require_once( $this->includes_path . 'class-wc-gateway-ppec-admin-handler.php' );
 		require_once( $this->includes_path . 'class-wc-gateway-ppec-checkout-handler.php' );
 		require_once( $this->includes_path . 'class-wc-gateway-ppec-cart-handler.php' );
+		require_once( $this->includes_path . 'class-wc-gateway-ppec-ips-handler.php' );
 
 		$this->settings = new WC_Gateway_PPEC_Settings();
 		$this->settings->loadSettings();
@@ -192,6 +190,7 @@ class WC_Gateway_PPEC_Plugin {
 		$this->admin          = new WC_Gateway_PPEC_Admin_Handler();
 		$this->checkout       = new WC_Gateway_PPEC_Checkout_Handler();
 		$this->cart           = new WC_Gateway_PPEC_Cart_Handler();
+		$this->ips            = new WC_Gateway_PPEC_IPS_Handler();
 
 		$this->client = new WC_Gateway_PPEC_Client( $this->settings->getActiveApiCredentials(), $this->settings->environment );
 	}
@@ -227,34 +226,9 @@ class WC_Gateway_PPEC_Plugin {
 		$domains[] = 'paypal.com';
 		$domains[] = 'www.sandbox.paypal.com';
 		$domains[] = 'sandbox.paypal.com';
+		$domains[] = 'ipsis-vip.ext.external.paypalc3.com';
 
 		return $domains;
 	}
 
-	/**
-	 * @todo move this out to specific handler, not in this class.
-	 */
-	public function woocommerce_init() {
-		// If the plugin was just activated, generate a private/public key pair for use with Easy Setup.
-		if ( get_option( 'pp_woo_justActivated' ) ) {
-			delete_option( 'pp_woo_justActivated' );
-			woo_pp_async_generate_private_key();
-		}
-
-		if ( isset( $_GET['start-ips-keygen'] ) && 'true' == $_GET['start-ips-keygen'] ) {
-			woo_pp_generate_private_key();
-			exit;
-		}
-
-
-
-		// Also start buffering if we're on an admin page and the merchant is trying to use Easy Signup.
-		$is_ips_signup = isset( $_GET['ips-signup'] ) && 'true' == $_GET['ips-signup'];
-		$is_ips_return = isset( $_GET['ips-return'] ) && 'true' == $_GET['ips-return'];
-		if ( is_admin() && ( $is_ips_signup || $is_ips_return ) ) {
-			ob_start();
-		}
-
-
-	}
 }
