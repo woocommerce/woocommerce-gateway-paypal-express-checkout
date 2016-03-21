@@ -224,4 +224,67 @@ class WC_Gateway_PPEC_Client {
 		return $this->_request( $params );
 	}
 
+	public function test_api_credentials( $credentials, $environment = 'sandbox' ) {
+		$this->set_credential( $credentials );
+		$this->set_environment( $environment );
+
+		$result = $this->get_pal_details();
+
+		if ( 'Success' != $result['ACK'] && 'SuccessWithWarning' != $result['ACK'] ) {
+			// Look at the result a little more closely to make sure it's a credentialing issue.
+			$found_10002 = false;
+			foreach ( $result as $index => $value ) {
+				if ( preg_match( '/^L_ERRORCODE\d+$/', $index ) ) {
+					if ( '10002' == $value ) {
+						$found_10002 = true;
+					}
+				}
+			}
+
+			if ( $found_10002 ) {
+				return false;
+			} else {
+				// Call failed for some other reason.
+				throw new PayPal_API_Exception( $result );
+			}
+		}
+
+		return $result['PAL'];
+	}
+
+	// Probe to see whether the merchant has the billing address feature enabled.  We do this
+	// by running a SetExpressCheckout call with REQBILLINGADDRESS set to 1; if the merchant has
+	// this feature enabled, the call will complete successfully; if they do not, the call will
+	// fail with error code 11601.
+	public function test_for_billing_address_enabled( $credentials, $environment = 'sandbox' ) {
+		$this->set_credential( $credentials );
+		$this->set_environment( $environment );
+
+		$req = array(
+			'RETURNURL'         => home_url( '/' ),
+			'CANCELURL'         => home_url( '/' ),
+			'REQBILLINGADDRESS' => '1',
+			'AMT'               => '1.00'
+		);
+		$result = $this->set_express_checkout( $req );
+
+		if ( 'Success' != $result['ACK'] && 'SuccessWithWarning' != $result['ACK'] ) {
+			$found_11601 = false;
+			foreach ( $result as $index => $value ) {
+				if ( preg_match( '/^L_ERRORCODE\d+$/', $index ) ) {
+					if ( '11601' == $value ) {
+						$found_11601 = true;
+					}
+				}
+			}
+
+			if ( $found_11601 ) {
+				return false;
+			} else {
+				throw new PayPal_API_Exception( $result );
+			}
+		}
+
+		return true;
+	}
 }
