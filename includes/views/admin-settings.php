@@ -435,7 +435,6 @@ if ( $sb_cert ) {
 				<select name="woo_pp_payment_action" id="woo_pp_payment_action">
 					<option value="<?php echo WC_Gateway_PPEC_Settings::PaymentActionSale; ?>"<?php selected( $payment_action, WC_Gateway_PPEC_Settings::PaymentActionSale ); ?>><?php _e( 'Sale', 'woocommerce-gateway-paypal-express-checkout' ); ?></option>
 					<option value="<?php echo WC_Gateway_PPEC_Settings::PaymentActionAuthorization; ?>"<?php selected( $payment_action, WC_Gateway_PPEC_Settings::PaymentActionAuthorization ); ?>><?php _e( 'Authorization', 'woocommerce-gateway-paypal-express-checkout' ); ?></option>
-					<option value="<?php echo WC_Gateway_PPEC_Settings::PaymentActionOrder; ?>"<?php selected( $payment_action, WC_Gateway_PPEC_Settings::PaymentActionOrder ); ?>><?php _e( 'Order', 'woocommerce-gateway-paypal-express-checkout' ); ?></option>
 				</select>
 			</fieldset>
 		</td>

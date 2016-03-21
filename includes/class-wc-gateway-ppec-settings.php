@@ -31,7 +31,6 @@ class WC_Gateway_PPEC_Settings {
 
 	const PaymentActionSale          = 'Sale';
 	const PaymentActionAuthorization = 'Authorization';
-	const PaymentActionOrder         = 'Order';
 
 	const zeroSubtotalBehaviorModifyItems                   = 'modifyItems';
 	const zeroSubtotalBehaviorOmitLineItems                 = 'omitLineItems';
@@ -302,11 +301,7 @@ class WC_Gateway_PPEC_Settings {
 	}
 
 	protected function _validate_paymentAction( $value ) {
-		if ( self::PaymentActionSale != $value && self::PaymentActionAuthorization != $value && self::PaymentActionOrder != $value ) {
-			return false;
-		} else {
-			return true;
-		}
+		return in_array( $value, array( self::PaymentActionSale, self::PaymentActionAuthorization ) );
 	}
 
 	/**
