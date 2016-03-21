@@ -8,26 +8,26 @@ if ( ! defined( 'ABSPATH' ) ) {
 <?php
 if ( $live_cert ) {
 	?>
-	<input type="hidden" name="woo_pp_live_api_cert_string" value="<?php echo base64_encode( $live_cert ); ?>">
+	<input type="hidden" name="woo_pp_live_api_cert_string" value="<?php echo esc_attr( base64_encode( $live_cert ) ); ?>">
 	<?php
 }
 
 if ( $sb_cert ) {
 	?>
-	<input type="hidden" name="woo_pp_sandbox_api_cert_string" value="<?php echo base64_encode( $sb_cert ); ?>">
+	<input type="hidden" name="woo_pp_sandbox_api_cert_string" value="<?php echo esc_attr( base64_encode( $sb_cert ) ); ?>">
 	<?php
 }
 
 ?>
 <script type="text/javascript">
-	var woo_pp_live_is_rba_enabled = <?php echo $live_account_is_enabled_for_billing_address ? "true" : "false"; ?>;
-	var woo_pp_sandbox_is_rba_enabled = <?php echo $sb_account_is_enabled_for_billing_address ? "true" : "false"; ?>;
+	var woo_pp_live_is_rba_enabled = <?php echo json_encode( $live_account_is_enabled_for_billing_address ); ?>;
+	var woo_pp_sandbox_is_rba_enabled = <?php echo json_encode( $sb_account_is_enabled_for_billing_address ); ?>;
 </script>
 <table class="form-table">
 	<tr>
 		<th>
 			<label for="woo_pp_enabled"><?php _e( 'Enable/Disable', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
-			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_enabled_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
+			<a href="#TB_inline?width=800&amp;height=600&amp;inlineId=woo_pp_enabled_help" class="thickbox"><img src="<?php echo esc_url( $help_image_url ); ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
 		</th>
 		<td>
 			<div id="woo_pp_enabled_help" style="display: none;">
@@ -46,7 +46,7 @@ if ( $sb_cert ) {
 	<tr>
 		<th>
 			<label for="woo_pp_ppc_enabled"><?php _e( 'PayPal Credit', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
-			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_ppc_enabled_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
+			<a href="#TB_inline?width=800&amp;height=600&amp;inlineId=woo_pp_ppc_enabled_help" class="thickbox"><img src="<?php echo esc_url( $help_image_url ); ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
 		</th>
 		<td>
 			<div id="woo_pp_ppc_enabled_help" style="display: none;">
@@ -64,7 +64,7 @@ if ( $sb_cert ) {
 	<tr>
 		<th>
 			<label for="woo_pp_environment"><?php _e( 'Environment', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
-			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_environment_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
+			<a href="#TB_inline?width=800&amp;height=600&amp;inlineId=woo_pp_environment_help" class="thickbox"><img src="<?php echo esc_url( $help_image_url ); ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
 		</th>
 		<td>
 			<div id="woo_pp_environment_help" style="display: none;">
@@ -86,7 +86,7 @@ if ( $sb_cert ) {
 	<tr class="woo_pp_live">
 		<th>
 			<?php _e( 'Easy Setup', 'woocommerce-gateway-paypal-express-checkout' ); ?>
-			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_easy_setup_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
+			<a href="#TB_inline?width=800&amp;height=600&amp;inlineId=woo_pp_easy_setup_help" class="thickbox"><img src="<?php echo esc_url( $help_image_url ); ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
 		</th>
 		<td>
 			<div id="woo_pp_easy_setup_help" style="display: none;">
@@ -95,15 +95,16 @@ if ( $sb_cert ) {
 					<?php _e( '<p>Easy Setup allows you to set up your PayPal account and get API credentials all in one easy process.  Just click on the link and follow the steps provided.  You\'ll have your PayPal account up and running in seconds!</p><p><strong>Note:</strong> If you get an error message on PayPal saying that credentials already exist for your account, just come back to the settings page and click the "(Click here if you need certificate credentials)" link.</p><p>If you know that your account already has API certificate credentials, just click the "(Click here if you need certificate credentials)" link instead.</p>', 'woocommerce-gateway-paypal-express-checkout' ); ?>
 				</p>
 			</div>
-			<a href="<?php echo $ips_url; ?>&mode=signature&env=live" style="font-size: 120%;"><?php _e( 'Click Here to Set Up Your PayPal Account', 'woocommerce-gateway-paypal-express-checkout' ); ?></a><br>
-			<a href="<?php echo $ips_url; ?>&mode=certificate&env=live" style="font-size: 80%;"><?php _e( '(Click here if you need certificate credentials)', 'woocommerce-gateway-paypal-express-checkout' ); ?></a>
+
+			<a href="<?php echo esc_url( $ips_url ); ?>&amp;mode=signature&amp;env=live" style="font-size: 120%;"><?php _e( 'Click Here to Set Up Your PayPal Account', 'woocommerce-gateway-paypal-express-checkout' ); ?></a><br>
+			<a href="<?php echo esc_url( $ips_url ); ?>&amp;mode=certificate&amp;env=live" style="font-size: 80%;"><?php _e( '(Click here if you need certificate credentials)', 'woocommerce-gateway-paypal-express-checkout' ); ?></a>
 		</td>
 	</tr>
 <?php } ?>
 	<tr class="woo_pp_live">
 		<th>
 			<label for="woo_pp_live_api_style"><?php _e( 'Live API credential type', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
-			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_live_api_style_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
+			<a href="#TB_inline?width=800&amp;height=600&amp;inlineId=woo_pp_live_api_style_help" class="thickbox"><img src="<?php echo esc_url( $help_image_url ); ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
 		</th>
 		<td>
 			<div id="woo_pp_live_api_style_help" style="display: none;">
@@ -124,7 +125,7 @@ if ( $sb_cert ) {
 	<tr class="woo_pp_live">
 		<th>
 			<label for="woo_pp_live_api_username"><?php _e( 'Live API username', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
-			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_live_api_username_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
+			<a href="#TB_inline?width=800&amp;height=600&amp;inlineId=woo_pp_live_api_username_help" class="thickbox"><img src="<?php echo esc_url( $help_image_url ); ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
 		</th>
 		<td>
 			<div id="woo_pp_live_api_username_help" style="display: none;">
@@ -135,14 +136,14 @@ if ( $sb_cert ) {
 			</div>
 			<fieldset>
 				<legend class="screen-reader-text"><span><?php _e( 'Live API username', 'woocommerce-gateway-paypal-express-checkout' ); ?></span></legend>
-				<input type="text" name="woo_pp_live_api_username" id="woo_pp_live_api_username" size="40" value="<?php echo $live_api_username; ?>">
+				<input type="text" name="woo_pp_live_api_username" id="woo_pp_live_api_username" size="40" value="<?php echo esc_attr( $live_api_username ); ?>">
 			</fieldset>
 		</td>
 	</tr>
 	<tr class="woo_pp_live">
 		<th>
 			<label for="woo_pp_live_api_password"><?php _e( 'Live API password', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
-			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_live_api_password_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
+			<a href="#TB_inline?width=800&amp;height=600&amp;inlineId=woo_pp_live_api_password_help" class="thickbox"><img src="<?php echo esc_url( $help_image_url ); ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
 		</th>
 		<td>
 			<div id="woo_pp_live_api_password_help" style="display: none;">
@@ -153,14 +154,14 @@ if ( $sb_cert ) {
 			</div>
 			<fieldset>
 				<legend class="screen-reader-text"><span><?php _e( 'Live API password' ); ?></span></legend>
-				<input type="password" name="woo_pp_live_api_password" id="woo_pp_live_api_password" size="40" value="<?php echo $live_api_pass; ?>">
+				<input type="password" name="woo_pp_live_api_password" id="woo_pp_live_api_password" size="40" value="<?php echo esc_attr( $live_api_pass ); ?>">
 			</fieldset>
 		</td>
 	</tr>
 	<tr class="woo_pp_live_signature">
 		<th>
 			<label for="woo_pp_live_api_signature"><?php _e( 'Live API signature', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
-			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_live_api_signature_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
+			<a href="#TB_inline?width=800&amp;height=600&amp;inlineId=woo_pp_live_api_signature_help" class="thickbox"><img src="<?php echo esc_url( $help_image_url ); ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
 		</th>
 		<td>
 			<div id="woo_pp_live_api_signature_help" style="display: none;">
@@ -171,14 +172,14 @@ if ( $sb_cert ) {
 			</div>
 			<fieldset>
 				<legend class="screen-reader-text"><span><?php _e( 'Live API signature', 'woocommerce-gateway-paypal-express-checkout' ); ?></span></legend>
-				<input type="password" name="woo_pp_live_api_signature" id="woo_pp_live_api_signature" size="40" value="<?php echo $live_api_sig; ?>">
+				<input type="password" name="woo_pp_live_api_signature" id="woo_pp_live_api_signature" size="40" value="<?php echo esc_attr( $live_api_sig ); ?>">
 			</fieldset>
 		</td>
 	</tr>
 	<tr class="woo_pp_live_certificate">
 		<th>
 			<label for="woo_pp_live_api_certificate"><?php _e( 'Live API certificate', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
-			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_live_api_certificate_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
+			<a href="#TB_inline?width=800&amp;height=600&amp;inlineId=woo_pp_live_api_certificate_help" class="thickbox"><img src="<?php echo esc_url( $help_image_url ); ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
 		</th>
 		<td>
 			<div id="woo_pp_live_api_certificate_help" style="display: none;">
@@ -197,7 +198,7 @@ if ( $sb_cert ) {
 	<tr class="woo_pp_live">
 		<th>
 			<label for="woo_pp_live_subject">Live subject</label>
-			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_live_subject_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
+			<a href="#TB_inline?width=800&amp;height=600&amp;inlineId=woo_pp_live_subject_help" class="thickbox"><img src="<?php echo esc_url( $help_image_url ); ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
 		</th>
 		<td>
 			<div id="woo_pp_live_subject_help" style="display: none;">
@@ -208,7 +209,7 @@ if ( $sb_cert ) {
 			</div>
 			<fieldset>
 				<legend class="screen-reader-text"><span><?php _e( 'Live subject', 'woocommerce-gateway-paypal-express-checkout' ); ?></span></legend>
-				<input type="text" name="woo_pp_live_subject" size="40" value="<?php echo $live_subject; ?>">
+				<input type="text" name="woo_pp_live_subject" size="40" value="<?php echo esc_attr( $live_subject ); ?>">
 			</fieldset>
 		</td>
 	</tr>
@@ -216,18 +217,18 @@ if ( $sb_cert ) {
 	<tr class="woo_pp_sb">
 		<th>
 			<?php _e( 'Easy Setup', 'woocommerce-gateway-paypal-express-checkout' ); ?>
-			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_easy_setup_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
+			<a href="#TB_inline?width=800&amp;height=600&amp;inlineId=woo_pp_easy_setup_help" class="thickbox"><img src="<?php echo esc_url( $help_image_url ); ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
 		</th>
 		<td>
-			<a href="<?php echo $ips_url; ?>&mode=signature&env=sandbox" style="font-size: 120%;"><?php _e( 'Click Here to Set Up Your PayPal Account', 'woocommerce-gateway-paypal-express-checkout' ); ?></a><br>
-			<a href="<?php echo $ips_url; ?>&mode=certificate&env=sandbox" style="font-size: 80%;"><?php _e( '(Click here if you need certificate credentials)', 'woocommerce-gateway-paypal-express-checkout' ); ?></a>
+			<a href="<?php echo esc_url( $ips_url ); ?>&amp;mode=signature&amp;env=sandbox" style="font-size: 120%;"><?php _e( 'Click Here to Set Up Your PayPal Account', 'woocommerce-gateway-paypal-express-checkout' ); ?></a><br>
+			<a href="<?php echo esc_url( $ips_url ); ?>&amp;mode=certificate&amp;env=sandbox" style="font-size: 80%;"><?php _e( '(Click here if you need certificate credentials)', 'woocommerce-gateway-paypal-express-checkout' ); ?></a>
 		</td>
 	</tr>
 <?php } ?>
 	<tr class="woo_pp_sb">
 		<th>
 			<label for="woo_pp_sandbox_api_style"><?php _e( 'Sandbox API credential type', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
-			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_sandbox_api_style_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
+			<a href="#TB_inline?width=800&amp;height=600&amp;inlineId=woo_pp_sandbox_api_style_help" class="thickbox"><img src="<?php echo esc_url( $help_image_url ); ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
 		</th>
 		<td>
 			<div id="woo_pp_sandbox_api_style_help" style="display: none;">
@@ -248,7 +249,7 @@ if ( $sb_cert ) {
 	<tr class="woo_pp_sb">
 		<th>
 			<label for="woo_pp_sandbox_api_username"><?php _e( 'Sandbox API username', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
-			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_sandbox_api_username_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
+			<a href="#TB_inline?width=800&amp;height=600&amp;inlineId=woo_pp_sandbox_api_username_help" class="thickbox"><img src="<?php echo esc_url( $help_image_url ); ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
 		</th>
 		<td>
 			<div id="woo_pp_sandbox_api_username_help" style="display: none;">
@@ -259,14 +260,14 @@ if ( $sb_cert ) {
 			</div>
 			<fieldset>
 				<legend class="screen-reader-text"><span><?php _e( 'Sandbox API username', 'woocommerce-gateway-paypal-express-checkout' ); ?></span></legend>
-				<input type="text" name="woo_pp_sandbox_api_username" id="woo_pp_sandbox_api_username" size="40" value="<?php echo $sb_api_username; ?>">
+				<input type="text" name="woo_pp_sandbox_api_username" id="woo_pp_sandbox_api_username" size="40" value="<?php echo esc_attr( $sb_api_username ); ?>">
 			</fieldset>
 		</td>
 	</tr>
 	<tr class="woo_pp_sb">
 		<th>
 			<label for="woo_pp_sandbox_api_password"><?php _e( 'Sandbox API password', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
-			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_sandbox_api_password_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
+			<a href="#TB_inline?width=800&amp;height=600&amp;inlineId=woo_pp_sandbox_api_password_help" class="thickbox"><img src="<?php echo esc_url( $help_image_url ); ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
 		</th>
 		<td>
 			<div id="woo_pp_sandbox_api_password_help" style="display: none;">
@@ -277,14 +278,14 @@ if ( $sb_cert ) {
 			</div>
 			<fieldset>
 				<legend class="screen-reader-text"><span><?php _e( 'Sandbox API password', 'woocommerce-gateway-paypal-express-checkout' ); ?></span></legend>
-				<input type="password" name="woo_pp_sandbox_api_password" id="woo_pp_sandbox_api_password" size="40" value="<?php echo $sb_api_pass; ?>">
+				<input type="password" name="woo_pp_sandbox_api_password" id="woo_pp_sandbox_api_password" size="40" value="<?php echo esc_attr( $sb_api_pass ); ?>">
 			</fieldset>
 		</td>
 	</tr>
 	<tr class="woo_pp_sandbox_signature">
 		<th>
 			<label for="woo_pp_sandbox_api_signature"><?php _e( 'Sandbox API signature', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
-			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_sandbox_api_signature_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
+			<a href="#TB_inline?width=800&amp;height=600&amp;inlineId=woo_pp_sandbox_api_signature_help" class="thickbox"><img src="<?php echo esc_url( $help_image_url ); ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
 		</th>
 		<td>
 			<div id="woo_pp_sandbox_api_signature_help" style="display: none;">
@@ -295,14 +296,14 @@ if ( $sb_cert ) {
 			</div>
 			<fieldset>
 				<legend class="screen-reader-text"><span><?php _e( 'Sandbox API signature', 'woocommerce-gateway-paypal-express-checkout' ); ?></span></legend>
-				<input type="password" name="woo_pp_sandbox_api_signature" id="woo_pp_sandbox_api_signature" size="40" value="<?php echo $sb_api_sig; ?>">
+				<input type="password" name="woo_pp_sandbox_api_signature" id="woo_pp_sandbox_api_signature" size="40" value="<?php echo esc_attr( $sb_api_sig ); ?>">
 			</fieldset>
 		</td>
 	</tr>
 	<tr class="woo_pp_sandbox_certificate">
 		<th>
 			<label for="woo_pp_sandbox_api_certificate"><?php _e( 'Sandbox API certificate', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
-			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_sandbox_api_certificate_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
+			<a href="#TB_inline?width=800&amp;height=600&amp;inlineId=woo_pp_sandbox_api_certificate_help" class="thickbox"><img src="<?php echo esc_url( $help_image_url ); ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
 		</th>
 		<td>
 			<div id="woo_pp_sandbox_api_certificate_help" style="display: none;">
@@ -321,7 +322,7 @@ if ( $sb_cert ) {
 	<tr class="woo_pp_sb">
 		<th>
 			<label for="woo_pp_sandbox_subject"><?php _e( 'Sandbox subject', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
-			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_sandbox_subject_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
+			<a href="#TB_inline?width=800&amp;height=600&amp;inlineId=woo_pp_sandbox_subject_help" class="thickbox"><img src="<?php echo esc_url( $help_image_url ); ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
 		</th>
 		<td>
 			<div id="woo_pp_sandbox_subject_help" style="display: none;">
@@ -332,14 +333,14 @@ if ( $sb_cert ) {
 			</div>
 			<fieldset>
 				<legend class="screen-reader-text"><span><?php _e( 'Sandbox subject', 'woocommerce-gateway-paypal-express-checkout' ); ?></span></legend>
-				<input type="text" name="woo_pp_sandbox_subject" id="woo_pp_sandbox_subject" size="40" value="<?php echo $sb_subject; ?>">
+				<input type="text" name="woo_pp_sandbox_subject" id="woo_pp_sandbox_subject" size="40" value="<?php echo esc_attr( $sb_subject ); ?>">
 			</fieldset>
 		</td>
 	</tr>
 	<tr>
 		<th>
 			<label for="woo_pp_enable_in_context_checkout"><?php _e( 'In-Context Checkout', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
-			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_enable_in_context_checkout_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
+			<a href="#TB_inline?width=800&amp;height=600&amp;inlineId=woo_pp_enable_in_context_checkout_help" class="thickbox"><img src="<?php echo esc_url( $help_image_url ); ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
 		</th>
 		<td>
 			<div id="woo_pp_enable_in_context_checkout_help" style="display: none;">
@@ -360,7 +361,7 @@ if ( $sb_cert ) {
 	<tr>
 		<th>
 			<label for="woo_pp_button_size"><?php _e( 'Button size', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
-			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_button_size_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
+			<a href="#TB_inline?width=800&amp;height=600&amp;inlineId=woo_pp_button_size_help" class="thickbox"><img src="<?php echo esc_url( $help_image_url ); ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
 		</th>
 		<td>
 			<div id="woo_pp_button_size_help" style="display: none;">
@@ -382,7 +383,7 @@ if ( $sb_cert ) {
 	<tr>
 		<th>
 			<label for="woo_pp_mark_size"><?php _e( 'Mark size', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
-			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_mark_size_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
+			<a href="#TB_inline?width=800&amp;height=600&amp;inlineId=woo_pp_mark_size_help" class="thickbox"><img src="<?php echo esc_url( $help_image_url ); ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
 		</th>
 		<td>
 			<div id="woo_pp_mark_size_help" style="display: none;">
@@ -403,7 +404,7 @@ if ( $sb_cert ) {
 	<tr>
 		<th>
 			<label for="woo_pp_logo_image_url"><?php _e( 'Logo image URL', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
-			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_logo_image_url_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
+			<a href="#TB_inline?width=800&amp;height=600&amp;inlineId=woo_pp_logo_image_url_help" class="thickbox"><img src="<?php echo esc_url( $help_image_url ); ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
 		</th>
 		<td>
 			<div id="woo_pp_logo_image_url_help" style="display: none;">
@@ -421,7 +422,7 @@ if ( $sb_cert ) {
 	<tr>
 		<th>
 			<label for="woo_pp_payment_action"><?php _e( 'Payment type', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
-			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_payment_action_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
+			<a href="#TB_inline?width=800&amp;height=600&amp;inlineId=woo_pp_payment_action_help" class="thickbox"><img src="<?php echo esc_url( $help_image_url ); ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
 		</th>
 		<td>
 			<div id="woo_pp_payment_action_help" style="display: none;">
@@ -442,7 +443,7 @@ if ( $sb_cert ) {
 	<tr>
 		<th>
 			<label for="woo_pp_allow_guest_checkout"><?php _e( 'Guest payments', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
-			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_allow_guest_checkout_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
+			<a href="#TB_inline?width=800&amp;height=600&amp;inlineId=woo_pp_allow_guest_checkout_help" class="thickbox"><img src="<?php echo esc_url( $help_image_url ); ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
 		</th>
 		<td>
 			<div id="woo_pp_allow_guest_checkout_help" style="display: none;">
@@ -461,7 +462,7 @@ if ( $sb_cert ) {
 	<tr>
 		<th>
 			<label for="woo_pp_block_echecks"><?php _e( 'Instant payments', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
-			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_block_echecks_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
+			<a href="#TB_inline?width=800&amp;height=600&amp;inlineId=woo_pp_block_echecks_help" class="thickbox"><img src="<?php echo esc_url( $help_image_url ); ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
 		</th>
 		<td>
 			<div id="woo_pp_block_echecks_help" style="display: none;">
@@ -483,7 +484,7 @@ if ( $live_account_is_enabled_for_billing_address || $sb_account_is_enabled_for_
 	<tr id="woo_pp_req_ba_row">
 		<th>
 			<label for="woo_pp_req_billing_address"><?php _e( 'Billing address', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
-			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_req_billing_address_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
+			<a href="#TB_inline?width=800&amp;height=600&amp;inlineId=woo_pp_req_billing_address_help" class="thickbox"><img src="<?php echo esc_url( $help_image_url ); ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
 		</th>
 		<td>
 			<div id="woo_pp_req_billing_address_help" style="display: none;">
@@ -505,7 +506,7 @@ if ( $live_account_is_enabled_for_billing_address || $sb_account_is_enabled_for_
 	<tr>
 		<th>
 			<label for="woo_pp_zero_subtotal_behavior"><?php _e( 'Zero subtotal behavior', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
-			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_zero_subtotal_behavior_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
+			<a href="#TB_inline?width=800&amp;height=600&amp;inlineId=woo_pp_zero_subtotal_behavior_help" class="thickbox"><img src="<?php echo esc_url( $help_image_url ); ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
 		</th>
 		<td>
 			<div id="woo_pp_zero_subtotal_behavior_help" style="display: none;">
@@ -527,7 +528,7 @@ if ( $live_account_is_enabled_for_billing_address || $sb_account_is_enabled_for_
 	<tr>
 		<th>
 			<label for="woo_pp_subtotal_mismatch_behavior"><?php _e( 'Subtotal mismatch behavior', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
-			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_subtotal_mismatch_behavior_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
+			<a href="#TB_inline?width=800&amp;height=600&amp;inlineId=woo_pp_subtotal_mismatch_behavior_help" class="thickbox"><img src="<?php echo esc_url( $help_image_url ); ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
 		</th>
 		<td>
 			<div id="woo_pp_subtotal_mismatch_behavior_help" style="display: none;">
