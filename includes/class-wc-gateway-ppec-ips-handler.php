@@ -121,7 +121,7 @@ class WC_Gateway_PPEC_IPS_Handler {
 			$request->credential_type = 'signature';
 		}
 
-		// $request->public_key = $public_key;
+		$request->public_key = $public_key;
 
 		if ( 'live' == $_GET['env'] ) {
 			$request->environment = 'live';
@@ -131,14 +131,6 @@ class WC_Gateway_PPEC_IPS_Handler {
 
 		$request->return_url = admin_url( 'admin.php?page=wc-settings&tab=checkout&section=wc_gateway_ppec_with_paypal&ips-return=true&env=' . $request->environment );
 
-		// Make a request out to the IPS service to get a merchant ID.
-		// $curl = curl_init( 'http://ipsis-vip.ext.external.paypalc3.com/onboarding/start' );
-		// curl_setopt( $curl, CURLOPT_RETURNTRANSFER, TRUE );
-		// curl_setopt( $curl, CURLOPT_POST, TRUE );
-		// curl_setopt( $curl, CURLOPT_POSTFIELDS, json_encode( $request ) );
-		// curl_setopt( $curl, CURLOPT_CAINFO, __DIR__ . '/pem/falconmm.pem' );
-		// curl_setopt( $curl, CURLOPT_SSL_CIPHER_LIST, 'TLSv1' );
-
 		$request_args = array(
 			'method'      => 'POST',
 			'body'        => json_encode( $request ),
@@ -147,8 +139,6 @@ class WC_Gateway_PPEC_IPS_Handler {
 		);
 
 		$response = wp_safe_remote_post( WC_Gateway_PPEC_IPS_Handler::ONBOARDING_START_URL, $request_args );
-
-		// $response = curl_exec( $curl );
 
 		if ( is_wp_error( $response ) ) {
 			WC_Admin_Settings::add_error( __( 'Sorry, an error occurred while initializing Easy Setup.  Please try again.', 'woocommerce-gateway-paypal-express-checkout' ) );
@@ -262,7 +252,6 @@ class WC_Gateway_PPEC_IPS_Handler {
 
 		$response = wp_safe_remote_post( WC_Gateway_PPEC_IPS_Handler::ONBOARDING_END_URL, $request_args );
 
-		// $response = curl_exec( $curl );
 
 		if ( is_wp_error( $response ) ) {
 			$this->ips_redirect_and_die( __( 'Sorry, Easy Setup encountered an error.  Please try again.', 'woocommerce-gateway-paypal-express-checkout' ) );
@@ -336,7 +325,7 @@ class WC_Gateway_PPEC_IPS_Handler {
 			);
 		}
 
-		if ( strlen( trim( $_GET['returnMessage'] ) ) ) {
+		if ( ! empty( $_GET['returnMessage'] ) && strlen( trim( $_GET['returnMessage'] ) ) ) {
 			$error_msgs[] = array(
 				'success' => sprintf( __( 'PayPal has the following message for you: %s', 'woocommerce-gateway-paypal-express-checkout' ), $_GET['returnMessage'] )
 			);
