@@ -571,15 +571,8 @@ class WC_Gateway_PPEC_Checkout_Handler {
 
 			} elseif ( 'Authorization' == $paymentAction ) {
 				$txnData['auth_status'] = 'NotCompleted';
-
-			} elseif ( 'Order' == $paymentAction ) {
-				$txnData['order'] = array(
-					'order_id' => $payment_details->payments[0]->transaction_id,
-					'amount' => $order->get_total(),
-					'status' => 'NotCompleted',
-					'auths' => array()
-				);
 			}
+
 			$txnData['txn_type'] = $paymentAction;
 
 			update_post_meta( $order_id, '_woo_pp_txnData', $txnData );
