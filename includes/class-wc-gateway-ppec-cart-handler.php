@@ -67,7 +67,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 			$class = 'woo_pp_checkout_buttons_div';
 		}
 
-		if ( $settings->enableInContextCheckout && $settings->getActiveApiCredentials()->payerID ) {
+		if ( $settings->enableInContextCheckout && $settings->getActiveApiCredentials()->get_payer_id() ) {
 			$class .= ' paypal-button-hidden';
 		}
 
@@ -98,8 +98,8 @@ class WC_Gateway_PPEC_Cart_Handler {
 		</div>
 
 		<?php
-		if ( $settings->enableInContextCheckout && $settings->getActiveApiCredentials()->payerID ) {
-			$payer_id = $settings->getActiveApiCredentials()->payerID;
+		if ( $settings->enableInContextCheckout && $settings->getActiveApiCredentials()->get_payer_id() ) {
+			$payer_id = $settings->getActiveApiCredentials()->get_payer_id();
 			?>
 			<script type="text/javascript">
 				window.paypalCheckoutReady = function() {
@@ -120,7 +120,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 		wp_enqueue_style( 'wc-gateway-ppec-frontend-cart', wc_gateway_ppec()->plugin_url . 'assets/css/wc-gateway-ppec-frontend-cart.css' );
 
 		$settings = wc_gateway_ppec()->settings->loadSettings();
-		if ( $settings->enabled && $settings->enableInContextCheckout && $settings->getActiveApiCredentials()->payerID ) {
+		if ( $settings->enabled && $settings->enableInContextCheckout && $settings->getActiveApiCredentials()->get_payer_id() ) {
 			wp_enqueue_script( 'paypal-checkout-js', 'https://www.paypalobjects.com/api/checkout.js', array(), null, true );
 		}
 	}

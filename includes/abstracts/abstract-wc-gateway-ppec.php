@@ -120,7 +120,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 			try {
 				$redirect_url = $checkout->startCheckoutFromCheckout( $order_id, 'paypal_credit' == $this->id );
 				$settings     = wc_gateway_ppec()->settings->loadSettings();
-				if ( $settings->enableInContextCheckout && $settings->getActiveApiCredentials()->payerID ) {
+				if ( $settings->enableInContextCheckout && $settings->getActiveApiCredentials()->get_payer_id() ) {
 					$redirect_url = 'javascript:woo_pp_checkout_callback("' . urlencode( $redirect_url ) . '");';
 				}
 				return array(
@@ -457,13 +457,13 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 				$this->ips_redirect_and_die( __( 'Sorry, Easy Setup encountered an error.  Please try again.', 'woocommerce-gateway-paypal-express-checkout' ) );
 			}
 
-			$creds = new PayPal_Signature_Credentials( $credentials->username, $credentials->password, $credentials->signature );
+			$creds = new WC_Gateway_PPEC_Client_Credential_Signature( $credentials->username, $credentials->password, $credentials->signature );
 		} elseif ( 'certificate' == $credentials->style ) {
 			if ( ! property_exists( $credentials, 'username' ) || ! property_exists( $credentials, 'password' ) || ! property_exists( $credentials, 'certificate' ) ) {
 				$this->ips_redirect_and_die( __( 'Sorry, Easy Setup encountered an error.  Please try again.', 'woocommerce-gateway-paypal-express-checkout' ) );
 			}
 
-			$creds = new PayPal_Certificate_Credentials( $credentials->username, $credentials->password, $credentials->certificate );
+			$creds = new WC_Gateway_PPEC_Client_Credential_Certificate( $credentials->username, $credentials->password, $credentials->certificate );
 		}
 
 		$error_msgs = array();
@@ -473,7 +473,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 			if ( ! $payer_id ) {
 				$this->ips_redirect_and_die( __( 'Easy Setup was able to obtain your API credentials, but was unable to verify that they work correctly.  Please make sure your PayPal account is set up properly and try Easy Setup again.', 'woocommerce-gateway-paypal-express-checkout' ) );
 			}
-			$creds->payerID = $payer_id;
+			$creds->set_payer_id( $payer_id );
 		} catch( PayPal_API_Exception $ex ) {
 			$error_msgs[] = array(
 				'warning' => __( 'Easy Setup was able to obtain your API credentials, but an error occurred while trying to verify that they work correctly.  Please try Easy Setup again.', 'woocommerce-gateway-paypal-express-checkout' )
@@ -556,14 +556,14 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		$ppc_enabled          = false;
 		$icc_enabled          = false;
 
-		$live_api_username    = '';
-		$sb_api_username      = '';
-		$masked_live_api_pass = '';
-		$masked_live_api_sig  = '';
-		$masked_sb_api_pass   = '';
-		$masked_sb_api_sig    = '';
-		$live_subject         = '';
-		$sb_subject           = '';
+		$live_api_username = '';
+		$sb_api_username   = '';
+		$live_api_pass     = '';
+		$live_api_sig      = '';
+		$sb_api_pass       = '';
+		$sb_api_sig        = '';
+		$live_subject      = '';
+		$sb_subject        = '';
 
 		$live_style           = 'signature';
 		$sb_style             = 'signature';
@@ -602,9 +602,9 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 			}
 
 			// Grab the live credentials.
-			$live_api_username    = $_POST['woo_pp_live_api_username'];
-			$masked_live_api_pass = $_POST['woo_pp_live_api_password'];
-			$live_subject         = $_POST['woo_pp_live_subject'     ];
+			$live_api_username = $_POST['woo_pp_live_api_username'];
+			$live_api_pass     = $_POST['woo_pp_live_api_password'];
+			$live_subject      = $_POST['woo_pp_live_subject'     ];
 
 			if ( array_key_exists( 'woo_pp_live_api_style', $_POST ) ) {
 				if ( 'signature' == $_POST['woo_pp_live_api_style'] || 'certificate' == $_POST['woo_pp_live_api_style'] ) {
@@ -613,38 +613,38 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 			}
 
 			if ( 'signature' == $live_style ) {
-				$masked_live_api_sig = $_POST['woo_pp_live_api_signature'];
+				$live_api_sig = $_POST['woo_pp_live_api_signature'];
 			} else {
 				if ( array_key_exists( 'woo_pp_live_api_certificate', $_FILES ) && array_key_exists( 'tmp_name', $_FILES['woo_pp_live_api_certificate'] )
 					&& array_key_exists( 'size', $_FILES['woo_pp_live_api_certificate'] ) && $_FILES['woo_pp_live_api_certificate']['size'] ) {
-					$live_cert = file_get_contents( $_FILES['woo_pp_live_api_certificate']['tmp_name'] );
+					$live_cert      = file_get_contents( $_FILES['woo_pp_live_api_certificate']['tmp_name'] );
 					$live_cert_info = $this->get_certificate_info( $live_cert );
 				} elseif ( array_key_exists( 'woo_pp_live_api_cert_string', $_POST ) ) {
-					$live_cert = base64_decode( $_POST['woo_pp_live_api_cert_string'] );
+					$live_cert      = base64_decode( $_POST['woo_pp_live_api_cert_string'] );
 					$live_cert_info = $this->get_certificate_info( $live_cert );
 				}
 			}
 
 			// Grab the sandbox credentials.
-			$sb_api_username    = $_POST['woo_pp_sb_api_username'];
-			$masked_sb_api_pass = $_POST['woo_pp_sb_api_password'];
-			$sb_subject         = $_POST['woo_pp_sb_subject'     ];
+			$sb_api_username = $_POST['woo_pp_sandbox_api_username'];
+			$sb_api_pass     = $_POST['woo_pp_sandbox_api_password'];
+			$sb_subject      = $_POST['woo_pp_sandbox_subject'     ];
 
-			if ( array_key_exists( 'woo_pp_sb_api_style', $_POST ) ) {
-				if ( 'signature' == $_POST['woo_pp_sb_api_style'] || 'certificate' == $_POST['woo_pp_sb_api_style'] ) {
-					$sb_style = $_POST['woo_pp_sb_api_style'];
+			if ( array_key_exists( 'woo_pp_sandbox_api_style', $_POST ) ) {
+				if ( 'signature' == $_POST['woo_pp_sandbox_api_style'] || 'certificate' == $_POST['woo_pp_sandbox_api_style'] ) {
+					$sb_style = $_POST['woo_pp_sandbox_api_style'];
 				}
 			}
 
 			if ( 'signature' == $sb_style ) {
-				$masked_sb_api_sig = $_POST['woo_pp_sb_api_signature'];
+				$sb_api_sig = $_POST['woo_pp_sandbox_api_signature'];
 			} else {
-				if ( array_key_exists( 'woo_pp_sb_api_certificate', $_FILES ) && array_key_exists( 'tmp_name', $_FILES['woo_pp_sb_api_certificate'] )
-					&& array_key_exists( 'size', $_FILES['woo_pp_sb_api_certificate'] ) && $_FILES['woo_pp_sb_api_certificate']['size'] ) {
-					$sb_cert = file_get_contents( $_FILES['woo_pp_sb_api_certificate']['tmp_name'] );
+				if ( array_key_exists( 'woo_pp_sandbox_api_certificate', $_FILES ) && array_key_exists( 'tmp_name', $_FILES['woo_pp_sandbox_api_certificate'] )
+					&& array_key_exists( 'size', $_FILES['woo_pp_sandbox_api_certificate'] ) && $_FILES['woo_pp_sandbox_api_certificate']['size'] ) {
+					$sb_cert      = file_get_contents( $_FILES['woo_pp_sandbox_api_certificate']['tmp_name'] );
 					$sb_cert_info = $this->get_certificate_info( $sb_cert );
-				} elseif ( array_key_exists( 'woo_pp_sb_api_cert_string', $_POST ) ) {
-					$sb_cert = base64_decode( $_POST['woo_pp_sb_api_cert_string'] );
+				} elseif ( array_key_exists( 'woo_pp_sandbox_api_cert_string', $_POST ) ) {
+					$sb_cert      = base64_decode( $_POST['woo_pp_sandbox_api_cert_string'] );
 					$sb_cert_info = $this->get_certificate_info( $sb_cert );
 				}
 			}
@@ -674,33 +674,32 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 			$zero_subtotal_behavior     = $_POST['woo_pp_zero_subtotal_behavior'    ];
 			$subtotal_mismatch_behavior = $_POST['woo_pp_subtotal_mismatch_behavior'];
 		} else {
-			if ( is_object( $settings->liveApiCredentials ) && is_a( $settings->liveApiCredentials, 'PayPal_Credentials' ) ) {
-				$live_api_username = $settings->liveApiCredentials->apiUsername;
-				$live_subject      = $settings->liveApiCredentials->subject;
-				if ( ! empty( $settings->liveApiCredentials->apiPassword ) ) {
-					$masked_live_api_pass = '********';
+
+			if ( is_object( $settings->liveApiCredentials ) && is_a( $settings->liveApiCredentials, 'WC_Gateway_PPEC_Client_Credential' ) ) {
+				$live_api_username = $settings->liveApiCredentials->get_username();
+				$live_subject      = $settings->liveApiCredentials->get_subject();
+				$live_api_pass     = $settings->liveApiCredentials->get_password();
+
+				if ( is_a( $settings->liveApiCredentials, 'WC_Gateway_PPEC_Client_Credential_Signature' ) && ! empty( $settings->liveApiCredentials->get_signature() ) ) {
+					$live_api_sig = $settings->liveApiCredentials->get_signature();
 				}
-				if ( is_a( $settings->liveApiCredentials, 'PayPal_Signature_Credentials' ) && ! empty( $settings->liveApiCredentials->apiSignature ) ) {
-					$masked_live_api_sig = '********';
-				}
-				if ( is_a( $settings->liveApiCredentials, 'PayPal_Certificate_Credentials' ) && ! empty( $settings->liveApiCredentials->apiCertificate ) ) {
-					$live_cert_info = $this->get_certificate_info( $settings->liveApiCredentials->apiCertificate );
-					$live_style = 'certificate';
+				if ( is_a( $settings->liveApiCredentials, 'WC_Gateway_PPEC_Client_Credential_Certificate' ) && ! empty( $settings->liveApiCredentials->get_certificate() ) ) {
+					$live_cert_info = $this->get_certificate_info( $settings->liveApiCredentials->get_certificate() );
+					$live_style     = 'certificate';
 				}
 			}
 
-			if ( is_object( $settings->sandboxApiCredentials ) && is_a( $settings->sandboxApiCredentials, 'PayPal_Credentials' ) ) {
-				$sb_api_username = $settings->sandboxApiCredentials->apiUsername;
-				$sb_subject      = $settings->sandboxApiCredentials->subject;
-				if ( ! empty( $settings->sandboxApiCredentials->apiPassword ) ) {
-					$masked_sb_api_pass = '********';
+			if ( is_object( $settings->sandboxApiCredentials ) && is_a( $settings->sandboxApiCredentials, 'WC_Gateway_PPEC_Client_Credential' ) ) {
+				$sb_api_username = $settings->sandboxApiCredentials->get_username();
+				$sb_subject      = $settings->sandboxApiCredentials->get_subject();
+				$sb_api_pass     = $settings->sandboxApiCredentials->get_password();
+
+				if ( is_a( $settings->sandboxApiCredentials, 'WC_Gateway_PPEC_Client_Credential_Signature' ) && ! empty( $settings->sandboxApiCredentials->get_signature() ) ) {
+					$sb_api_sig = $settings->sandboxApiCredentials->get_signature();
 				}
-				if ( is_a( $settings->sandboxApiCredentials, 'PayPal_Signature_Credentials' ) && ! empty( $settings->sandboxApiCredentials->apiSignature ) ) {
-					$masked_sb_api_sig = '********';
-				}
-				if ( is_a ( $settings->sandboxApiCredentials, 'PayPal_Certificate_Credentials' ) && ! empty( $settings->sandboxApiCredentials->apiCertificate ) ) {
-					$sb_style = 'certificate';
-					$sb_cert_info = $this->get_certificate_info( $settings->sandboxApiCredentials->apiCertificate );
+				if ( is_a ( $settings->sandboxApiCredentials, 'WC_Gateway_PPEC_Client_Credential_Certificate' ) && ! empty( $settings->sandboxApiCredentials->get_certificate() ) ) {
+					$sb_style     = 'certificate';
+					$sb_cert_info = $this->get_certificate_info( $settings->sandboxApiCredentials->get_certificate() );
 				}
 			}
 
@@ -726,24 +725,30 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		require_once( wc_gateway_ppec()->includes_path . 'views/admin-settings.php' );
 	}
 
-	// This function fills in the $credentials variable with the credentials the user filled in on
-	// the page, and returns true or false to indicate a success or error, respectively.  Why not
-	// just return the credentials or false on failure?  Because the user might not fill in the
-	// credentials at all, which isn't an error.  This way allows us to do it without returning an
-	// error because the user didn't fill in the credentials.
-	private function validate_credentials( $environment, &$credentials ) {
+	/**
+	 * This function fills in the $credentials variable with the credentials
+	 * the user filled in on the page, and returns true or false to indicate
+	 * a success or error, respectively.
+	 *
+	 * Why not just return the credentials or false on failure? Because the user
+	 * might not fill in the credentials at all, which isn't an error.  This way
+	 * allows us to do it without returning an error because the user didn't fill
+	 * in the credentials.
+	 *
+	 * @param string $environment Environment. Either 'live' or 'sandbox'
+	 *
+	 * @return WC_Gateway_PPEC_Client_Credential Credential object
+	 */
+	private function validate_credentials( $environment ) {
 		$settings = wc_gateway_ppec()->settings->loadSettings();
-		if ( 'sb' == $environment ) {
-			$full_env = 'sandbox';
+		if ( 'sandbox' == $environment ) {
+			$creds = $settings->sandboxApiCredentials;
 		} else {
-			$full_env = 'live';
+			$creds = $settings->liveApiCredentials;
 		}
 
-		// Object name we need to look for inside of $settings
-		$creds_name = $full_env . 'ApiCredentials';
-
-		$api_user = trim( $_POST[ 'woo_pp_' . $environment . '_api_username' ] );
-		$api_pass = trim( $_POST[ 'woo_pp_' . $environment . '_api_password' ] );
+		$api_user  = trim( $_POST[ 'woo_pp_' . $environment . '_api_username' ] );
+		$api_pass  = trim( $_POST[ 'woo_pp_' . $environment . '_api_password' ] );
 		$api_style = trim( $_POST[ 'woo_pp_' . $environment . '_api_style' ] );
 
 		$subject = trim( $_POST[ 'woo_pp_' . $environment . '_subject' ] );
@@ -751,10 +756,10 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 			$subject = false;
 		}
 
-		$credentials = false;
-		if ( 'signature' == $api_style ) {
+		$credential = false;
+		if ( 'signature' === $api_style ) {
 			$api_sig = trim( $_POST[ 'woo_pp_' . $environment . '_api_signature' ] );
-		} elseif ( 'certificate' == $api_style ) {
+		} elseif ( 'certificate' === $api_style ) {
 			if ( array_key_exists( 'woo_pp_' . $environment . '_api_certificate', $_FILES )
 				&& array_key_exists( 'tmp_name', $_FILES[ 'woo_pp_' . $environment . '_api_certificate' ] )
 				&& array_key_exists( 'size', $_FILES[ 'woo_pp_' . $environment . '_api_certificate' ] )
@@ -767,70 +772,44 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 				$api_cert = base64_decode( $_POST[ 'woo_pp_' . $environment . '_api_cert_string' ] );
 			}
 		} else {
-			WC_Admin_Settings::add_error( sprintf( __( 'Error: You selected an invalid credential type for your %s API credentials.', 'woocommerce-gateway-paypal-express-checkout' ), __( $full_env, 'woocommerce-gateway-paypal-express-checkout' ) ) );
+			WC_Admin_Settings::add_error( sprintf( __( 'Error: You selected an invalid credential type for your %s API credentials.', 'woocommerce-gateway-paypal-express-checkout' ), __( $environment, 'woocommerce-gateway-paypal-express-checkout' ) ) );
 			return false;
 		}
 
 		if ( ! empty( $api_user ) ) {
 			if ( empty( $api_pass ) ) {
-				WC_Admin_Settings::add_error( sprintf( __( 'Error: You must enter a %s API password.' ), __( $full_env, 'woocommerce-gateway-paypal-express-checkout' ) ) );
+				WC_Admin_Settings::add_error( sprintf( __( 'Error: You must enter a %s API password.' ), __( $environment, 'woocommerce-gateway-paypal-express-checkout' ) ) );
 				return false;
 			}
 
-			if ( '********' == $api_pass ) {
-				// Make sure we have a password on file.  If we don't, this value is invalid.
-				if ( $settings->$creds_name ) {
-					if ( empty( $settings->$creds_name->apiPassword ) ) {
-						$content =
-						WC_Admin_Settings::add_error( sprintf( __( 'Error: The %s API password you provided is not valid.', 'woocommerce-gateway-paypal-express-checkout' ), __( $full_env, 'woocommerce-gateway-paypal-express-checkout' ) ) );
-						return false;
-					}
-					$api_pass = $settings->$creds_name->apiPassword;
-				} else {
-					WC_Admin_Settings::add_error( sprintf( __( 'Error: The %s API password you provided is not valid.', 'woocommerce-gateway-paypal-express-checkout' ), __( $full_env, 'woocommerce-gateway-paypal-express-checkout' ) ) );
-					return false;
-				}
-			}
-
-			if ( 'signature' == $api_style ) {
+			if ( 'signature' === $api_style ) {
 				if ( ! empty( $api_sig ) ) {
-					if ( '********' == $api_sig ) {
-						// Make sure we have a signature on file.  If we don't, this value is invalid.
-						if ( $settings->$creds_name && is_a( $settings->$creds_name, 'PayPal_Signature_Credentials' ) ) {
-							if ( empty( $settings->$creds_name->apiSignature ) ) {
-								WC_Admin_Settings::add_error( sprintf( __( 'Error: The %s API signature you provided is not valid.', 'woocommerce-gateway-paypal-express-checkout' ), __( $full_env, 'woocommerce-gateway-paypal-express-checkout' ) ) );
-								return false;
-							}
-							$api_sig = $settings->$creds_name->apiSignature;
-						} else {
-							WC_Admin_Settings::add_error( sprintf( __( 'Error: The %s API signature you provided is not valid.', 'woocommerce-gateway-paypal-express-checkout' ), __( $full_env, 'woocommerce-gateway-paypal-express-checkout' ) ) );
-							return false;
-						}
-					}
 
 					// Ok, test them out.
-					$api_credentials = new PayPal_Signature_Credentials( $api_user, $api_pass, $api_sig, $subject );
+					$api_credentials = new WC_Gateway_PPEC_Client_Credential_Signature( $api_user, $api_pass, $api_sig, $subject );
 					try {
-						$payer_id = $this->test_api_credentials( $api_credentials, $full_env );
+						$payer_id = $this->test_api_credentials( $api_credentials, $environment );
 						if ( ! $payer_id ) {
-							WC_Admin_Settings::add_error( sprintf( __( 'Error: The %s credentials you provided are not valid.  Please double-check that you entered them correctly and try again.', 'woocommerce-gateway-paypal-express-checkout' ), __( $full_env, 'woocommerce-gateway-paypal-express-checkout' ) ) );
+							WC_Admin_Settings::add_error( sprintf( __( 'Error: The %s credentials you provided are not valid.  Please double-check that you entered them correctly and try again.', 'woocommerce-gateway-paypal-express-checkout' ), __( $environment, 'woocommerce-gateway-paypal-express-checkout' ) ) );
 							return false;
 						}
-						$api_credentials->payerID = $payer_id;
+						$api_credentials->set_payer_id( $payer_id );
 					} catch( PayPal_API_Exception $ex ) {
-						$this->display_warning( sprintf( __( 'An error occurred while trying to validate your %s API credentials.  Unable to verify that your API credentials are correct.', 'woocommerce-gateway-paypal-express-checkout' ), __( $full_env, 'woocommerce-gateway-paypal-express-checkout' ) ) );
+						$this->display_warning( sprintf( __( 'An error occurred while trying to validate your %s API credentials.  Unable to verify that your API credentials are correct.', 'woocommerce-gateway-paypal-express-checkout' ), __( $environment, 'woocommerce-gateway-paypal-express-checkout' ) ) );
 					}
 
-					$credentials = $api_credentials;
+					$credential = $api_credentials;
+
 				} else {
-					WC_Admin_Settings::add_error( sprintf( __( 'Error: You must provide a %s API signature.', 'woocommerce-gateway-paypal-express-checkout' ), __( $full_env, 'woocommerce-gateway-paypal-express-checkout' ) ) );
+					WC_Admin_Settings::add_error( sprintf( __( 'Error: You must provide a %s API signature.', 'woocommerce-gateway-paypal-express-checkout' ), __( $environment, 'woocommerce-gateway-paypal-express-checkout' ) ) );
 					return false;
 				}
+
 			} else {
 				if ( ! empty( $api_cert ) ) {
 					$cert = openssl_x509_read( $api_cert );
 					if ( false === $cert ) {
-						WC_Admin_Settings::add_error( sprintf( __( 'Error: The %s API certificate is not valid.', 'woocommerce-gateway-paypal-express-checkout' ), __( $full_env, 'woocommerce-gateway-paypal-express-checkout' ) ) );
+						WC_Admin_Settings::add_error( sprintf( __( 'Error: The %s API certificate is not valid.', 'woocommerce-gateway-paypal-express-checkout' ), __( $environment, 'woocommerce-gateway-paypal-express-checkout' ) ) );
 						self::$process_admin_options_validation_error = true;
 						return false;
 					}
@@ -838,7 +817,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 					$cert_info = openssl_x509_parse( $cert );
 					$valid_until = $cert_info['validTo_time_t'];
 					if ( $valid_until < time() ) {
-						WC_Admin_Settings::add_error( sprintf( __( 'Error: The %s API certificate has expired.', 'woocommerce-gateway-paypal-express-checkout' ), __( $full_env, 'woocommerce-gateway-paypal-express-checkout' ) ) );
+						WC_Admin_Settings::add_error( sprintf( __( 'Error: The %s API certificate has expired.', 'woocommerce-gateway-paypal-express-checkout' ), __( $environment, 'woocommerce-gateway-paypal-express-checkout' ) ) );
 						return false;
 					}
 
@@ -848,35 +827,35 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 					}
 				} else {
 					// If we already have a cert on file, don't require one.
-					if ( $settings->$creds_name && is_a( $settings->$creds_name, 'PayPal_Certificate_Credentials' ) ) {
-						if ( ! $settings->$creds_name->apiCertificate ) {
-							WC_Admin_Settings::add_error( sprintf( __( 'Error: You must provide a %s API certificate.', 'woocommerce-gateway-paypal-express-checkout' ), __( $full_env, 'woocommerce-gateway-paypal-express-checkout' ) ) );
+					if ( $creds && is_a( $creds, 'WC_Gateway_PPEC_Client_Credential_Certificate' ) ) {
+						if ( ! $creds->get_certificate() ) {
+							WC_Admin_Settings::add_error( sprintf( __( 'Error: You must provide a %s API certificate.', 'woocommerce-gateway-paypal-express-checkout' ), __( $environment, 'woocommerce-gateway-paypal-express-checkout' ) ) );
 							return false;
 						}
-						$api_cert = $settings->$creds_name->apiCertificate;
+						$api_cert = $creds->get_certificate();
 					} else {
-						WC_Admin_Settings::add_error( sprintf( __( 'Error: You must provide a %s API certificate.', 'woocommerce-gateway-paypal-express-checkout' ), __( $full_env, 'woocommerce-gateway-paypal-express-checkout' ) ) );
+						WC_Admin_Settings::add_error( sprintf( __( 'Error: You must provide a %s API certificate.', 'woocommerce-gateway-paypal-express-checkout' ), __( $environment, 'woocommerce-gateway-paypal-express-checkout' ) ) );
 						return false;
 					}
 				}
 
-				$api_credentials = new PayPal_Certificate_Credentials( $api_user, $api_pass, $api_cert, $subject );
+				$api_credentials = new WC_Gateway_PPEC_Client_Credential_Certificate( $api_user, $api_pass, $api_cert, $subject );
 				try {
-					$payer_id = $this->test_api_credentials( $api_credentials, $full_env );
+					$payer_id = $this->test_api_credentials( $api_credentials, $environment );
 					if ( ! $payer_id ) {
-						WC_Admin_Settings::add_error( sprintf( __( 'Error: The %s credentials you provided are not valid.  Please double-check that you entered them correctly and try again.', 'woocommerce-gateway-paypal-express-checkout' ), __( $full_env, 'woocommerce-gateway-paypal-express-checkout' ) ) );
+						WC_Admin_Settings::add_error( sprintf( __( 'Error: The %s credentials you provided are not valid.  Please double-check that you entered them correctly and try again.', 'woocommerce-gateway-paypal-express-checkout' ), __( $environment, 'woocommerce-gateway-paypal-express-checkout' ) ) );
 						return false;
 					}
-					$api_credentials->payerID = $payer_id;
+					$api_credentials->set_payer_id( $payer_id );
 				} catch( PayPal_API_Exception $ex ) {
-					$this->display_warning( sprintf( __( 'An error occurred while trying to validate your %s API credentials.  Unable to verify that your API credentials are correct.', 'woocommerce-gateway-paypal-express-checkout' ), __( $full_env, 'woocommerce-gateway-paypal-express-checkout' ) ) );
+					$this->display_warning( sprintf( __( 'An error occurred while trying to validate your %s API credentials.  Unable to verify that your API credentials are correct.', 'woocommerce-gateway-paypal-express-checkout' ), __( $environment, 'woocommerce-gateway-paypal-express-checkout' ) ) );
 				}
 
-				$credentials = $api_credentials;
+				$credential = $api_credentials;
 			}
 		}
 
-		return true;
+		return $credential;
 	}
 
 	public function process_admin_options() {
@@ -891,23 +870,25 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 
 		$environment = $_POST['woo_pp_environment'];
 
-		if ( 'live' != $environment && 'sandbox' != $environment ) {
+		if ( ! in_array( $environment, array( 'live', 'sandbox' ) ) ) {
 			WC_Admin_Settings::add_error( __( 'Error: The environment you selected is not valid.', 'woocommerce-gateway-paypal-express-checkout' ) );
 			return false;
 		}
 
-		if ( ! $this->validate_credentials( 'live', $live_api_credentials ) ) {
-			if ( array_key_exists( 'woo_pp_sb_api_certificate', $_FILES ) && array_key_exists( 'tmp_name', $_FILES['woo_pp_sb_api_certificate'] )
-				&& array_key_exists( 'size', $_FILES['woo_pp_sb_api_certificate'] ) && $_FILES['woo_pp_sb_api_certificate']['size'] ) {
-				$_POST['woo_pp_sb_api_cert_string'] = base64_encode( file_get_contents( $_FILES['woo_pp_sb_api_certificate']['tmp_name'] ) );
-				unlink( $_FILES['woo_pp_sb_api_certificate']['tmp_name'] );
-				unset( $_FILES['woo_pp_sb_api_certificate'] );
-			}
-			self::$process_admin_options_validation_error = true;
-			return false;
-		}
+		$credential = $this->validate_credentials( $environment );
+		if ( ! is_a( $credential, 'WC_Gateway_PPEC_Client_Credential' ) ) {
+			if ( array_key_exists( 'woo_pp_sandbox_api_certificate', $_FILES )
+				&& array_key_exists( 'tmp_name', $_FILES['woo_pp_sandbox_api_certificate'] )
+				&& array_key_exists( 'size', $_FILES['woo_pp_sandbox_api_certificate'] )
+				&& $_FILES['woo_pp_sandbox_api_certificate']['size'] ) {
 
-		if ( ! $this->validate_credentials( 'sb', $sb_api_credentials ) ) {
+				$_POST['woo_pp_sandbox_api_cert_string'] = base64_encode( file_get_contents( $_FILES['woo_pp_sandbox_api_certificate']['tmp_name'] ) );
+				unlink( $_FILES['woo_pp_sandbox_api_certificate']['tmp_name'] );
+				unset( $_FILES['woo_pp_sandbox_api_certificate'] );
+
+			}
+
+			WC_Admin_Settings::add_error( __( 'Error: You must supply a valid set of credentials before enabling the plugin.', 'woocommerce-gateway-paypal-express-checkout' ) );
 			self::$process_admin_options_validation_error = true;
 			return false;
 		}
@@ -957,29 +938,20 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 			$icc_enabled = true;
 		}
 
-		if ( $live_api_credentials ) {
-			try {
-				$live_account_enabled_for_billing_address = $this->test_for_billing_address_enabled( $live_api_credentials, 'live' );
-			} catch( PayPal_API_Exception $ex ) {
-				$this->display_warning( __( 'An error occurred while trying to determine which features are enabled on your live account.  You may not have access to all of the settings allowed by your PayPal account.  Please click "Save Changes" to try again.', 'woocommerce-gateway-paypal-express-checkout' ) );
-			}
+		$is_account_enabled_for_billing_address = false;
+		try {
+			$is_account_enabled_for_billing_address = $this->test_for_billing_address_enabled( $credential, $environment );
+		} catch( PayPal_API_Exception $ex ) {
+			$this->display_warning( __( 'An error occurred while trying to determine which features are enabled on your live account.  You may not have access to all of the settings allowed by your PayPal account.  Please click "Save Changes" to try again.', 'woocommerce-gateway-paypal-express-checkout' ) );
 		}
 
-		if ( $sb_api_credentials ) {
-			try {
-				$sb_account_enabled_for_billing_address = $this->test_for_billing_address_enabled( $sb_api_credentials, 'sandbox' );
-			} catch( PayPal_API_Exception $ex ) {
-				$this->display_warning( __( 'An error occurred while trying to determine which features are enabled on your sandbox account.  You may not have access to all of the settings allowed by your PayPal account.  Please click "Save Changes" to try again.', 'woocommerce-gateway-paypal-express-checkout' ) );
-			}
-		}
-
-		// If the plugin is enabled, a valid set of credentials must be present.
-		if ( $enabled ) {
-			if ( ( 'live' == $environment && ! $live_api_credentials ) || ( 'sandbox' == $environment && ! $sb_api_credentials ) ) {
-				WC_Admin_Settings::add_error( __( 'Error: You must supply a valid set of credentials before enabling the plugin.', 'woocommerce-gateway-paypal-express-checkout' ) );
-				self::$process_admin_options_validation_error = true;
-				return false;
-			}
+		switch ( $environment ) {
+			case 'live':
+				$live_account_enabled_for_billing_address = $is_account_enabled_for_billing_address;
+				break;
+			case 'sandbox':
+				$sb_account_enabled_for_billing_address = $is_account_enabled_for_billing_address;
+				break;
 		}
 
 		// WC_Gateway_PPEC_Settings already has sanitizers for these values, so we don't need to check them.
@@ -996,8 +968,8 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		$settings->buttonSize                            = $button_size;
 		$settings->markSize                              = $mark_size;
 		$settings->environment                           = $environment;
-		$settings->liveApiCredentials                    = $live_api_credentials;
-		$settings->sandboxApiCredentials                 = $sb_api_credentials;
+		$settings->liveApiCredentials                    = 'live' === $environment ? $credential : false;
+		$settings->sandboxApiCredentials                 = 'sandbox' === $environment ? $credential : false;
 		$settings->allowGuestCheckout                    = $allow_guest_checkout;
 		$settings->blockEChecks                          = $block_echecks;
 		$settings->requireBillingAddress                 = $require_billing_address;
@@ -1015,8 +987,11 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 	}
 
 	function test_api_credentials( $credentials, $environment = 'sandbox' ) {
-		$api = new PayPal_API( $credentials, $environment );
-		$result = $api->GetPalDetails();
+		wc_gateway_ppec()->client->set_credential( $credentials );
+		wc_gateway_ppec()->client->set_environment( $environment );
+
+		$result = wc_gateway_ppec()->client->get_pal_details();
+
 		if ( 'Success' != $result['ACK'] && 'SuccessWithWarning' != $result['ACK'] ) {
 			// Look at the result a little more closely to make sure it's a credentialing issue.
 			$found_10002 = false;
@@ -1044,14 +1019,17 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 	// this feature enabled, the call will complete successfully; if they do not, the call will
 	// fail with error code 11601.
 	function test_for_billing_address_enabled( $credentials, $environment = 'sandbox' ) {
-		$api = new PayPal_API( $credentials, $environment );
+		$client = wc_gateway_ppec()->client;
+		$client->set_credential( $credentials );
+		$client->set_environment( $environment );
+
 		$req = array(
 			'RETURNURL'         => 'https://localhost/',
 			'CANCELURL'         => 'https://localhost/',
 			'REQBILLINGADDRESS' => '1',
 			'AMT'               => '1.00'
 		);
-		$result = $api->SetExpressCheckout( $req );
+		$result = $client->set_express_checkout( $req );
 
 		if ( 'Success' != $result['ACK'] && 'SuccessWithWarning' != $result['ACK'] ) {
 			$found_11601 = false;

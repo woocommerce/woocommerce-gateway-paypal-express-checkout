@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 $includes_path = wc_gateway_ppec()->includes_path;
 
 // TODO: Use spl autoload to require on-demand maybe?
-require_once( $includes_path . 'lib/class-api.php'             );
+
 require_once( $includes_path . 'class-wc-gateway-ppec-settings.php' );
 require_once( $includes_path . 'class-wc-gateway-ppec-session-data.php' );
 require_once( $includes_path . 'lib/class-checkoutdetails.php' );
@@ -73,7 +73,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	public function after_checkout_form() {
 		$settings = wc_gateway_ppec()->settings->loadSettings();
 
-		if ( $settings->enabled && $settings->enableInContextCheckout && $settings->getActiveApiCredentials()->payerID ) {
+		if ( $settings->enabled && $settings->enableInContextCheckout && $settings->getActiveApiCredentials()->get_payer_id() ) {
 			$session = WC()->session->paypal;
 			if ( ! $session ) {
 				return;
@@ -84,7 +84,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			}
 
 			if ( ! $session->checkout_completed || $session->expiry_time < time() || ! $session->payerID ) {
-				$payer_id = $settings->getActiveApiCredentials()->payerID;
+				$payer_id = $settings->getActiveApiCredentials()->get_payer_id();
 
 				// This div is necessary for PayPal to properly display its lightbox.
 				echo '<div id="woo_pp_icc_container" style="display: none;"></div>';
@@ -106,7 +106,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		}
 
 		// On the checkout page, only load the JS if we plan on sending them over to PayPal.
-		if ( $settings->enableInContextCheckout && $settings->getActiveApiCredentials()->payerID ) {
+		if ( $settings->enableInContextCheckout && $settings->getActiveApiCredentials()->get_payer_id() ) {
 			$session = WC()->session->paypal;
 			if ( ! $session
 				|| ! is_a( $session, 'WC_Gateway_PPEC_Session_Data' )
@@ -267,8 +267,6 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			$this->getSetExpressCheckoutParameters()
 		);
 
-		$api = new PayPal_API( $settings->getActiveApiCredentials(), $settings->environment );
-
 		$params['RETURNURL'] = $this->getReturnUrl();
 		$params['CANCELURL'] = $this->getCancelUrl();
 
@@ -276,8 +274,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			$params['BILLINGTYPE'] = 'MerchantInitiatedBilling';
 		}
 
-		$response = $api->SetExpressCheckout( $params );
-
+		$response = wc_gateway_ppec()->client->set_express_checkout( $params );
 		if ( $this->isSuccess( $response ) ) {
 			// Save some data to the session.
 			WC()->session->paypal = new WC_Gateway_PPEC_Session_Data(
@@ -325,8 +322,6 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			$this->getSetExpressCheckoutParameters()
 		);
 
-		$api = new PayPal_API( $settings->getActiveApiCredentials(), $settings->environment );
-
 		$params['RETURNURL'] = $this->getReturnUrl();
 		$params['CANCELURL'] = $this->getCancelUrl();
 
@@ -337,8 +332,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		$needs_shipping = WC()->cart->needs_shipping();
 		$this->suppressShippingAddress( $needs_shipping );
 
-		$response = $api->SetExpressCheckout( $params );
-
+		$response = wc_gateway_ppec()->client->set_express_checkout( $params );
 
 		if ( $this->isSuccess( $response ) ) {
 			// Save some data to the session.
@@ -361,18 +355,11 @@ class WC_Gateway_PPEC_Checkout_Handler {
 
 	public function getCheckoutDetails( $token = false ) {
 
-		$settings = wc_gateway_ppec()->settings->loadSettings();
-
-		$api = new PayPal_API(
-			$settings->getActiveApiCredentials(),
-			$settings->environment
-		);
-
 		if ( false === $token ) {
 			$token = $_GET['token'];
 		}
 
-		$response = $api->GetExpressCheckoutDetails( $token );
+		$response = wc_gateway_ppec()->client->get_express_checkout_details( $token );
 
 		if ( 'Success' == $response['ACK'] || 'SuccessWithWarning' == $response['ACK'] ) {
 			$checkout_details = new PayPal_Checkout_Details();
@@ -438,9 +425,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			$this->getDoExpressCheckoutParameters( $token, $payerID )
 		);
 
-		$api = new PayPal_API( $settings->getActiveApiCredentials(), $settings->environment );
-
-		$response = $api->DoExpressCheckoutPayment( $params );
+		$response = wc_gateway_ppec()->client->do_express_checkout_payment( $params );
 
 		if ( $this->isSuccess( $response ) ) {
 			$payment_details = new PayPal_Payment_Details();

@@ -3,11 +3,11 @@ jQuery(document).ready(function() {
 	var env_to_hide = '';
 	var env_to_show = '';
 	if ( 'live' == env ) {
-		env_to_hide = 'sb';
+		env_to_hide = 'sandbox';
 		env_to_show = 'live';
 	} else {
 		env_to_hide = 'live';
-		env_to_show = 'sb';
+		env_to_show = 'sandbox';
 	}
 
 	jQuery( '.woo_pp_' + env_to_hide).hide();
@@ -29,11 +29,11 @@ jQuery(document).ready(function() {
 		var env_to_hide = '';
 		var env_to_show = '';
 		if ( 'live' == env ) {
-			env_to_hide = 'sb';
+			env_to_hide = 'sandbox';
 			env_to_show = 'live';
 		} else {
 			env_to_hide = 'live';
-			env_to_show = 'sb';
+			env_to_show = 'sandbox';
 		}
 
 		jQuery( '.woo_pp_' + env_to_hide ).hide();
@@ -60,7 +60,7 @@ jQuery(document).ready(function() {
 				jQuery( '#woo_pp_req_ba_row' ).hide();
 			}
 		} else {
-			if ( woo_pp_sb_is_rba_enabled ) {
+			if ( woo_pp_sandbox_is_rba_enabled ) {
 				jQuery( '#woo_pp_req_ba_row' ).show();
 			} else {
 				jQuery( '#woo_pp_req_ba_row' ).hide();
@@ -82,8 +82,8 @@ jQuery(document).ready(function() {
 		jQuery( '.woo_pp_live_' + style ).show();
 	});
 
-	jQuery( '#woo_pp_sb_api_style' ).change(function() {
-		var style = jQuery( '#woo_pp_sb_api_style option' ).filter( ':selected' ).val();
+	jQuery( '#woo_pp_sandbox_api_style' ).change(function() {
+		var style = jQuery( '#woo_pp_sandbox_api_style option' ).filter( ':selected' ).val();
 		var style_to_hide = '';
 
 		if ( 'signature' == style ) {
@@ -92,8 +92,8 @@ jQuery(document).ready(function() {
 			style_to_hide = 'signature';
 		}
 
-		jQuery( '.woo_pp_sb_' + style_to_hide ).hide();
-		jQuery( '.woo_pp_sb_' + style ).show();
+		jQuery( '.woo_pp_sandbox_' + style_to_hide ).hide();
+		jQuery( '.woo_pp_sandbox_' + style ).show();
 	});
 
 });

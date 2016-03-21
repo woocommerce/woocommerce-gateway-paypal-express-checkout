@@ -172,6 +172,12 @@ class WC_Gateway_PPEC_Plugin {
 	 * Load handlers.
 	 */
 	protected function _load_handlers() {
+		// Client.
+		require_once( $this->includes_path . 'abstracts/abstract-wc-gateway-ppec-client-credential.php' );
+		require_once( $this->includes_path . 'class-wc-gateway-ppec-client-credential-certificate.php' );
+		require_once( $this->includes_path . 'class-wc-gateway-ppec-client-credential-signature.php' );
+		require_once( $this->includes_path . 'class-wc-gateway-ppec-client.php' );
+
 		// Load handlers.
 		require_once( $this->includes_path . 'class-wc-gateway-ppec-settings.php' );
 		require_once( $this->includes_path . 'class-wc-gateway-ppec-gateway-loader.php' );
@@ -179,11 +185,15 @@ class WC_Gateway_PPEC_Plugin {
 		require_once( $this->includes_path . 'class-wc-gateway-ppec-checkout-handler.php' );
 		require_once( $this->includes_path . 'class-wc-gateway-ppec-cart-handler.php' );
 
-		$this->settings       = new WC_Gateway_PPEC_Settings();
+		$this->settings = new WC_Gateway_PPEC_Settings();
+		$this->settings->loadSettings();
+
 		$this->gateway_loader = new WC_Gateway_PPEC_Gateway_Loader();
 		$this->admin          = new WC_Gateway_PPEC_Admin_Handler();
 		$this->checkout       = new WC_Gateway_PPEC_Checkout_Handler();
 		$this->cart           = new WC_Gateway_PPEC_Cart_Handler();
+
+		$this->client = new WC_Gateway_PPEC_Client( $this->settings->getActiveApiCredentials(), $this->settings->environment );
 	}
 
 	/**

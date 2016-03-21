@@ -5,6 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class WC_Gateway_PPEC_Session_Data {
+
 	public $leftFrom                  = false; // 'cart' or 'order'
 	public $order_id                  = false; // if $leftFrom is 'order', this should be the order ID
 	public $billingAgreementRequested = false; // true if a billing agreement was requested in the SetEC call, false otherwise

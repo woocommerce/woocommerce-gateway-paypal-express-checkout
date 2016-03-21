@@ -8,6 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class WC_Gateway_PPEC_Admin_Handler {
+
 	/**
 	 * Constructor.
 	 */

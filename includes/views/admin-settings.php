@@ -14,14 +14,14 @@ if ( $live_cert ) {
 
 if ( $sb_cert ) {
 	?>
-	<input type="hidden" name="woo_pp_sb_api_cert_string" value="<?php echo base64_encode( $sb_cert ); ?>">
+	<input type="hidden" name="woo_pp_sandbox_api_cert_string" value="<?php echo base64_encode( $sb_cert ); ?>">
 	<?php
 }
 
 ?>
 <script type="text/javascript">
 	var woo_pp_live_is_rba_enabled = <?php echo $live_account_is_enabled_for_billing_address ? "true" : "false"; ?>;
-	var woo_pp_sb_is_rba_enabled = <?php echo $sb_account_is_enabled_for_billing_address ? "true" : "false"; ?>;
+	var woo_pp_sandbox_is_rba_enabled = <?php echo $sb_account_is_enabled_for_billing_address ? "true" : "false"; ?>;
 </script>
 <table class="form-table">
 	<tr>
@@ -153,7 +153,7 @@ if ( $sb_cert ) {
 			</div>
 			<fieldset>
 				<legend class="screen-reader-text"><span><?php _e( 'Live API password' ); ?></span></legend>
-				<input type="password" name="woo_pp_live_api_password" id="woo_pp_live_api_password" size="40" value="<?php echo $masked_live_api_pass; ?>">
+				<input type="password" name="woo_pp_live_api_password" id="woo_pp_live_api_password" size="40" value="<?php echo $live_api_pass; ?>">
 			</fieldset>
 		</td>
 	</tr>
@@ -171,7 +171,7 @@ if ( $sb_cert ) {
 			</div>
 			<fieldset>
 				<legend class="screen-reader-text"><span><?php _e( 'Live API signature', 'woocommerce-gateway-paypal-express-checkout' ); ?></span></legend>
-				<input type="password" name="woo_pp_live_api_signature" id="woo_pp_live_api_signature" size="40" value="<?php echo $masked_live_api_sig; ?>">
+				<input type="password" name="woo_pp_live_api_signature" id="woo_pp_live_api_signature" size="40" value="<?php echo $live_api_sig; ?>">
 			</fieldset>
 		</td>
 	</tr>
@@ -226,11 +226,11 @@ if ( $sb_cert ) {
 <?php } ?>
 	<tr class="woo_pp_sb">
 		<th>
-			<label for="woo_pp_sb_api_style"><?php _e( 'Sandbox API credential type', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
-			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_sb_api_style_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
+			<label for="woo_pp_sandbox_api_style"><?php _e( 'Sandbox API credential type', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
+			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_sandbox_api_style_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
 		</th>
 		<td>
-			<div id="woo_pp_sb_api_style_help" style="display: none;">
+			<div id="woo_pp_sandbox_api_style_help" style="display: none;">
 				<p>
 					<h2><?php _e( 'Sandbox API credential type', 'woocommerce-gateway-paypal-express-checkout' ); ?></h2>
 					<?php _e( '<p>This setting allows you to specify whether the API credentials for your Sandbox account contain an API signature or an API certificate.</p><p>To process PayPal transactions on the PayPal Sandbox using Express Checkout, you must:</p><ul style="list-style: disc outside; margin-left: 20px;"><li>Have a live PayPal account (it doesn\'t matter if you have a Personal or Business account)</li><li>Sign in to <a href="https://developer.paypal.com" target="_blank">http://developer.paypal.com</a> using the email address and password from your live PayPal account.</li><li>Create at least one PayPal Business account and one PayPal Personal account on the Sandbox.  The Business account will represent you, as the merchant, and the Personal account will represent your buyer.  (<strong>Note:</strong> PayPal will usually create a Personal and a Business account on the Sandbox for you the first time you log in.)</li></ul><p>Typically, when you create a PayPal Business account on the Sandbox, PayPal will generate a set of credentials for you.  These credentials will usually have an API signature, so most people can select <strong>API signature</strong> here.</p><p>To retrieve the API credentials for your Sandbox account, follow these steps:</p><ol style="list-style: decimal outside;"><li>Go to <a href="https://developer.paypal.com" target="_blank">https://developer.paypal.com</a> and sign in using the email address and password from your live PayPal account.</li><li>Click <strong>Dashboard</strong>.</li><li>Under <strong>Sandbox</strong>, click <strong>Accounts</strong>.</li><li>In the list of accounts, click on the email address of your Business account.  (If you do not have a business account, click <strong>Create Account</strong> to create a new account.)</li><li>Click the <strong>Profile</strong> link that appears underneath the account\'s email address.</li><li>Click the <strong>API credentials</strong> tab.</li><li>Copy and paste the API credentials into the spaces provided.</li></ol><p><strong>Note:</strong> If you see a username and password, but not a signature, the account has an API certificate attached to it.  To retrieve the API certificate, follow these steps:<ol style="list-style: decimal outside;"><li>Log in to the account at <a href="https://www.sandbox.paypal.com" target="_blank">https://www.sandbox.paypal.com</a>.</li><li>The next few steps will differ depending on your account settings.<ul style="list-style: disc outside; margin-left: 15px;"><li>Do you see a set of tabs at the top of the page that read <strong>Money</strong>, <strong>Transactions</strong>, <strong>Customers</strong>, <strong>Tools</strong>, and <strong>More</strong>?  If so:<ol style="list-style: lower-roman outside;"><li>Click the Business Profile button.  (It\'s in the upper-right corner of the page, immediately to the left of the <strong>Log Out</strong> button.)</li><li>Click <strong>Profile and settings</strong>.</li><li>On the left-hand side of the page, click <strong>My selling tools</strong>.</li><li>Locate <strong>API access</strong> in the list of settings.  Click the <strong>Update</strong> link immediately to the right of it.</li></ol></li><li>Look in your browser\'s address bar.  Does the URL start with <strong>https://paypalmanager.sandbox.paypal.com/</strong>?  If so:<ol style="list-style: lower-roman outside;"><li>Click <strong>Profile</strong>.  (It will be in the row of links underneath the <strong>My Account</strong> tab.)</li><li>Click <strong>Request API credentials</strong>.  (It will be in the <strong>Account information</strong> section.)</li><li>Click <strong>Set up PayPal API credentials and permissions</strong>.  (It will be in the <strong>Option 1 - PayPal API</strong> box.)</li></ol></li><li>Otherwise, follow these steps:<ol style="list-style: lower-roman outside;"><li>Under <strong>Profile</strong>, click <strong>My Selling Tools</strong>.</li><li>Locate <strong>API access</strong> in the list of settings.  Click the <strong>Update</strong> link immediately to the right of it.</li></ol></li></ul></li><li>Click <strong>View API certificate</strong>.  (It will be in the <strong>Option 2</strong> box, on the right-hand side of the page.)</li><li>Click <strong>Download Certificate</strong>.  Your API certificate will be downloaded to your computer.</li></ol></p>', 'woocommerce-gateway-paypal-express-checkout' ); ?>
@@ -238,7 +238,7 @@ if ( $sb_cert ) {
 			</div>
 			<fieldset>
 				<legend class="screen-reader-text"><span><?php _e( 'Sandbox API credential type', 'woocommerce-gateway-paypal-express-checkout' ); ?></span></legend>
-				<select name="woo_pp_sb_api_style" id="woo_pp_sb_api_style">
+				<select name="woo_pp_sandbox_api_style" id="woo_pp_sandbox_api_style">
 					<option value="signature"<?php selected( $sb_style, 'signature' ); ?>><?php _e( 'API signature', 'woocommerce-gateway-paypal-express-checkout' ); ?></option>
 					<option value="certificate"<?php selected( $sb_style, 'certificate' ); ?>><?php _e( 'API certificate', 'woocommerce-gateway-paypal-express-checkout' ); ?></option>
 				</select>
@@ -247,11 +247,11 @@ if ( $sb_cert ) {
 	</tr>
 	<tr class="woo_pp_sb">
 		<th>
-			<label for="woo_pp_sb_api_username"><?php _e( 'Sandbox API username', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
-			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_sb_api_username_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
+			<label for="woo_pp_sandbox_api_username"><?php _e( 'Sandbox API username', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
+			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_sandbox_api_username_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
 		</th>
 		<td>
-			<div id="woo_pp_sb_api_username_help" style="display: none;">
+			<div id="woo_pp_sandbox_api_username_help" style="display: none;">
 				<p>
 					<h2><?php _e( 'Sandbox API username', 'woocommerce-gateway-paypal-express-checkout' ); ?></h2>
 					<?php _e( '<p>Enter the API username provided to you by PayPal.</p><p><strong>Note:</strong> This value is generated for you by PayPal.  You must use the username that they give you.  This is <strong>not</strong> the same as the email address you use to log in to <a href="https://developer.paypal.com" target="_blank">developer.paypal.com</a>, <a href="https://www.sandbox.paypal.com" target="_blank">www.sandbox.paypal.com</a> or <a href="https://www.paypal.com" target="_blank">www.paypal.com</a>.</p><p>For help on retrieving your API credentials, click on the help for the <strong>Sandbox API credential type</strong> setting.</p>', 'woocommerce-gateway-paypal-express-checkout' ); ?>
@@ -259,17 +259,17 @@ if ( $sb_cert ) {
 			</div>
 			<fieldset>
 				<legend class="screen-reader-text"><span><?php _e( 'Sandbox API username', 'woocommerce-gateway-paypal-express-checkout' ); ?></span></legend>
-				<input type="text" name="woo_pp_sb_api_username" id="woo_pp_sb_api_username" size="40" value="<?php echo $sb_api_username; ?>">
+				<input type="text" name="woo_pp_sandbox_api_username" id="woo_pp_sandbox_api_username" size="40" value="<?php echo $sb_api_username; ?>">
 			</fieldset>
 		</td>
 	</tr>
 	<tr class="woo_pp_sb">
 		<th>
-			<label for="woo_pp_sb_api_password"><?php _e( 'Sandbox API password', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
-			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_sb_api_password_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
+			<label for="woo_pp_sandbox_api_password"><?php _e( 'Sandbox API password', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
+			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_sandbox_api_password_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
 		</th>
 		<td>
-			<div id="woo_pp_sb_api_password_help" style="display: none;">
+			<div id="woo_pp_sandbox_api_password_help" style="display: none;">
 				<p>
 					<h2><?php _e( 'Sandbox API password', 'woocommerce-gateway-paypal-express-checkout' ); ?></h2>
 					<?php _e( '<p>Enter the API password provided to you by PayPal.</p><p><strong>Note:</strong> This value is generated for you by PayPal.  You must use the password that they give you.  This is <strong>not</strong> the same as the password you use to log in to <a href="https://developer.paypal.com" target="_blank">developer.paypal.com</a>, <a href="https://www.sandbox.paypal.com" target="_blank">www.sandbox.paypal.com</a> or <a href="https://www.paypal.com" target="_blank">www.paypal.com</a>.</p><p>For help on retrieving your API credentials, click on the help for the <strong>Sandbox API credential type</strong> setting.</p>', 'woocommerce-gateway-paypal-express-checkout' ); ?>
@@ -277,17 +277,17 @@ if ( $sb_cert ) {
 			</div>
 			<fieldset>
 				<legend class="screen-reader-text"><span><?php _e( 'Sandbox API password', 'woocommerce-gateway-paypal-express-checkout' ); ?></span></legend>
-				<input type="password" name="woo_pp_sb_api_password" id="woo_pp_sb_api_password" size="40" value="<?php echo $masked_sb_api_pass; ?>">
+				<input type="password" name="woo_pp_sandbox_api_password" id="woo_pp_sandbox_api_password" size="40" value="<?php echo $sb_api_pass; ?>">
 			</fieldset>
 		</td>
 	</tr>
-	<tr class="woo_pp_sb_signature">
+	<tr class="woo_pp_sandbox_signature">
 		<th>
-			<label for="woo_pp_sb_api_signature"><?php _e( 'Sandbox API signature', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
-			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_sb_api_signature_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
+			<label for="woo_pp_sandbox_api_signature"><?php _e( 'Sandbox API signature', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
+			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_sandbox_api_signature_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
 		</th>
 		<td>
-			<div id="woo_pp_sb_api_signature_help" style="display: none;">
+			<div id="woo_pp_sandbox_api_signature_help" style="display: none;">
 				<p>
 					<h2><?php _e( 'Sandbox API signature', 'woocommerce-gateway-paypal-express-checkout' ); ?></h2>
 					<?php _e( '<p>Enter the API signature provided to you by PayPal.</p><p><strong>Note:</strong> This value is generated for you by PayPal.  You must use the signature that they give you.  This is <strong>not</strong> the same as the email address or password that you use to log in to <a href="https://developer.paypal.com" target="_blank">developer.paypal.com</a>, <a href="https://www.sandbox.paypal.com" target="_blank">www.sandbox.paypal.com</a> or <a href="https://www.paypal.com" target="_blank">www.paypal.com</a>.</p><p>For help on retrieving your API credentials, click on the help for the <strong>Sandbox API credential type</strong> setting.</p>', 'woocommerce-gateway-paypal-express-checkout' ); ?>
@@ -295,17 +295,17 @@ if ( $sb_cert ) {
 			</div>
 			<fieldset>
 				<legend class="screen-reader-text"><span><?php _e( 'Sandbox API signature', 'woocommerce-gateway-paypal-express-checkout' ); ?></span></legend>
-				<input type="password" name="woo_pp_sb_api_signature" id="woo_pp_sb_api_signature" size="40" value="<?php echo $masked_sb_api_sig; ?>">
+				<input type="password" name="woo_pp_sandbox_api_signature" id="woo_pp_sandbox_api_signature" size="40" value="<?php echo $sb_api_sig; ?>">
 			</fieldset>
 		</td>
 	</tr>
-	<tr class="woo_pp_sb_certificate">
+	<tr class="woo_pp_sandbox_certificate">
 		<th>
-			<label for="woo_pp_sb_api_certificate"><?php _e( 'Sandbox API certificate', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
-			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_sb_api_certificate_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
+			<label for="woo_pp_sandbox_api_certificate"><?php _e( 'Sandbox API certificate', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
+			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_sandbox_api_certificate_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
 		</th>
 		<td>
-			<div id="woo_pp_sb_api_certificate_help" style="display: none;">
+			<div id="woo_pp_sandbox_api_certificate_help" style="display: none;">
 				<p>
 					<h2><?php _e( 'Sandbox API certificate', 'woocommerce-gateway-paypal-express-checkout' ); ?></h2>
 					<?php _e( '<p>When you request API credentials from PayPal, and you choose the API certificate option, PayPal provides you with the certificate as a file.  This file is typically called <strong>cert_key_pem.txt</strong>.  Upload the file using this setting.</p><p><strong>Note:</strong> Upload the file exactly as it was provided to you by PayPal.  The name of the file doesn\'t matter, but you must not modify the contents of the file.</p><p>For help on retrieving your API credentials, click on the help for the <strong>Sandbox API credential type</strong> setting.</p>', 'woocommerce-gateway-paypal-express-checkout' ); ?>
@@ -314,17 +314,17 @@ if ( $sb_cert ) {
 			<fieldset>
 				<legend class="screen-reader-text"><span><?php _e( 'Sandbox API certificate', 'woocommerce-gateway-paypal-express-checkout' ); ?></span></legend>
 				<p><strong><?php _e( 'Certificate status:', 'woocommerce-gateway-paypal-express-checkout' ); ?></strong> <?php echo $sb_cert_info; ?></p>
-				<p><span style="font-style: italic;"><?php _e( 'Upload a new certificate:', 'woocommerce-gateway-paypal-express-checkout' ); ?></span> <input type="file" name="woo_pp_sb_api_certificate" id="woo_pp_sb_api_certificate"></p>
+				<p><span style="font-style: italic;"><?php _e( 'Upload a new certificate:', 'woocommerce-gateway-paypal-express-checkout' ); ?></span> <input type="file" name="woo_pp_sandbox_api_certificate" id="woo_pp_sandbox_api_certificate"></p>
 			</fieldset>
 		</td>
 	</tr>
 	<tr class="woo_pp_sb">
 		<th>
-			<label for="woo_pp_sb_subject"><?php _e( 'Sandbox subject', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
-			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_sb_subject_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
+			<label for="woo_pp_sandbox_subject"><?php _e( 'Sandbox subject', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
+			<a href="#TB_inline?width=800&height=600&inlineId=woo_pp_sandbox_subject_help" class="thickbox"><img src="<?php echo $help_image_url; ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
 		</th>
 		<td>
-			<div id="woo_pp_sb_subject_help" style="display: none;">
+			<div id="woo_pp_sandbox_subject_help" style="display: none;">
 				<p>
 					<h2><?php _e( 'Sandbox subject', 'woocommerce-gateway-paypal-express-checkout' ); ?></h2>
 					<?php _e( '<p>If you\'re processing transactions on behalf of another PayPal account, enter the email address or Secure Merchant Account ID (also known as a Payer ID) of the other account here.  Generally, you must have API permissions in place with the other account in order to process anything other than "sale" transactions for them.</p><p>Most people won\'t need to use this setting.  If you\'re not sure what to put here, leave it blank.</p>', 'woocommerce-gateway-paypal-express-checkout' ); ?>
@@ -332,7 +332,7 @@ if ( $sb_cert ) {
 			</div>
 			<fieldset>
 				<legend class="screen-reader-text"><span><?php _e( 'Sandbox subject', 'woocommerce-gateway-paypal-express-checkout' ); ?></span></legend>
-				<input type="text" name="woo_pp_sb_subject" id="woo_pp_sb_subject" size="40" value="<?php echo $sb_subject; ?>">
+				<input type="text" name="woo_pp_sandbox_subject" id="woo_pp_sandbox_subject" size="40" value="<?php echo $sb_subject; ?>">
 			</fieldset>
 		</td>
 	</tr>

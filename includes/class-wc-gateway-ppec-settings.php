@@ -4,9 +4,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-require_once( 'lib/class-signature.php' );
-require_once( 'lib/class-certificate.php' );
-
 class WC_Gateway_PPEC_Settings {
 
 	protected $params;
@@ -103,9 +100,9 @@ class WC_Gateway_PPEC_Settings {
 
 	public function setApiSignatureCredentials( $username, $password, $signature, $subject = false, $environment = 'sandbox' ) {
 		if ( 'live' == $environment ) {
-			$this->liveApiCredentials = new PayPal_Signature_Credentials( $username, $password, $signature, $subject );
+			$this->liveApiCredentials = new WC_Gateway_PPEC_Client_Credential_Signature( $username, $password, $signature, $subject );
 		} else {
-			$this->sandboxApiCredentials = new PayPal_Signature_Credentials( $username, $password, $signature, $subject );
+			$this->sandboxApiCredentials = new WC_Gateway_PPEC_Client_Credential_Signature( $username, $password, $signature, $subject );
 		}
 	}
 
@@ -125,9 +122,9 @@ class WC_Gateway_PPEC_Settings {
 
 	public function setApiCertificateCredentialsFromString( $username, $password, $certString, $subject = false, $environment = 'sandbox' ) {
 		if ( 'live' == $environment ) {
-			$this->liveApiCredentials = new PayPal_Certificate_Credentials( $username, $password, $certString, $subject );
+			$this->liveApiCredentials = new WC_Gateway_PPEC_Client_Credential_Certificate( $username, $password, $certString, $subject );
 		} else {
-			$this->sandboxApiCredentials = new PayPal_Certificate_Credentials( $username, $password, $certString, $subject );
+			$this->sandboxApiCredentials = new WC_Gateway_PPEC_Client_Credential_Certificate( $username, $password, $certString, $subject );
 		}
 	}
 
@@ -161,14 +158,6 @@ class WC_Gateway_PPEC_Settings {
 		}
 
 		return $url;
-	}
-
-	protected function _validate_paymentAction( $value ) {
-		if ( self::PaymentActionSale != $value && self::PaymentActionAuthorization != $value && self::PaymentActionOrder != $value ) {
-			return false;
-		} else {
-			return true;
-		}
 	}
 
 	public function getSetECShortcutParameters() {
@@ -309,6 +298,14 @@ class WC_Gateway_PPEC_Settings {
 			return $size;
 		} else {
 			return self::markSizeSmall;
+		}
+	}
+
+	protected function _validate_paymentAction( $value ) {
+		if ( self::PaymentActionSale != $value && self::PaymentActionAuthorization != $value && self::PaymentActionOrder != $value ) {
+			return false;
+		} else {
+			return true;
 		}
 	}
 
