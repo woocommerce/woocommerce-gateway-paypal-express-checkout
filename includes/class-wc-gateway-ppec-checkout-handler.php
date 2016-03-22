@@ -40,6 +40,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		add_action( 'woocommerce_before_checkout_process', array( $this, 'before_checkout_process' ) );
 		add_action( 'woocommerce_checkout_process', array( $this, 'checkout_process' ) );
 		add_action( 'woocommerce_after_checkout_form', array( $this, 'after_checkout_form' ) );
+		add_action( 'woocommerce_available_payment_gateways', array( $this, 'maybe_disable_paypal_credit' ) );
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 	}
@@ -235,6 +236,22 @@ class WC_Gateway_PPEC_Checkout_Handler {
 				wp_enqueue_script( 'paypal-checkout-js', 'https://www.paypalobjects.com/api/checkout.js', array(), null, true );
 			}
 		}
+	}
+
+	/**
+	 * If base location is not US, disable PayPal Credit.
+	 *
+	 * @since 1.0.0
+	 * @param array $gateways Available gateways
+	 *
+	 * @return array Available gateways
+	 */
+	public function maybe_disable_paypal_credit( $gateways ) {
+		if ( isset( $gateways['ppec_cards'] ) && 'US' !== WC()->countries->get_base_country() ) {
+			unset( $gateways['ppec_cards'] );
+		}
+
+		return $gateways;
 	}
 
 	public function enablePayPalCredit( $enable = true ) {

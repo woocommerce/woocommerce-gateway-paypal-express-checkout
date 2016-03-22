@@ -84,7 +84,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 				</a>
 			</span>
 
-			<?php if ( $settings->ppcEnabled ) : ?>
+			<?php if ( $settings->ppcEnabled && 'US' === WC()->countries->get_base_country() ) : ?>
 				<?php
 				$redirect = add_query_arg( array( 'use-ppc' => 'true' ), $redirect );
 				?>
