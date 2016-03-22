@@ -15,6 +15,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 	public function __construct() {
 		add_action( 'woocommerce_update_options_general', array( $this, 'force_zero_decimal' ) );
 		add_action( 'admin_notices', array( $this, 'show_decimal_warning' ) );
+		add_action( 'admin_notices', array( $this, 'maybe_show_unsupported_paypal_credit' ) );
 
 		add_filter( 'woocommerce_get_sections_checkout', array( $this, 'filter_checkout_sections' ) );
 	}
@@ -43,6 +44,19 @@ class WC_Gateway_PPEC_Admin_Handler {
 			</div>
 			<?php
 			delete_option( 'wc_gateway_ppce_display_decimal_msg' );
+		}
+	}
+
+	public function maybe_show_unsupported_paypal_credit() {
+		$ppc_enabled = wc_gateway_ppec()->settings->ppcEnabled;
+		if ( $ppc_enabled && 'US' !== WC()->countries->get_base_country() ) {
+			?>
+			<div class="notice notice-warning fade">
+				<p>
+					<strong><?php _e( 'NOTE: PayPal Credit is not supported on your base location.', 'woocommerce-gateway-paypal-express-checkout' ); ?></strong>
+				</p>
+			</div>
+			<?php
 		}
 	}
 
