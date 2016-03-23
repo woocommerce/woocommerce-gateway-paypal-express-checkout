@@ -316,25 +316,25 @@ class WC_Gateway_PPEC_Settings {
 			return $this;
 		}
 
-		$this->enabled                               = unserialize( get_option( 'pp_woo_enabled'                               ) );
-		$this->ppcEnabled                            = unserialize( get_option( 'pp_woo_ppc_enabled'                           ) );
-		$this->buttonSize                            =              get_option( 'pp_woo_button_size'                             );
-		$this->markSize                              =              get_option( 'pp_woo_mark_size'                               );
-		$this->liveApiCredentials                    =              get_option( 'pp_woo_liveApiCredentials'                      );
-		$this->sandboxApiCredentials                 =              get_option( 'pp_woo_sandboxApiCredentials'                   );
-		$this->environment                           =              get_option( 'pp_woo_environment'                             );
-		$this->logoImageUrl                          =              get_option( 'pp_woo_logoImageUrl'                            );
-		$this->ipnUrl                                =              get_option( 'pp_woo_ipnUrl'                                  );
-		$this->paymentAction                         =              get_option( 'pp_woo_paymentAction'                           );
-		$this->allowGuestCheckout                    = unserialize( get_option( 'pp_woo_allowGuestCheckout'                    ) );
-		$this->blockEChecks                          = unserialize( get_option( 'pp_woo_blockEChecks'                          ) );
-		$this->requireBillingAddress                 = unserialize( get_option( 'pp_woo_requireBillingAddress'                 ) );
-		$this->zeroSubtotalBehavior                  =              get_option( 'pp_woo_zeroSubtotalBehavior'                    );
-		$this->subtotalMismatchBehavior              =              get_option( 'pp_woo_subtotalMismatchBehavior'                );
+		$this->enabled                               = get_option( 'pp_woo_enabled'                               );
+		$this->ppcEnabled                            = get_option( 'pp_woo_ppc_enabled'                           );
+		$this->buttonSize                            = get_option( 'pp_woo_button_size'                           );
+		$this->markSize                              = get_option( 'pp_woo_mark_size'                             );
+		$this->liveApiCredentials                    = get_option( 'pp_woo_liveApiCredentials'                    );
+		$this->sandboxApiCredentials                 = get_option( 'pp_woo_sandboxApiCredentials'                 );
+		$this->environment                           = get_option( 'pp_woo_environment'                           );
+		$this->logoImageUrl                          = get_option( 'pp_woo_logoImageUrl'                          );
+		$this->ipnUrl                                = get_option( 'pp_woo_ipnUrl'                                );
+		$this->paymentAction                         = get_option( 'pp_woo_paymentAction'                         );
+		$this->allowGuestCheckout                    = get_option( 'pp_woo_allowGuestCheckout'                    );
+		$this->blockEChecks                          = get_option( 'pp_woo_blockEChecks'                          );
+		$this->requireBillingAddress                 = get_option( 'pp_woo_requireBillingAddress'                 );
+		$this->zeroSubtotalBehavior                  = get_option( 'pp_woo_zeroSubtotalBehavior'                  );
+		$this->subtotalMismatchBehavior              = get_option( 'pp_woo_subtotalMismatchBehavior'              );
 		$this->enableInContextCheckout               = get_option( 'pp_woo_enableInContextCheckout'               );
-		$this->liveAccountIsEnabledForBillingAddress = unserialize( get_option( 'pp_woo_liveAccountIsEnabledForBillingAddress' ) );
-		$this->sbAccountIsEnabledForBillingAddress   = unserialize( get_option( 'pp_woo_sbAccountIsEnabledForBillingAddress'   ) );
-		$this->ipsPrivateKey                         =              get_option( 'pp_woo_ipsPrivateKey'                           );
+		$this->liveAccountIsEnabledForBillingAddress = get_option( 'pp_woo_liveAccountIsEnabledForBillingAddress' );
+		$this->sbAccountIsEnabledForBillingAddress   = get_option( 'pp_woo_sbAccountIsEnabledForBillingAddress'   );
+		$this->ipsPrivateKey                         = get_option( 'pp_woo_ipsPrivateKey'                         );
 
 		$this->_is_setting_loaded = true;
 
@@ -342,25 +342,25 @@ class WC_Gateway_PPEC_Settings {
 	}
 
 	public function saveSettings() {
-		update_option( 'pp_woo_enabled'                              , serialize( $this->enabled                               ) );
-		update_option( 'pp_woo_ppc_enabled'                          , serialize( $this->ppcEnabled                            ) );
-		update_option( 'pp_woo_button_size'                          ,            $this->buttonSize                              );
-		update_option( 'pp_woo_mark_size'                            ,            $this->markSize                                );
-		update_option( 'pp_woo_liveApiCredentials'                   ,            $this->liveApiCredentials                      );
-		update_option( 'pp_woo_sandboxApiCredentials'                ,            $this->sandboxApiCredentials                   );
-		update_option( 'pp_woo_environment'                          ,            $this->environment                             );
-		update_option( 'pp_woo_logoImageUrl'                         ,            $this->logoImageUrl                            );
-		update_option( 'pp_woo_ipnUrl'                               ,            $this->ipnUrl                                  );
-		update_option( 'pp_woo_paymentAction'                        ,            $this->paymentAction                           );
-		update_option( 'pp_woo_allowGuestCheckout'                   , serialize( $this->allowGuestCheckout                    ) );
-		update_option( 'pp_woo_blockEChecks'                         , serialize( $this->blockEChecks                          ) );
-		update_option( 'pp_woo_requireBillingAddress'                , serialize( $this->requireBillingAddress                 ) );
-		update_option( 'pp_woo_zeroSubtotalBehavior'                 ,            $this->zeroSubtotalBehavior                    );
-		update_option( 'pp_woo_subtotalMismatchBehavior'             ,            $this->subtotalMismatchBehavior                );
+		update_option( 'pp_woo_enabled'                              , $this->enabled                               );
+		update_option( 'pp_woo_ppc_enabled'                          , $this->ppcEnabled                            );
+		update_option( 'pp_woo_button_size'                          , $this->buttonSize                            );
+		update_option( 'pp_woo_mark_size'                            , $this->markSize                              );
+		update_option( 'pp_woo_liveApiCredentials'                   , $this->liveApiCredentials                    );
+		update_option( 'pp_woo_sandboxApiCredentials'                , $this->sandboxApiCredentials                 );
+		update_option( 'pp_woo_environment'                          , $this->environment                           );
+		update_option( 'pp_woo_logoImageUrl'                         , $this->logoImageUrl                          );
+		update_option( 'pp_woo_ipnUrl'                               , $this->ipnUrl                                );
+		update_option( 'pp_woo_paymentAction'                        , $this->paymentAction                         );
+		update_option( 'pp_woo_allowGuestCheckout'                   , $this->allowGuestCheckout                    );
+		update_option( 'pp_woo_blockEChecks'                         , $this->blockEChecks                          );
+		update_option( 'pp_woo_requireBillingAddress'                , $this->requireBillingAddress                 );
+		update_option( 'pp_woo_zeroSubtotalBehavior'                 , $this->zeroSubtotalBehavior                  );
+		update_option( 'pp_woo_subtotalMismatchBehavior'             , $this->subtotalMismatchBehavior              );
 		update_option( 'pp_woo_enableInContextCheckout'              , $this->enableInContextCheckout               );
-		update_option( 'pp_woo_liveAccountIsEnabledForBillingAddress', serialize( $this->liveAccountIsEnabledForBillingAddress ) );
-		update_option( 'pp_woo_sbAccountIsEnabledForBillingAddress'  , serialize( $this->sbAccountIsEnabledForBillingAddress   ) );
-		update_option( 'pp_woo_ipsPrivateKey'                        ,            $this->ipsPrivateKey                           );
+		update_option( 'pp_woo_liveAccountIsEnabledForBillingAddress', $this->liveAccountIsEnabledForBillingAddress );
+		update_option( 'pp_woo_sbAccountIsEnabledForBillingAddress'  , $this->sbAccountIsEnabledForBillingAddress   );
+		update_option( 'pp_woo_ipsPrivateKey'                        , $this->ipsPrivateKey                         );
 	}
 
 	public function getECTokenSessionLength() {
