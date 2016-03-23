@@ -139,13 +139,27 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 			try {
 				$payment_details = $checkout->completePayment( $order_id, $session->token, $session->payerID );
 				$transaction_id = $payment_details->payments[0]->transaction_id;
-
-				// TODO: Handle things like eChecks, giropay, etc.
+				$payment_status = $payment_details->payments[0]->payment_status;
+				$pending_reason = $payment_details->payments[0]->pending_reason;
 				$order = wc_get_order( $order_id );
-				$order->payment_complete( $transaction_id );
-				$order->add_order_note( sprintf( __( 'PayPal transaction completed; transaction ID = %s', 'woocommerce-gateway-paypal-express-checkout' ), $transaction_id ) );
-				$order->reduce_order_stock();
-				WC()->cart->empty_cart();
+				
+				if ( 'Pending' === $payment_status && 'authorization' == $pending_reason ) {
+					update_post_meta( $order->id, '_ppec_charge_captured', 'no' );
+					add_post_meta( $order->id, '_ppec_transaction_id', $transaction_id, true );
+
+					// Mark as on-hold
+					$order->update_status( 'on-hold', sprintf( __( 'PayPal Express Checkout charge authorized (Charge ID: %s). Process order to take payment, or cancel to remove the pre-authorization.', 'woocommerce-gateway-paypal-express-checkout' ), $transaction_id ) );
+							
+					$order->reduce_order_stock();
+
+				} else {
+					// TODO: Handle things like eChecks, giropay, etc.
+					$order->payment_complete( $transaction_id );
+					$order->add_order_note( sprintf( __( 'PayPal Express Checkout transaction completed; transaction ID = %s', 'woocommerce-gateway-paypal-express-checkout' ), $transaction_id ) );
+
+					update_post_meta( $order->id, '_ppec_charge_captured', 'yes' );
+				}
+
 				unset( WC()->session->paypal );
 
 				return array(

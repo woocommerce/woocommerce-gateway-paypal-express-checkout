@@ -195,6 +195,20 @@ class WC_Gateway_PPEC_Client {
 		return $this->_request( $params );
 	}
 
+	public function do_express_checkout_capture( $params ) {
+		$params['METHOD']  = 'DoCapture';
+		$params['VERSION'] = '120.0';
+
+		return $this->_request( $params );
+	}
+
+	public function do_express_checkout_void( $params ) {
+		$params['METHOD']  = 'DoVoid';
+		$params['VERSION'] = '120.0';
+
+		return $this->_request( $params );
+	}
+
 	/**
 	 * Obtain your Pal ID, which is the PayPal–assigned merchant account number,
 	 * and other informaton about your account.
