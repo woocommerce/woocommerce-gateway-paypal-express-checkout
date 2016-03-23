@@ -23,6 +23,31 @@ class WC_Gateway_PPEC_Admin_Handler {
 		add_action( 'woocommerce_order_status_on-hold_to_completed', array( $this, 'capture_payment' ) );
 		add_action( 'woocommerce_order_status_on-hold_to_cancelled', array( $this, 'cancel_payment' ) );
 		add_action( 'woocommerce_order_status_on-hold_to_refunded', array( $this, 'cancel_payment' ) );
+
+		add_filter( 'woocommerce_order_actions', array( $this, 'add_capture_charge_order_action' ) );
+		add_action( 'woocommerce_order_action_ppec_capture_charge', array( $this, 'maybe_capture_charge' ) );
+	}
+
+	public function add_capture_charge_order_action() {
+		if ( ! isset( $_REQUEST['post'] ) ) {
+			return;
+		}
+
+		$order = wc_get_order( $_REQUEST['post'] );
+
+		// bail if the order wasn't paid for with this gateway
+		if ( 'ppec_paypal' !== $order->payment_method ) {
+			return;
+		}
+
+		$trans_id = get_post_meta( $order->id, '_ppec_transaction_id', true );
+		$captured = get_post_meta( $order->id, '_ppec_charge_captured', true );
+
+		if ( 'yes' === $captured ) {
+			return;
+		}
+
+		return array( 'ppec_capture_charge' => esc_html__( 'Capture Charge', 'woocommerce-gateway-paypal-express-checkout' ) );
 	}
 
 	/**
@@ -108,6 +133,16 @@ class WC_Gateway_PPEC_Admin_Handler {
 
 		return $sections;
 
+	}
+
+	public function maybe_capture_charge( $order ) {
+		if ( ! is_object( $order ) ) {
+			$order = wc_get_order( $order );
+		}
+
+		$this->capture_payment( $order->id );
+
+		return true;
 	}
 
 	/**
