@@ -182,14 +182,15 @@ class WC_Gateway_PPEC_Client {
 	 * in your 'SetExpressCheckout' API call, the billing agreement is created
 	 * when you call the DoExpressCheckoutPayment API operation.
 	 *
-	 * @see https://developer.paypal.com/docs/classic/api/merchant/GetExpressCheckoutDetails_API_Operation_NVP/
+	 * @see https://developer.paypal.com/docs/classic/api/merchant/DoExpressCheckoutPayment_API_Operation_NVP/
 	 *
 	 * @param  array $params NVP params
 	 * @return array         NVP response
 	 */
 	public function do_express_checkout_payment( $params ) {
-		$params['METHOD']  = 'DoExpressCheckoutPayment';
-		$params['VERSION'] = '120.0';
+		$params['METHOD']       = 'DoExpressCheckoutPayment';
+		$params['VERSION']      = '120.0';
+		$params['BUTTONSOURCE'] = 'WooThemes_EC';
 
 		return $this->_request( $params );
 	}
