@@ -331,7 +331,7 @@ class WC_Gateway_PPEC_Settings {
 		$this->requireBillingAddress                 = unserialize( get_option( 'pp_woo_requireBillingAddress'                 ) );
 		$this->zeroSubtotalBehavior                  =              get_option( 'pp_woo_zeroSubtotalBehavior'                    );
 		$this->subtotalMismatchBehavior              =              get_option( 'pp_woo_subtotalMismatchBehavior'                );
-		$this->enableInContextCheckout               = unserialize( get_option( 'pp_woo_enableInContextCheckout'               ) );
+		$this->enableInContextCheckout               = get_option( 'pp_woo_enableInContextCheckout'               );
 		$this->liveAccountIsEnabledForBillingAddress = unserialize( get_option( 'pp_woo_liveAccountIsEnabledForBillingAddress' ) );
 		$this->sbAccountIsEnabledForBillingAddress   = unserialize( get_option( 'pp_woo_sbAccountIsEnabledForBillingAddress'   ) );
 		$this->ipsPrivateKey                         =              get_option( 'pp_woo_ipsPrivateKey'                           );
@@ -357,7 +357,7 @@ class WC_Gateway_PPEC_Settings {
 		update_option( 'pp_woo_requireBillingAddress'                , serialize( $this->requireBillingAddress                 ) );
 		update_option( 'pp_woo_zeroSubtotalBehavior'                 ,            $this->zeroSubtotalBehavior                    );
 		update_option( 'pp_woo_subtotalMismatchBehavior'             ,            $this->subtotalMismatchBehavior                );
-		update_option( 'pp_woo_enableInContextCheckout'              , serialize( $this->enableInContextCheckout               ) );
+		update_option( 'pp_woo_enableInContextCheckout'              , $this->enableInContextCheckout               );
 		update_option( 'pp_woo_liveAccountIsEnabledForBillingAddress', serialize( $this->liveAccountIsEnabledForBillingAddress ) );
 		update_option( 'pp_woo_sbAccountIsEnabledForBillingAddress'  , serialize( $this->sbAccountIsEnabledForBillingAddress   ) );
 		update_option( 'pp_woo_ipsPrivateKey'                        ,            $this->ipsPrivateKey                           );
