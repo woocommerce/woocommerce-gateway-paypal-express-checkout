@@ -29,6 +29,12 @@ class WC_Gateway_PPEC_Settings {
 		'ipsPrivateKey',
 	);
 
+	protected $_supportedLocale = array(
+		'da_DK', 'de_DE', 'en_AU', 'en_GB', 'en_US', 'es_ES', 'fr_CA', 'fr_FR',
+		'he_IL', 'id_ID', 'it_IT', 'ja_JP', 'nl_NL', 'no_NO', 'pl_PL', 'pt_BR',
+		'pt_PT', 'ru_RU', 'sv_SE', 'th_TH', 'tr_TR', 'zh_CN', 'zh_HK', 'zh_TW',
+	);
+
 	const PaymentActionSale          = 'Sale';
 	const PaymentActionAuthorization = 'Authorization';
 
@@ -388,5 +394,14 @@ class WC_Gateway_PPEC_Settings {
 			&&
 			0 !== $decimals
 		);
+	}
+
+	public function get_paypal_locale() {
+		$locale = get_locale();
+		if ( ! in_array( $locale, $this->_supportedLocale ) ) {
+			$locale = 'en_US';
+		}
+
+		return $locale;
 	}
 }
