@@ -100,12 +100,14 @@ class WC_Gateway_PPEC_Cart_Handler {
 		<?php
 		if ( $settings->enableInContextCheckout && $settings->getActiveApiCredentials()->get_payer_id() ) {
 			$payer_id = $settings->getActiveApiCredentials()->get_payer_id();
+			$setup_args = array(
+				'button' => array( 'woo_pp_ec_button', 'woo_pp_ppc_button' ),
+				'locale' => $settings->get_paypal_locale(),
+			);
 			?>
 			<script type="text/javascript">
 				window.paypalCheckoutReady = function() {
-					paypal.checkout.setup( '<?php echo $payer_id; ?>', {
-						button: [ 'woo_pp_ec_button', 'woo_pp_ppc_button' ]
-					});
+					paypal.checkout.setup( <?php echo json_encode( $payer_id ); ?>, <?php echo json_encode( $setup_args ); ?> );
 				}
 			</script>
 			<?php
@@ -123,6 +125,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 		if ( $settings->enabled && $settings->enableInContextCheckout && $settings->getActiveApiCredentials()->get_payer_id() ) {
 			wp_enqueue_script( 'paypal-checkout-js', 'https://www.paypalobjects.com/api/checkout.js', array(), null, true );
 		}
+
 	}
 
 	/**
