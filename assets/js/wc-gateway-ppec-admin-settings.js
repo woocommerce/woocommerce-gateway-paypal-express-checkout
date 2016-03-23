@@ -140,20 +140,6 @@ jQuery(document).ready(function() {
 		jQuery( '.woo_pp_' + env_to_show + '_' + style_to_hide ).hide();
 		jQuery( '.woo_pp_' + env_to_show + '_' + style ).show();
 
-		if ( 'live' == env_to_show ) {
-			if ( woo_pp_live_is_rba_enabled ) {
-				jQuery( '#woo_pp_req_ba_row' ).show();
-			} else {
-				jQuery( '#woo_pp_req_ba_row' ).hide();
-			}
-		} else {
-			if ( woo_pp_sandbox_is_rba_enabled ) {
-				jQuery( '#woo_pp_req_ba_row' ).show();
-			} else {
-				jQuery( '#woo_pp_req_ba_row' ).hide();
-			}
-		}
-
 		maybe_hide_api_credential_fields();
 
 		var apiCredentialsToggler = jQuery( '.toggle-api-credential-fields' );

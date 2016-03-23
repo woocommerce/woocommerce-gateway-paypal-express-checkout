@@ -19,10 +19,7 @@ if ( $sb_cert ) {
 }
 
 ?>
-<script type="text/javascript">
-	var woo_pp_live_is_rba_enabled = <?php echo json_encode( $live_account_is_enabled_for_billing_address ); ?>;
-	var woo_pp_sandbox_is_rba_enabled = <?php echo json_encode( $sb_account_is_enabled_for_billing_address ); ?>;
-</script>
+
 <table class="form-table ppec-settings<?php echo $enable_ips ? ' ips-enabled' : ''; ?>">
 	<tr>
 		<th>
@@ -484,9 +481,7 @@ if ( $sb_cert ) {
 			</fieldset>
 		</td>
 	</tr>
-	<?php
-if ( $live_account_is_enabled_for_billing_address || $sb_account_is_enabled_for_billing_address ) {
-	?>
+
 	<tr id="woo_pp_req_ba_row">
 		<th>
 			<label for="woo_pp_req_billing_address"><?php _e( 'Billing address', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
@@ -506,9 +501,7 @@ if ( $live_account_is_enabled_for_billing_address || $sb_account_is_enabled_for_
 			</fieldset>
 		</td>
 	</tr>
-	<?php
-}
-	?>
+
 	<tr>
 		<th>
 			<label for="woo_pp_zero_subtotal_behavior"><?php _e( 'Zero subtotal behavior', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>

@@ -283,11 +283,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 
 		$live_cert_info       = __( 'No API certificate on file', 'woocommerce-gateway-paypal-express-checkout' );
 		$sb_cert_info         = __( 'No API certificate on file', 'woocommerce-gateway-paypal-express-checkout' );
-
 		$environment          = 'sandbox';
-
-		$live_account_is_enabled_for_billing_address = $settings->liveAccountIsEnabledForBillingAddress;
-		$sb_account_is_enabled_for_billing_address   = $settings->sbAccountIsEnabledForBillingAddress;
 
 		// If we're re-rending the page after a validation error, make sure that we show the data the user entered instead of just reverting
 		// to what is stored in the database.
