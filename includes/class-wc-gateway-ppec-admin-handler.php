@@ -39,10 +39,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 			return;
 		}
 
-		$trans_id = get_post_meta( $order->id, '_transaction_id', true );
-		$captured = get_post_meta( $order->id, '_ppec_charge_captured', true );
-
-		if ( 'yes' === $captured ) {
+		if ( 'yes' === get_post_meta( $order->id, '_ppec_charge_captured', true ) ) {
 			return;
 		}
 
@@ -143,7 +140,9 @@ class WC_Gateway_PPEC_Admin_Handler {
 			$trans_id = get_post_meta( $order_id, '_transaction_id', true );
 			$captured = get_post_meta( $order_id, '_ppec_charge_captured', true );
 
-			if ( $trans_id && $captured == 'no' ) {
+			$trans_details = wc_gateway_ppec()->client->get_transaction_details( array( 'TRANSACTIONID' => $trans_id ) );
+			
+			if ( $trans_id && $this->is_capturable( $trans_details ) ) {
 				$params['AUTHORIZATIONID'] = $trans_id;
 				$params['AMT'] = floatval( $order->order_total );
 				$params['COMPLETETYPE'] = 'Complete';
@@ -159,6 +158,21 @@ class WC_Gateway_PPEC_Admin_Handler {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Checks to see if the transaction can be captured
+	 *
+	 * @param array $trans_details
+	 */
+	public function is_capturable( $trans_details = array() ) {
+		if ( ! is_wp_error( $trans_details ) && ! empty( $trans_details ) ) {
+			if ( 'Pending' === $trans_details['PAYMENTSTATUS'] && 'authorization' === $trans_details['PENDINGREASON'] ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
