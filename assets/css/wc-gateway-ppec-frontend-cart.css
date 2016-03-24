@@ -1,6 +1,22 @@
-.woo_pp_checkout_buttons_div {
+.woo_pp_cart_buttons_div {
 	margin-top: -20px;
 }
+.woo_pp_cart_buttons_div:after {
+	visibility: hidden;
+	display: block;
+	font-size: 0;
+	content: " ";
+	clear: both;
+	height: 0;
+}
+
 .paypal-button-hidden {
 	visibility: hidden;
+}
+
+.paypal-button-widget .paypal-button,
+.paypal-button-widget .paypal-button:hover {
+	background: transparent;
+	box-shadow: none;
+	border: none;
 }
