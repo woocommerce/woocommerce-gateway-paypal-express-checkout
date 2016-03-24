@@ -145,7 +145,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 
 				if ( 'Pending' === $payment_status && 'authorization' == $pending_reason ) {
 					update_post_meta( $order->id, '_ppec_charge_captured', 'no' );
-					add_post_meta( $order->id, '_ppec_transaction_id', $transaction_id, true );
+					add_post_meta( $order->id, '_transaction_id', $transaction_id, true );
 
 					// Mark as on-hold
 					$order->update_status( 'on-hold', sprintf( __( 'PayPal Express Checkout charge authorized (Charge ID: %s). Process order to take payment, or cancel to remove the pre-authorization.', 'woocommerce-gateway-paypal-express-checkout' ), $transaction_id ) );

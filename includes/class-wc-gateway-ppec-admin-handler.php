@@ -40,7 +40,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 			return;
 		}
 
-		$trans_id = get_post_meta( $order->id, '_ppec_transaction_id', true );
+		$trans_id = get_post_meta( $order->id, '_transaction_id', true );
 		$captured = get_post_meta( $order->id, '_ppec_charge_captured', true );
 
 		if ( 'yes' === $captured ) {
@@ -154,7 +154,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 		$order = wc_get_order( $order_id );
 
 		if ( 'ppec_paypal' === $order->payment_method ) {
-			$trans_id = get_post_meta( $order_id, '_ppec_transaction_id', true );
+			$trans_id = get_post_meta( $order_id, '_transaction_id', true );
 			$captured = get_post_meta( $order_id, '_ppec_charge_captured', true );
 
 			if ( $trans_id && $captured == 'no' ) {
@@ -184,7 +184,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 		$order = wc_get_order( $order_id );
 
 		if ( 'ppec_paypal' === $order->payment_method ) {
-			$trans_id = get_post_meta( $order_id, '_ppec_transaction_id', true );
+			$trans_id = get_post_meta( $order_id, '_transaction_id', true );
 			$captured = get_post_meta( $order_id, '_ppec_charge_captured', true );
 
 			if ( $trans_id && 'no' === $captured ) {
@@ -197,7 +197,6 @@ class WC_Gateway_PPEC_Admin_Handler {
 				} else {
 					$order->add_order_note( sprintf( __( 'PayPal Express Checkout charge voided (Charge ID: %s)', 'woocommerce-gateway-paypal-express-checkout' ), $trans_id) );
 					delete_post_meta( $order->id, '_ppec_charge_captured' );
-					delete_post_meta( $order->id, '_ppec_transaction_id' );
 				}
 			}
 		}
