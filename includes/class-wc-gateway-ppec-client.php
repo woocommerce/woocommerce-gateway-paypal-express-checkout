@@ -29,6 +29,7 @@ class WC_Gateway_PPEC_Client {
 	const INVALID_CREDENTIAL_ERROR  = 1;
 	const INVALID_ENVIRONMENT_ERROR = 2;
 	const REQUEST_ERROR             = 3;
+	const API_VERSION               = '120.0';
 
 	/**
 	 * Constructor.
@@ -154,7 +155,7 @@ class WC_Gateway_PPEC_Client {
 	 */
 	public function set_express_checkout( array $params ) {
 		$params['METHOD']  = 'SetExpressCheckout';
-		$params['VERSION'] = '120.0';
+		$params['VERSION'] = self::API_VERSION;
 
 		return $this->_request( $params );
 	}
@@ -170,7 +171,7 @@ class WC_Gateway_PPEC_Client {
 	public function get_express_checkout_details( $token ) {
 		$params = array(
 			'METHOD'  => 'GetExpressCheckoutDetails',
-			'VERSION' => '120.0',
+			'VERSION' => self::API_VERSION,
 			'TOKEN'   => $token,
 		);
 
@@ -189,7 +190,7 @@ class WC_Gateway_PPEC_Client {
 	 */
 	public function do_express_checkout_payment( $params ) {
 		$params['METHOD']       = 'DoExpressCheckoutPayment';
-		$params['VERSION']      = '120.0';
+		$params['VERSION']      = self::API_VERSION;
 		$params['BUTTONSOURCE'] = 'WooThemes_EC';
 
 		return $this->_request( $params );
@@ -197,14 +198,14 @@ class WC_Gateway_PPEC_Client {
 
 	public function do_express_checkout_capture( $params ) {
 		$params['METHOD']  = 'DoCapture';
-		$params['VERSION'] = '120.0';
+		$params['VERSION'] = self::API_VERSION;
 
 		return $this->_request( $params );
 	}
 
 	public function do_express_checkout_void( $params ) {
 		$params['METHOD']  = 'DoVoid';
-		$params['VERSION'] = '120.0';
+		$params['VERSION'] = self::API_VERSION;
 
 		return $this->_request( $params );
 	}
@@ -219,7 +220,7 @@ class WC_Gateway_PPEC_Client {
 	 */
 	public function get_pal_details() {
 		$params['METHOD']  = 'GetPalDetails';
-		$params['VERSION'] = '120.0';
+		$params['VERSION'] = self::API_VERSION;
 
 		return $this->_request( $params );
 	}
@@ -234,7 +235,7 @@ class WC_Gateway_PPEC_Client {
 	 */
 	public function refund_transaction( $params ) {
 		$params['METHOD']  = 'RefundTransaction';
-		$params['VERSION'] = '120.0';
+		$params['VERSION'] = self::API_VERSION;
 
 		return $this->_request( $params );
 	}
