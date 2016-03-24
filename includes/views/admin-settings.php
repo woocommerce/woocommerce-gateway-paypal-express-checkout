@@ -40,6 +40,8 @@ if ( $sb_cert ) {
 			</fieldset>
 		</td>
 	</tr>
+
+	<?php if ( 'US' === WC()->countries->get_base_country() ) : ?>
 	<tr>
 		<th>
 			<label for="woo_pp_ppc_enabled"><?php _e( 'PayPal Credit', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
@@ -58,6 +60,9 @@ if ( $sb_cert ) {
 				<label for="woo_pp_ppc_enabled"><?php _e( 'Enable PayPal Credit', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
 			</fieldset>
 		</td>
+	</tr>
+	<?php endif; ?>
+
 	<tr>
 		<th>
 			<label for="woo_pp_environment"><?php _e( 'Environment', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
