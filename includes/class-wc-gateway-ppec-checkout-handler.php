@@ -13,10 +13,14 @@ $includes_path = wc_gateway_ppec()->includes_path;
 
 require_once( $includes_path . 'class-wc-gateway-ppec-settings.php' );
 require_once( $includes_path . 'class-wc-gateway-ppec-session-data.php' );
-require_once( $includes_path . 'lib/class-checkoutdetails.php' );
-require_once( $includes_path . 'lib/class-exception.php'       );
-require_once( $includes_path . 'lib/class-paymentdetails.php'  );
-require_once( $includes_path . 'lib/class-address.php'         );
+require_once( $includes_path . 'class-wc-gateway-ppec-checkout-details.php' );
+
+require_once( $includes_path . 'class-wc-gateway-ppec-api-error.php' );
+require_once( $includes_path . 'exceptions/class-wc-gateway-ppec-api-exception.php' );
+require_once( $includes_path . 'exceptions/class-wc-gateway-ppec-missing-session-exception.php' );
+
+require_once( $includes_path . 'class-wc-gateway-ppec-payment-details.php' );
+require_once( $includes_path . 'class-wc-gateway-ppec-address.php' );
 
 class WC_Gateway_PPEC_Checkout_Handler {
 
@@ -146,7 +150,6 @@ class WC_Gateway_PPEC_Checkout_Handler {
 					} else {
 						$final_output = '<ul>';
 						foreach ( $e->errors as $error ) {
-							// These strings are located in lib/class-exception.php
 							$final_output .= '<li>' . __( $error->maptoBuyerFriendlyError(), 'woocommerce-gateway-paypal-express-checkout' ) . '</li>';
 						}
 						$final_output .= '</ul>';

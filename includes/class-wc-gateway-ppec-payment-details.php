@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * TODO: Move each class into its own file and group them under one dir, payment-details.
+ */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }

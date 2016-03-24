@@ -1,10 +1,16 @@
 <?php
 
+/**
+ * TODO: Move each class into its own file and group them under one dir, checkout-details.
+ */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-require_once( 'class-address.php' );
+$includes_path = wc_gateway_ppec()->includes_path;
+
+require_once( $includes_path . 'class-wc-gateway-ppec-address.php' );
 
 class PayPal_Checkout_Details {
 	public $token                           = false;
