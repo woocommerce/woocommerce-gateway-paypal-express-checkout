@@ -196,20 +196,26 @@ class WC_Gateway_PPEC_Checkout_Handler {
 
 		if ( $settings->enabled && $settings->enableInContextCheckout && $settings->getActiveApiCredentials()->get_payer_id() ) {
 			$session = WC()->session->paypal;
-			if ( ! $session ) {
-				return;
+
+			// Make sure no session being set from cart.
+			if ( $session && is_a( $session, 'WC_Gateway_PPEC_Session_Data' ) ) {
+				if ( $session->checkout_completed ) {
+					return;
+				}
+
+				if ( $session->expiry_time > time() ) {
+					return;
+				}
+
+				if ( ! empty( $session->payerID ) ) {
+					return;
+				}
 			}
 
-			if ( ! is_a( $session, 'WC_Gateway_PPEC_Session_Data' ) ) {
-				return;
-			}
-
-			if ( ! $session->checkout_completed || $session->expiry_time < time() || ! $session->payerID ) {
-				$payer_id = $settings->getActiveApiCredentials()->get_payer_id();
-
-				// This div is necessary for PayPal to properly display its lightbox.
-				echo '<div id="woo_pp_icc_container" style="display: none;"></div>';
-			}
+			// This div is necessary for PayPal to properly display its lightbox.
+			?>
+			<div id="woo_pp_icc_container" style="display: none;"></div>
+			<?php
 		}
 	}
 
@@ -227,7 +233,8 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		}
 
 		// On the checkout page, only load the JS if we plan on sending them over to PayPal.
-		if ( $settings->enableInContextCheckout && $settings->getActiveApiCredentials()->get_payer_id() ) {
+		$payer_id = $settings->getActiveApiCredentials()->get_payer_id();
+		if ( $settings->enableInContextCheckout && ! empty( $payer_id )  ) {
 			$session = WC()->session->paypal;
 			if ( ! $session
 				|| ! is_a( $session, 'WC_Gateway_PPEC_Session_Data' )
@@ -235,6 +242,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 				|| ! $session->payerID ) {
 
 				wp_enqueue_script( 'wc-gateway-ppec-frontend-checkout', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-frontend-checkout.js', array( 'jquery' ), false, true );
+				wp_localize_script( 'wc-gateway-ppec-frontend-checkout', 'wc_ppec', array( 'payer_id' => $payer_id ) );
 
 				wp_enqueue_script( 'paypal-checkout-js', 'https://www.paypalobjects.com/api/checkout.js', array(), null, true );
 			}
