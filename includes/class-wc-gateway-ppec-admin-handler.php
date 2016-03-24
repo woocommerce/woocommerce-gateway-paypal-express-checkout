@@ -18,6 +18,36 @@ class WC_Gateway_PPEC_Admin_Handler {
 		add_action( 'admin_notices', array( $this, 'maybe_show_unsupported_paypal_credit' ) );
 
 		add_filter( 'woocommerce_get_sections_checkout', array( $this, 'filter_checkout_sections' ) );
+
+		add_action( 'woocommerce_order_status_on-hold_to_processing', array( $this, 'capture_payment' ) );
+		add_action( 'woocommerce_order_status_on-hold_to_completed', array( $this, 'capture_payment' ) );
+		add_action( 'woocommerce_order_status_on-hold_to_cancelled', array( $this, 'cancel_payment' ) );
+		add_action( 'woocommerce_order_status_on-hold_to_refunded', array( $this, 'cancel_payment' ) );
+
+		add_filter( 'woocommerce_order_actions', array( $this, 'add_capture_charge_order_action' ) );
+		add_action( 'woocommerce_order_action_ppec_capture_charge', array( $this, 'maybe_capture_charge' ) );
+	}
+
+	public function add_capture_charge_order_action() {
+		if ( ! isset( $_REQUEST['post'] ) ) {
+			return;
+		}
+
+		$order = wc_get_order( $_REQUEST['post'] );
+
+		// bail if the order wasn't paid for with this gateway
+		if ( 'ppec_paypal' !== $order->payment_method ) {
+			return;
+		}
+
+		$trans_id = get_post_meta( $order->id, '_transaction_id', true );
+		$captured = get_post_meta( $order->id, '_ppec_charge_captured', true );
+
+		if ( 'yes' === $captured ) {
+			return;
+		}
+
+		return array( 'ppec_capture_charge' => esc_html__( 'Capture Charge', 'woocommerce-gateway-paypal-express-checkout' ) );
 	}
 
 	/**
@@ -103,5 +133,72 @@ class WC_Gateway_PPEC_Admin_Handler {
 
 		return $sections;
 
+	}
+
+	public function maybe_capture_charge( $order ) {
+		if ( ! is_object( $order ) ) {
+			$order = wc_get_order( $order );
+		}
+
+		$this->capture_payment( $order->id );
+
+		return true;
+	}
+
+	/**
+	 * Capture payment when the order is changed from on-hold to complete or processing
+	 *
+	 * @param int $order_id
+	 */
+	public function capture_payment( $order_id ) {
+		$order = wc_get_order( $order_id );
+
+		if ( 'ppec_paypal' === $order->payment_method ) {
+			$trans_id = get_post_meta( $order_id, '_transaction_id', true );
+			$captured = get_post_meta( $order_id, '_ppec_charge_captured', true );
+
+			if ( $trans_id && $captured == 'no' ) {
+				$params['AUTHORIZATIONID'] = $trans_id;
+				$params['AMT'] = floatval( $order->order_total );
+				$params['COMPLETETYPE'] = 'Complete';
+
+				$result = wc_gateway_ppec()->client->do_express_checkout_capture( $params );
+
+				if ( is_wp_error( $result ) ) {
+					$order->add_order_note( __( 'Unable to capture charge!', 'woocommerce-gateway-paypal-express-checkout' ) . ' ' . $result->get_error_message() );
+				} else {
+					$order->add_order_note( sprintf( __( 'PayPal Express Checkout charge complete (Charge ID: %s)', 'woocommerce-gateway-paypal-express-checkout' ), $trans_id ) );
+
+					update_post_meta( $order->id, '_ppec_charge_captured', 'yes' );
+				}
+			}
+		}
+	}
+
+	/**
+	 * Cancel pre-auth on refund/cancellation
+	 *
+	 * @param  int $order_id
+	 */
+	public function cancel_payment( $order_id ) {
+		$order = wc_get_order( $order_id );
+
+		if ( 'ppec_paypal' === $order->payment_method ) {
+			$trans_id = get_post_meta( $order_id, '_transaction_id', true );
+			$captured = get_post_meta( $order_id, '_ppec_charge_captured', true );
+
+			if ( $trans_id && 'no' === $captured ) {
+				$params['AUTHORIZATIONID'] = $trans_id;
+
+				$result = wc_gateway_ppec()->client->do_express_checkout_void( $params );
+
+				if ( is_wp_error( $result ) ) {
+					$order->add_order_note( __( 'Unable to refund charge!', 'woocommerce-gateway-paypal-express-checkout' ) . ' ' . $result->get_error_message() );
+				} else {
+					$order->add_order_note( sprintf( __( 'PayPal Express Checkout charge voided (Charge ID: %s)', 'woocommerce-gateway-paypal-express-checkout' ), $trans_id) );
+					delete_post_meta( $order->id, '_ppec_charge_captured' );
+				}
+			}
+		}
 	}
 }
