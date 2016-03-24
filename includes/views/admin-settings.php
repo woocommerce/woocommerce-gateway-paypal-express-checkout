@@ -99,7 +99,10 @@ if ( $sb_cert ) {
 			</div>
 
 			<a href="<?php echo esc_url( $ips_url ); ?>&amp;mode=signature&amp;env=live" class="button button-primary"><?php _e( 'Click Here to Set Up Your PayPal Account', 'woocommerce-gateway-paypal-express-checkout' ); ?></a>
+			<?php
+			/* Disable certificate-style until middleware support it. Maybe in v1.1.
 			<a href="<?php echo esc_url( $ips_url ); ?>&amp;mode=certificate&amp;env=live" class="button"><?php _e( 'Click here if you need certificate credentials', 'woocommerce-gateway-paypal-express-checkout' ); ?></a>
+			*/ ?>
 
 			<br>
 			<a href="#" class="toggle-api-credential-fields api-credential-fields-hidden" style="display: inline-block; margin-top: 10px;" data-hide-text="<?php _e( 'Hide credential fields', 'woocommerce-gateway-paypal-express-checkout' ); ?>" data-show-text="<?php _e( 'Show credential fields', 'woocommerce-gateway-paypal-express-checkout' ); ?>"><?php _e( 'Show credential fields', 'woocommerce-gateway-paypal-express-checkout' ); ?></a>
@@ -226,7 +229,10 @@ if ( $sb_cert ) {
 		</th>
 		<td>
 			<a href="<?php echo esc_url( $ips_url ); ?>&amp;mode=signature&amp;env=sandbox" class="button button-primary"><?php _e( 'Click Here to Set Up Your PayPal Account', 'woocommerce-gateway-paypal-express-checkout' ); ?></a>
+			<?php
+			/* Disable certificate-style until middleware support it. Maybe in v1.1.
 			<a href="<?php echo esc_url( $ips_url ); ?>&amp;mode=certificate&amp;env=sandbox" class="button"><?php _e( 'Click here if you need certificate credentials', 'woocommerce-gateway-paypal-express-checkout' ); ?></a>
+			*/ ?>
 
 			<br>
 			<a href="#" class="toggle-api-credential-fields api-credential-fields-hidden" style="display: inline-block; margin-top: 10px;" data-hide-text="<?php _e( 'Hide credential fields', 'woocommerce-gateway-paypal-express-checkout' ); ?>" data-show-text="<?php _e( 'Show credential fields', 'woocommerce-gateway-paypal-express-checkout' ); ?>"><?php _e( 'Show credential fields', 'woocommerce-gateway-paypal-express-checkout' ); ?></a>
