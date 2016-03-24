@@ -4,10 +4,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-class WC_Gateway_PPEC_With_Card extends WC_Gateway_PPEC {
+class WC_Gateway_PPEC_With_PayPal_Credit extends WC_Gateway_PPEC {
 	public function __construct() {
 
-		$this->id = 'ppec_cards';
+		$this->id = 'ppec_paypal_credit';
 
 		parent::__construct();
 

@@ -6,7 +6,7 @@ window.paypalCheckoutReady = function() {
 };
 
 jQuery( "form.checkout" ).submit(function() {
-	if ( jQuery( '#payment_method_ppec_paypal, #payment_method_ppec_cards' ).is( ':checked' ) ) {
+	if ( jQuery( '#payment_method_ppec_paypal, #payment_method_ppec_paypal_credit' ).is( ':checked' ) ) {
 		woo_pp_icc_started = true;
 		paypal.checkout.initXO();
 	}

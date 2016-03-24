@@ -103,7 +103,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			WC()->session->paypal = $session;
 
 			if ( $session->using_ppc ) {
-				WC()->session->chosen_payment_method = 'ppec_cards';
+				WC()->session->chosen_payment_method = 'ppec_paypal_credit';
 			} else {
 				WC()->session->chosen_payment_method = 'ppec_paypal';
 			}
@@ -258,8 +258,8 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 * @return array Available gateways
 	 */
 	public function maybe_disable_paypal_credit( $gateways ) {
-		if ( isset( $gateways['ppec_cards'] ) && 'US' !== WC()->countries->get_base_country() ) {
-			unset( $gateways['ppec_cards'] );
+		if ( isset( $gateways['ppec_paypal_credit'] ) && 'US' !== WC()->countries->get_base_country() ) {
+			unset( $gateways['ppec_paypal_credit'] );
 		}
 
 		return $gateways;

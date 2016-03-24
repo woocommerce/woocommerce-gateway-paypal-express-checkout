@@ -81,7 +81,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 				$_POST = array_merge( $_POST, $posted );
 
 				// Make sure the proper option is selected based on what the buyer picked
-				if ( ! ( $session->using_ppc xor is_a( $this, 'WC_Gateway_PPEC_With_Card' ) ) ) {
+				if ( ! ( $session->using_ppc xor is_a( $this, 'WC_Gateway_PPEC_With_PayPal_Credit' ) ) ) {
 					$this->chosen = true;
 				} else {
 					$this->chosen = false;
@@ -117,7 +117,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 				! $session->payerID ) {
 			// Redirect them over to PayPal.
 			try {
-				$redirect_url = $checkout->startCheckoutFromCheckout( $order_id, 'ppec_cards' === $this->id );
+				$redirect_url = $checkout->startCheckoutFromCheckout( $order_id, 'ppec_paypal_credit' === $this->id );
 				$settings     = wc_gateway_ppec()->settings->loadSettings();
 				if ( $settings->enableInContextCheckout && $settings->getActiveApiCredentials()->get_payer_id() ) {
 					$redirect_url = 'javascript:woo_pp_checkout_callback("' . urlencode( $redirect_url ) . '");';

@@ -15,7 +15,7 @@ class WC_Gateway_PPEC_Gateway_Loader {
 		require_once( $includes_path . 'class-wc-gateway-ppec-refund.php' );
 		require_once( $includes_path . 'abstracts/abstract-wc-gateway-ppec.php' );
 		require_once( $includes_path . 'class-wc-gateway-ppec-with-paypal.php' );
-		require_once( $includes_path . 'class-wc-gateway-ppec-with-card.php' );
+		require_once( $includes_path . 'class-wc-gateway-ppec-with-paypal-credit.php' );
 
 		add_filter( 'woocommerce_payment_gateways', array( $this, 'payment_gateways' ) );
 	}
@@ -28,13 +28,13 @@ class WC_Gateway_PPEC_Gateway_Loader {
 				$session->checkout_completed && $session->expiry_time >= time() &&
 				$session->payerID ) {
 			if ( $session->using_ppc ) {
-				$methods[] = 'WC_Gateway_PPEC_With_Card';
+				$methods[] = 'WC_Gateway_PPEC_With_PayPal_Credit';
 			} else {
 				$methods[] = 'WC_Gateway_PPEC_With_PayPal';
 			}
 		} else {
 			$methods[] = 'WC_Gateway_PPEC_With_PayPal';
-			$methods[] = 'WC_Gateway_PPEC_With_Card';
+			$methods[] = 'WC_Gateway_PPEC_With_PayPal_Credit';
 		}
 		return $methods;
 	}
