@@ -523,6 +523,8 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			$params['BILLINGTYPE'] = 'MerchantInitiatedBilling';
 		}
 
+		$params['ADDROVERRIDE'] = '1';
+
 		$needs_shipping = WC()->cart->needs_shipping();
 		$this->suppressShippingAddress( $needs_shipping );
 
