@@ -320,7 +320,8 @@ class WC_Gateway_PPEC_Settings {
 		}
 
 		$this->enabled                               = get_option( 'pp_woo_enabled'                               );
-		$this->ppcEnabled                            = get_option( 'pp_woo_ppc_enabled'                           );
+		// $this->ppcEnabled                            = get_option( 'pp_woo_ppc_enabled'                           );
+		$this->ppcEnabled                            = false; // defer this for next release.
 		$this->buttonSize                            = get_option( 'pp_woo_button_size'                           );
 		$this->markSize                              = get_option( 'pp_woo_mark_size'                             );
 		$this->liveApiCredentials                    = get_option( 'pp_woo_liveApiCredentials'                    );

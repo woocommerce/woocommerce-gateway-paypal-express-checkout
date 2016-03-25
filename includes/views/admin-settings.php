@@ -41,6 +41,7 @@ if ( $sb_cert ) {
 		</td>
 	</tr>
 
+	<?php /* defer ppc for next release
 	<?php if ( 'US' === WC()->countries->get_base_country() ) : ?>
 	<tr>
 		<th>
@@ -62,6 +63,7 @@ if ( $sb_cert ) {
 		</td>
 	</tr>
 	<?php endif; ?>
+	*/ ?>
 
 	<tr>
 		<th>
