@@ -44,6 +44,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		add_action( 'woocommerce_before_checkout_process', array( $this, 'before_checkout_process' ) );
 		add_filter( 'woocommerce_checkout_fields', array( $this, 'make_billing_address_optional' ) );
 		add_action( 'woocommerce_after_checkout_form', array( $this, 'after_checkout_form' ) );
+		add_action( 'woocommerce_available_payment_gateways', array( $this, 'maybe_disable_other_gateways' ) );
 		add_action( 'woocommerce_available_payment_gateways', array( $this, 'maybe_disable_paypal_credit' ) );
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
@@ -261,6 +262,28 @@ class WC_Gateway_PPEC_Checkout_Handler {
 				wp_enqueue_style( 'wc-gateway-ppec-frontend-checkout', wc_gateway_ppec()->plugin_url . 'assets/css/wc-gateway-ppec-frontend-checkout.css', array(), wc_gateway_ppec()->version );
 			}
 		}
+	}
+
+	/**
+	 * Disable other gateways if checkout from cart.
+	 *
+	 * @since 1.0.0
+	 * @param array $gateways Available gateways
+	 *
+	 * @return array Available gateways
+	 */
+	public function maybe_disable_other_gateways( $gateways ) {
+		$session = WC()->session->paypal;
+
+		if ( is_a( $session, 'WC_Gateway_PPEC_Session_Data' ) && $session->payerID && $session->expiry_time > time() ) {
+			foreach ( $gateways as $id => $gateway ) {
+				if ( 'ppec_paypal' !== $id ) {
+					unset( $gateways[ $id ] );
+				}
+			}
+		}
+
+		return $gateways;
 	}
 
 	/**
