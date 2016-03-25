@@ -39,9 +39,6 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 					$this->buyer_email = $session->checkout_details->payer_details->email;
 					$this->title .= ' - ' . esc_html( $this->buyer_email );
 				}
-				if ( ! $session->checkout_details->payer_details->billing_address ) {
-					add_action( 'woocommerce_before_checkout_billing_form', array( $this, 'before_checkout_billing_form' ) );
-				}
 
 				$posted = array(
 					'billing_first_name'  => $session->checkout_details->payer_details->first_name,

@@ -42,7 +42,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		add_action( 'wp', array( $this, 'maybe_return_from_paypal' ) );
 
 		add_action( 'woocommerce_before_checkout_process', array( $this, 'before_checkout_process' ) );
-		add_action( 'woocommerce_checkout_process', array( $this, 'checkout_process' ) );
+		add_filter( 'woocommerce_checkout_fields', array( $this, 'make_billing_address_optional' ) );
 		add_action( 'woocommerce_after_checkout_form', array( $this, 'after_checkout_form' ) );
 		add_action( 'woocommerce_available_payment_gateways', array( $this, 'maybe_disable_paypal_credit' ) );
 
@@ -173,19 +173,31 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		WC_Gateway_PPEC::$use_buyer_email = false;
 	}
 
-	/**
-	 * Checkout process.
-	 */
-	public function checkout_process() {
+	public function make_billing_address_optional( $checkout_fields ) {
 		$session = WC()->session->paypal;
-		if ( null != $session && is_a( $session, 'WC_Gateway_PPEC_Session_Data' ) && $session->checkout_completed && $session->expiry_time >= time() && $session->payerID ) {
-			if ( ! $session->checkout_details->payer_details->billing_address ) {
-				WC()->checkout()->checkout_fields['billing']['billing_address_1']['required'] = false;
-				WC()->checkout()->checkout_fields['billing']['billing_city'     ]['required'] = false;
-				WC()->checkout()->checkout_fields['billing']['billing_state'    ]['required'] = false;
-				WC()->checkout()->checkout_fields['billing']['billing_postcode' ]['required'] = false;
-			}
+		if ( is_a( $session, 'WC_Gateway_PPEC_Session_Data' ) && $session->checkout_completed && $session->expiry_time >= time() && $session->payerID ) {
+			$checkout_fields['billing']['billing_address_1']['required'] = false;
+			$checkout_fields['billing']['billing_address_1']['class'][] = 'ppec-bypass';
+			$checkout_fields['billing']['billing_address_1']['class'][] = 'hidden';
+
+			$checkout_fields['billing']['billing_address_2']['required'] = false;
+			$checkout_fields['billing']['billing_address_2']['class'][] = 'ppec-bypass';
+			$checkout_fields['billing']['billing_address_2']['class'][] = 'hidden';
+
+			$checkout_fields['billing']['billing_city']['required'] = false;
+			$checkout_fields['billing']['billing_city']['class'][] = 'ppec-bypass';
+			$checkout_fields['billing']['billing_city']['class'][] = 'hidden';
+
+			$checkout_fields['billing']['billing_state']['required'] = false;
+			$checkout_fields['billing']['billing_state']['class'][] = 'ppec-bypass';
+			$checkout_fields['billing']['billing_state']['class'][] = 'hidden';
+
+			$checkout_fields['billing']['billing_postcode' ]['required'] = false;
+			$checkout_fields['billing']['billing_postcode']['class'][] = 'ppec-bypass';
+			$checkout_fields['billing']['billing_postcode']['class'][] = 'hidden';
 		}
+
+		return $checkout_fields;
 	}
 
 	/**
@@ -241,10 +253,12 @@ class WC_Gateway_PPEC_Checkout_Handler {
 				|| ! $session->checkout_completed || $session->expiry_time < time()
 				|| ! $session->payerID ) {
 
-				wp_enqueue_script( 'wc-gateway-ppec-frontend-checkout', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-frontend-checkout.js', array( 'jquery' ), false, true );
+				wp_enqueue_script( 'wc-gateway-ppec-frontend-checkout', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-frontend-checkout.js', array( 'jquery' ), wc_gateway_ppec()->version, true );
 				wp_localize_script( 'wc-gateway-ppec-frontend-checkout', 'wc_ppec', array( 'payer_id' => $payer_id ) );
 
 				wp_enqueue_script( 'paypal-checkout-js', 'https://www.paypalobjects.com/api/checkout.js', array(), null, true );
+			} else {
+				wp_enqueue_style( 'wc-gateway-ppec-frontend-checkout', wc_gateway_ppec()->plugin_url . 'assets/css/wc-gateway-ppec-frontend-checkout.css', array(), wc_gateway_ppec()->version );
 			}
 		}
 	}
@@ -564,18 +578,19 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		$settings = wc_gateway_ppec()->settings->loadSettings();
 
 		$order = wc_get_order( $order_id );
-		$shipAddressName = $order->shipping_first_name . ' ' . $order->shipping_last_name;
 
-		$shipAddress = new PayPal_Address;
-		$shipAddress->setName($shipAddressName);
-		$shipAddress->setStreet1($order->shipping_address_1);
-		$shipAddress->setStreet2($order->shipping_address_2);
-		$shipAddress->setCity($order->shipping_city);
-		$shipAddress->setState($order->shipping_state);
-		$shipAddress->setZip($order->shipping_postcode);
-		$shipAddress->setCountry($order->shipping_country);
-
-		$this->setShippingAddress( $shipAddress );
+		if ( $session_data->shipping_required ) {
+			$shipAddressName = $order->shipping_first_name . ' ' . $order->shipping_last_name;
+			$shipAddress = new PayPal_Address;
+			$shipAddress->setName($shipAddressName);
+			$shipAddress->setStreet1($order->shipping_address_1);
+			$shipAddress->setStreet2($order->shipping_address_2);
+			$shipAddress->setCity($order->shipping_city);
+			$shipAddress->setState($order->shipping_state);
+			$shipAddress->setZip($order->shipping_postcode);
+			$shipAddress->setCountry($order->shipping_country);
+			$this->setShippingAddress( $shipAddress );
+		}
 
 		$params = array_merge(
 			$settings->getDoECParameters(),
