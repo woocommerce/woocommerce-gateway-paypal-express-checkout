@@ -1,3 +1,7 @@
 .woocommerce-billing-fields .ppec-bypass.hidden {
 	display: none !important;
 }
+
+.payment_method_ppec_paypal img {
+	max-height: 68px !important;
+}

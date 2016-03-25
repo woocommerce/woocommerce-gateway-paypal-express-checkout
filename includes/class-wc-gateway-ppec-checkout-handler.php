@@ -245,6 +245,8 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			return;
 		}
 
+		wp_enqueue_style( 'wc-gateway-ppec-frontend-checkout', wc_gateway_ppec()->plugin_url . 'assets/css/wc-gateway-ppec-frontend-checkout.css', array(), wc_gateway_ppec()->version );
+
 		// On the checkout page, only load the JS if we plan on sending them over to PayPal.
 		$payer_id = $settings->getActiveApiCredentials()->get_payer_id();
 		if ( $settings->enableInContextCheckout && ! empty( $payer_id )  ) {
@@ -258,8 +260,6 @@ class WC_Gateway_PPEC_Checkout_Handler {
 				wp_localize_script( 'wc-gateway-ppec-frontend-checkout', 'wc_ppec', array( 'payer_id' => $payer_id ) );
 
 				wp_enqueue_script( 'paypal-checkout-js', 'https://www.paypalobjects.com/api/checkout.js', array(), null, true );
-			} else {
-				wp_enqueue_style( 'wc-gateway-ppec-frontend-checkout', wc_gateway_ppec()->plugin_url . 'assets/css/wc-gateway-ppec-frontend-checkout.css', array(), wc_gateway_ppec()->version );
 			}
 		}
 	}
