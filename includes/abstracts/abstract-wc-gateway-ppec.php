@@ -143,7 +143,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 				$pending_reason = $payment_details->payments[0]->pending_reason;
 				$order = wc_get_order( $order_id );
 
-				if ( 'Pending' === $payment_status && 'authorization' == $pending_reason ) {
+				if ( 'Pending' === $payment_status && 'authorization' === $pending_reason ) {
 					update_post_meta( $order->id, '_ppec_charge_captured', 'no' );
 					add_post_meta( $order->id, '_transaction_id', $transaction_id, true );
 

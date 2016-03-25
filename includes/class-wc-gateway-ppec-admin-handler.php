@@ -39,10 +39,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 			return;
 		}
 
-		$trans_id = get_post_meta( $order->id, '_transaction_id', true );
-		$captured = get_post_meta( $order->id, '_ppec_charge_captured', true );
-
-		if ( 'yes' === $captured ) {
+		if ( 'yes' === get_post_meta( $order->id, '_ppec_charge_captured', true ) ) {
 			return;
 		}
 
@@ -141,9 +138,9 @@ class WC_Gateway_PPEC_Admin_Handler {
 
 		if ( 'ppec_paypal' === $order->payment_method ) {
 			$trans_id = get_post_meta( $order_id, '_transaction_id', true );
-			$captured = get_post_meta( $order_id, '_ppec_charge_captured', true );
-
-			if ( $trans_id && $captured == 'no' ) {
+			$trans_details = wc_gateway_ppec()->client->get_transaction_details( array( 'TRANSACTIONID' => $trans_id ) );
+			
+			if ( $trans_id && $this->is_authorized_only( $trans_details ) ) {
 				$params['AUTHORIZATIONID'] = $trans_id;
 				$params['AMT'] = floatval( $order->order_total );
 				$params['COMPLETETYPE'] = 'Complete';
@@ -162,7 +159,22 @@ class WC_Gateway_PPEC_Admin_Handler {
 	}
 
 	/**
-	 * Cancel pre-auth on refund/cancellation
+	 * Checks to see if the transaction can be captured
+	 *
+	 * @param array $trans_details
+	 */
+	public function is_authorized_only( $trans_details = array() ) {
+		if ( ! is_wp_error( $trans_details ) && ! empty( $trans_details ) ) {
+			if ( 'Pending' === $trans_details['PAYMENTSTATUS'] && 'authorization' === $trans_details['PENDINGREASON'] ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Cancel authorization
 	 *
 	 * @param  int $order_id
 	 */
@@ -171,15 +183,15 @@ class WC_Gateway_PPEC_Admin_Handler {
 
 		if ( 'ppec_paypal' === $order->payment_method ) {
 			$trans_id = get_post_meta( $order_id, '_transaction_id', true );
-			$captured = get_post_meta( $order_id, '_ppec_charge_captured', true );
+			$trans_details = wc_gateway_ppec()->client->get_transaction_details( array( 'TRANSACTIONID' => $trans_id ) );
 
-			if ( $trans_id && 'no' === $captured ) {
+			if ( $trans_id && $this->is_authorized_only( $trans_details ) ) {
 				$params['AUTHORIZATIONID'] = $trans_id;
 
 				$result = wc_gateway_ppec()->client->do_express_checkout_void( $params );
 
 				if ( is_wp_error( $result ) ) {
-					$order->add_order_note( __( 'Unable to refund charge!', 'woocommerce-gateway-paypal-express-checkout' ) . ' ' . $result->get_error_message() );
+					$order->add_order_note( __( 'Unable to void charge!', 'woocommerce-gateway-paypal-express-checkout' ) . ' ' . $result->get_error_message() );
 				} else {
 					$order->add_order_note( sprintf( __( 'PayPal Express Checkout charge voided (Charge ID: %s)', 'woocommerce-gateway-paypal-express-checkout' ), $trans_id) );
 					delete_post_meta( $order->id, '_ppec_charge_captured' );

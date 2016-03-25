@@ -210,6 +210,13 @@ class WC_Gateway_PPEC_Client {
 		return $this->_request( $params );
 	}
 
+	public function get_transaction_details( $params ) {
+		$params['METHOD']  = 'GetTransactionDetails';
+		$params['VERSION'] = self::API_VERSION;
+
+		return $this->_request( $params );
+	}
+
 	/**
 	 * Obtain your Pal ID, which is the PayPal–assigned merchant account number,
 	 * and other informaton about your account.
