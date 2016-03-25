@@ -57,7 +57,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 	public function display_paypal_button() {
 		$settings = wc_gateway_ppec()->settings->loadSettings();
-		if( ! $settings->enabled ) {
+		if ( ! $settings->enabled || ! empty( $settings->addressOverride ) ) {
 			return;
 		}
 
