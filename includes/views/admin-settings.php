@@ -512,6 +512,26 @@ if ( $sb_cert ) {
 		</td>
 	</tr>
 
+	<tr id="woo_pp_address_override_row">
+		<th>
+			<label for="woo_pp_address_override"><?php _e( 'Address Override', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
+			<a href="#TB_inline?width=800&amp;height=600&amp;inlineId=woo_pp_address_override_help" class="thickbox"><img src="<?php echo esc_url( $help_image_url ); ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
+		</th>
+		<td>
+			<div id="woo_pp_address_override_help" style="display: none;">
+				<p>
+					<h2><?php _e( 'Required for seller protection.', 'woocommerce-gateway-paypal-express-checkout' ); ?></h2>
+					<?php _e( '<p>Enabling this option will pass the address entered on your site to the buyer\'s PayPal account overriding what they have on file.</p>', 'woocommerce-gateway-paypal-express-checkout' ); ?>
+				</p>
+			</div>
+			<fieldset>
+				<legend class="screen-reader-text"><span><?php _e( 'Address Override', 'woocommerce-gateway-paypal-express-checkout' ); ?></span></legend>
+				<input type="checkbox" name="woo_pp_address_override" id="woo_pp_address_override"<?php checked( $address_override ); ?> value="true">
+				<label for="woo_pp_address_override"><?php _e( 'Override the address on buyer\'s PayPal account.', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
+			</fieldset>
+		</td>
+	</tr>
+
 	<tr>
 		<th>
 			<label for="woo_pp_zero_subtotal_behavior"><?php _e( 'Zero subtotal behavior', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>

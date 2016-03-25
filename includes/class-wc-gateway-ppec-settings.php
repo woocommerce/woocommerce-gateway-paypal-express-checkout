@@ -24,6 +24,7 @@ class WC_Gateway_PPEC_Settings {
 		'ipnUrl',
 		'blockEChecks',
 		'requireBillingAddress',
+		'addressOverride',
 		'liveAccountIsEnabledForBillingAddress',
 		'sbAccountIsEnabledForBillingAddress',
 		'ipsPrivateKey',
@@ -201,6 +202,10 @@ class WC_Gateway_PPEC_Settings {
 			$params['REQBILLINGADDRESS'] = '1';
 		}
 
+		if ( $this->addressOverride ) {
+			$params['ADDROVERRIDE'] = '1';
+		}
+
 		foreach ( $buckets as $bucketNum ) {
 			$params[ 'PAYMENTREQUEST_' . $bucketNum . '_PAYMENTACTION' ] = $this->paymentAction;
 			if ( $this->blockEChecks ) $params[ 'PAYMENTREQUEST_' . $bucketNum . '_ALLOWEDPAYMENTMETHOD' ] = 'InstantPaymentOnly';
@@ -235,6 +240,10 @@ class WC_Gateway_PPEC_Settings {
 			$params['REQBILLINGADDRESS'] = '1';
 		}
 
+		if ( $this->addressOverride ) {
+			$params['ADDROVERRIDE'] = '1';
+		}
+		
 		foreach ( $buckets as $bucketNum ) {
 			$params[ 'PAYMENTREQUEST_' . $bucketNum . '_PAYMENTACTION' ] = $this->paymentAction;
 			if ( $this->blockEChecks ) {
@@ -321,6 +330,7 @@ class WC_Gateway_PPEC_Settings {
 
 		$this->enabled                               = get_option( 'pp_woo_enabled'                               );
 		$this->ppcEnabled                            = get_option( 'pp_woo_ppc_enabled'                           );
+		$this->addressOverride                       = get_option( 'pp_woo_address_override'                      );
 		$this->buttonSize                            = get_option( 'pp_woo_button_size'                           );
 		$this->markSize                              = get_option( 'pp_woo_mark_size'                             );
 		$this->liveApiCredentials                    = get_option( 'pp_woo_liveApiCredentials'                    );
@@ -347,6 +357,7 @@ class WC_Gateway_PPEC_Settings {
 	public function saveSettings() {
 		update_option( 'pp_woo_enabled'                              , $this->enabled                               );
 		update_option( 'pp_woo_ppc_enabled'                          , $this->ppcEnabled                            );
+		update_option( 'pp_woo_address_override'                     , $this->addressOverride                       );
 		update_option( 'pp_woo_button_size'                          , $this->buttonSize                            );
 		update_option( 'pp_woo_mark_size'                            , $this->markSize                              );
 		update_option( 'pp_woo_liveApiCredentials'                   , $this->liveApiCredentials                    );

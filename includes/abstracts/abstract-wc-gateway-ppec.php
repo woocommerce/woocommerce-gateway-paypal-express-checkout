@@ -279,6 +279,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		$enabled              = false;
 		$ppc_enabled          = false;
 		$icc_enabled          = false;
+		$address_override     = false;
 
 		$live_api_username = '';
 		$sb_api_username   = '';
@@ -313,6 +314,10 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 
 			if ( ! empty( $_POST['woo_pp_icc_enabled'] ) && 'true' == $_POST['woo_pp_icc_enabled'] ) {
 				$icc_enabled = true;
+			}
+
+			if ( ! empty( $_POST['woo_pp_address_override'] ) && 'true' == $_POST['woo_pp_address_override'] ) {
+				$address_override = true;
 			}
 
 			if ( array_key_exists( 'woo_pp_environment', $_POST ) ) {
@@ -425,6 +430,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 
 			$enabled                    = $settings->enabled;
 			$ppc_enabled                = $settings->ppcEnabled;
+			$address_override           = $settings->addressOverride;
 			$icc_enabled                = $settings->enableInContextCheckout;
 			$environment                = $settings->environment;
 			$button_size                = $settings->buttonSize;
@@ -628,6 +634,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		$enabled                                  = false;
 		$ppc_enabled                              = false;
 		$icc_enabled                              = false;
+		$address_override                         = false;
 		$allow_guest_checkout                     = false;
 		$block_echecks                            = false;
 		$require_billing_address                  = false;
@@ -652,6 +659,10 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 
 		if ( isset( $_POST['woo_pp_req_billing_address'] ) && 'true' == $_POST['woo_pp_req_billing_address'] ) {
 			$require_billing_address = true;
+		}
+
+		if ( isset( $_POST['woo_pp_address_override'] ) && 'true' == $_POST['woo_pp_address_override'] ) {
+			$address_override = true;
 		}
 
 		if ( isset( $_POST['woo_pp_icc_enabled'] ) && 'true' == $_POST['woo_pp_icc_enabled'] ) {
@@ -693,6 +704,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		$settings->allowGuestCheckout                    = $allow_guest_checkout;
 		$settings->blockEChecks                          = $block_echecks;
 		$settings->requireBillingAddress                 = $require_billing_address;
+		$settings->addressOverride                       = $address_override;
 		$settings->paymentAction                         = $payment_action;
 		$settings->zeroSubtotalBehavior                  = $zero_subtotal_behavior;
 		$settings->subtotalMismatchBehavior              = $subtotal_mismatch_behavior;
