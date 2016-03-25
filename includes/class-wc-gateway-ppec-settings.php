@@ -201,6 +201,8 @@ class WC_Gateway_PPEC_Settings {
 			$params['REQBILLINGADDRESS'] = '1';
 		}
 
+		$params['ADDROVERRIDE'] = '1';
+		
 		foreach ( $buckets as $bucketNum ) {
 			$params[ 'PAYMENTREQUEST_' . $bucketNum . '_PAYMENTACTION' ] = $this->paymentAction;
 			if ( $this->blockEChecks ) $params[ 'PAYMENTREQUEST_' . $bucketNum . '_ALLOWEDPAYMENTMETHOD' ] = 'InstantPaymentOnly';
@@ -234,6 +236,8 @@ class WC_Gateway_PPEC_Settings {
 		if ( $this->requireBillingAddress ) {
 			$params['REQBILLINGADDRESS'] = '1';
 		}
+
+		$params['ADDROVERRIDE'] = '1';
 
 		foreach ( $buckets as $bucketNum ) {
 			$params[ 'PAYMENTREQUEST_' . $bucketNum . '_PAYMENTACTION' ] = $this->paymentAction;
