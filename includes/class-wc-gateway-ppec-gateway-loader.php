@@ -28,13 +28,13 @@ class WC_Gateway_PPEC_Gateway_Loader {
 				$session->checkout_completed && $session->expiry_time >= time() &&
 				$session->payerID ) {
 			if ( $session->using_ppc ) {
-				$methods[] = 'WC_Gateway_PPEC_With_PayPal_Credit';
+				// $methods[] = 'WC_Gateway_PPEC_With_PayPal_Credit';
 			} else {
 				$methods[] = 'WC_Gateway_PPEC_With_PayPal';
 			}
 		} else {
 			$methods[] = 'WC_Gateway_PPEC_With_PayPal';
-			$methods[] = 'WC_Gateway_PPEC_With_PayPal_Credit';
+			// $methods[] = 'WC_Gateway_PPEC_With_PayPal_Credit';
 		}
 		return $methods;
 	}

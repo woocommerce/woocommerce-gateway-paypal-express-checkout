@@ -80,10 +80,13 @@ class WC_Gateway_PPEC_Cart_Handler {
 		<div class="<?php echo esc_attr( $class ); ?>">
 			<span style="float: right;">
 				<a href="<?php echo esc_url( $redirect ); ?>" id="woo_pp_ec_button">
-					<img src="<?php echo esc_url( $checkout_logo ); ?>" alt="<?php _e( 'Check out with PayPal', 'woocommerce-gateway-paypal-express-checkout' ); ?>" style="width: auto; height: auto;">
+					<?php if ( ! $settings->enableInContextCheckout ) : ?>
+						<img src="<?php echo esc_url( $checkout_logo ); ?>" alt="<?php _e( 'Check out with PayPal', 'woocommerce-gateway-paypal-express-checkout' ); ?>" style="width: auto; height: auto;">
+					<?php endif; ?>
 				</a>
 			</span>
 
+			<? /* defer ppc for next release.
 			<?php if ( $settings->ppcEnabled && 'US' === WC()->countries->get_base_country() ) : ?>
 				<?php
 				$redirect = add_query_arg( array( 'use-ppc' => 'true' ), $redirect );
@@ -95,13 +98,21 @@ class WC_Gateway_PPEC_Cart_Handler {
 					</a>
 				</span>
 			<?php endif; ?>
+			*/ ?>
 		</div>
 
 		<?php
 		if ( $settings->enableInContextCheckout && $settings->getActiveApiCredentials()->get_payer_id() ) {
 			$payer_id = $settings->getActiveApiCredentials()->get_payer_id();
 			$setup_args = array(
-				'button' => array( 'woo_pp_ec_button', 'woo_pp_ppc_button' ),
+				// 'button' => array( 'woo_pp_ec_button', 'woo_pp_ppc_button' ),
+				'buttons' => array(
+					array(
+						'container' => 'woo_pp_ec_button',
+						'size'      => $settings->buttonSize,
+						'shape'     => 'rect',
+					)
+				),
 				'locale' => $settings->get_paypal_locale(),
 			);
 			?>

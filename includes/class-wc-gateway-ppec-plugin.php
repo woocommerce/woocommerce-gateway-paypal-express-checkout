@@ -145,7 +145,9 @@ class WC_Gateway_PPEC_Plugin {
 		// Enable some options that we recommend for all merchants.
 		add_option( 'pp_woo_allowGuestCheckout', true );
 		add_option( 'pp_woo_enableInContextCheckout', true );
+		/* defer ppc for next next release.
 		add_option( 'pp_woo_ppc_enabled', true );
+		*/
 
 		// Schedule the creation of a public key/private key pair for Easy Signup.
 		add_option( 'pp_woo_ipsPrivateKey', 'not_generated' );
