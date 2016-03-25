@@ -16,7 +16,8 @@ class WC_Gateway_PPEC_Admin_Handler {
 		add_action( 'woocommerce_update_options_general', array( $this, 'force_zero_decimal' ) );
 		add_action( 'admin_notices', array( $this, 'show_decimal_warning' ) );
 
-		add_filter( 'woocommerce_get_sections_checkout', array( $this, 'filter_checkout_sections' ) );
+		// defer this until for next release.
+		// add_filter( 'woocommerce_get_sections_checkout', array( $this, 'filter_checkout_sections' ) );
 
 		add_action( 'woocommerce_order_status_on-hold_to_processing', array( $this, 'capture_payment' ) );
 		add_action( 'woocommerce_order_status_on-hold_to_completed', array( $this, 'capture_payment' ) );
@@ -88,7 +89,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 		);
 
 		$card_sections = array(
-			'wc_gateway_ppec_with_card',
+			'wc_gateway_ppec_with_paypal_credit',
 		);
 
 		$current_section = isset( $_GET['section'] ) ? $_GET['section'] : '';
@@ -139,7 +140,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 		if ( 'ppec_paypal' === $order->payment_method ) {
 			$trans_id = get_post_meta( $order_id, '_transaction_id', true );
 			$trans_details = wc_gateway_ppec()->client->get_transaction_details( array( 'TRANSACTIONID' => $trans_id ) );
-			
+
 			if ( $trans_id && $this->is_authorized_only( $trans_details ) ) {
 				$params['AUTHORIZATIONID'] = $trans_id;
 				$params['AMT'] = floatval( $order->order_total );
