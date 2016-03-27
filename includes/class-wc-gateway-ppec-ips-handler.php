@@ -12,6 +12,30 @@ class WC_Gateway_PPEC_IPS_Handler {
 	const ONBOARDING_START_URL = 'http://ipsis-vip.ext.external.paypalc3.com/onboarding/start';
 	const ONBOARDING_END_URL = 'http://ipsis-vip.ext.external.paypalc3.com/onboarding/end';
 
+	/**
+	 * Countries that support IPS.
+	 *
+	 * @var array
+	 */
+	private $_supported_countries = array(
+		'AL', 'DZ', 'AO', 'AI', 'AG', 'AR', 'AM', 'AW', 'AU', 'AT', 'AZ', 'BS',
+		'BH', 'BB', 'BE', 'BZ', 'BJ', 'BM', 'BT', 'BO', 'BA', 'BW', 'VG', 'BN',
+		'BG', 'BF', 'BI', 'KH', 'CA', 'CV', 'KY', 'TD', 'CL', 'CN', 'C2', 'CO',
+		'KM', 'CG', 'CK', 'CR', 'HR', 'CY', 'CZ', 'CD', 'DK', 'DJ', 'DM', 'DO',
+		'EC', 'EG', 'SV', 'ER', 'EE', 'ET', 'FK', 'FM', 'FJ', 'FI', 'FR', 'GF',
+		'PF', 'GA', 'GM', 'GE', 'DE', 'GI', 'GR', 'GL', 'GD', 'GP', 'GU', 'GT',
+		'GN', 'GW', 'GY', 'VA', 'HN', 'HK', 'HU', 'IS', 'ID', 'IE', 'IT', 'JM',
+		'JO', 'KZ', 'KE', 'KI', 'KW', 'KG', 'LA', 'LV', 'LS', 'LI', 'LT', 'LU',
+		'MG', 'MW', 'MY', 'MV', 'ML', 'MT', 'MH', 'MQ', 'MR', 'MU', 'YT', 'MX',
+		'MN', 'MS', 'MA', 'MZ', 'NA', 'NR', 'NP', 'NL', 'AN', 'NC', 'NZ', 'NI',
+		'NE', 'NU', 'NF', 'NO', 'OM', 'PW', 'PA', 'PG', 'PE', 'PH', 'PN', 'PL',
+		'PT', 'QA', 'RE', 'RO', 'RU', 'RW', 'SH', 'KN', 'LC', 'PM', 'VC', 'WS',
+		'SM', 'ST', 'SA', 'SN', 'RS', 'SC', 'SL', 'SG', 'SK', 'SI', 'SB', 'SO',
+		'ZA', 'KR', 'ES', 'LK', 'SR', 'SJ', 'SZ', 'SE', 'CH', 'TW', 'TJ', 'TH',
+		'TG', 'TO', 'TT', 'TN', 'TR', 'TM', 'TC', 'TV', 'UG', 'UA', 'AE', 'GB',
+		'TZ', 'US', 'UY', 'VU', 'VE', 'VN', 'WF', 'YE', 'ZM',
+	);
+
 	public function __construct() {
 		add_action( 'woocommerce_init', array( $this, 'generate_private_key_after_activated' ) );
 		add_action( 'woocommerce_init', array( $this, 'generate_private_key_request' ) );
@@ -56,12 +80,17 @@ class WC_Gateway_PPEC_IPS_Handler {
 		}
 	}
 
-	public function get_ips_enabled_countries() {
-		return array( 'AT', 'BE', 'CH', 'DE', 'DK', 'ES', 'FR', 'GB', 'IT', 'NL', 'NO', 'PL', 'SE', 'TR', 'US' );
+	/**
+	 * Check if base location country supports IPS.
+	 *
+	 * @return bool Returns true of base country in supported countries
+	 */
+	public function is_supported() {
+		return in_array( WC()->countries->get_base_country(), $this->_supported_countries );
 	}
 
 	public function ips_signup() {
-		$enable_ips = in_array( WC()->countries->get_base_country(), $this->get_ips_enabled_countries() );
+		$enable_ips = $this->is_supported();
 		if ( ! $enable_ips ) {
 			WC_Admin_Settings::add_error( __( 'Sorry, Easy Setup isn\'t available in your country.', 'woocommerce-gateway-paypal-express-checkout' ) );
 			ob_end_flush();

@@ -239,8 +239,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 	// to override how WooCommerce tells us it should be done.
 	public function admin_options() {
 
-		// TODO: move this to ips-handler.
-		$enable_ips = in_array( WC()->countries->get_base_country(), wc_gateway_ppec()->ips->get_ips_enabled_countries() );
+		$enable_ips = wc_gateway_ppec()->ips->is_supported();
 
 		// TODO: move this to ips-handler.
 		if ( isset( $_GET['ips-signup'] ) && 'true' === $_GET['ips-signup'] ) {
