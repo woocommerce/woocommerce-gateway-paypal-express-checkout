@@ -200,4 +200,20 @@ class WC_Gateway_PPEC_Admin_Handler {
 			}
 		}
 	}
+
+	/**
+	 * Get admin URL for this gateway setting.
+	 *
+	 * @return string URL
+	 */
+	public function gateway_admin_url( $gateway_class ) {
+		return add_query_arg(
+			array(
+				'page'    => 'wc-settings',
+				'tab'     => 'checkout',
+				'section' => strtolower( $gateway_class ),
+			),
+			admin_url( 'admin.php' )
+		);
+	}
 }
