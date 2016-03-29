@@ -26,7 +26,6 @@ class WC_Gateway_PPEC_Settings {
 		'requireBillingAddress',
 		'liveAccountIsEnabledForBillingAddress',
 		'sbAccountIsEnabledForBillingAddress',
-		'ipsPrivateKey',
 	);
 
 	protected $_supportedLocale = array(
@@ -338,7 +337,6 @@ class WC_Gateway_PPEC_Settings {
 		$this->enableInContextCheckout               = get_option( 'pp_woo_enableInContextCheckout'               );
 		$this->liveAccountIsEnabledForBillingAddress = get_option( 'pp_woo_liveAccountIsEnabledForBillingAddress' );
 		$this->sbAccountIsEnabledForBillingAddress   = get_option( 'pp_woo_sbAccountIsEnabledForBillingAddress'   );
-		$this->ipsPrivateKey                         = get_option( 'pp_woo_ipsPrivateKey'                         );
 
 		$this->_is_setting_loaded = true;
 
@@ -364,7 +362,6 @@ class WC_Gateway_PPEC_Settings {
 		update_option( 'pp_woo_enableInContextCheckout'              , $this->enableInContextCheckout               );
 		update_option( 'pp_woo_liveAccountIsEnabledForBillingAddress', $this->liveAccountIsEnabledForBillingAddress );
 		update_option( 'pp_woo_sbAccountIsEnabledForBillingAddress'  , $this->sbAccountIsEnabledForBillingAddress   );
-		update_option( 'pp_woo_ipsPrivateKey'                        , $this->ipsPrivateKey                         );
 	}
 
 	public function getECTokenSessionLength() {
