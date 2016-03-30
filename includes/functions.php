@@ -39,3 +39,23 @@ function woo_pp_start_checkout() {
 
 	}
 }
+
+/**
+ * Log a message via WC_Logger.
+ *
+ * @param string $message Message to log
+ */
+function wc_gateway_ppec_log( $message ) {
+	static $wc_ppec_logger;
+
+	// No need to write to log file if logging is disabled.
+	if ( ! wc_gateway_ppec()->settings->loadSettings()->logging_enabled ) {
+		return false;
+	}
+
+	if ( ! isset( $wc_ppec_logger ) ) {
+		$wc_ppec_logger = new WC_Logger();
+	}
+
+	$wc_ppec_logger->add( 'wc_gateway_ppec', $message );
+}

@@ -376,6 +376,25 @@ if ( $sb_cert ) {
 	</tr>
 	<tr>
 		<th>
+			<label for="woo_pp_enable_logging"><?php _e( 'Enable logging', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
+			<a href="#TB_inline?width=800&amp;height=600&amp;inlineId=woo_pp_enable_logging_help" class="thickbox"><img src="<?php echo esc_url( $help_image_url ); ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
+		</th>
+		<td>
+			<div id="woo_pp_enable_logging_help" style="display: none;">
+				<p>
+					<h2><?php _e( 'Enable Logging', 'woocommerce-gateway-paypal-express-checkout' ); ?></h2>
+					<?php _e( '<p>If this setting is enabled, some informations will be logged to a log file. The log is accessible via WooCommerce &gt; System Status &gt; Logs. From the dropdown, select filename with prefix <code>wc_gateway_ppec</code></p> then click View.', 'woocommerce-gateway-paypal-express-checkout' ); ?>
+				</p>
+			</div>
+			<fieldset>
+				<legend class="screen-reader-text"><span><?php _e( 'Enable logging', 'woocommerce-gateway-paypal-express-checkout' ); ?></span></legend>
+				<input type="checkbox" name="woo_pp_logging_enabled" id="woo_pp_enable_logging"<?php checked( $logging_enabled ); ?> value="true">
+				<label for="woo_pp_enable_logging"><?php _e( 'Enable logging', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
+			</fieldset>
+		</td>
+	</tr>
+	<tr>
+		<th>
 			<label for="woo_pp_button_size"><?php _e( 'Button size', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
 			<a href="#TB_inline?width=800&amp;height=600&amp;inlineId=woo_pp_button_size_help" class="thickbox"><img src="<?php echo esc_url( $help_image_url ); ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
 		</th>

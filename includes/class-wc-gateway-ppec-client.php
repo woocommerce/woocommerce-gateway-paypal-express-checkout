@@ -91,6 +91,7 @@ class WC_Gateway_PPEC_Client {
 	 */
 	protected function _request( array $params ) {
 		try {
+			wc_gateway_ppec_log( sprintf( '%s: trying to make a request to PayPal with params: %s', __METHOD__, print_r( $params, true ) ) );
 
 			// Make sure $_credential and $_environment have been configured.
 			if ( ! $this->_credential ) {
@@ -114,7 +115,11 @@ class WC_Gateway_PPEC_Client {
 				'httpversion' => '1.1',
 			);
 
+			wc_gateway_ppec_log( sprintf( '%s: remote request to %s with args: %s', __METHOD__, $this->get_endpoint(), print_r( $args, true ) ) );
+
 			$resp = wp_safe_remote_post( $this->get_endpoint(), $args );
+
+			wc_gateway_ppec_log( sprintf( '%s: response from remote request to %s: %s', __METHOD__, $this->get_endpoint(), print_r( $resp, true ) ) );
 
 			if ( is_wp_error( $resp ) ) {
 				throw new Exception( sprintf( __( 'An error occurred while trying to connect to PayPal: %s', 'woocommerce-gateway-ppec' ), $resp->get_error_message() ), self::REQUEST_ERROR );
@@ -126,21 +131,26 @@ class WC_Gateway_PPEC_Client {
 				throw new Exception( __( 'Malformed response received from PayPal', 'woocommerce-gateway-ppec' ), self::REQUEST_ERROR );
 			}
 
+			wc_gateway_ppec_log( sprintf( '%s: acknowleged response body: %s', __METHOD__, print_r( $result, true ) ) );
+
 			// Let the caller deals with the response.
 			return $result;
 
 		} catch ( Exception $e ) {
 
-			// TODO: Logging.
-
 			// TODO: Maybe returns WP_Error ?
-			return array(
+			$error = array(
 				'ACK'             => 'Failure',
 				'L_ERRORCODE0'    => $e->getCode(),
 				'L_SHORTMESSAGE0' => 'Error in ' . __METHOD__,
 				'L_LONGMESSAGE0'  => $e->getMessage(),
 				'L_SEVERITYCODE0' => 'Error'
 			);
+
+			wc_gateway_ppec_log( sprintf( '%s: exception is thrown while trying to make a request to PayPal: %s', __METHOD__, $e->getMessage() ) );
+			wc_gateway_ppec_log( sprintf( '%s: returns error: %s', __METHOD__, print_r( $error, true ) ) );
+
+			return $error;
 
 		}
 	}

@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class WC_Gateway_PPEC_IPS_Handler {
 
-	const MIDDLEWARE_BASE_URL = 'http://www.cw.dev';
+	const MIDDLEWARE_BASE_URL = 'https://connect.woocommerce.com';
 
 	/**
 	 * Countries that support IPS.
@@ -140,23 +140,30 @@ class WC_Gateway_PPEC_IPS_Handler {
 			wp_die( __( 'Invalid connection request', 'woocommerce-gateway-paypal-express-checkout' ) );
 		}
 
+		wc_gateway_ppec_log( sprintf( '%s: returned back from IPS flow with parameters: %s', __METHOD__, print_r( $_GET, true ) ) );
+
 		// Check if error.
 		if ( ! empty( $_GET['error'] ) ) {
+			$error_message = ! empty( $_GET['error_message'] ) ? $_GET['error_message'] : '';
+			wc_gateway_ppec_log( sprintf( '%s: returned back from IPS flow with error: %s', __METHOD__, $error_message ) );
+
 			$this->_redirect_with_messages( __( 'Sorry, Easy Setup encountered an error.  Please try again.', 'woocommerce-gateway-paypal-express-checkout' ) );
 		}
 
 		// Make sure credentials present in query string.
 		foreach ( array( 'api_style', 'api_username', 'api_password', 'signature' ) as $param ) {
 			if ( empty( $_GET[ $param ] ) ) {
+				wc_gateway_ppec_log( sprintf( '%s: returned back from IPS flow but missing parameter %s', __METHOD__, $param ) );
+
 				$this->_redirect_with_messages( __( 'Sorry, Easy Setup encountered an error.  Please try again.', 'woocommerce-gateway-paypal-express-checkout' ) );
 			}
 		}
 
 		// TODO: Check for IPS certificate-style.
 		$creds = new WC_Gateway_PPEC_Client_Credential_Signature(
-			$credentials->username,
-			$credentials->password,
-			$credentials->signature
+			$_GET['api_username'],
+			$_GET['api_password'],
+			$_GET['signature']
 		);
 
 		$error_msgs = array();
@@ -191,6 +198,10 @@ class WC_Gateway_PPEC_IPS_Handler {
 			$error_msgs[] = array(
 				'warning' => __( 'PayPal Express Checkout is not enabled.  To allow your buyers to pay with PayPal, make sure "Enable PayPal Express Checkout" is checked.', 'woocommerce-gateway-paypal-express-checkout' )
 			);
+		}
+
+		if ( ! empty( $error_msgs ) ) {
+			wc_gateway_ppec_log( sprintf( '%s: returned back from IPS flow but with warnings/errors: %s', __METHOD__, print_r( $error_msgs, true ) ) );
 		}
 
 		$settings->environment = $env;
