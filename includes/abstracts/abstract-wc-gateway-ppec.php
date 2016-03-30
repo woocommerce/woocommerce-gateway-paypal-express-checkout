@@ -262,9 +262,10 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 
 		$settings = wc_gateway_ppec()->settings->loadSettings();
 
-		$enabled              = false;
-		$ppc_enabled          = false;
-		$icc_enabled          = false;
+		$enabled         = false;
+		$logging_enabled = false;
+		$ppc_enabled     = false;
+		$icc_enabled     = false;
 
 		$live_api_username = '';
 		$sb_api_username   = '';
@@ -275,15 +276,15 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		$live_subject      = '';
 		$sb_subject        = '';
 
-		$live_style           = 'signature';
-		$sb_style             = 'signature';
+		$live_style = 'signature';
+		$sb_style   = 'signature';
 
-		$live_cert            = false;
-		$sb_cert              = false;
+		$live_cert = false;
+		$sb_cert   = false;
 
-		$live_cert_info       = __( 'No API certificate on file', 'woocommerce-gateway-paypal-express-checkout' );
-		$sb_cert_info         = __( 'No API certificate on file', 'woocommerce-gateway-paypal-express-checkout' );
-		$environment          = 'sandbox';
+		$live_cert_info = __( 'No API certificate on file', 'woocommerce-gateway-paypal-express-checkout' );
+		$sb_cert_info   = __( 'No API certificate on file', 'woocommerce-gateway-paypal-express-checkout' );
+		$environment    = 'sandbox';
 
 		// If we're re-rending the page after a validation error, make sure that we show the data the user entered instead of just reverting
 		// to what is stored in the database.
@@ -299,6 +300,10 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 
 			if ( ! empty( $_POST['woo_pp_icc_enabled'] ) && 'true' == $_POST['woo_pp_icc_enabled'] ) {
 				$icc_enabled = true;
+			}
+
+			if ( ! empty( $_POST['woo_pp_logging_enabled'] ) && 'true' == $_POST['woo_pp_logging_enabled'] ) {
+				$logging_enabled = true;
 			}
 
 			if ( array_key_exists( 'woo_pp_environment', $_POST ) ) {
@@ -410,6 +415,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 			}
 
 			$enabled                    = $settings->enabled;
+			$logging_enabled            = $settings->logging_enabled;
 			$ppc_enabled                = $settings->ppcEnabled;
 			$icc_enabled                = $settings->enableInContextCheckout;
 			$environment                = $settings->environment;
@@ -612,6 +618,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		}
 
 		$enabled                                  = false;
+		$logging_enabled                          = false;
 		$ppc_enabled                              = false;
 		$icc_enabled                              = false;
 		$allow_guest_checkout                     = false;
@@ -644,6 +651,10 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 			$icc_enabled = true;
 		}
 
+		if ( isset( $_POST['woo_pp_logging_enabled'] ) && 'true' == $_POST['woo_pp_logging_enabled'] ) {
+			$logging_enabled = true;
+		}
+
 		$is_account_enabled_for_billing_address = false;
 		try {
 			$is_account_enabled_for_billing_address = wc_gateway_ppec()->client->test_for_billing_address_enabled( $credential, $environment );
@@ -669,6 +680,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 
 		// Go ahead and save everything.
 		$settings->enabled                               = $enabled;
+		$settings->logging_enabled                       = $logging_enabled;
 		$settings->ppcEnabled                            = $ppc_enabled;
 		$settings->enableInContextCheckout               = $icc_enabled;
 		$settings->buttonSize                            = $button_size;
