@@ -100,7 +100,7 @@ if ( $sb_cert ) {
 				</p>
 			</div>
 
-			<a href="<?php echo esc_url( $ips_url ); ?>&amp;mode=signature&amp;env=live" class="button button-primary"><?php _e( 'Click Here to Set Up Your PayPal Account', 'woocommerce-gateway-paypal-express-checkout' ); ?></a>
+			<a href="<?php echo esc_url( wc_gateway_ppec()->ips->get_signup_url( 'live' ) ); ?>" class="button button-primary"><?php _e( 'Click Here to Set Up Your PayPal Account', 'woocommerce-gateway-paypal-express-checkout' ); ?></a>
 			<?php
 			/* Disable certificate-style until middleware support it. Maybe in v1.1.
 			<a href="<?php echo esc_url( $ips_url ); ?>&amp;mode=certificate&amp;env=live" class="button"><?php _e( 'Click here if you need certificate credentials', 'woocommerce-gateway-paypal-express-checkout' ); ?></a>
@@ -230,7 +230,7 @@ if ( $sb_cert ) {
 			<a href="#TB_inline?width=800&amp;height=600&amp;inlineId=woo_pp_easy_setup_help" class="thickbox"><img src="<?php echo esc_url( $help_image_url ); ?>" class="help_tip" style="cursor: pointer;" height="16" width="16" data-tip="<?php _e( 'Click here for help with this option.', 'woocommerce-gateway-paypal-express-checkout' ); ?>"></a>
 		</th>
 		<td>
-			<a href="<?php echo esc_url( $ips_url ); ?>&amp;mode=signature&amp;env=sandbox" class="button button-primary"><?php _e( 'Click Here to Set Up Your PayPal Account', 'woocommerce-gateway-paypal-express-checkout' ); ?></a>
+			<a href="<?php echo esc_url( wc_gateway_ppec()->ips->get_signup_url( 'sandbox' ) ); ?>" class="button button-primary"><?php _e( 'Click Here to Set Up Your PayPal Account', 'woocommerce-gateway-paypal-express-checkout' ); ?></a>
 			<?php
 			/* Disable certificate-style until middleware support it. Maybe in v1.1.
 			<a href="<?php echo esc_url( $ips_url ); ?>&amp;mode=certificate&amp;env=sandbox" class="button"><?php _e( 'Click here if you need certificate credentials', 'woocommerce-gateway-paypal-express-checkout' ); ?></a>

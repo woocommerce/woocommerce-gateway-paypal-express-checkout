@@ -23,6 +23,8 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		$this->method_title       = __( 'PayPal Express Checkout', 'woocommerce-gateway-paypal-express-checkout' );
 		$this->method_description = __( 'Process payments quickly and securely with PayPal.', 'woocommerce-gateway-paypal-express-checkout' );
 
+		wc_gateway_ppec()->ips->maybe_received_credentials();
+
 		$this->init_form_fields();
 
 		$settings = wc_gateway_ppec()->settings->loadSettings();
@@ -238,19 +240,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 	// We want to be able to do some magic JavaScript stuff that WooCommerce's settings API won't let us do, so we're just going
 	// to override how WooCommerce tells us it should be done.
 	public function admin_options() {
-
 		$enable_ips = wc_gateway_ppec()->ips->is_supported();
-
-		// TODO: move this to ips-handler.
-		if ( isset( $_GET['ips-signup'] ) && 'true' === $_GET['ips-signup'] ) {
-			wc_gateway_ppec()->ips->ips_signup();
-			WC_Admin_Settings::show_messages();
-		}
-
-		// TODO: move this to ips-handler.
-		if ( isset( $_GET['ips-return'] ) && 'true' == $_GET['ips-return'] ) {
-			wc_gateway_ppec()->ips->ips_return();
-		}
 
 		$error_msgs = get_option( 'woo_pp_admin_error' );
 		if ( $error_msgs ) {

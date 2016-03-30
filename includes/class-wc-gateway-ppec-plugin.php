@@ -149,11 +149,6 @@ class WC_Gateway_PPEC_Plugin {
 		add_option( 'pp_woo_ppc_enabled', true );
 		*/
 
-		// Schedule the creation of a public key/private key pair for Easy Signup.
-		add_option( 'pp_woo_ipsPrivateKey', 'not_generated' );
-		add_option( 'pp_woo_justActivated', true );
-
-
 		if ( ! isset( $this->setings ) ) {
 			require_once( $this->includes_path . 'class-wc-gateway-ppec-settings.php' );
 			$settings = new WC_Gateway_PPEC_Settings();
@@ -229,7 +224,6 @@ class WC_Gateway_PPEC_Plugin {
 		$domains[] = 'paypal.com';
 		$domains[] = 'www.sandbox.paypal.com';
 		$domains[] = 'sandbox.paypal.com';
-		$domains[] = 'ipsis-vip.ext.external.paypalc3.com';
 
 		return $domains;
 	}
