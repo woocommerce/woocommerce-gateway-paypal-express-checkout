@@ -1,9 +1,9 @@
 === WooCommerce PayPal Express Checkout Payment Gateway ===
-Contributors: automattic, woothemes, allendav, slash1andy, woosteve, spraveenitpro, mikedmoore, fernashes, shellbeezy
+Contributors: automattic, woothemes, akeda, allendav, slash1andy, woosteve, spraveenitpro, mikedmoore, fernashes, shellbeezy
 Tags: ecommerce, e-commerce, commerce, woothemes, wordpress ecommerce, store, sales, sell, shop, shopping, cart, checkout, configurable, paypal
 Requires at least: 4.4
 Tested up to: 4.4
-Stable tag: 1.0.0
+Stable tag: 0.1.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -15,7 +15,7 @@ This is a PayPal Express Payment Gateway for WooCommerce.
 
 PayPal Express allows you to securely sell your products and subscriptions online using In-Context Checkout to help you meet security requirements without causing your theme to suffer.  In-Context Checkout uses a modal iFrame, hosted on PayPal's servers, that overlays the checkout form and provides a secure means for your customers to enter their account information.
 
-Also, with Integrated PayPal Setup, connecting to PayPal is as simple as clicking a button - no complicated API keys to cut and paste.
+Also, with Integrated PayPal Setup (Easy Setup), connecting to PayPal is as simple as clicking a button - no complicated API keys to cut and paste.
 
 == Installation ==
 
@@ -46,10 +46,6 @@ If on the off-chance you do encounter issues with the shop/category pages after 
 
 This plugin supports payments using both credit and debit cards as well as PayPal.
 
-= Does this support recurring payments, like for subscriptions? =
-
-Yes!
-
 = Does this support Checkout with PayPal from the cart view? =
 
 Yes!
@@ -78,12 +74,11 @@ New feature requests and bugs reports can be made in the plugin forum.
 
 == Screenshots ==
 
-1. Click the big button to connect, or the link to use sandbox mode.
-2. The settings panel once connected.
+1. Click the "Click Here to Set Up Your PayPal Account" button. If you want to test before goes live, you can switch the Environment, above the button, to Sandbox.
+2. API credentials will be set after Easy Setup. Or, you can set that manually.
 3. Checkout with PayPal directly from the Cart.
-4. Checkout with PayPal or Credit and Debit Cards.
 
 == Changelog ==
 
-= 1.0.0 =
-* Initial release
+= 0.1.0 =
+* Beta release
