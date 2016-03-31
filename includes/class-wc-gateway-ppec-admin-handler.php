@@ -26,6 +26,10 @@ class WC_Gateway_PPEC_Admin_Handler {
 
 		add_filter( 'woocommerce_order_actions', array( $this, 'add_capture_charge_order_action' ) );
 		add_action( 'woocommerce_order_action_ppec_capture_charge', array( $this, 'maybe_capture_charge' ) );
+
+		add_action( 'load-woocommerce_page_wc-settings', array( $this, 'maybe_redirect_to_ppec_settings' ) );
+
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 	}
 
 	public function add_capture_charge_order_action() {
@@ -215,5 +219,40 @@ class WC_Gateway_PPEC_Admin_Handler {
 			),
 			admin_url( 'admin.php' )
 		);
+	}
+
+	/**
+	 * Maybe redirect to wc_gateway_ppec_with_paypal from PayPal standard
+	 * checkout settings.
+	 *
+	 * @return void
+	 */
+	public function maybe_redirect_to_ppec_settings() {
+		if ( ! wc_gateway_ppec()->settings->loadSettings()->enabled ) {
+			return;
+		}
+
+		if ( empty( $_GET['tab'] ) || empty( $_GET['section'] ) ) {
+			return;
+		}
+
+		if ( 'checkout' === $_GET['tab'] && 'wc_gateway_paypal' === $_GET['section'] ) {
+			$redirect = add_query_arg( array( 'section' => 'wc_gateway_ppec_with_paypal' ) );
+			wp_safe_redirect( $redirect );
+		}
+	}
+
+	/**
+	 * Enqueue script related to admin.
+	 *
+	 * @return void
+	 */
+	public function enqueue_scripts() {
+		$settings = wc_gateway_ppec()->settings->loadSettings();
+
+		wp_enqueue_script( 'wc-gateway-ppec-admin', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-admin.js', array( 'jquery' ), wc_gateway_ppec()->version, true );
+		wp_localize_script( 'wc-gateway-ppec-admin', 'wc_ppec_settings', array(
+			'enabled' => $settings->enabled,
+		) );
 	}
 }
