@@ -265,7 +265,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	}
 
 	/**
-	 * Disable other gateways if checkout from cart.
+	 * Maybe disable other gateways.
 	 *
 	 * @since 1.0.0
 	 * @param array $gateways Available gateways
@@ -275,12 +275,18 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	public function maybe_disable_other_gateways( $gateways ) {
 		$session = WC()->session->paypal;
 
+		// Unset all other gateways after checking out from cart.
 		if ( is_a( $session, 'WC_Gateway_PPEC_Session_Data' ) && $session->payerID && $session->expiry_time > time() ) {
 			foreach ( $gateways as $id => $gateway ) {
 				if ( 'ppec_paypal' !== $id ) {
 					unset( $gateways[ $id ] );
 				}
 			}
+		}
+
+		// If PPEC is enabled, removed PayPal standard.
+		if ( wc_gateway_ppec()->settings->loadSettings()->enabled ) {
+			unset( $gateways['paypal'] );
 		}
 
 		return $gateways;
