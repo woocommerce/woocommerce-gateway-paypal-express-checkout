@@ -391,10 +391,10 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 				$live_subject      = $settings->liveApiCredentials->get_subject();
 				$live_api_pass     = $settings->liveApiCredentials->get_password();
 
-				if ( is_a( $settings->liveApiCredentials, 'WC_Gateway_PPEC_Client_Credential_Signature' ) && ! empty( $settings->liveApiCredentials->get_signature() ) ) {
+				if ( is_a( $settings->liveApiCredentials, 'WC_Gateway_PPEC_Client_Credential_Signature' ) && $settings->liveApiCredentials->get_signature() ) {
 					$live_api_sig = $settings->liveApiCredentials->get_signature();
 				}
-				if ( is_a( $settings->liveApiCredentials, 'WC_Gateway_PPEC_Client_Credential_Certificate' ) && ! empty( $settings->liveApiCredentials->get_certificate() ) ) {
+				if ( is_a( $settings->liveApiCredentials, 'WC_Gateway_PPEC_Client_Credential_Certificate' ) && $settings->liveApiCredentials->get_certificate() ) {
 					$live_cert_info = $this->get_certificate_info( $settings->liveApiCredentials->get_certificate() );
 					$live_style     = 'certificate';
 				}
@@ -405,10 +405,10 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 				$sb_subject      = $settings->sandboxApiCredentials->get_subject();
 				$sb_api_pass     = $settings->sandboxApiCredentials->get_password();
 
-				if ( is_a( $settings->sandboxApiCredentials, 'WC_Gateway_PPEC_Client_Credential_Signature' ) && ! empty( $settings->sandboxApiCredentials->get_signature() ) ) {
+				if ( is_a( $settings->sandboxApiCredentials, 'WC_Gateway_PPEC_Client_Credential_Signature' ) && $settings->sandboxApiCredentials->get_signature() ) {
 					$sb_api_sig = $settings->sandboxApiCredentials->get_signature();
 				}
-				if ( is_a ( $settings->sandboxApiCredentials, 'WC_Gateway_PPEC_Client_Credential_Certificate' ) && ! empty( $settings->sandboxApiCredentials->get_certificate() ) ) {
+				if ( is_a ( $settings->sandboxApiCredentials, 'WC_Gateway_PPEC_Client_Credential_Certificate' ) && $settings->sandboxApiCredentials->get_certificate() ) {
 					$sb_style     = 'certificate';
 					$sb_cert_info = $this->get_certificate_info( $settings->sandboxApiCredentials->get_certificate() );
 				}
