@@ -32,23 +32,29 @@ class WC_Gateway_PPEC_Admin_Handler {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 	}
 
-	public function add_capture_charge_order_action() {
+	public function add_capture_charge_order_action( $actions ) {
 		if ( ! isset( $_REQUEST['post'] ) ) {
-			return;
+			return $actions;
 		}
 
 		$order = wc_get_order( $_REQUEST['post'] );
 
 		// bail if the order wasn't paid for with this gateway
 		if ( 'ppec_paypal' !== $order->payment_method ) {
-			return;
+			return $actions;
 		}
 
 		if ( 'yes' === get_post_meta( $order->id, '_ppec_charge_captured', true ) ) {
-			return;
+			return $actions;
 		}
 
-		return array( 'ppec_capture_charge' => esc_html__( 'Capture Charge', 'woocommerce-gateway-paypal-express-checkout' ) );
+		if ( ! is_array( $actions ) ) {
+			$actions = array();
+		}
+
+		$actions['ppec_capture_charge'] = esc_html__( 'Capture Charge', 'woocommerce-gateway-paypal-express-checkout' );
+
+		return $actions;
 	}
 
 	/**
