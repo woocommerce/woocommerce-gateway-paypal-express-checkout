@@ -65,101 +65,97 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	}
 
 	public function maybe_return_from_paypal() {
-		if ( isset( $_GET['woo-paypal-return'] ) && 'true' === $_GET['woo-paypal-return'] ) {
+		if ( empty( $_GET['woo-paypal-return'] ) ) {
+			return;
+		}
 
-			// call get ec and do ec
-			// Make sure we have our token and payer ID
-			if ( array_key_exists( 'token', $_GET )
-				&& array_key_exists( 'PayerID', $_GET )
-				&& ! empty( $_GET['token'] )
-				&& ! empty( $_GET['PayerID'] ) ) {
+		// If the token and payer ID aren't there, just ignore this request
+		if ( empty( $_GET['token'] ) || empty( $_GET['PayerID'] ) ) {
+			return;
+		}
 
-				$token = $_GET['token'];
-				$payer_id = $_GET['PayerID'];
+		$token    = $_GET['token'];
+		$payer_id = $_GET['PayerID'];
 
-			} else {
+		try {
+			$checkout_details = $this->getCheckoutDetails( $token );
+		} catch( PayPal_API_Exception $e ) {
+			wc_add_notice( __( 'Sorry, an error occurred while trying to retrieve your information from PayPal.  Please try again.', 'woocommerce-gateway-paypal-express-checkout' ), 'error' );
+			return;
+		} catch( PayPal_Missing_Session_Exception $e ) {
+			wc_add_notice( __( 'Your PayPal checkout session has expired.  Please check out again.', 'woocommerce-gateway-paypal-express-checkout' ), 'error' );
+			return;
+		}
 
-				// If the token and payer ID aren't there, just ignore this request
-				return;
+		if ( $this->session_has_expired( $token ) ) {
+			wc_add_notice( __( 'Your PayPal checkout session has expired.  Please check out again.', 'woocommerce-gateway-paypal-express-checkout' ), 'error' );
+			return;
+		}
 
-			}
+		$session                     = WC()->session->paypal;
+		$session->checkout_completed = true;
+		$session->payerID            = $payer_id;
 
+		WC()->session->paypal = $session;
+
+		if ( $session->using_ppc ) {
+			WC()->session->chosen_payment_method = 'ppec_paypal_credit';
+		} else {
+			WC()->session->chosen_payment_method = 'ppec_paypal';
+		}
+
+		if ( 'order' == $session->leftFrom && $session->order_id ) {
+			// Try to complete the payment now.
 			try {
-				$checkout_details = $this->getCheckoutDetails( $token );
-			} catch( PayPal_API_Exception $e ) {
-				wc_add_notice( __( 'Sorry, an error occurred while trying to retrieve your information from PayPal.  Please try again.', 'woocommerce-gateway-paypal-express-checkout' ), 'error' );
-				return;
+				$order_id        = $session->order_id;
+				$payment_details = $this->completePayment( $order_id, $session->token, $session->payerID );
+				$transaction_id  = $payment_details->payments[0]->transaction_id;
+
+				// TODO: Handle things like eChecks, giropay, etc.
+				$order = wc_get_order( $order_id );
+				$order->payment_complete( $transaction_id );
+				$order->add_order_note( sprintf( __( 'PayPal transaction completed; transaction ID = %s', 'woocommerce-gateway-paypal-express-checkout' ), $transaction_id ) );
+				$order->reduce_order_stock();
+				WC()->cart->empty_cart();
+				unset( WC()->session->paypal );
+
+				wp_safe_redirect( $order->get_checkout_order_received_url() );
+				exit;
+
 			} catch( PayPal_Missing_Session_Exception $e ) {
-				wc_add_notice( __( 'Your PayPal checkout session has expired.  Please check out again.', 'woocommerce-gateway-paypal-express-checkout' ), 'error' );
-				return;
-			}
 
-			$session = WC()->session->paypal;
-			if ( ! $session || ! is_a( $session, 'WC_Gateway_PPEC_Session_Data' ) ||
-					$session->expiry_time < time() || $token != $session->token ) {
-				wc_add_notice( __( 'Your PayPal checkout session has expired.  Please check out again.', 'woocommerce-gateway-paypal-express-checkout' ), 'error' );
-				return;
-			}
+				// For some reason, our session data is missing.  Generally,
+				// if we've made it this far, this shouldn't happen.
+				wc_add_notice( __( 'Sorry, an error occurred while trying to process your payment.  Please try again.', 'woocommerce-gateway-paypal-express-checkout' ), 'error' );
 
-			$session->checkout_completed = true;
-			$session->payerID = $payer_id;
+			} catch( PayPal_API_Exception $e ) {
 
-			WC()->session->paypal = $session;
+				// Did we get a 10486 or 10422 back from PayPal?  If so,
+				// this means we need to send the buyer back over to PayPal
+				// to have them pick out a new funding method.
+				$need_to_redirect_back = false;
+				foreach ( $e->errors as $error ) {
+					if ( '10486' == $error->error_code || '10422' == $error->error_code ) {
+						$need_to_redirect_back = true;
+					}
+				}
 
-			if ( $session->using_ppc ) {
-				WC()->session->chosen_payment_method = 'ppec_paypal_credit';
-			} else {
-				WC()->session->chosen_payment_method = 'ppec_paypal';
-			}
-
-			if ( 'order' == $session->leftFrom && $session->order_id ) {
-				// Try to complete the payment now.
-				try {
-					$order_id        = $session->order_id;
-					$payment_details = $this->completePayment( $order_id, $session->token, $session->payerID );
-					$transaction_id  = $payment_details->payments[0]->transaction_id;
-
-					// TODO: Handle things like eChecks, giropay, etc.
-					$order = wc_get_order( $order_id );
-					$order->payment_complete( $transaction_id );
-					$order->add_order_note( sprintf( __( 'PayPal transaction completed; transaction ID = %s', 'woocommerce-gateway-paypal-express-checkout' ), $transaction_id ) );
-					$order->reduce_order_stock();
-					WC()->cart->empty_cart();
-					unset( WC()->session->paypal );
-
-					wp_safe_redirect( $order->get_checkout_order_received_url() );
+				if ( $need_to_redirect_back ) {
+					$settings = wc_gateway_ppec()->settings->loadSettings();
+					$session->checkout_completed = false;
+					$session->leftFrom = 'order';
+					$session->order_id = $order_id;
+					WC()->session->paypal = $session;
+					wp_safe_redirect( $settings->getPayPalRedirectUrl( $session->token, true ) );
 					exit;
-				} catch( PayPal_Missing_Session_Exception $e ) {
-					// For some reason, our session data is missing.  Generally, if we've made it this far,
-					// this shouldn't happen.
-					wc_add_notice( __( 'Sorry, an error occurred while trying to process your payment.  Please try again.', 'woocommerce-gateway-paypal-express-checkout' ), 'error' );
-				} catch( PayPal_API_Exception $e ) {
-					// Did we get a 10486 or 10422 back from PayPal?  If so, this means we need to send the buyer back over to
-					// PayPal to have them pick out a new funding method.
-					$need_to_redirect_back = false;
+				} else {
+					$final_output = '<ul>';
 					foreach ( $e->errors as $error ) {
-						if ( '10486' == $error->error_code || '10422' == $error->error_code ) {
-							$need_to_redirect_back = true;
-						}
+						$final_output .= '<li>' . __( $error->maptoBuyerFriendlyError(), 'woocommerce-gateway-paypal-express-checkout' ) . '</li>';
 					}
-
-					if ( $need_to_redirect_back ) {
-						$settings = new WC_Gateway_PPEC_Settings();
-						$session->checkout_completed = false;
-						$session->leftFrom = 'order';
-						$session->order_id = $order_id;
-						WC()->session->paypal = $session;
-						wp_safe_redirect( $settings->getPayPalRedirectUrl( $session->token, true ) );
-						exit;
-					} else {
-						$final_output = '<ul>';
-						foreach ( $e->errors as $error ) {
-							$final_output .= '<li>' . __( $error->maptoBuyerFriendlyError(), 'woocommerce-gateway-paypal-express-checkout' ) . '</li>';
-						}
-						$final_output .= '</ul>';
-						wc_add_notice( __( 'Payment error:', 'woocommerce-gateway-paypal-express-checkout' ) . $final_output, 'error' );
-						return;
-					}
+					$final_output .= '</ul>';
+					wc_add_notice( __( 'Payment error:', 'woocommerce-gateway-paypal-express-checkout' ) . $final_output, 'error' );
+					return;
 				}
 			}
 		}
@@ -346,6 +342,29 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		if (  $this->has_active_session() ) {
 			unset( WC()->session->paypal );
 		}
+	}
+
+	/**
+	 * Checks whether session with passed token has expired.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $token Token
+	 *
+	 * @return bool
+	 */
+	public function session_has_expired( $token ) {
+		$session = WC()->session->paypal;
+
+		return (
+			! $session
+			||
+			! is_a( $session, 'WC_Gateway_PPEC_Session_Data' )
+			||
+			$session->expiry_time < time()
+			||
+			$token !== $session->token
+		);
 	}
 
 	/**
