@@ -477,11 +477,25 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		}
 	}
 
-	protected function getReturnUrl() {
+	/**
+	 * Get return URL.
+	 *
+	 * The URL to return from express checkout.
+	 *
+	 * @return string Return URL
+	 */
+	protected function get_return_url() {
 		return add_query_arg( 'woo-paypal-return', 'true', WC()->cart->get_checkout_url() );
 	}
 
-	protected function getCancelUrl() {
+	/**
+	 * Get cancel URL.
+	 *
+	 * The URL to return when canceling the express checkout.
+	 *
+	 * @return string Cancel URL
+	 */
+	protected function get_cancel_url() {
 		return add_query_arg( 'woo-paypal-cancel', 'true', WC()->cart->get_cart_url() );
 	}
 
@@ -512,8 +526,8 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			$params['BRANDNAME'] = $brand_name;
 		}
 
-		$params['RETURNURL'] = $this->getReturnUrl();
-		$params['CANCELURL'] = $this->getCancelUrl();
+		$params['RETURNURL'] = $this->get_return_url();
+		$params['CANCELURL'] = $this->get_cancel_url();
 
 		if ( $this->_requestBillingAgreement ) {
 			$params['BILLINGTYPE'] = 'MerchantInitiatedBilling';
@@ -573,8 +587,8 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			$params['BRANDNAME'] = $brand_name;
 		}
 
-		$params['RETURNURL'] = $this->getReturnUrl();
-		$params['CANCELURL'] = $this->getCancelUrl();
+		$params['RETURNURL'] = $this->get_return_url();
+		$params['CANCELURL'] = $this->get_cancel_url();
 
 		if ( $this->_requestBillingAgreement ) {
 			$params['BILLINGTYPE'] = 'MerchantInitiatedBilling';
