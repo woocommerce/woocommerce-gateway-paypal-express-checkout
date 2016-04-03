@@ -5,3 +5,9 @@
 .payment_method_ppec_paypal img {
 	max-height: 68px !important;
 }
+
+.wc-gateway-ppec-cancel {
+	display: block;
+	text-align: center;
+	padding: 10px;
+}
