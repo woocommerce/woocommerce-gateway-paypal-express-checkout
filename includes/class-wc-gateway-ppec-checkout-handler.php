@@ -518,7 +518,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		return add_query_arg( 'woo-paypal-cancel', 'true', WC()->cart->get_cart_url() );
 	}
 
-	public function startCheckoutFromCart() {
+	public function start_checkout_from_cart() {
 
 		wc_gateway_ppec()->cart->loadCartDetails();
 

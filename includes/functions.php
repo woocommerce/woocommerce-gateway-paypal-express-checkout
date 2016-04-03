@@ -4,7 +4,7 @@ function woo_pp_start_checkout() {
 	$checkout = wc_gateway_ppec()->checkout;
 
 	try {
-		$redirect_url = $checkout->startCheckoutFromCart();
+		$redirect_url = $checkout->start_checkout_from_cart();
 		wp_safe_redirect( $redirect_url );
 		exit;
 	} catch( PayPal_API_Exception $e ) {
