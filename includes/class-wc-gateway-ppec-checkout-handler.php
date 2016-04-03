@@ -40,12 +40,15 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		add_action( 'woocommerce_init', array( $this, 'init' ) );
 
 		add_action( 'wp', array( $this, 'maybe_return_from_paypal' ) );
+		add_action( 'wp', array( $this, 'maybe_cancel_checkout_with_paypal' ) );
+		add_action( 'woocommerce_cart_emptied', array( $this, 'maybe_clear_session_data' ) );
 
 		add_action( 'woocommerce_before_checkout_process', array( $this, 'before_checkout_process' ) );
 		add_filter( 'woocommerce_checkout_fields', array( $this, 'make_billing_address_optional' ) );
 		add_action( 'woocommerce_after_checkout_form', array( $this, 'after_checkout_form' ) );
 		add_action( 'woocommerce_available_payment_gateways', array( $this, 'maybe_disable_other_gateways' ) );
 		add_action( 'woocommerce_available_payment_gateways', array( $this, 'maybe_disable_paypal_credit' ) );
+		add_action( 'woocommerce_review_order_after_submit', array( $this, 'maybe_render_cancel_link' ) );
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 	}
@@ -273,10 +276,8 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 * @return array Available gateways
 	 */
 	public function maybe_disable_other_gateways( $gateways ) {
-		$session = WC()->session->paypal;
-
 		// Unset all other gateways after checking out from cart.
-		if ( is_a( $session, 'WC_Gateway_PPEC_Session_Data' ) && $session->payerID && $session->expiry_time > time() ) {
+		if ( $this->has_active_session() ) {
 			foreach ( $gateways as $id => $gateway ) {
 				if ( 'ppec_paypal' !== $id ) {
 					unset( $gateways[ $id ] );
@@ -306,6 +307,76 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		}
 
 		return $gateways;
+	}
+
+	/**
+	 * When cart based Checkout with PPEC is in effect, we need to include
+	 * a Cancel button on the checkout form to give the user a means to throw
+	 * away the session provided and possibly select a different payment
+	 * gateway.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 */
+	public function maybe_render_cancel_link() {
+		if ( $this->has_active_session() ) {
+			printf(
+				'<a href="%s" class="wc-gateway-ppec-cancel">%s</a>',
+				esc_url( add_query_arg( 'wc-gateway-ppec-clear-session', true, WC()->cart->get_cart_url() ) ),
+				esc_html__( 'Cancel', 'woocommerce-gateway-paypal-express-checkout' )
+			);
+		}
+	}
+
+	public function maybe_cancel_checkout_with_paypal() {
+		if ( is_cart() && ! empty( $_GET['wc-gateway-ppec-clear-session'] ) ) {
+			$this->maybe_clear_session_data();
+			wc_add_notice( __( 'You have cancelled Checkout with PayPal. Please try to process your order again.', 'woocommerce-gateway-paypal-express-checkout' ), 'notice' );
+		}
+	}
+
+	/**
+	 * Used when cart based Checkout with PayPal is in effect. Hooked to woocommerce_cart_emptied
+	 * Also called by WC_PayPal_Braintree_Loader::possibly_cancel_checkout_with_paypal
+	 *
+	 * @since 1.0.0
+	 */
+	public function maybe_clear_session_data() {
+		if (  $this->has_active_session() ) {
+			unset( WC()->session->paypal );
+		}
+	}
+
+	/**
+	 * Checks whether there's active session from cart-based checkout with PPEC.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return bool Returns true if PPEC session exists and still valid
+	 */
+	public function has_active_session() {
+		$session = WC()->session->paypal;
+
+		return ( is_a( $session, 'WC_Gateway_PPEC_Session_Data' ) && $session->payerID && $session->expiry_time > time() );
+	}
+
+	/**
+	 * Get token from session.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string Token from session
+	 */
+	public function get_token_from_session() {
+		$token   = '';
+		$session = WC()->session->paypal;
+
+		if ( is_a( $session, 'WC_Gateway_PPEC_Session_Data' ) && $session->token ) {
+			$token = $session->token;
+		}
+
+		return $token;
 	}
 
 	public function enablePayPalCredit( $enable = true ) {
@@ -407,31 +478,11 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	}
 
 	protected function getReturnUrl() {
-
-		$url = WC()->cart->get_checkout_url();
-		if ( strpos( $url, '?' ) ) {
-			$url .= '&';
-		} else {
-			$url .= '?';
-		}
-
-		$url .= 'woo-paypal-return=true';
-
-		return $url;
+		return add_query_arg( 'woo-paypal-return', 'true', WC()->cart->get_checkout_url() );
 	}
 
 	protected function getCancelUrl() {
-
-		$url = WC()->cart->get_cart_url();
-		if ( strpos( $url, '?' ) ) {
-			$url .= '&';
-		} else {
-			$url .= '?';
-		}
-
-		$url .= 'woo-paypal-cancel=true';
-
-		return $url;
+		return add_query_arg( 'woo-paypal-cancel', 'true', WC()->cart->get_cart_url() );
 	}
 
 	public function startCheckoutFromCart() {
