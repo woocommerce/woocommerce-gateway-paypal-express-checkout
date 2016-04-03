@@ -571,7 +571,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		}
 	}
 
-	public function startCheckoutFromCheckout( $order_id, $use_ppc = false ) {
+	public function start_checkout_from_checkout( $order_id, $use_ppc = false ) {
 
 		wc_gateway_ppec()->cart->loadOrderDetails( $order_id );
 
