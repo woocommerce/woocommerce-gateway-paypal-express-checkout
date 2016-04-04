@@ -1,3 +1,10 @@
+/**
+ * globals jQuery, wc_ppec, window.
+ *
+ * This script only enqueued when buyer start checkout from checkout. In this
+ * case buyer needs to fill billing fields then proceed to login through PayPal.
+ */
+
 var woo_pp_icc_started = false;
 window.paypalCheckoutReady = function() {
 	paypal.checkout.setup( wc_ppec.payer_id, {
@@ -17,19 +24,12 @@ jQuery( document ).ajaxComplete( function( event, xhr, settings ) {
 		return;
 	}
 
-	var c = xhr.responseText;
-	if ( c.indexOf( '<!--WC_START-->' ) < 0 ) {
-		return;
-	}
-	if( c.indexOf( '<!--WC_END-->' ) < 0 ) {
+	var resp = jQuery.parseJSON( xhr.responseText );
+	if ( ! resp ) {
 		return;
 	}
 
-	var d = jQuery.parseJSON( c.split( '<!--WC_START-->' )[1].split( '<!--WC_END-->' )[0] );
-	if( !d ) {
-		return;
-	}
-	if( 'success' != d.result ) {
+	if( 'success' !== resp.result ) {
 		paypal.checkout.closeFlow();
 		woo_pp_icc_started = false;
 	}
