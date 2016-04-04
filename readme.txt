@@ -3,7 +3,7 @@ Contributors: automattic, woothemes, akeda, allendav, slash1andy, woosteve, spra
 Tags: ecommerce, e-commerce, commerce, woothemes, wordpress ecommerce, store, sales, sell, shop, shopping, cart, checkout, configurable, paypal
 Requires at least: 4.4
 Tested up to: 4.4
-Stable tag: 0.1.0
+Stable tag: 0.2.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -79,6 +79,10 @@ New feature requests and bugs reports can be made in the plugin forum.
 3. Checkout with PayPal directly from the Cart.
 
 == Changelog ==
+
+= 0.2.0 =
+* Fix - Add cancel link on checkout page when session for PPEC is active
+* Fix - In-context mini browser keeps spinning because failure xhr response is not handled properly
 
 = 0.1.0 =
 * Beta release
