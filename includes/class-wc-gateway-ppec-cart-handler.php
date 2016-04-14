@@ -276,6 +276,13 @@ class WC_Gateway_PPEC_Cart_Handler {
 			$this->totalItemAmount -= $discounts;
 			$this->orderTotal -= $discounts;
 		}
+		
+		// If the totals don't line up, adjust the tax to make it work (cause it's probably a tax mismatch).
+		$wooOrderTotal = round( WC()->cart->total, $decimals );
+		if( $wooOrderTotal != $this->orderTotal ) {
+			$this->orderTax += $wooOrderTotal - $this->orderTotal;
+			$this->orderTotal = $wooOrderTotal;
+		}
 
 		// after all of the discount shenanigans, load up the other standard variables
 		$this->insurance = 0;
@@ -422,6 +429,13 @@ class WC_Gateway_PPEC_Cart_Handler {
 			}
 
 			$this->shipDiscountAmount = 0;
+		}
+		
+		// If the totals don't line up, adjust the tax to make it work (cause it's probably a tax mismatch).
+		$wooOrderTotal = round( $order->get_total(), $decimals );
+		if( $wooOrderTotal != $this->orderTotal ) {
+			$this->orderTax += $wooOrderTotal - $this->orderTotal;
+			$this->orderTotal = $wooOrderTotal;
 		}
 
 		// after all of the discount shenanigans, load up the other standard variables
