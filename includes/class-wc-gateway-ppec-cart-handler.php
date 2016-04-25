@@ -159,7 +159,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 		$discounts = round( WC()->cart->get_cart_discount_total(), $decimals );
 		foreach ( WC()->cart->cart_contents as $cart_item_key => $values ) {
-			$amount = round( $values['line_total'] / $values['quantity'] , $decimals );
+			$amount = round( $values['line_subtotal'] / $values['quantity'] , $decimals );
 			$item   = array(
 				'name'        => $values['data']->post->post_title,
 				'description' => $values['data']->post->post_content,
@@ -172,12 +172,9 @@ class WC_Gateway_PPEC_Cart_Handler {
 			$roundedPayPalTotal += round( $amount * $values['quantity'], $decimals );
 		}
 
-		$this->orderTax = round( WC()->cart->tax_total, $decimals );
+		$this->orderTax = round( WC()->cart->tax_total + WC()->cart->shipping_tax_total, $decimals );
 		$this->shipping = round( WC()->cart->shipping_total, $decimals );
-		if ( WC()->cart->shipping_tax_total != 0 ) {
-			$this->orderTax += round( WC()->cart->shipping_tax_total, $decimals );
-		}
-		$this->totalItemAmount = round( WC()->cart->cart_contents_total, $decimals );
+		$this->totalItemAmount = round( WC()->cart->cart_contents_total, $decimals ) + $discounts;
 		$this->orderTotal = $this->totalItemAmount + $this->orderTax + $this->shipping;
 
 		// need to compare WC totals with what PayPal will calculate to see if they match
@@ -200,6 +197,8 @@ class WC_Gateway_PPEC_Cart_Handler {
 					);
 
 				$this->items[] = $modifyLineItem;
+				$this->totalItemAmount += $modifyLineItem[ 'amount' ];
+				$this->orderTotal += $modifyLineItem[ 'amount' ];
 
 			} elseif ( WC_Gateway_PPEC_Settings::subtotalMismatchBehaviorDropLineItems == $subtotalBehavior ) {
 				// ...
@@ -211,7 +210,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 		// enter discount shenanigans. item total cannot be 0 so make modifications accordingly
 		if ( $this->totalItemAmount == $discounts ) {
-			$settings = wc_gateway_ppec()->loadSettings();
+			$settings = wc_gateway_ppec()->settings->loadSettings();
 			$behavior = $settings->zeroSubtotalBehavior;
 
 			if ( WC_Gateway_PPEC_Settings::zeroSubtotalBehaviorModifyItems == $behavior ) {
@@ -222,10 +221,10 @@ class WC_Gateway_PPEC_Cart_Handler {
 					'name'        => 'Discount',
 					'description' => 'Discount Amount',
 					'quantity'    => 1,
-					'amount'      => $discounts
+					'amount'      => -$discounts
 				);
 
-				$this->items[] = $discountLineItme;
+				$this->items[] = $discountLineItem;
 
 				if ( $is_zdp_currency ) {
 					$discount = 1;
@@ -241,18 +240,23 @@ class WC_Gateway_PPEC_Cart_Handler {
 				);
 
 				$this->items[] = $modifyLineItem;
-				$this->shipDiscountAmount = $discount;
+				$this->shipDiscountAmount = -$discount;
+				$this->totalItemAmount = $this->totalItemAmount - $discounts + $discount;
+				$this->orderTotal -= $discounts;
 
 			} elseif ( WC_Gateway_PPEC_Settings::zeroSubtotalBehaviorOmitLineItems == $behavior ) {
 				// ...
 				// Omit line items altogether
 				unset($this->items);
 				$this->shipDiscountAmount = 0;
+				$this->totalItemAmount -= $discounts;
+				$this->orderTotal -= $discounts;
 
 			} else {
 				// ...
 				// Increase SHIPDISCAMT by the amount of all the coupons in the cart
-				$this->shipDiscountAmount = round( WC()->cart->get_order_discount_total(), $decimals );
+				$this->shipDiscountAmount = -$discounts;
+				$this->orderTotal -= $discounts;
 
 			}
 		} else {
@@ -269,6 +273,15 @@ class WC_Gateway_PPEC_Cart_Handler {
 			}
 
 			$this->shipDiscountAmount = 0;
+			$this->totalItemAmount -= $discounts;
+			$this->orderTotal -= $discounts;
+		}
+		
+		// If the totals don't line up, adjust the tax to make it work (cause it's probably a tax mismatch).
+		$wooOrderTotal = round( WC()->cart->total, $decimals );
+		if( $wooOrderTotal != $this->orderTotal ) {
+			$this->orderTax += $wooOrderTotal - $this->orderTotal;
+			$this->orderTotal = $wooOrderTotal;
 		}
 
 		// after all of the discount shenanigans, load up the other standard variables
@@ -280,7 +293,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 		if ( ! is_numeric( $this->shipping ) )
 			$this->shipping = 0;
-
+		
 	}
 
 	public function loadOrderDetails( $order_id ) {
@@ -301,7 +314,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 		$discounts = round( $order->get_total_discount(), $decimals );
 		foreach ( $order->get_items() as $cart_item_key => $values ) {
-			$amount = round( $values['line_total'] / $values['qty'] , $decimals );
+			$amount = round( $values['line_subtotal'] / $values['qty'] , $decimals );
 			$item   = array(
 				'name'     => $values['name'],
 				'quantity' => $values['qty'],
@@ -309,7 +322,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 			);
 
 			$this->items[] = $item;
-
+			
 			$roundedPayPalTotal += round( $amount * $values['qty'], $decimals );
 		}
 
@@ -363,10 +376,10 @@ class WC_Gateway_PPEC_Cart_Handler {
 					'name'        => 'Discount',
 					'description' => 'Discount Amount',
 					'quantity'    => 1,
-					'amount'      => $discounts
+					'amount'      => -$discounts
 				);
 
-				$this->items[] = $discountLineItme;
+				$this->items[] = $discountLineItem;
 
 				if ( $is_zdp_currency ) {
 					$discount = 1;
@@ -382,19 +395,23 @@ class WC_Gateway_PPEC_Cart_Handler {
 				);
 
 				$this->items[] = $modifyLineItem;
-				$this->shipDiscountAmount = $discount;
+				$this->shipDiscountAmount = -$discount;
+				$this->totalItemAmount = $this->totalItemAmount - $discounts + $discount;
+				$this->orderTotal -= $discounts;
 
 			} elseif ( WC_Gateway_PPEC_Settings::zeroSubtotalBehaviorOmitLineItems == $behavior ) {
 				// ...
 				// Omit line items altogether
 				unset($this->items);
 				$this->shipDiscountAmount = 0;
+				$this->totalItemAmount -= $discounts;
+				$this->orderTotal -= $discounts;
 
 			} else {
 				// ...
 				// Increase SHIPDISCAMT by the amount of all the coupons in the cart
-				$this->shipDiscountAmount = round( WC()->cart->get_order_discount_total(), $decimals );
-
+				$this->shipDiscountAmount = -$discounts;
+				$this->orderTotal -= $discounts;
 			}
 		} else {
 			// Build PayPal_Cart object as normal
@@ -407,9 +424,18 @@ class WC_Gateway_PPEC_Cart_Handler {
 					);
 
 				$this->items[] = $discLineItem;
+				$this->totalItemAmount -= $discounts;
+				$this->orderTotal -= $discounts;
 			}
 
 			$this->shipDiscountAmount = 0;
+		}
+		
+		// If the totals don't line up, adjust the tax to make it work (cause it's probably a tax mismatch).
+		$wooOrderTotal = round( $order->get_total(), $decimals );
+		if( $wooOrderTotal != $this->orderTotal ) {
+			$this->orderTax += $wooOrderTotal - $this->orderTotal;
+			$this->orderTotal = $wooOrderTotal;
 		}
 
 		// after all of the discount shenanigans, load up the other standard variables
