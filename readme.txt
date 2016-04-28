@@ -56,7 +56,7 @@ Yes it does - production and sandbox mode is driven by how you connect.  You may
 
 = Where can I find documentation? =
 
-For help setting up and configuring, please refer to our [user guide](http://docs.woothemes.com/document/woocommerce-gateway-paypal-express-checkout/)
+For help setting up and configuring, please refer to our [user guide](https://www.woothemes.com/products/woocommerce-gateway-paypal-express-checkout/)
 
 = Where can I get support or talk to other users? =
 
