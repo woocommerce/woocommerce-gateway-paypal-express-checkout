@@ -95,7 +95,7 @@ abstract class WC_Gateway_PPEC_Client_Credential {
 	 * @return array An array of name-value pairs containing the API credentials
 	 *               from this object.
 	 */
-	protected function get_request_params() {
+	public function get_request_params() {
 		$params = array(
 			'USER' => $this->_username,
 			'PWD'  => $this->_password,
@@ -106,5 +106,22 @@ abstract class WC_Gateway_PPEC_Client_Credential {
 		}
 
 		return $params;
+	}
+
+	/**
+	 * Allow certificate-based credential to configure cURL, especially
+	 * to set CURLOPT_SSLCERT and CURLOPT_SSLCERTPASSWD.
+	 *
+	 * @throws Exception
+	 *
+	 * @param resource &$handle The cURL handle returned by curl_init().
+	 * @param array    $r       The HTTP request arguments.
+	 * @param string   $url     The request URL.
+	 *
+	 * @return void
+	 */
+	public function configure_curl( $handle, $r, $url ) {
+		curl_setopt( $handle, CURLOPT_CAINFO, wc_gateway_ppec()->includes_path . 'pem/bundle.pem' );
+		curl_setopt( $handle, CURLOPT_SSL_CIPHER_LIST, 'TLSv1' );
 	}
 }
