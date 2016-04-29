@@ -225,7 +225,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 					$expires = __( 'expires on %s', 'woocommerce-gateway-paypal-express-checkout' );
 				}
 
-				$expires = sprintf( $out, date_i18n( get_option( 'date_format' ), $valid_until ) );
+				$expires = sprintf( $expires, date_i18n( get_option( 'date_format' ), $valid_until ) );
 				$out = sprintf( __( 'Certificate belongs to API username %1$s; %2$s', 'woocommerce-gateway-paypal-express-checkout' ), $certinfo['subject']['CN'], $expires );
 			} else {
 				$out = __( 'The certificate on file is not valid.', 'woocommerce-gateway-paypal-express-checkout' );

@@ -115,6 +115,9 @@ class WC_Gateway_PPEC_Client {
 				'httpversion' => '1.1',
 			);
 
+			// For cURL transport.
+			add_action( 'http_api_curl', array( $this->_credential, 'configure_curl' ), 10, 3 );
+
 			wc_gateway_ppec_log( sprintf( '%s: remote request to %s with args: %s', __METHOD__, $this->get_endpoint(), print_r( $args, true ) ) );
 
 			$resp = wp_safe_remote_post( $this->get_endpoint(), $args );
@@ -133,10 +136,14 @@ class WC_Gateway_PPEC_Client {
 
 			wc_gateway_ppec_log( sprintf( '%s: acknowleged response body: %s', __METHOD__, print_r( $result, true ) ) );
 
+			remove_action( 'http_api_curl', array( $this->_credential, 'configure_curl' ), 10 );
+
 			// Let the caller deals with the response.
 			return $result;
 
 		} catch ( Exception $e ) {
+
+			remove_action( 'http_api_curl', array( $this->_credential, 'configure_curl' ), 10 );
 
 			// TODO: Maybe returns WP_Error ?
 			$error = array(
