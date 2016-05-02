@@ -3,7 +3,7 @@ Contributors: automattic, woothemes, akeda, dwainm, royho, allendav, slash1andy,
 Tags: ecommerce, e-commerce, commerce, woothemes, wordpress ecommerce, store, sales, sell, shop, shopping, cart, checkout, configurable, paypal
 Requires at least: 4.4
 Tested up to: 4.4
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -79,6 +79,13 @@ New feature requests and bugs reports can be made in the plugin forum.
 3. Checkout with PayPal directly from the Cart.
 
 == Changelog ==
+
+= 1.0.1
+* Fix - Make sure OpenSSL is installed with 1.0.1 as the minium required version, otherwise display warning
+* Fix - Make sure cURL transport is available for WP HTTP API, otherwise display warning
+* Fix - Unhandled certificate-style API credential
+* Fix - Fixed calculated tax and coupons data that sent over to PayPal
+* Fix - Fixed calculated shipping discount data that sent over to PayPal
 
 = 1.0.0 =
 * Initial stable release
