@@ -128,6 +128,10 @@ class WC_Gateway_PPEC_Plugin {
 		if ( version_compare( WC()->version, '2.5', '<' ) ) {
 			throw new Exception( __( 'WooCommerce Gateway PayPal Express Checkout requires WooCommerce version 2.5 or greater', 'woocommerce-gateway-paypal-express-checkout' ) );
 		}
+
+		if ( ! function_exists( 'curl_init' ) ) {
+			throw new Exception( __( 'WooCommerce Gateway PayPal Express Checkout requires cURL to be installed on your server', 'woocommerce-gateway-paypal-express-checkout' ) );
+		}
 	}
 
 	/**
