@@ -132,6 +132,21 @@ class WC_Gateway_PPEC_Plugin {
 		if ( ! function_exists( 'curl_init' ) ) {
 			throw new Exception( __( 'WooCommerce Gateway PayPal Express Checkout requires cURL to be installed on your server', 'woocommerce-gateway-paypal-express-checkout' ) );
 		}
+
+		$openssl_warning = __( 'WooCommerce Gateway PayPal Express Checkout requires OpenSSL >= 1.0.1 to be installed on your server', 'woocommerce-gateway-paypal-express-checkout' );
+		if ( ! defined( 'OPENSSL_VERSION_TEXT' ) ) {
+			throw new Exception( $openssl_warning );
+		}
+
+		preg_match( '/^OpenSSL ([\d.]+)/', OPENSSL_VERSION_TEXT, $matches );
+		if ( empty( $matches[1] ) ) {
+			throw new Exception( $openssl_warning );
+		}
+
+
+		if ( ! version_compare( $matches[1], '1.0.1', '>=' ) ) {
+			throw new Exception( $openssl_warning );
+		}
 	}
 
 	/**
