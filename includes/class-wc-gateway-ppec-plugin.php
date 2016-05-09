@@ -219,8 +219,11 @@ class WC_Gateway_PPEC_Plugin {
 	 * @since 1.0.0
 	 */
 	public function plugin_action_links( $links ) {
-
-		$section_slug = strtolower( 'WC_Gateway_PPEC_With_PayPal' );
+		if ( version_compare( WC()->version, '2.6', '>=' ) ) {
+			$section_slug = 'ppec_paypal';
+		} else {
+			$section_slug = strtolower( 'WC_Gateway_PPEC_With_PayPal' );
+		}
 
 		$plugin_links = array(
 			'<a href="' . admin_url( 'admin.php?page=wc-settings&tab=checkout&section=' . $section_slug ) . '">' . __( 'Settings', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>',
