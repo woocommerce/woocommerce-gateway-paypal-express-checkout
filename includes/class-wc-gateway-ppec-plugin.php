@@ -162,6 +162,7 @@ class WC_Gateway_PPEC_Plugin {
 	 */
 	public function activate() {
 		// Enable some options that we recommend for all merchants.
+		add_option( 'pp_woo_enabled', true );
 		add_option( 'pp_woo_allowGuestCheckout', true );
 		add_option( 'pp_woo_enableInContextCheckout', true );
 		/* defer ppc for next next release.
