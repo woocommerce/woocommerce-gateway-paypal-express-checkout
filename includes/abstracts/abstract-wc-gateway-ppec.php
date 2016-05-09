@@ -430,7 +430,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 			$subtotal_mismatch_behavior = $settings->subtotalMismatchBehavior;
 		}
 
-		$help_image_url = plugins_url( 'assets/images/help.png', 'woocommerce/.' );
+		$help_image_url = WC()->plugin_url() . '/assets/images/help.png';
 		$ips_url = admin_url( 'admin.php?page=wc-settings&tab=checkout&section=wc_gateway_ppec_with_paypal&ips-signup=true' );
 		add_thickbox();
 
