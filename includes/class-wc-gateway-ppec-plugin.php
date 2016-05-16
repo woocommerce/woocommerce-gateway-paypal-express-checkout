@@ -9,6 +9,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class WC_Gateway_PPEC_Plugin {
 
+	const ALREADY_BOOTSTRAPED = 1;
+	const DEPENDENCIES_UNSATISFIED = 2;
+	const NOT_CONNECTED = 3;
+
 	/**
 	 * Filepath of main plugin file.
 	 *
@@ -88,16 +92,26 @@ class WC_Gateway_PPEC_Plugin {
 	public function bootstrap() {
 		try {
 			if ( $this->_bootstrapped ) {
-				throw new Exception( __( '%s in WooCommerce Gateway PayPal Express Checkout plugin can only be called once', 'woocommerce-gateway-paypal-express-checkout' ) );
+				throw new Exception( __( '%s in WooCommerce Gateway PayPal Express Checkout plugin can only be called once', 'woocommerce-gateway-paypal-express-checkout' ), self::ALREADY_BOOTSTRAPED );
 			}
 
 			$this->_check_dependencies();
 			$this->_run();
+			$this->_check_credentials();
 
 			$this->_bootstrapped = true;
 			delete_option( 'wc_gateway_ppce_bootstrap_warning_message' );
+			delete_option( 'wc_gateway_ppce_prompt_to_connect' );
 		} catch ( Exception $e ) {
-			update_option( 'wc_gateway_ppce_bootstrap_warning_message', $e->getMessage() );
+			if ( in_array( $e->getCode(), array( self::ALREADY_BOOTSTRAPED, self::DEPENDENCIES_UNSATISFIED ) ) ) {
+
+				update_option( 'wc_gateway_ppce_bootstrap_warning_message', $e->getMessage() );
+			}
+
+			if ( self::NOT_CONNECTED === $e->getCode() ) {
+				update_option( 'wc_gateway_ppce_prompt_to_connect', $e->getMessage() );
+			}
+
 			add_action( 'admin_notices', array( $this, 'show_bootstrap_warning' ) );
 		}
 	}
@@ -113,6 +127,17 @@ class WC_Gateway_PPEC_Plugin {
 			</div>
 			<?php
 		}
+
+		$prompt_connect = get_option( 'wc_gateway_ppce_prompt_to_connect', '' );
+		if ( ! empty( $prompt_connect ) ) {
+			?>
+			<div class="notice notice-warning">
+				<p>
+					<strong><?php echo wp_kses( $prompt_connect, array( 'a' => array( 'href' => array() ) ) ); ?></strong>
+				</p>
+			</div>
+			<?php
+		}
 	}
 
 	/**
@@ -122,30 +147,46 @@ class WC_Gateway_PPEC_Plugin {
 	 */
 	protected function _check_dependencies() {
 		if ( ! function_exists( 'WC' ) ) {
-			throw new Exception( __( 'WooCommerce Gateway PayPal Express Checkout requires WooCommerce to be activated', 'woocommerce-gateway-paypal-express-checkout' ) );
+			throw new Exception( __( 'WooCommerce Gateway PayPal Express Checkout requires WooCommerce to be activated', 'woocommerce-gateway-paypal-express-checkout' ), self::DEPENDENCIES_UNSATISFIED );
 		}
 
 		if ( version_compare( WC()->version, '2.5', '<' ) ) {
-			throw new Exception( __( 'WooCommerce Gateway PayPal Express Checkout requires WooCommerce version 2.5 or greater', 'woocommerce-gateway-paypal-express-checkout' ) );
+			throw new Exception( __( 'WooCommerce Gateway PayPal Express Checkout requires WooCommerce version 2.5 or greater', 'woocommerce-gateway-paypal-express-checkout' ), self::DEPENDENCIES_UNSATISFIED );
 		}
 
 		if ( ! function_exists( 'curl_init' ) ) {
-			throw new Exception( __( 'WooCommerce Gateway PayPal Express Checkout requires cURL to be installed on your server', 'woocommerce-gateway-paypal-express-checkout' ) );
+			throw new Exception( __( 'WooCommerce Gateway PayPal Express Checkout requires cURL to be installed on your server', 'woocommerce-gateway-paypal-express-checkout' ), self::DEPENDENCIES_UNSATISFIED );
 		}
 
 		$openssl_warning = __( 'WooCommerce Gateway PayPal Express Checkout requires OpenSSL >= 1.0.1 to be installed on your server', 'woocommerce-gateway-paypal-express-checkout' );
 		if ( ! defined( 'OPENSSL_VERSION_TEXT' ) ) {
-			throw new Exception( $openssl_warning );
+			throw new Exception( $openssl_warning, self::DEPENDENCIES_UNSATISFIED );
 		}
 
 		preg_match( '/^OpenSSL ([\d.]+)/', OPENSSL_VERSION_TEXT, $matches );
 		if ( empty( $matches[1] ) ) {
-			throw new Exception( $openssl_warning );
+			throw new Exception( $openssl_warning, self::DEPENDENCIES_UNSATISFIED );
 		}
 
 
 		if ( ! version_compare( $matches[1], '1.0.1', '>=' ) ) {
-			throw new Exception( $openssl_warning );
+			throw new Exception( $openssl_warning, self::DEPENDENCIES_UNSATISFIED );
+		}
+	}
+
+	/**
+	 * Check credentials. If it's not client credential it means it's not set
+	 * and will prompt admin to connect.
+	 *
+	 * @see https://github.com/woothemes/woocommerce-gateway-paypal-express-checkout/issues/112
+	 *
+	 * @throws Exception
+	 */
+	protected function _check_credentials() {
+		$credential = $this->settings->getActiveApiCredentials();
+		if ( ! is_a( $credential, 'WC_Gateway_PPEC_Client_Credential' ) ) {
+			$setting_link = $this->get_admin_setting_link();
+			throw new Exception( __( 'PayPal Express Checkout is almost ready. To get started, <a href="' . $setting_link . '">connect your PayPal account</a>.', 'woocommerce-gateway-paypal-express-checkout' ), self::NOT_CONNECTED );
 		}
 	}
 
@@ -219,18 +260,24 @@ class WC_Gateway_PPEC_Plugin {
 	 * @since 1.0.0
 	 */
 	public function plugin_action_links( $links ) {
+		$setting_link = $this->get_admin_setting_link();
+
+		$plugin_links = array(
+			'<a href="' . $setting_link . '">' . __( 'Settings', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>',
+			'<a href="http://docs.woothemes.com/document/woocommerce-gateway-paypal-express-checkout/">' . __( 'Docs', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>',
+			'<a href="http://support.woothemes.com/">' . __( 'Support', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>',
+		);
+		return array_merge( $plugin_links, $links );
+	}
+
+	public function get_admin_setting_link() {
 		if ( version_compare( WC()->version, '2.6', '>=' ) ) {
 			$section_slug = 'ppec_paypal';
 		} else {
 			$section_slug = strtolower( 'WC_Gateway_PPEC_With_PayPal' );
 		}
 
-		$plugin_links = array(
-			'<a href="' . admin_url( 'admin.php?page=wc-settings&tab=checkout&section=' . $section_slug ) . '">' . __( 'Settings', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>',
-			'<a href="http://docs.woothemes.com/document/woocommerce-gateway-paypal-express-checkout/">' . __( 'Docs', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>',
-			'<a href="http://support.woothemes.com/">' . __( 'Support', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>',
-		);
-		return array_merge( $plugin_links, $links );
+		return admin_url( 'admin.php?page=wc-settings&tab=checkout&section=' . $section_slug );
 	}
 
 	/**
