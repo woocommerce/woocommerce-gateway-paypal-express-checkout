@@ -470,7 +470,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 			foreach ( $this->items as $line_item_key => $values ) {
 				$lineItemParams = array(
 					'L_PAYMENTREQUEST_0_NAME' . $count => $values['name'],
-					'L_PAYMENTREQUEST_0_DESC' . $count => ! empty( $values['description'] ) ? $values['description'] : '',
+					'L_PAYMENTREQUEST_0_DESC' . $count => ! empty( $values['description'] ) ? strip_tags( $values['description'] ) : '',
 					'L_PAYMENTREQUEST_0_QTY' . $count => $values['quantity'],
 					'L_PAYMENTREQUEST_0_AMT' . $count => $values['amount']
 				);
