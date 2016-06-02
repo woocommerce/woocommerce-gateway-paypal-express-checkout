@@ -684,6 +684,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		$settings->ppcEnabled                            = $ppc_enabled;
 		$settings->enableInContextCheckout               = $icc_enabled;
 		$settings->buttonSize                            = $button_size;
+		$settings->logoImageUrl                          = $logo_image_url;
 		$settings->markSize                              = $mark_size;
 		$settings->environment                           = $environment;
 		$settings->liveApiCredentials                    = 'live' === $environment ? $credential : false;

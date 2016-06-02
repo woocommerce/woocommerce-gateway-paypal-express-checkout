@@ -449,7 +449,7 @@ if ( $sb_cert ) {
 			</div>
 			<fieldset>
 				<legend class="screen-reader-text"><span><?php _e( 'Logo image URL', 'woocommerce-gateway-paypal-express-checkout' ); ?></span></legend>
-				<input type="url" name="woo_pp_logo_image_url" id="woo_pp_logo_image_url" size="80" value="<?php echo $logo_image_url; ?>">
+				<input type="url" name="woo_pp_logo_image_url" id="woo_pp_logo_image_url" size="80" value="<?php echo esc_url( $logo_image_url ); ?>">
 			</fieldset>
 		</td>
 	</tr>
