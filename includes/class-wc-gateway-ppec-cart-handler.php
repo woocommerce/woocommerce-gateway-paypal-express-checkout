@@ -175,7 +175,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 		$this->orderTax = round( WC()->cart->tax_total + WC()->cart->shipping_tax_total, $decimals );
 		$this->shipping = round( WC()->cart->shipping_total, $decimals );
 		$this->totalItemAmount = round( WC()->cart->cart_contents_total, $decimals ) + $discounts;
-		$this->orderTotal = $this->totalItemAmount + $this->orderTax + $this->shipping;
+		$this->orderTotal = round( $this->totalItemAmount + $this->orderTax + $this->shipping, $decimals );
 
 		// need to compare WC totals with what PayPal will calculate to see if they match
 		// if they do not match, check to see what the merchant would like to do
@@ -284,6 +284,8 @@ class WC_Gateway_PPEC_Cart_Handler {
 			$this->orderTotal = $wooOrderTotal;
 		}
 
+		$this->orderTax = round( $this->orderTax, $decimals );
+
 		// after all of the discount shenanigans, load up the other standard variables
 		$this->insurance = 0;
 		$this->handling = 0;
@@ -332,7 +334,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 		// 	$this->shipping += round( $order->get_shipping_tax(), $decimals );
 		// }
 		$this->totalItemAmount = round( $order->get_subtotal(), $decimals );
-		$this->orderTotal = $this->totalItemAmount + $this->orderTax + $this->shipping;
+		$this->orderTotal = round( $this->totalItemAmount + $this->orderTax + $this->shipping, $decimals );
 
 		// need to compare WC totals with what PayPal will calculate to see if they match
 		// if they do not match, check to see what the merchant would like to do
@@ -437,6 +439,8 @@ class WC_Gateway_PPEC_Cart_Handler {
 			$this->orderTax += $wooOrderTotal - $this->orderTotal;
 			$this->orderTotal = $wooOrderTotal;
 		}
+
+		$this->orderTax = round( $this->orderTax, $decimals );
 
 		// after all of the discount shenanigans, load up the other standard variables
 		$this->insurance = 0;
