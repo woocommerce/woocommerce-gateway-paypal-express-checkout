@@ -61,13 +61,18 @@ class WC_Gateway_PPEC_Cart_Handler {
 			return;
 		}
 
+		$api_credentials = $settings->getActiveApiCredentials();
+		if ( ! is_callable( array( $api_credentials, 'get_payer_id' ) ) ) {
+			return;
+		}
+
 		if ( version_compare( WC()->version, '2.3', '>' ) ) {
 			$class = 'woo_pp_cart_buttons_div';
 		} else {
 			$class = 'woo_pp_checkout_buttons_div';
 		}
 
-		if ( $settings->enableInContextCheckout && $settings->getActiveApiCredentials()->get_payer_id() ) {
+		if ( $settings->enableInContextCheckout ) {
 			$class .= ' paypal-button-hidden';
 		}
 
@@ -102,8 +107,8 @@ class WC_Gateway_PPEC_Cart_Handler {
 		</div>
 
 		<?php
-		if ( $settings->enableInContextCheckout && $settings->getActiveApiCredentials()->get_payer_id() ) {
-			$payer_id = $settings->getActiveApiCredentials()->get_payer_id();
+		if ( $settings->enableInContextCheckout ) {
+			$payer_id = $api_credentials->get_payer_id();
 			$setup_args = array(
 				// 'button' => array( 'woo_pp_ec_button', 'woo_pp_ppc_button' ),
 				'buttons' => array(
@@ -130,13 +135,21 @@ class WC_Gateway_PPEC_Cart_Handler {
 			return;
 		}
 
-		wp_enqueue_style( 'wc-gateway-ppec-frontend-cart', wc_gateway_ppec()->plugin_url . 'assets/css/wc-gateway-ppec-frontend-cart.css' );
-
 		$settings = wc_gateway_ppec()->settings->loadSettings();
-		if ( $settings->enabled && $settings->enableInContextCheckout && $settings->getActiveApiCredentials()->get_payer_id() ) {
-			wp_enqueue_script( 'paypal-checkout-js', 'https://www.paypalobjects.com/api/checkout.js', array(), null, true );
+		if ( ! $settings->enabled ) {
+			return;
 		}
 
+		$api_credentials = $settings->getActiveApiCredentials();
+		if ( ! is_callable( array( $api_credentials, 'get_payer_id' ) ) ) {
+			return;
+		}
+
+		wp_enqueue_style( 'wc-gateway-ppec-frontend-cart', wc_gateway_ppec()->plugin_url . 'assets/css/wc-gateway-ppec-frontend-cart.css' );
+
+		if ( $settings->enableInContextCheckout ) {
+			wp_enqueue_script( 'paypal-checkout-js', 'https://www.paypalobjects.com/api/checkout.js', array(), null, true );
+		}
 	}
 
 	/**
