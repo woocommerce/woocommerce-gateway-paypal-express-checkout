@@ -846,4 +846,23 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		return parent::get_transaction_url( $order );
 	}
 
+	/**
+	 * Check if this gateway is enabled.
+	 *
+	 * @return bool
+	 */
+	public function is_available() {
+		$settings = wc_gateway_ppec()->settings->loadSettings();
+		if ( ! $settings->enabled ) {
+			return false;
+		}
+
+		$api_credentials = $settings->getActiveApiCredentials();
+		if ( ! is_callable( array( $api_credentials, 'get_payer_id' ) ) ) {
+			return false;
+		}
+
+		return true;
+	}
+
 }

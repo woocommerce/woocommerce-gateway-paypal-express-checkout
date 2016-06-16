@@ -205,8 +205,16 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 */
 	public function after_checkout_form() {
 		$settings = wc_gateway_ppec()->settings->loadSettings();
+		if ( ! $settings->enabled ) {
+			return;
+		}
 
-		if ( $settings->enabled && $settings->enableInContextCheckout && $settings->getActiveApiCredentials()->get_payer_id() ) {
+		$api_credentials = $settings->getActiveApiCredentials();
+		if ( ! is_callable( array( $api_credentials, 'get_payer_id' ) ) ) {
+			return;
+		}
+
+		if ( $settings->enableInContextCheckout ) {
 			$session = WC()->session->paypal;
 
 			// Make sure no session being set from cart.
@@ -244,10 +252,15 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			return;
 		}
 
+		$api_credentials = $settings->getActiveApiCredentials();
+		if ( ! is_callable( array( $api_credentials, 'get_payer_id' ) ) ) {
+			return;
+		}
+
 		wp_enqueue_style( 'wc-gateway-ppec-frontend-checkout', wc_gateway_ppec()->plugin_url . 'assets/css/wc-gateway-ppec-frontend-checkout.css', array(), wc_gateway_ppec()->version );
 
 		// On the checkout page, only load the JS if we plan on sending them over to PayPal.
-		$payer_id = $settings->getActiveApiCredentials()->get_payer_id();
+		$payer_id = $api_credentials->get_payer_id();
 		if ( $settings->enableInContextCheckout && ! empty( $payer_id )  ) {
 			$session = WC()->session->paypal;
 			if ( ! $session
