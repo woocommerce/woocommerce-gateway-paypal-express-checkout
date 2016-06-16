@@ -54,7 +54,7 @@ class WC_Gateway_PPEC_IPS_Handler {
 				'env'                     => $env,
 				'wc_ppec_ips_admin_nonce' => wp_create_nonce( 'wc_ppec_ips' ),
 			),
-			wc_gateway_ppec()->admin->gateway_admin_url( 'WC_Gateway_PPEC_With_PayPal' )
+			wc_gateway_ppec()->get_admin_setting_link()
 		);
 	}
 
@@ -115,7 +115,7 @@ class WC_Gateway_PPEC_IPS_Handler {
 		}
 
 		add_option( 'woo_pp_admin_error', $error_msgs );
-		wp_safe_redirect( wc_gateway_ppec()->admin->gateway_admin_url( 'WC_Gateway_PPEC_With_PayPal' ) );
+		wp_safe_redirect( wc_gateway_ppec()->get_admin_setting_link() );
 		exit;
 	}
 
