@@ -205,7 +205,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 */
 	public function after_checkout_form() {
 		$settings = wc_gateway_ppec()->settings->loadSettings();
-		if( ! $settings->enabled ) {
+		if ( ! $settings->enabled ) {
 			return;
 		}
 
