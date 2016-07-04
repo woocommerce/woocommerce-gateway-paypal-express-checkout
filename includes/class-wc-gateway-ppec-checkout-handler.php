@@ -594,6 +594,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		$getAddress = wc_get_order( $order_id );
 		$shipAddressName = $getAddress->shipping_first_name . ' ' . $getAddress->shipping_last_name;
 
+
 		$shipAddress = new PayPal_Address;
 		$shipAddress->setName($shipAddressName);
 		$shipAddress->setStreet1($getAddress->shipping_address_1);
@@ -601,7 +602,16 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		$shipAddress->setCity($getAddress->shipping_city);
 		$shipAddress->setState($getAddress->shipping_state);
 		$shipAddress->setZip($getAddress->shipping_postcode);
-		$shipAddress->setCountry($getAddress->shipping_country);
+
+		// In case merchant only expects domestic shipping and hides shipping
+		// country, fallback to base country.
+		//
+		// @see https://github.com/woothemes/woocommerce-gateway-paypal-express-checkout/issues/139
+		$shipping_country = $getAddress->shipping_country;
+		if ( empty( $shipping_country ) ) {
+			$shipping_country = WC()->countries->get_base_country();
+		}
+		$shipAddress->setCountry( $shipping_country );
 
 		$this->setShippingAddress( $shipAddress );
 		$this->enablePayPalCredit( $use_ppc );
@@ -716,7 +726,17 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			$shipAddress->setCity($order->shipping_city);
 			$shipAddress->setState($order->shipping_state);
 			$shipAddress->setZip($order->shipping_postcode);
-			$shipAddress->setCountry($order->shipping_country);
+
+			// In case merchant only expects domestic shipping and hides shipping
+			// country, fallback to base country.
+			//
+			// @see https://github.com/woothemes/woocommerce-gateway-paypal-express-checkout/issues/139
+			$shipping_country = $order->shipping_country;
+			if ( empty( $shipping_country ) ) {
+				$shipping_country = WC()->countries->get_base_country();
+			}
+			$shipAddress->setCountry( $shipping_country );
+
 			$this->setShippingAddress( $shipAddress );
 		}
 
