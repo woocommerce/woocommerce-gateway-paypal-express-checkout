@@ -131,7 +131,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 					$final_output .= '<li>' . $error->maptoBuyerFriendlyError() . '</li>';
 				}
 				$final_output .= '</ul>';
-				wc_add_notice( 'Payment error:' . $final_output, 'error' );
+				wc_add_notice( __( 'Payment error:', 'woocommerce-gateway-paypal-express-checkout' )  . $final_output, 'error' );
 			}
 		} else {
 			// We have a token we can work with.  Just complete the payment now.
