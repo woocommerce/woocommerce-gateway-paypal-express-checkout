@@ -43,6 +43,7 @@ class PayPal_API_Error {
 			case '10728': return 'The city in your shipping address is not valid.  Please double-check your shipping address and try again.';
 			case '10729': return 'The state in your shipping address is not valid.  Please double-check your shipping address and try again.';
 			case '10730': return 'The ZIP code or postal code in your shipping address is not valid.  Please double-check your shipping address and try again.';
+			case '10731': return 'The country in your shipping address is not valid.  Please double-check your shipping address and try again.';
 			case '10736': return 'PayPal rejected your shipping address because the city, state, and/or ZIP code are incorrect.  Please double-check that they are all spelled correctly and try again.';
 			case '13113':
 			case '11084': return 'Your PayPal payment could not be processed.  Please contact PayPal for assistance.';
@@ -51,7 +52,7 @@ class PayPal_API_Error {
 			case '17203':
 			case '17204':
 			case '17200': return 'Your funding instrument is invalid.  Please check out again and select a new funding source.';
-			default:      return 'An error occurred while processing your PayPal payment.  Please contact the store owner for assistance.';
+			default:      return 'An error (' . $this->error_code . ') occurred while processing your PayPal payment.  Please contact the store owner for assistance.';
 		}
 	}
 }
