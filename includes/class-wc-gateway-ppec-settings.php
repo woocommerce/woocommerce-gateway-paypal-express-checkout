@@ -47,6 +47,7 @@ class WC_Gateway_PPEC_Settings {
 
 	const buttonSizeSmall  = 'small';
 	const buttonSizeMedium = 'medium';
+	const buttonSizeLarge  = 'large';
 
 	const markSizeSmall  = 'small';
 	const markSizeMedium = 'medium';
@@ -286,7 +287,7 @@ class WC_Gateway_PPEC_Settings {
 	}
 
 	protected function _sanitize_buttonSize( $size ) {
-		if ( in_array( $size, array( self::buttonSizeSmall, self::buttonSizeMedium ) ) ) {
+		if ( in_array( $size, array( self::buttonSizeSmall, self::buttonSizeMedium, self::buttonSizeLarge ) ) ) {
 			return $size;
 		} else {
 			return self::buttonSizeMedium;

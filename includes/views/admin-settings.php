@@ -410,6 +410,7 @@ if ( $sb_cert ) {
 				<select name="woo_pp_button_size">
 					<option value="<?php echo WC_Gateway_PPEC_Settings::buttonSizeSmall; ?>"<?php selected( $button_size, WC_Gateway_PPEC_Settings::buttonSizeSmall ); ?>><?php _e( 'Small', 'woocommerce-gateway-paypal-express-checkout' ); ?></option>
 					<option value="<?php echo WC_Gateway_PPEC_Settings::buttonSizeMedium; ?>"<?php selected( $button_size, WC_Gateway_PPEC_Settings::buttonSizeMedium ); ?>><?php _e( 'Medium', 'woocommerce-gateway-paypal-express-checkout' ); ?></option>
+                    <option value="<?php echo WC_Gateway_PPEC_Settings::buttonSizeLarge; ?>"<?php selected( $button_size, WC_Gateway_PPEC_Settings::buttonSizeLarge ); ?>><?php _e( 'Large', 'woocommerce-gateway-paypal-express-checkout' ); ?></option>
 				</select>
 			</fieldset>
 		</td>

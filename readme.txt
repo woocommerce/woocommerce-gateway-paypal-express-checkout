@@ -80,6 +80,10 @@ New feature requests and bugs reports can be made in the plugin forum.
 
 == Changelog ==
 
+= 1.0.5 =
+* Moved default button location to woocommerce_proceed_to_checkout hook.
+* Added missing 'large' button size.
+
 = 1.0.4 =
 * Fix - Wrong section slug / tab after redirected from connect.woocommerce.com
 * Fix - Make sure to check if credentials were set in cart and checkout pages
