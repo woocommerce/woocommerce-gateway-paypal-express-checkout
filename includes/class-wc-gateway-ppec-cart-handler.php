@@ -36,13 +36,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 	 */
 	public function __construct() {
 		add_action( 'woocommerce_before_cart_totals', array( $this, 'before_cart_totals' ) );
-
-		if ( version_compare( WC()->version, '2.3', '>=' ) ) {
-			add_action( 'woocommerce_after_cart_totals', array( $this, 'display_paypal_button' ) );
-		} else {
-			add_action( 'woocommerce_proceed_to_checkout', array( $this, 'display_paypal_button' ) );
-		}
-
+		add_action( 'woocommerce_after_cart_totals', array( $this, 'display_paypal_button' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 	}
 
@@ -66,11 +60,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 			return;
 		}
 
-		if ( version_compare( WC()->version, '2.3', '>' ) ) {
-			$class = 'woo_pp_cart_buttons_div';
-		} else {
-			$class = 'woo_pp_checkout_buttons_div';
-		}
+		$class = 'woo_pp_cart_buttons_div';
 
 		if ( $settings->enableInContextCheckout ) {
 			$class .= ' paypal-button-hidden';
@@ -289,7 +279,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 			$this->totalItemAmount -= $discounts;
 			$this->orderTotal -= $discounts;
 		}
-		
+
 		// If the totals don't line up, adjust the tax to make it work (cause it's probably a tax mismatch).
 		$wooOrderTotal = round( WC()->cart->total, $decimals );
 		if( $wooOrderTotal != $this->orderTotal ) {
@@ -308,7 +298,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 		if ( ! is_numeric( $this->shipping ) )
 			$this->shipping = 0;
-		
+
 	}
 
 	public function loadOrderDetails( $order_id ) {
@@ -337,7 +327,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 			);
 
 			$this->items[] = $item;
-			
+
 			$roundedPayPalTotal += round( $amount * $values['qty'], $decimals );
 		}
 
@@ -445,7 +435,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 			$this->shipDiscountAmount = 0;
 		}
-		
+
 		// If the totals don't line up, adjust the tax to make it work (cause it's probably a tax mismatch).
 		$wooOrderTotal = round( $order->get_total(), $decimals );
 		if( $wooOrderTotal != $this->orderTotal ) {
