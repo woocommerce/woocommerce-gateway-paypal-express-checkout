@@ -117,13 +117,10 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 			// Redirect them over to PayPal.
 			try {
 				$redirect_url = $checkout->start_checkout_from_checkout( $order_id, 'ppec_paypal_credit' === $this->id );
-				$settings     = wc_gateway_ppec()->settings->loadSettings();
-				if ( $settings->enableInContextCheckout && $settings->getActiveApiCredentials()->get_payer_id() ) {
-					$redirect_url = 'javascript:woo_pp_checkout_callback("' . urlencode( $redirect_url ) . '");';
-				}
+
 				return array(
-					'result' => 'success',
-					'redirect' => $redirect_url
+					'result'   => 'success',
+					'redirect' => $redirect_url,
 				);
 			} catch( PayPal_API_Exception $e ) {
 				$final_output = '<ul>';
