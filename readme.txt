@@ -81,25 +81,22 @@ New feature requests and bugs reports can be made in the plugin forum.
 == Changelog ==
 
 = 1.0.4 =
-
 * Fix - Wrong section slug / tab after redirected from connect.woocommerce.com
 * Fix - Make sure to check if credentials were set in cart and checkout pages
 * Fix - Removed configuration of chipers to use for TLS
 
 = 1.0.3 =
-
 * Fix - Issue where missing rounding two decimal digits of tax causing transaction being refused
 * Fix - Issue where custom logo image URL is not saved
 
-= 1.0.2
-
+= 1.0.2 =
 * Fix - Strip out HTML tags from item descriptions to prevent warning from PayPal
 * Fix - Issue of incorrect plugin's setting link from admin plugins page when using WooCommerce 2.6
 * Tweak - Make enabled option to default to true
 * Fix - Issue of missing help icon when plugin directory is not the same as plugin's slug.
 * Tweak - Add admin notice to setup / connect after plugin is activated.
 
-= 1.0.1
+= 1.0.1 =
 * Fix - Make sure OpenSSL is installed with 1.0.1 as the minium required version, otherwise display warning
 * Fix - Make sure cURL transport is available for WP HTTP API, otherwise display warning
 * Fix - Unhandled certificate-style API credential
