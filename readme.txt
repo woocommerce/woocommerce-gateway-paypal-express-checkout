@@ -1,5 +1,5 @@
 === WooCommerce PayPal Express Checkout Payment Gateway ===
-Contributors: automattic, woothemes, akeda, dwainm, royho, allendav, slash1andy, woosteve, spraveenitpro, mikedmoore, fernashes, shellbeezy, danieldudzic, mikaey, iMazed, shaunkuschel, bftrick, pmciano, dsmithweb
+Contributors: automattic, woothemes, akeda, dwainm, royho, allendav, slash1andy, woosteve, spraveenitpro, mikedmoore, fernashes, shellbeezy, danieldudzic, mikaey
 Tags: ecommerce, e-commerce, commerce, woothemes, wordpress ecommerce, store, sales, sell, shop, shopping, cart, checkout, configurable, paypal
 Requires at least: 4.4
 Tested up to: 4.4
@@ -64,8 +64,7 @@ If you get stuck, you can ask for help in the Plugin Forum.
 
 = Will this plugin work with my theme? =
 
-Yes, this plugin will work with any theme, but may require some styling to make it match nicely. Please see
-our [codex](http://docs.woothemes.com/documentation/plugins/woocommerce/woocommerce-codex/) for help. If you're
+Yes, this plugin will work with any theme, but may require some styling to make it match nicely. If you're
 looking for a theme with built in WooCommerce integration we recommend [Storefront](http://www.woothemes.com/storefront/).
 
 = Where can I request new features or report bugs? =
