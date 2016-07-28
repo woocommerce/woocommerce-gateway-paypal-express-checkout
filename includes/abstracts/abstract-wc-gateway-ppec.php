@@ -22,6 +22,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 
 		$this->method_title       = __( 'PayPal Express Checkout', 'woocommerce-gateway-paypal-express-checkout' );
 		$this->method_description = __( 'Process payments quickly and securely with PayPal.', 'woocommerce-gateway-paypal-express-checkout' );
+		$this->order_button_text  = __( 'Continue to payment', 'woocommerce-gateway-paypal-express-checkout' );
 
 		wc_gateway_ppec()->ips->maybe_received_credentials();
 
