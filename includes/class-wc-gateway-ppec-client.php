@@ -113,6 +113,7 @@ class WC_Gateway_PPEC_Client {
 				'body'        => $body,
 				'user-agent'  => __CLASS__,
 				'httpversion' => '1.1',
+				'timeout'     => 30,
 			);
 
 			// For cURL transport.

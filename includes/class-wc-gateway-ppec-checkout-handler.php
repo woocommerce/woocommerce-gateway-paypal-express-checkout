@@ -45,12 +45,9 @@ class WC_Gateway_PPEC_Checkout_Handler {
 
 		add_action( 'woocommerce_before_checkout_process', array( $this, 'before_checkout_process' ) );
 		add_filter( 'woocommerce_checkout_fields', array( $this, 'make_billing_address_optional' ) );
-		add_action( 'woocommerce_after_checkout_form', array( $this, 'after_checkout_form' ) );
 		add_action( 'woocommerce_available_payment_gateways', array( $this, 'maybe_disable_other_gateways' ) );
 		add_action( 'woocommerce_available_payment_gateways', array( $this, 'maybe_disable_paypal_credit' ) );
 		add_action( 'woocommerce_review_order_after_submit', array( $this, 'maybe_render_cancel_link' ) );
-
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 	}
 
 	public function init() {
@@ -196,82 +193,6 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		}
 
 		return $checkout_fields;
-	}
-
-	/**
-	 * After checkout form.
-	 */
-	public function after_checkout_form() {
-		$settings = wc_gateway_ppec()->settings->loadSettings();
-		if ( ! $settings->enabled ) {
-			return;
-		}
-
-		$api_credentials = $settings->getActiveApiCredentials();
-		if ( ! is_callable( array( $api_credentials, 'get_payer_id' ) ) ) {
-			return;
-		}
-
-		if ( $settings->enableInContextCheckout ) {
-			$session = WC()->session->paypal;
-
-			// Make sure no session being set from cart.
-			if ( $session && is_a( $session, 'WC_Gateway_PPEC_Session_Data' ) ) {
-				if ( $session->checkout_completed ) {
-					return;
-				}
-
-				if ( $session->expiry_time > time() ) {
-					return;
-				}
-
-				if ( ! empty( $session->payerID ) ) {
-					return;
-				}
-			}
-
-			// This div is necessary for PayPal to properly display its lightbox.
-			?>
-			<div id="woo_pp_icc_container" style="display: none;"></div>
-			<?php
-		}
-	}
-
-	/**
-	 * Enqueue front-end scripts on checkout page.
-	 */
-	public function enqueue_scripts() {
-		if ( ! is_checkout() ) {
-			return;
-		}
-
-		$settings = wc_gateway_ppec()->settings->loadSettings();
-		if ( ! $settings->enabled ) {
-			return;
-		}
-
-		$api_credentials = $settings->getActiveApiCredentials();
-		if ( ! is_callable( array( $api_credentials, 'get_payer_id' ) ) ) {
-			return;
-		}
-
-		wp_enqueue_style( 'wc-gateway-ppec-frontend-checkout', wc_gateway_ppec()->plugin_url . 'assets/css/wc-gateway-ppec-frontend-checkout.css', array(), wc_gateway_ppec()->version );
-
-		// On the checkout page, only load the JS if we plan on sending them over to PayPal.
-		$payer_id = $api_credentials->get_payer_id();
-		if ( $settings->enableInContextCheckout && ! empty( $payer_id )  ) {
-			$session = WC()->session->paypal;
-			if ( ! $session
-				|| ! is_a( $session, 'WC_Gateway_PPEC_Session_Data' )
-				|| ! $session->checkout_completed || $session->expiry_time < time()
-				|| ! $session->payerID ) {
-
-				wp_enqueue_script( 'wc-gateway-ppec-frontend-checkout', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-frontend-checkout.js', array( 'jquery' ), wc_gateway_ppec()->version, true );
-				wp_localize_script( 'wc-gateway-ppec-frontend-checkout', 'wc_ppec', array( 'payer_id' => $payer_id ) );
-
-				wp_enqueue_script( 'paypal-checkout-js', 'https://www.paypalobjects.com/api/checkout.js', array(), null, true );
-			}
-		}
 	}
 
 	/**

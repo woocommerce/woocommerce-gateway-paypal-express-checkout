@@ -63,7 +63,7 @@ class PayPal_Checkout_Details {
 
 		foreach ( $getECResponse as $index => $value ) {
 			if ( array_key_exists( $index, $map ) ) {
-				$this->$map[ $index ] = $value;
+				$this->{ $map[ $index ] } = $value;
 			}
 		}
 
@@ -188,7 +188,7 @@ class PayPal_Checkout_Payment_Details {
 		foreach ( $map as $index => $value ) {
 			$var_name = 'PAYMENTREQUEST_' . $bucketNum . '_' . $index;
 			if ( array_key_exists( $var_name, $getECResponse ) ) {
-				$this->$value = $getECResponse[ $var_name ];
+				$this->{ $value } = $getECResponse[ $var_name ];
 				$found_any = true;
 			}
 		}
@@ -236,18 +236,18 @@ class PayPal_Checkout_Payment_Item_Details {
 
 	public function loadFromGetECResponse( $getECResponse, $bucketNum, $itemNum ) {
 		$map = array(
-			'NAME' => 'name',
-			'DESC' => 'description',
-			'AMT' => 'amount',
+			'NAME'   => 'name',
+			'DESC'   => 'description',
+			'AMT'    => 'amount',
 			'NUMBER' => 'item_number',
-			'QTY' => 'quantity',
-			'TAXAMT' => 'tax_amount'
+			'QTY'    => 'quantity',
+			'TAXAMT' => 'tax_amount',
 		);
 
 		foreach ( $map as $index => $value ) {
 			$var_name = 'L_PAYMENTREQUEST_' . $bucketNum . '_' . $index . $itemNum;
 			if ( array_key_exists( $var_name, $getECResponse ) ) {
-				$this->$value = $getECResponse[ $var_name ];
+				$this->{ $value } = $getECResponse[ $var_name ];
 			}
 		}
 
@@ -292,7 +292,7 @@ class PayPal_Checkout_Payment_Item_Physical_Details {
 		foreach ( $map as $index => $value ) {
 			$var_name = 'L_PAYMENTREQUEST_' . $bucketNum . '_ITEM' . $index . $itemNum;
 			if ( array_key_exists( $var_name, $getECResponse ) ) {
-				$this->$value = $getECResponse[ $var_name ];
+				$this->{ $value } = $getECResponse[ $var_name ];
 				$found_any = true;
 			}
 		}
@@ -319,7 +319,7 @@ class PayPal_Checkout_Payment_Item_Ebay_Item_Details {
 		foreach ( $map as $index => $value ) {
 			$var_name = 'L_PAYMENTREQUEST_' . $bucketNum . '_' . $index . $itemNum;
 			if ( array_key_exists( $var_name, $getECResponse ) ) {
-				$this->$value = $getECResponse[ $var_name ];
+				$this->{ $value } = $getECResponse[ $var_name ];
 				$found_any = true;
 			}
 		}
@@ -352,7 +352,7 @@ class PayPal_Checkout_Shipping_Option_Details {
 		$found_any = false;
 		foreach ( $getECResponse as $index => $value ) {
 			if ( array_key_exists( $index, $map ) ) {
-				$this->$map[ $index ] = $value;
+				$this->{ $map[ $index ] } = $value;
 				$found_any = true;
 			}
 		}
@@ -380,7 +380,7 @@ class PayPal_Checkout_Instrument_Details {
 
 		foreach ( $getECResponse as $index => $value ) {
 			if ( array_key_exists( $index, $map ) ) {
-				$this->$map[ $index ] = $value;
+				$this->{ $map[ $index ] } = $value;
 				$found_any = true;
 			}
 		}
@@ -466,7 +466,7 @@ class PayPal_Checkout_Payer_Details {
 
 		foreach ( $getECResponse as $index => $value ) {
 			if ( array_key_exists( $index, $map ) ) {
-				$this->$map[ $index ] = $value;
+				$this->{ $map[ $index ] } = $value;
 				$found_any = true;
 			}
 			if ( preg_match( '/^BILLTONAME|STREET|STREET2|CITY|STATE|ZIP|COUNTRY|COUNTRYNAME|ADDRESSOWNER|ADDRESSSTATUS$/', $index ) ) {
@@ -507,7 +507,7 @@ class PayPal_Checkout_Gift_Details {
 
 		foreach ( $getECResponse as $index => $value ) {
 			if ( array_key_exists( $index, $map ) ) {
-				$this->$map[ $index ] = $value;
+				$this->{ $map[ $index ] } = $value;
 				$found_any = true;
 			}
 		}
