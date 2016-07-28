@@ -213,9 +213,9 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			}
 		}
 
-		// If PPEC is enabled, removed PayPal standard.
-		if ( wc_gateway_ppec()->settings->loadSettings()->enabled ) {
-			unset( $gateways['paypal'] );
+		// If using PayPal standard (this is admin choice) we don't need to also show PayPal EC on checkout.
+		if ( isset( $gateways['paypal'] ) ) {
+			unset( $gateways['ppec_paypal'] );
 		}
 
 		return $gateways;

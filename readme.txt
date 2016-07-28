@@ -85,6 +85,8 @@ New feature requests and bugs reports can be made in the plugin forum.
 * Fix - Prevent double stock reduction when payment complete.
 * Fix - Allow PPE from pay page and don't use in-context checkout for PayPal Mark on checkout.
 * Fix - Increase timeout to 30 to prevent error #3.
+* Tweak - If the store owner decides to enable PayPal standard, respect that decision and remove EC from checkout screen.
+* Tweak - Change place order button to "continue to payment".
 * Tweak - Moved default button location to woocommerce_proceed_to_checkout hook.
 * Tweak - Improved button appearance and look alongside regular checkout button.
 
