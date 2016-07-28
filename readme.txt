@@ -81,7 +81,9 @@ New feature requests and bugs reports can be made in the plugin forum.
 == Changelog ==
 
 = 1.0.5 =
+* Fixed in-context checkout to work after ajax cart reload.
 * Moved default button location to woocommerce_proceed_to_checkout hook.
+* Improved button appearance and look alongside regular checkout button.
 * Added missing 'large' button size.
 
 = 1.0.4 =

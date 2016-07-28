@@ -2,11 +2,13 @@
 /**
  * Cart handler.
  */
-
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit;
 }
 
+/**
+ * WC_Gateway_PPEC_Cart_Handler handles button display in the cart.
+ */
 class WC_Gateway_PPEC_Cart_Handler {
 
 	/**
@@ -36,7 +38,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 	 */
 	public function __construct() {
 		add_action( 'woocommerce_before_cart_totals', array( $this, 'before_cart_totals' ) );
-		add_action( 'woocommerce_after_cart_totals', array( $this, 'display_paypal_button' ) );
+		add_action( 'woocommerce_proceed_to_checkout', array( $this, 'display_paypal_button' ), 20 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 	}
 
@@ -51,7 +53,8 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 	public function display_paypal_button() {
 		$settings = wc_gateway_ppec()->settings->loadSettings();
-		if( ! $settings->enabled ) {
+
+		if ( ! $settings->enabled ) {
 			return;
 		}
 
@@ -60,63 +63,32 @@ class WC_Gateway_PPEC_Cart_Handler {
 			return;
 		}
 
-		$class = 'woo_pp_cart_buttons_div';
-
-		if ( $settings->enableInContextCheckout ) {
-			$class .= ' paypal-button-hidden';
-		}
-
-		$redirect_arg = array( 'startcheckout' => 'true' );
-		$redirect     = add_query_arg( $redirect_arg );
-
+		$redirect      = add_query_arg( array( 'startcheckout' => 'true' ), wc_get_page_permalink( 'cart' ) );
 		$checkout_logo = 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-' . $settings->buttonSize . '.png';
-		$credit_logo   = 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/ppcredit-logo-' . $settings->buttonSize . '.png';
 		?>
-		<div class="<?php echo esc_attr( $class ); ?>">
-			<span style="float: right;">
-				<a href="<?php echo esc_url( $redirect ); ?>" id="woo_pp_ec_button">
-					<?php if ( ! $settings->enableInContextCheckout ) : ?>
-						<img src="<?php echo esc_url( $checkout_logo ); ?>" alt="<?php _e( 'Check out with PayPal', 'woocommerce-gateway-paypal-express-checkout' ); ?>" style="width: auto; height: auto;">
-					<?php endif; ?>
-				</a>
-			</span>
-
-			<? /* defer ppc for next release.
-			<?php if ( $settings->ppcEnabled && 'US' === WC()->countries->get_base_country() ) : ?>
-				<?php
-				$redirect = add_query_arg( array( 'use-ppc' => 'true' ), $redirect );
-				?>
-				<span style="float: right; padding-right: 5px;">
-
-					<a href="<?php echo esc_url( $redirect ); ?>" id="woo_pp_ppc_button">
-						<img src="<?php echo esc_url( $credit_logo ); ?>" alt="<?php _e( 'Pay with PayPal Credit', 'woocommerce-gateway-paypal-express-checkout' ); ?>" style="width: auto; height: auto;">
-					</a>
-				</span>
+		<div class="wcppec-checkout-buttons woo_pp_cart_buttons_div">
+			<?php if ( has_action( 'woocommerce_proceed_to_checkout', 'woocommerce_button_proceed_to_checkout' ) ) : ?>
+				<div class="wcppec-checkout-buttons__separator">
+					<?php _e( '&mdash; or &mdash;', 'woocommerce-gateway-paypal-express-checkout' ); ?>
+				</div>
 			<?php endif; ?>
-			*/ ?>
+
+			<a href="<?php echo esc_url( $redirect ); ?>" id="woo_pp_ec_button" class="wcppec-checkout-buttons__button">
+				<img src="<?php echo esc_url( $checkout_logo ); ?>" alt="<?php _e( 'Check out with PayPal', 'woocommerce-gateway-paypal-express-checkout' ); ?>" style="width: auto; height: auto;">
+			</a>
 		</div>
 
 		<?php
 		if ( $settings->enableInContextCheckout ) {
-			$payer_id = $api_credentials->get_payer_id();
-			$setup_args = array(
-				// 'button' => array( 'woo_pp_ec_button', 'woo_pp_ppc_button' ),
-				'buttons' => array(
-					array(
-						'container' => 'woo_pp_ec_button',
-						'size'      => $settings->buttonSize,
-						'shape'     => 'rect',
-					)
-				),
-				'locale' => $settings->get_paypal_locale(),
+			wp_enqueue_script( 'wc-gateway-ppec-frontend-in-context-checkout', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-frontend-in-context-checkout.js', array( 'jquery' ), wc_gateway_ppec()->version, true );
+			wp_localize_script( 'wc-gateway-ppec-frontend-in-context-checkout', 'wc_ppec_context',
+				array(
+					'payer_id'    => $api_credentials->get_payer_id(),
+					'environment' => $settings->environment,
+					'locale'      => $settings->get_paypal_locale(),
+					'start_flow'  => esc_url( $redirect ),
+				)
 			);
-			?>
-			<script type="text/javascript">
-				window.paypalCheckoutReady = function() {
-					paypal.checkout.setup( <?php echo json_encode( $payer_id ); ?>, <?php echo json_encode( $setup_args ); ?> );
-				}
-			</script>
-			<?php
 		}
 	}
 
@@ -138,7 +110,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 		wp_enqueue_style( 'wc-gateway-ppec-frontend-cart', wc_gateway_ppec()->plugin_url . 'assets/css/wc-gateway-ppec-frontend-cart.css' );
 
 		if ( $settings->enableInContextCheckout ) {
-			wp_enqueue_script( 'paypal-checkout-js', 'https://www.paypalobjects.com/api/checkout.js', array(), null, true );
+			wp_enqueue_script( 'paypal-checkout-js', 'https://www.paypalobjects.com/api/checkout.js', array(), '1.0', true );
 		}
 	}
 

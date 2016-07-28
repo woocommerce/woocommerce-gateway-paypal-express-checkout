@@ -1,19 +1,21 @@
-.woo_pp_cart_buttons_div {
-	margin-top: -20px;
+.wcppec-checkout-buttons {
+	text-align: center;
+	margin: 1em 0;
+	overflow: hidden;
 }
-.woo_pp_cart_buttons_div:after {
-	visibility: hidden;
+.wcppec-checkout-buttons__separator {
 	display: block;
-	font-size: 0;
-	content: " ";
-	clear: both;
-	height: 0;
+	opacity: .5;
+	margin: 0 0 1em;
 }
-
-.paypal-button-hidden {
-	visibility: hidden;
+.wcppec-checkout-buttons__button {
+	display: block;
+	text-decoration: none !important;
+	border: 0 !important;
 }
-
+.wcppec-checkout-buttons__button img {
+	margin: 0 auto;
+}
 .paypal-button-widget .paypal-button,
 .paypal-button-widget .paypal-button:hover {
 	background: transparent;
