@@ -83,6 +83,8 @@ New feature requests and bugs reports can be made in the plugin forum.
 * Fix - Fixed in-context checkout to work after ajax cart reload.
 * Fix - Added missing 'large' button size.
 * Fix - Prevent double stock reduction when payment complete.
+* Fix - Allow PPE from pay page and don't use in-context checkout for PayPal Mark on checkout.
+* Fix - Increase timeout to 30 to prevent error #3.
 * Tweak - Moved default button location to woocommerce_proceed_to_checkout hook.
 * Tweak - Improved button appearance and look alongside regular checkout button.
 
