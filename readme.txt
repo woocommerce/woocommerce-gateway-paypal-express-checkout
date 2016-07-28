@@ -71,6 +71,12 @@ looking for a theme with built in WooCommerce integration we recommend [Storefro
 
 New feature requests and bugs reports can be made in the plugin forum.
 
+= How to remove 'Proceed to Checkout' button from cart page? =
+
+If PayPal Express Checkout is the only enabled payment gateway and you want to remove the 'Proceed to Checkout' button from the cart, you can use this snippet:
+
+https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
+
 == Screenshots ==
 
 1. Click the "Click Here to Set Up Your PayPal Account" button. If you want to test before goes live, you can switch the Environment, above the button, to Sandbox.
