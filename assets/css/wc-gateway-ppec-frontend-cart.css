@@ -22,3 +22,8 @@
 	box-shadow: none;
 	border: none;
 }
+.wcppec-cart-widget-button {
+	display: inline-block;
+	text-decoration: none !important;
+	border: 0 !important;
+}
