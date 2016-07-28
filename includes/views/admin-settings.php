@@ -362,7 +362,7 @@ if ( $sb_cert ) {
 			<div id="woo_pp_enable_in_context_checkout_help" style="display: none;">
 				<p>
 					<h2><?php _e( 'Enable In-Context Checkout', 'woocommerce-gateway-paypal-express-checkout' ); ?></h2>
-					<?php _e( '<p>PayPal offers a new in-context checkout experience, which allows you to show the PayPal checkout in a minibrowser on top of your checkout.  This experience can help to improve conversion on your store by reassuring buyers that they have not left your store.</p><p>More information on in-context checkout is available from <a href="https://developer.paypal.com/docs/classic/express-checkout/in-context/">the PayPal Developer Portal</a>.</p><p>If you want to use the new in-context checkout, enable this setting.</p>', 'woocommerce-gateway-paypal-express-checkout' ); ?>
+					<?php _e( '<p>PayPal offers a new in-context checkout experience, which allows you to show the PayPal checkout in a minibrowser on top of the store window (in this case, the feature will be available on the cart page when the user clicks the "Checkout with PayPal" button).</p><p>This experience can help to improve conversion on your store by reassuring buyers that they have not left your store.</p><p>More information on in-context checkout is available from <a href="https://developer.paypal.com/docs/classic/express-checkout/in-context/">the PayPal Developer Portal</a>.</p>', 'woocommerce-gateway-paypal-express-checkout' ); ?>
 
 					<img src="<?php echo esc_url( wc_gateway_ppec()->plugin_url . 'assets/img/in-context-composite.png' ); ?>" width="378" height"299">
 				</p>
