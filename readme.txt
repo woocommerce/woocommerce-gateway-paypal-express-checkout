@@ -83,6 +83,8 @@ New feature requests and bugs reports can be made in the plugin forum.
 * Fix - Fixed in-context checkout to work after ajax cart reload.
 * Fix - Added missing 'large' button size.
 * Fix - Prevent double stock reduction when payment complete.
+* Tweak - If the store owner decides to enable PayPal standard, respect that decision and remove EC from checkout screen.
+* Tweak - Change place order button to "continue to payment".
 * Tweak - Moved default button location to woocommerce_proceed_to_checkout hook.
 * Tweak - Improved button appearance and look alongside regular checkout button.
 
