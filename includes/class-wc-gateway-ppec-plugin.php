@@ -85,7 +85,6 @@ class WC_Gateway_PPEC_Plugin {
 		register_activation_hook( $this->file, array( $this, 'activate' ) );
 
 		add_action( 'plugins_loaded', array( $this, 'bootstrap' ) );
-		add_filter( 'plugin_action_links_' . plugin_basename( $this->file ), array( $this, 'plugin_action_links' ) );
 		add_filter( 'allowed_redirect_hosts' , array( $this, 'whitelist_paypal_domains_for_redirect' ) );
 	}
 
@@ -252,22 +251,6 @@ class WC_Gateway_PPEC_Plugin {
 		$this->ips            = new WC_Gateway_PPEC_IPS_Handler();
 
 		$this->client = new WC_Gateway_PPEC_Client( $this->settings->getActiveApiCredentials(), $this->settings->environment );
-	}
-
-	/**
-	 * Adds plugin action links
-	 *
-	 * @since 1.0.0
-	 */
-	public function plugin_action_links( $links ) {
-		$setting_link = $this->get_admin_setting_link();
-
-		$plugin_links = array(
-			'<a href="' . $setting_link . '">' . __( 'Settings', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>',
-			'<a href="http://docs.woothemes.com/document/woocommerce-gateway-paypal-express-checkout/">' . __( 'Docs', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>',
-			'<a href="http://support.woothemes.com/">' . __( 'Support', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>',
-		);
-		return array_merge( $plugin_links, $links );
 	}
 
 	public function get_admin_setting_link() {
