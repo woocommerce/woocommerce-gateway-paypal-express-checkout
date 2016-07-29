@@ -59,6 +59,14 @@ wc_enqueue_js( "
 			}
 		}).change();
 
+		$( '#woocommerce_ppec_paypal_paymentaction' ).change(function(){
+			if ( 'sale' === $( this ).val() ) {
+				$( '#woocommerce_ppec_paypal_instant_payments' ).closest( 'tr' ).show();
+			} else {
+				$( '#woocommerce_ppec_paypal_instant_payments' ).closest( 'tr' ).hide();
+			}
+		}).change();
+
 		if ( enable_toggle ) {
 			$( document ).on( 'click', '.ppec-toggle-settings', function() {
 				$( ppec_live_fields ).closest( 'tr' ).toggle();
@@ -236,14 +244,6 @@ return array(
 		'default'     => 'WC-',
 		'desc_tip'    => true,
 	),
-	'instant_payments' => array(
-		'title'       => __( 'Instant Payments', 'woocommerce-gateway-paypal-express-checkout' ),
-		'type'        => 'checkbox',
-		'label'       => __( 'Require Instant Payment', 'woocommerce-gateway-paypal-express-checkout' ),
-		'default'     => 'no',
-		'desc_tip'    => true,
-		'description' => __( 'If you enable this setting, PayPal will be instructed not to allow the buyer to use funding sources that take additional time to complete (for example, eChecks). Instead, the buyer will be required to use an instant funding source, such as an instant transfer, a credit/debit card, or PayPal Credit.', 'woocommerce-gateway-paypal-express-checkout' ),
-	),
 	'require_billing' => array(
 		'title'       => __( 'Billing Addresses', 'woocommerce-gateway-paypal-express-checkout' ),
 		'type'        => 'checkbox',
@@ -260,9 +260,17 @@ return array(
 		'default'     => 'sale',
 		'desc_tip'    => true,
 		'options'     => array(
-			'sale'          => __( 'Capture', 'woocommerce-gateway-paypal-express-checkout' ),
+			'sale'          => __( 'Sale', 'woocommerce-gateway-paypal-express-checkout' ),
 			'authorization' => __( 'Authorize', 'woocommerce-gateway-paypal-express-checkout' )
 		)
+	),
+	'instant_payments' => array(
+		'title'       => __( 'Instant Payments', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'        => 'checkbox',
+		'label'       => __( 'Require Instant Payment', 'woocommerce-gateway-paypal-express-checkout' ),
+		'default'     => 'no',
+		'desc_tip'    => true,
+		'description' => __( 'If you enable this setting, PayPal will be instructed not to allow the buyer to use funding sources that take additional time to complete (for example, eChecks). Instead, the buyer will be required to use an instant funding source, such as an instant transfer, a credit/debit card, or PayPal Credit.', 'woocommerce-gateway-paypal-express-checkout' ),
 	),
 	'logo_image_url' => array(
 		'title'       => __( 'Logo Image URL', 'woocommerce-gateway-paypal-express-checkout' ),
