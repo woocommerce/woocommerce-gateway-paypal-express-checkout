@@ -211,11 +211,11 @@ class WC_Gateway_PPEC_Checkout_Handler {
 					unset( $gateways[ $id ] );
 				}
 			}
-		}
-
-		// If using PayPal standard (this is admin choice) we don't need to also show PayPal EC on checkout.
-		if ( isset( $gateways['paypal'] ) ) {
-			unset( $gateways['ppec_paypal'] );
+		} else {
+			// If using PayPal standard (this is admin choice) we don't need to also show PayPal EC on checkout.
+			if ( isset( $gateways['paypal'] ) || 'no' === wc_gateway_ppec()->settings->mark_enabled ) {
+				unset( $gateways['ppec_paypal'] );
+			}
 		}
 
 		return $gateways;
