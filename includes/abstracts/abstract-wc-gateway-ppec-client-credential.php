@@ -28,13 +28,6 @@ abstract class WC_Gateway_PPEC_Client_Credential {
 	protected $_subject;
 
 	/**
-	 * Payer ID.
-	 *
-	 * @var string
-	 */
-	protected $_payer_id;
-
-	/**
 	 * Get API username.
 	 *
 	 * @return string API username
@@ -59,24 +52,6 @@ abstract class WC_Gateway_PPEC_Client_Credential {
 	 */
 	public function get_subject() {
 		return $this->_subject;
-	}
-
-	/**
-	 * Get payer ID.
-	 *
-	 * @return string Payer ID
-	 */
-	public function get_payer_id() {
-		return $this->_payer_id;
-	}
-
-	/**
-	 * Set payer ID.
-	 *
-	 * @param string $payer_id Payer ID
-	 */
-	public function set_payer_id( $payer_id ) {
-		$this->_payer_id = $payer_id;
 	}
 
 	/**

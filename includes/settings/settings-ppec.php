@@ -28,8 +28,8 @@ wc_enqueue_js( "
 		var ppec_live_fields      = '#woocommerce_ppec_paypal_api_username, #woocommerce_ppec_paypal_api_password, #woocommerce_ppec_paypal_api_signature, #woocommerce_ppec_paypal_api_certificate, #woocommerce_ppec_paypal_api_subject';
 		var ppec_sandbox_fields   = '#woocommerce_ppec_paypal_sandbox_api_username, #woocommerce_ppec_paypal_sandbox_api_password, #woocommerce_ppec_paypal_sandbox_api_signature, #woocommerce_ppec_paypal_sandbox_api_certificate, #woocommerce_ppec_paypal_sandbox_api_subject';
 
-		var enable_toggle         = $( '.ppec-toggle-settings' ).length > 0;
-		var enable_sandbox_toggle = $( '.ppec-toggle-sandbox-settings' ).length > 0;
+		var enable_toggle         = $( 'a.ppec-toggle-settings' ).length > 0;
+		var enable_sandbox_toggle = $( 'a.ppec-toggle-sandbox-settings' ).length > 0;
 
 		$( '#woocommerce_ppec_paypal_environment' ).change(function(){
 			$( ppec_sandbox_fields + ',' + ppec_live_fields ).closest( 'tr' ).hide();

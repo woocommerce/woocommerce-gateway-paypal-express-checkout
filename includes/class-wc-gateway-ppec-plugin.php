@@ -217,7 +217,6 @@ class WC_Gateway_PPEC_Plugin {
 			throw new Exception( $openssl_warning, self::DEPENDENCIES_UNSATISFIED );
 		}
 
-
 		if ( ! version_compare( $matches[1], '1.0.1', '>=' ) ) {
 			throw new Exception( $openssl_warning, self::DEPENDENCIES_UNSATISFIED );
 		}
@@ -238,158 +237,6 @@ class WC_Gateway_PPEC_Plugin {
 			throw new Exception( __( 'PayPal Express Checkout is almost ready. To get started, <a href="' . $setting_link . '">connect your PayPal account</a>.', 'woocommerce-gateway-paypal-express-checkout' ), self::NOT_CONNECTED );
 		}
 	}
-
-
-
-
-
-
-
-		/**
-		 * This function fills in the $credentials variable with the credentials
-		 * the user filled in on the page, and returns true or false to indicate
-		 * a success or error, respectively.
-		 *
-		 * Why not just return the credentials or false on failure? Because the user
-		 * might not fill in the credentials at all, which isn't an error.  This way
-		 * allows us to do it without returning an error because the user didn't fill
-		 * in the credentials.
-		 *
-		 * @param string $environment Environment. Either 'live' or 'sandbox'
-		 *
-		 * @return WC_Gateway_PPEC_Client_Credential Credential object
-		 */
-		private function validate_credentials( $environment ) {
-			$settings = wc_gateway_ppec()->settings->loadSettings();
-			if ( 'sandbox' == $environment ) {
-				$creds = $settings->sandboxApiCredentials;
-			} else {
-				$creds = $settings->liveApiCredentials;
-			}
-
-			$api_user  = trim( $_POST[ 'woo_pp_' . $environment . '_api_username' ] );
-			$api_pass  = trim( $_POST[ 'woo_pp_' . $environment . '_api_password' ] );
-			$api_style = trim( $_POST[ 'woo_pp_' . $environment . '_api_style' ] );
-
-			$subject = trim( $_POST[ 'woo_pp_' . $environment . '_subject' ] );
-			if ( empty( $subject ) ) {
-				$subject = false;
-			}
-
-			$credential = false;
-			if ( 'signature' === $api_style ) {
-				$api_sig = trim( $_POST[ 'woo_pp_' . $environment . '_api_signature' ] );
-			} elseif ( 'certificate' === $api_style ) {
-				if ( array_key_exists( 'woo_pp_' . $environment . '_api_certificate', $_FILES )
-					&& array_key_exists( 'tmp_name', $_FILES[ 'woo_pp_' . $environment . '_api_certificate' ] )
-					&& array_key_exists( 'size', $_FILES[ 'woo_pp_' . $environment . '_api_certificate' ] )
-					&& $_FILES[ 'woo_pp_' . $environment . '_api_certificate' ]['size'] ) {
-					$api_cert = file_get_contents( $_FILES[ 'woo_pp_' . $environment . '_api_certificate' ]['tmp_name'] );
-					$_POST[ 'woo_pp_' . $environment . '_api_cert_string' ] = base64_encode( $api_cert );
-					unlink( $_FILES[ 'woo_pp_' . $environment . '_api_certificate' ]['tmp_name'] );
-					unset( $_FILES[ 'woo_pp_' . $environment . '_api_certificate' ] );
-				} elseif ( array_key_exists( 'woo_pp_' . $environment . '_api_cert_string', $_POST ) && ! empty( $_POST[ 'woo_pp_' . $environment . '_api_cert_string' ] ) ) {
-					$api_cert = base64_decode( $_POST[ 'woo_pp_' . $environment . '_api_cert_string' ] );
-				}
-			} else {
-				WC_Admin_Settings::add_error( sprintf( __( 'Error: You selected an invalid credential type for your %s API credentials.', 'woocommerce-gateway-paypal-express-checkout' ), __( $environment, 'woocommerce-gateway-paypal-express-checkout' ) ) );
-				return false;
-			}
-
-			if ( ! empty( $api_user ) ) {
-				if ( empty( $api_pass ) ) {
-					WC_Admin_Settings::add_error( sprintf( __( 'Error: You must enter a %s API password.' ), __( $environment, 'woocommerce-gateway-paypal-express-checkout' ) ) );
-					return false;
-				}
-
-				if ( 'signature' === $api_style ) {
-					if ( ! empty( $api_sig ) ) {
-
-						// Ok, test them out.
-						$api_credentials = new WC_Gateway_PPEC_Client_Credential_Signature( $api_user, $api_pass, $api_sig, $subject );
-						try {
-							$payer_id = wc_gateway_ppec()->client->test_api_credentials( $api_credentials, $environment );
-							if ( ! $payer_id ) {
-								WC_Admin_Settings::add_error( sprintf( __( 'Error: The %s credentials you provided are not valid.  Please double-check that you entered them correctly and try again.', 'woocommerce-gateway-paypal-express-checkout' ), __( $environment, 'woocommerce-gateway-paypal-express-checkout' ) ) );
-								return false;
-							}
-							$api_credentials->set_payer_id( $payer_id );
-						} catch( PayPal_API_Exception $ex ) {
-							$this->display_warning( sprintf( __( 'An error occurred while trying to validate your %s API credentials.  Unable to verify that your API credentials are correct.', 'woocommerce-gateway-paypal-express-checkout' ), __( $environment, 'woocommerce-gateway-paypal-express-checkout' ) ) );
-						}
-
-						$credential = $api_credentials;
-
-					} else {
-						WC_Admin_Settings::add_error( sprintf( __( 'Error: You must provide a %s API signature.', 'woocommerce-gateway-paypal-express-checkout' ), __( $environment, 'woocommerce-gateway-paypal-express-checkout' ) ) );
-						return false;
-					}
-
-				} else {
-					if ( ! empty( $api_cert ) ) {
-						$cert = openssl_x509_read( $api_cert );
-						if ( false === $cert ) {
-							WC_Admin_Settings::add_error( sprintf( __( 'Error: The %s API certificate is not valid.', 'woocommerce-gateway-paypal-express-checkout' ), __( $environment, 'woocommerce-gateway-paypal-express-checkout' ) ) );
-							self::$process_admin_options_validation_error = true;
-							return false;
-						}
-
-						$cert_info = openssl_x509_parse( $cert );
-						$valid_until = $cert_info['validTo_time_t'];
-						if ( $valid_until < time() ) {
-							WC_Admin_Settings::add_error( sprintf( __( 'Error: The %s API certificate has expired.', 'woocommerce-gateway-paypal-express-checkout' ), __( $environment, 'woocommerce-gateway-paypal-express-checkout' ) ) );
-							return false;
-						}
-
-						if ( $cert_info['subject']['CN'] != $api_user ) {
-							WC_Admin_Settings::add_error( __( 'Error: The API username does not match the name in the API certificate.  Make sure that you have the correct API certificate.', 'woocommerce-gateway-paypal-express-checkout' ) );
-							return false;
-						}
-					} else {
-						// If we already have a cert on file, don't require one.
-						if ( $creds && is_a( $creds, 'WC_Gateway_PPEC_Client_Credential_Certificate' ) ) {
-							if ( ! $creds->get_certificate() ) {
-								WC_Admin_Settings::add_error( sprintf( __( 'Error: You must provide a %s API certificate.', 'woocommerce-gateway-paypal-express-checkout' ), __( $environment, 'woocommerce-gateway-paypal-express-checkout' ) ) );
-								return false;
-							}
-							$api_cert = $creds->get_certificate();
-						} else {
-							WC_Admin_Settings::add_error( sprintf( __( 'Error: You must provide a %s API certificate.', 'woocommerce-gateway-paypal-express-checkout' ), __( $environment, 'woocommerce-gateway-paypal-express-checkout' ) ) );
-							return false;
-						}
-					}
-
-					$api_credentials = new WC_Gateway_PPEC_Client_Credential_Certificate( $api_user, $api_pass, $api_cert, $subject );
-					try {
-						$payer_id = wc_gateway_ppec()->client->test_api_credentials( $api_credentials, $environment );
-						if ( ! $payer_id ) {
-							WC_Admin_Settings::add_error( sprintf( __( 'Error: The %s credentials you provided are not valid.  Please double-check that you entered them correctly and try again.', 'woocommerce-gateway-paypal-express-checkout' ), __( $environment, 'woocommerce-gateway-paypal-express-checkout' ) ) );
-							return false;
-						}
-						$api_credentials->set_payer_id( $payer_id );
-					} catch( PayPal_API_Exception $ex ) {
-						$this->display_warning( sprintf( __( 'An error occurred while trying to validate your %s API credentials.  Unable to verify that your API credentials are correct.', 'woocommerce-gateway-paypal-express-checkout' ), __( $environment, 'woocommerce-gateway-paypal-express-checkout' ) ) );
-					}
-
-					$credential = $api_credentials;
-				}
-			}
-
-			return $credential;
-		}
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	/**
 	 * Run the plugin.
@@ -435,16 +282,13 @@ class WC_Gateway_PPEC_Plugin {
 		require_once( $this->includes_path . 'class-wc-gateway-ppec-cart-handler.php' );
 		require_once( $this->includes_path . 'class-wc-gateway-ppec-ips-handler.php' );
 
-		$this->settings = new WC_Gateway_PPEC_Settings();
-		$this->settings->loadSettings();
-
+		$this->settings       = new WC_Gateway_PPEC_Settings();
 		$this->gateway_loader = new WC_Gateway_PPEC_Gateway_Loader();
 		$this->admin          = new WC_Gateway_PPEC_Admin_Handler();
 		$this->checkout       = new WC_Gateway_PPEC_Checkout_Handler();
 		$this->cart           = new WC_Gateway_PPEC_Cart_Handler();
 		$this->ips            = new WC_Gateway_PPEC_IPS_Handler();
-
-		$this->client = new WC_Gateway_PPEC_Client( $this->settings->get_active_api_credentials(), $this->settings->environment );
+		$this->client         = new WC_Gateway_PPEC_Client( $this->settings->get_active_api_credentials(), $this->settings->environment );
 	}
 
 	/**

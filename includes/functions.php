@@ -15,9 +15,10 @@ function woo_pp_start_checkout() {
 		wc_add_notice( __( 'Payment error:', 'woocommerce-gateway-paypal-express-checkout' ) . $final_output, 'error' );
 
 		$redirect_url = WC()->cart->get_cart_url();
-		$settings = wc_gateway_ppec()->settings->loadSettings();
+		$settings     = wc_gateway_ppec()->settings;
+		$client       = wc_gateway_ppec()->client;
 
-		if( 'yes' == $settings->enabled && $settings->enableInContextCheckout && $settings->get_active_api_credentials()->get_payer_id() ) {
+		if ( $settings->is_enabled() && $client->get_payer_id() ) {
 			ob_end_clean();
 			?>
 			<script type="text/javascript">
@@ -49,7 +50,7 @@ function wc_gateway_ppec_log( $message ) {
 	static $wc_ppec_logger;
 
 	// No need to write to log file if logging is disabled.
-	if ( ! wc_gateway_ppec()->settings->loadSettings()->logging_enabled ) {
+	if ( ! wc_gateway_ppec()->settings->is_logging_enabled() ) {
 		return false;
 	}
 

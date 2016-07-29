@@ -9,9 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class WC_Gateway_PPEC_Settings {
 
-	protected $_live_api_credentials;
-	protected $_sandbox_api_credentials;
-	protected $_settings;
+	protected $_settings        = array();
 	protected $_supportedLocale = array(
 		'da_DK', 'de_DE', 'en_AU', 'en_GB', 'en_US', 'es_ES', 'fr_CA', 'fr_FR',
 		'he_IL', 'id_ID', 'it_IT', 'ja_JP', 'nl_NL', 'no_NO', 'pl_PL', 'pt_BR',
@@ -36,7 +34,7 @@ class WC_Gateway_PPEC_Settings {
 	}
 
 	public function __construct() {
-		$this->loadSettings();
+		$this->load_settings();
 	}
 
 	/**
@@ -46,28 +44,24 @@ class WC_Gateway_PPEC_Settings {
 	 *
 	 * @return WC_Gateway_PPEC_Settings Instance of WC_Gateway_PPEC_Settings
 	 */
-	public function loadSettings( $force_reload = false ) {
+	public function load_settings( $force_reload = false ) {
 		if ( $this->_is_setting_loaded && ! $force_reload ) {
 			return $this;
 		}
-		$settings_array           = (array) get_option( 'woocommerce_ppec_paypal_settings', array() );
-		$this->settings           = (object) $settings_array;
+		$this->_settings          = (array) get_option( 'woocommerce_ppec_paypal_settings', array() );
 		$this->_is_setting_loaded = true;
 		return $this;
 	}
 
 	/**
 	 * Get API credentials for the live envionment.
-	 * @return object.
+	 * @return object
 	 */
 	public function get_live_api_credentials() {
-		if ( ! empty( $this->_live_api_credentials ) ) {
-			return $this->_live_api_credentials;
-		}
 		if ( $this->api_signature ) {
-			$this->_live_api_credentials = new WC_Gateway_PPEC_Client_Credential_Signature( $this->api_username, $this->api_password, $this->api_signature, $this->api_subject );
+			return new WC_Gateway_PPEC_Client_Credential_Signature( $this->api_username, $this->api_password, $this->api_signature, $this->api_subject );
 		} else {
-			$this->_live_api_credentials = new WC_Gateway_PPEC_Client_Credential_Certificate( $this->api_username, $this->api_password, $this->api_certificate, $this->api_subject );
+			return new WC_Gateway_PPEC_Client_Credential_Certificate( $this->api_username, $this->api_password, $this->api_certificate, $this->api_subject );
 		}
 	}
 
@@ -76,29 +70,26 @@ class WC_Gateway_PPEC_Settings {
 	 * @return object.
 	 */
 	public function get_sandbox_api_credentials() {
-		if ( ! empty( $this->_sandbox_api_credentials ) ) {
-			return $this->_sandbox_api_credentials;
-		}
 		if ( $this->sandbox_api_signature ) {
-			$this->_sandbox_api_credentials = new WC_Gateway_PPEC_Client_Credential_Signature( $this->sandbox_api_username, $this->sandbox_api_password, $this->sandbox_api_signature, $this->sandbox_api_subject );
+			return new WC_Gateway_PPEC_Client_Credential_Signature( $this->sandbox_api_username, $this->sandbox_api_password, $this->sandbox_api_signature, $this->sandbox_api_subject );
 		} else {
-			$this->_sandbox_api_credentials = new WC_Gateway_PPEC_Client_Credential_Certificate( $this->sandbox_api_username, $this->sandbox_api_password, $this->sandbox_api_certificate, $this->sandbox_api_subject );
+			return new WC_Gateway_PPEC_Client_Credential_Certificate( $this->sandbox_api_username, $this->sandbox_api_password, $this->sandbox_api_certificate, $this->sandbox_api_subject );
 		}
 	}
 
 	/**
 	 * Get API credentials for the current envionment.
-	 * @return object.
+	 * @return object|false if invalid
 	 */
 	public function get_active_api_credentials() {
-		if ( 'live' === $this->environment ) {
+		if ( 'live' === $this->get_environment() ) {
 			return $this->get_live_api_credentials();
 		} else {
 			return $this->get_sandbox_api_credentials();
 		}
 	}
 
-	public function getPayPalRedirectUrl( $token, $commit = false ) {
+	public function get_paypal_redirect_url( $token, $commit = false ) {
 		$url = 'https://www.';
 
 		if ( $this->environment !== 'live' ) {
@@ -116,7 +107,7 @@ class WC_Gateway_PPEC_Settings {
 		return $url;
 	}
 
-	public function getSetECShortcutParameters( $buckets = 1 ) {
+	public function get_set_express_checkout_shortcut_params( $buckets = 1 ) {
 		$params = array();
 
 		if ( $this->logo_image_url ) {
@@ -149,7 +140,7 @@ class WC_Gateway_PPEC_Settings {
 		return $params;
 	}
 
-	public function getSetECMarkParameters( $buckets = 1 ) {
+	public function get_set_express_checkout_mark_params( $buckets = 1 ) {
 		$params = array();
 
 		if ( $this->logo_image_url ) {
@@ -181,7 +172,7 @@ class WC_Gateway_PPEC_Settings {
 
 		return $params;
 	}
-	public function getDoECParameters( $buckets = 1 ) {
+	public function get_do_express_checkout_params( $buckets = 1 ) {
 		$params = array();
 		if ( ! is_array( $buckets ) ) {
 			$numBuckets = $buckets;
@@ -200,6 +191,22 @@ class WC_Gateway_PPEC_Settings {
 	}
 
 	/**
+	 * Is PPEC enabled
+	 * @return bool
+	 */
+	public function is_enabled() {
+		return 'yes' === $this->enabled;
+	}
+
+	/**
+	 * Is logging enabled
+	 * @return bool
+	 */
+	public function is_logging_enabled() {
+		return 'yes' === $this->debug;
+	}
+
+	/**
 	 * Payment action
 	 * @return string
 	 */
@@ -208,10 +215,26 @@ class WC_Gateway_PPEC_Settings {
 	}
 
 	/**
+	 * Payment action
+	 * @return string
+	 */
+	public function get_environment() {
+		return $this->environment === 'sandbox' ? 'sandbox' : 'live';
+	}
+
+	/**
+	 * Subtotal mismatches
+	 * @return string
+	 */
+	public function get_subtotal_mismatch_behavior() {
+		return $this->subtotal_mismatch_behavior === 'drop' ? 'drop' : 'add';
+	}
+
+	/**
 	 * Get session length.
 	 * @return int
 	 */
-	public function getECTokenSessionLength() {
+	public function get_token_session_length() {
 		// Really, we should map this to a merchant-configurable setting, but for now, we'll just set it to the default (3 hours).
 		return 10800;
 	}

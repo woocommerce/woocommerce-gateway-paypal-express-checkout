@@ -37,9 +37,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 	 * Constructor.
 	 */
 	public function __construct() {
-		$settings = wc_gateway_ppec()->settings->loadSettings();
-
-		if ( ! $settings->enabled ) {
+		if ( ! wc_gateway_ppec()->settings->is_enabled() ) {
 			return;
 		}
 
@@ -62,8 +60,8 @@ class WC_Gateway_PPEC_Cart_Handler {
 	 * Display paypal button on the cart page
 	 */
 	public function display_paypal_button() {
-		$settings      = wc_gateway_ppec()->settings->loadSettings();
-		$checkout_logo = 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-' . $settings->buttonSize . '.png';
+		$settings      = wc_gateway_ppec()->settings;
+		$checkout_logo = 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-' . $settings->button_size . '.png';
 		?>
 		<div class="wcppec-checkout-buttons woo_pp_cart_buttons_div">
 
@@ -96,22 +94,22 @@ class WC_Gateway_PPEC_Cart_Handler {
 	 * Frontend scripts
 	 */
 	public function enqueue_scripts() {
-		$settings = wc_gateway_ppec()->settings->loadSettings();
-		$api_credentials = $settings->get_active_api_credentials();
+		$settings = wc_gateway_ppec()->settings;
+		$client   = wc_gateway_ppec()->client;
 
-		if ( ! is_callable( array( $api_credentials, 'get_payer_id' ) ) ) {
+		if ( ! $client->get_payer_id() ) {
 			return;
 		}
 
 		wp_enqueue_style( 'wc-gateway-ppec-frontend-cart', wc_gateway_ppec()->plugin_url . 'assets/css/wc-gateway-ppec-frontend-cart.css' );
 
-		if ( is_cart() && $settings->enableInContextCheckout ) {
+		if ( is_cart() ) {
 			wp_enqueue_script( 'paypal-checkout-js', 'https://www.paypalobjects.com/api/checkout.js', array(), '1.0', true );
 			wp_enqueue_script( 'wc-gateway-ppec-frontend-in-context-checkout', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-frontend-in-context-checkout.js', array( 'jquery' ), wc_gateway_ppec()->version, true );
 			wp_localize_script( 'wc-gateway-ppec-frontend-in-context-checkout', 'wc_ppec_context',
 				array(
-					'payer_id'    => $api_credentials->get_payer_id(),
-					'environment' => $settings->environment,
+					'payer_id'    => $client->get_payer_id(),
+					'environment' => $settings->get_environment(),
 					'locale'      => $settings->get_paypal_locale(),
 					'start_flow'  => esc_url( add_query_arg( array( 'startcheckout' => 'true' ), wc_get_page_permalink( 'cart' ) ) ),
 				)
@@ -161,10 +159,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 		// if they do not match, check to see what the merchant would like to do
 		// options are to remove line items or add a line item to adjust for the difference
 		if ( $this->totalItemAmount != $roundedPayPalTotal ) {
-			$settings         = wc_gateway_ppec()->settings->loadSettings();
-			$subtotalBehavior = $settings->subtotalMismatchBehavior;
-
-			if ( WC_Gateway_PPEC_Settings::subtotalMismatchBehaviorAddLineItem == $subtotalBehavior ) {
+			if ( 'add' === wc_gateway_ppec()->settings->get_subtotal_mismatch_behavior() ) {
 				// ...
 				// Add line item to make up different between WooCommerce calculations and PayPal calculations
 				$cartItemAmountDifference = $this->totalItemAmount - $roundedPayPalTotal;
@@ -180,7 +175,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 				$this->totalItemAmount += $modifyLineItem[ 'amount' ];
 				$this->orderTotal += $modifyLineItem[ 'amount' ];
 
-			} elseif ( WC_Gateway_PPEC_Settings::subtotalMismatchBehaviorDropLineItems == $subtotalBehavior ) {
+			} else {
 				// ...
 				// Omit line items altogether
 				unset($this->items);
@@ -190,55 +185,12 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 		// enter discount shenanigans. item total cannot be 0 so make modifications accordingly
 		if ( $this->totalItemAmount == $discounts ) {
-			$settings = wc_gateway_ppec()->settings->loadSettings();
-			$behavior = $settings->zeroSubtotalBehavior;
-
-			if ( WC_Gateway_PPEC_Settings::zeroSubtotalBehaviorModifyItems == $behavior ) {
-				// ...
-				// Go ahead and pass the discounts with the cart, but then add in a 0.01 line
-				// item and add a 0.01 shipping discount.
-				$discountLineItem = array(
-					'name'        => 'Discount',
-					'description' => 'Discount Amount',
-					'quantity'    => 1,
-					'amount'      => -$discounts
-				);
-
-				$this->items[] = $discountLineItem;
-
-				if ( $is_zdp_currency ) {
-					$discount = 1;
-				} else {
-					$discount = 0.01;
-				}
-
-				$modifyLineItem = array(
-					'name'          => 'Discount Offset',
-					'description'   => 'Amount Discounted in Shipping',
-					'quantity'      => 1,
-					'amount'        => $discount
-				);
-
-				$this->items[] = $modifyLineItem;
-				$this->shipDiscountAmount = -$discount;
-				$this->totalItemAmount = $this->totalItemAmount - $discounts + $discount;
-				$this->orderTotal -= $discounts;
-
-			} elseif ( WC_Gateway_PPEC_Settings::zeroSubtotalBehaviorOmitLineItems == $behavior ) {
-				// ...
-				// Omit line items altogether
-				unset($this->items);
-				$this->shipDiscountAmount = 0;
-				$this->totalItemAmount -= $discounts;
-				$this->orderTotal -= $discounts;
-
-			} else {
-				// ...
-				// Increase SHIPDISCAMT by the amount of all the coupons in the cart
-				$this->shipDiscountAmount = -$discounts;
-				$this->orderTotal -= $discounts;
-
-			}
+			// ...
+			// Omit line items altogether
+			unset($this->items);
+			$this->shipDiscountAmount = 0;
+			$this->totalItemAmount -= $discounts;
+			$this->orderTotal -= $discounts;
 		} else {
 			// Build PayPal_Cart object as normal
 			if ( $discounts > 0 ) {
@@ -320,10 +272,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 		// if they do not match, check to see what the merchant would like to do
 		// options are to remove line items or add a line item to adjust for the difference
 		if ( $this->totalItemAmount != $roundedPayPalTotal ) {
-			$settings         = wc_gateway_ppec()->settings->loadSettings();
-			$subtotalBehavior = $settings->subtotalMismatchBehavior;
-
-			if ( WC_Gateway_PPEC_Settings::subtotalMismatchBehaviorAddLineItem == $subtotalBehavior ) {
+			if ( 'add' === wc_gateway_ppec()->settings->get_subtotal_mismatch_behavior() ) {
 				// ...
 				// Add line item to make up different between WooCommerce calculations and PayPal calculations
 				$cartItemAmountDifference = $this->totalItemAmount - $roundedPayPalTotal;
@@ -337,7 +286,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 				$this->items[] = $modifyLineItem;
 
-			} elseif ( WC_Gateway_PPEC_Settings::subtotalMismatchBehaviorDropLineItems == $subtotalBehavior ) {
+			} else {
 				// ...
 				// Omit line items altogether
 				unset($this->items);
@@ -347,54 +296,11 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 		// enter discount shenanigans. item total cannot be 0 so make modifications accordingly
 		if ( $this->totalItemAmount == $discounts ) {
-			$settings = wc_gateway_ppec()->settings->loadSettings();
-			$behavior = $settings->zeroSubtotalBehavior;
-
-			if ( WC_Gateway_PPEC_Settings::zeroSubtotalBehaviorModifyItems == $behavior ) {
-				// ...
-				// Go ahead and pass the discounts with the cart, but then add in a 0.01 line
-				// item and add a 0.01 shipping discount.
-				$discountLineItem = array(
-					'name'        => 'Discount',
-					'description' => 'Discount Amount',
-					'quantity'    => 1,
-					'amount'      => -$discounts
-				);
-
-				$this->items[] = $discountLineItem;
-
-				if ( $is_zdp_currency ) {
-					$discount = 1;
-				} else {
-					$discount = 0.01;
-				}
-
-				$modifyLineItem = array(
-					'name'          => 'Discount Offset',
-					'description'   => 'Amount Discounted in Shipping',
-					'quantity'      => 1,
-					'amount'        => $discount
-				);
-
-				$this->items[] = $modifyLineItem;
-				$this->shipDiscountAmount = -$discount;
-				$this->totalItemAmount = $this->totalItemAmount - $discounts + $discount;
-				$this->orderTotal -= $discounts;
-
-			} elseif ( WC_Gateway_PPEC_Settings::zeroSubtotalBehaviorOmitLineItems == $behavior ) {
-				// ...
-				// Omit line items altogether
-				unset($this->items);
-				$this->shipDiscountAmount = 0;
-				$this->totalItemAmount -= $discounts;
-				$this->orderTotal -= $discounts;
-
-			} else {
-				// ...
-				// Increase SHIPDISCAMT by the amount of all the coupons in the cart
-				$this->shipDiscountAmount = -$discounts;
-				$this->orderTotal -= $discounts;
-			}
+			// Omit line items altogether
+			unset($this->items);
+			$this->shipDiscountAmount = 0;
+			$this->totalItemAmount -= $discounts;
+			$this->orderTotal -= $discounts;
 		} else {
 			// Build PayPal_Cart object as normal
 			if ( $discounts > 0 ) {

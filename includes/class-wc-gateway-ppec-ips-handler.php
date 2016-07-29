@@ -168,10 +168,11 @@ class WC_Gateway_PPEC_IPS_Handler {
 		$error_msgs = array();
 		try {
 			$payer_id = wc_gateway_ppec()->client->test_api_credentials( $creds, $env );
+
 			if ( ! $payer_id ) {
 				$this->_redirect_with_messages( __( 'Easy Setup was able to obtain your API credentials, but was unable to verify that they work correctly.  Please make sure your PayPal account is set up properly and try Easy Setup again.', 'woocommerce-gateway-paypal-express-checkout' ) );
 			}
-			$creds->set_payer_id( $payer_id );
+
 		} catch( PayPal_API_Exception $ex ) {
 			$error_msgs[] = array(
 				'warning' => __( 'Easy Setup was able to obtain your API credentials, but an error occurred while trying to verify that they work correctly.  Please try Easy Setup again.', 'woocommerce-gateway-paypal-express-checkout' )
@@ -187,21 +188,25 @@ class WC_Gateway_PPEC_IPS_Handler {
 		}
 
 		// Save credentials to settings API
+		$settings_array = (array) get_option( 'woocommerce_ppec_paypal_settings', array() );
+
 		if ( 'live' === $env ) {
 			$settings_array['environment']     = 'live';
-			$settings_array['api_username']    = $live->get_username();
-			$settings_array['api_password']    = $live->get_password();
-			$settings_array['api_signature']   = is_callable( array( $live, 'get_signature' ) ) ? $live->get_signature() : '';
-			$settings_array['api_certificate'] = is_callable( array( $live, 'get_certificate' ) ) ? $live->get_certificate() : '';
-			$settings_array['api_subject']     = $live->get_subject();
+			$settings_array['api_username']    = $creds->get_username();
+			$settings_array['api_password']    = $creds->get_password();
+			$settings_array['api_signature']   = is_callable( array( $creds, 'get_signature' ) ) ? $creds->get_signature() : '';
+			$settings_array['api_certificate'] = is_callable( array( $creds, 'get_certificate' ) ) ? $creds->get_certificate() : '';
+			$settings_array['api_subject']     = $creds->get_subject();
 		} else {
 			$settings_array['environment']             = 'sandbox';
-			$settings_array['sandbox_api_username']    = $sandbox->get_username();
-			$settings_array['sandbox_api_password']    = $sandbox->get_password();
-			$settings_array['sandbox_api_signature']   = is_callable( array( $sandbox, 'get_signature' ) ) ? $sandbox->get_signature() : '';
-			$settings_array['sandbox_api_certificate'] = is_callable( array( $sandbox, 'get_certificate' ) ) ? $sandbox->get_certificate() : '';
-			$settings_array['sandbox_api_subject']     = $sandbox->get_subject();
+			$settings_array['sandbox_api_username']    = $creds->get_username();
+			$settings_array['sandbox_api_password']    = $creds->get_password();
+			$settings_array['sandbox_api_signature']   = is_callable( array( $creds, 'get_signature' ) ) ? $creds->get_signature() : '';
+			$settings_array['sandbox_api_certificate'] = is_callable( array( $creds, 'get_certificate' ) ) ? $creds->get_certificate() : '';
+			$settings_array['sandbox_api_subject']     = $creds->get_subject();
 		}
+
+		update_option( 'woocommerce_ppec_paypal_settings', $settings_array );
 
 		$this->_redirect_with_messages( $error_msgs );
 	}
