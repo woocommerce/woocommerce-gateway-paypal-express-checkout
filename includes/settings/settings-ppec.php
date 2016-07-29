@@ -74,12 +74,6 @@ wc_enqueue_js( "
 
 /**
  * Settings for PayPal Gateway.
- *
- * @todo setting migration
- * woo_pp_zero_subtotal_behavior
- * In-Context Checkout option
- * woo_pp_allow_guest_checkout
- * mark_size
  */
 return array(
 	'enabled' => array(
