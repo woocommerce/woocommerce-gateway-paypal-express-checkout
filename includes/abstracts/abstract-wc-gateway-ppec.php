@@ -341,7 +341,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 					}
 
 				} catch( PayPal_API_Exception $ex ) {
-					$this->display_warning( sprintf( __( 'An error occurred while trying to validate your %s API credentials.  Unable to verify that your API credentials are correct.', 'woocommerce-gateway-paypal-express-checkout' ), __( $settings->get_environment(), 'woocommerce-gateway-paypal-express-checkout' ) ) );
+					WC_Admin_Settings::add_error( sprintf( __( 'An error occurred while trying to validate your %s API credentials.  Unable to verify that your API credentials are correct.', 'woocommerce-gateway-paypal-express-checkout' ), __( $settings->get_environment(), 'woocommerce-gateway-paypal-express-checkout' ) ) );
 				}
 
 			} elseif ( is_a( $creds, 'WC_Gateway_PPEC_Client_Credential_Certificate' ) && ! empty( $creds->get_certificate() ) ) {
@@ -376,13 +376,31 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 					}
 
 				} catch( PayPal_API_Exception $ex ) {
-					$this->display_warning( sprintf( __( 'An error occurred while trying to validate your %s API credentials.  Unable to verify that your API credentials are correct.', 'woocommerce-gateway-paypal-express-checkout' ), __( $settings->get_environment(), 'woocommerce-gateway-paypal-express-checkout' ) ) );
+					WC_Admin_Settings::add_error( sprintf( __( 'An error occurred while trying to validate your %s API credentials.  Unable to verify that your API credentials are correct.', 'woocommerce-gateway-paypal-express-checkout' ), __( $settings->get_environment(), 'woocommerce-gateway-paypal-express-checkout' ) ) );
 				}
 
 			} else {
 
 				WC_Admin_Settings::add_error( sprintf( __( 'Error: You must provide a %s API signature or certificate.', 'woocommerce-gateway-paypal-express-checkout' ), __( $settings->get_environment(), 'woocommerce-gateway-paypal-express-checkout' ) ) );
 				return false;
+			}
+
+			$settings_array = (array) get_option( 'woocommerce_ppec_paypal_settings', array() );
+
+			if ( 'yes' === $settings_array['require_billing'] ) {
+				$is_account_enabled_for_billing_address = false;
+
+				try {
+					$is_account_enabled_for_billing_address = wc_gateway_ppec()->client->test_for_billing_address_enabled( $creds, $settings->get_environment() );
+				} catch( PayPal_API_Exception $ex ) {
+					$is_account_enabled_for_billing_address = false;
+				}
+
+				if ( ! $is_account_enabled_for_billing_address ) {
+					$settings_array['require_billing'] = 'no';
+					update_option( 'woocommerce_ppec_paypal_settings', $settings_array );
+					WC_Admin_Settings::add_error( __( 'The "require billing address" option is not enabled by your account and has been disabled.', 'woocommerce-gateway-paypal-express-checkout' ) );
+				}
 			}
 		}
 	}

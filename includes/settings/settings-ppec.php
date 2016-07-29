@@ -247,7 +247,7 @@ return array(
 	'require_billing' => array(
 		'title'       => __( 'Billing Addresses', 'woocommerce-gateway-paypal-express-checkout' ),
 		'type'        => 'checkbox',
-		'label'       => __( 'Collect Billing Address', 'woocommerce-gateway-paypal-express-checkout' ),
+		'label'       => __( 'Require Billing Address', 'woocommerce-gateway-paypal-express-checkout' ),
 		'default'     => 'no',
 		'desc_tip'    => true,
 		'description' => __( 'PayPal does not share buyer billing details with you. However, there are times when you must collect the buyer billing address to fulfill an essential business function (such as determining whether you must charge the buyer tax). Enable this function to collect the address before payment is taken.', 'woocommerce-gateway-paypal-express-checkout' ),
