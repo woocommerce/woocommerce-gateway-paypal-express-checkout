@@ -70,7 +70,8 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 			if ( null != $session && is_a( $session, 'WC_Gateway_PPEC_Session_Data' ) && $session->checkout_completed && $session->expiry_time >= time() && $session->payerID ) {
 				if ( $session->checkout_details && is_a( $session->checkout_details, 'PayPal_Checkout_Details' ) && ( is_checkout() || is_ajax() ) && self::$use_buyer_email ) {
 					$this->buyer_email = $session->checkout_details->payer_details->email;
-					$this->title .= ' - ' . esc_html( $this->buyer_email );
+					$this->title      .= ' - ' . esc_html( $this->buyer_email );
+					$this->description = '';
 				}
 
 				$posted = array(

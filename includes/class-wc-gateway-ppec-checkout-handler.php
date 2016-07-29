@@ -666,7 +666,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			$this->getDoExpressCheckoutParameters( $token, $payerID )
 		);
 
-		$params['PAYMENTREQUEST_0_INVNUM'] = $order->get_order_number();
+		$params['PAYMENTREQUEST_0_INVNUM'] = $settings->invoice_prefix . $order->get_order_number();
 
 		$response = wc_gateway_ppec()->client->do_express_checkout_payment( $params );
 
