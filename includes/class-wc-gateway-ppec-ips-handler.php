@@ -159,7 +159,6 @@ class WC_Gateway_PPEC_IPS_Handler {
 			}
 		}
 
-		// TODO: Check for IPS certificate-style.
 		$creds = new WC_Gateway_PPEC_Client_Credential_Signature(
 			$_GET['api_username'],
 			$_GET['api_password'],
@@ -179,39 +178,30 @@ class WC_Gateway_PPEC_IPS_Handler {
 			);
 		}
 
-		$is_enabled_for_billing_address = false;
-		try {
-			$is_enabled_for_billing_address = wc_gateway_ppec()->client->test_for_billing_address_enabled( $creds, $env );
-		} catch( PayPal_API_Exception $ex ) {
-			$error_msgs[] = array(
-				'warning' => __( 'Easy Setup encountered an error while trying to determine which features are enabled on your PayPal account.  You may not see all of the features below that are enabled for your PayPal account.  To try again, click "Save Changes".', 'woocommerce-gateway-paypal-express-checkout' )
-			);
-		}
-
 		$error_msgs[] = array(
 			'success' => __( 'Success!  Your PayPal account has been set up successfully.', 'woocommerce-gateway-paypal-express-checkout' )
 		);
 
-		$settings = wc_gateway_ppec()->settings->loadSettings();
-
-		if ( ! $settings->enabled ) {
-			$error_msgs[] = array(
-				'warning' => __( 'PayPal Express Checkout is not enabled.  To allow your buyers to pay with PayPal, make sure "Enable PayPal Express Checkout" is checked.', 'woocommerce-gateway-paypal-express-checkout' )
-			);
-		}
-
 		if ( ! empty( $error_msgs ) ) {
-			wc_gateway_ppec_log( sprintf( '%s: returned back from IPS flow but with warnings/errors: %s', __METHOD__, print_r( $error_msgs, true ) ) );
+			wc_gateway_ppec_log( sprintf( '%s: returned back from IPS flow: %s', __METHOD__, print_r( $error_msgs, true ) ) );
 		}
 
-		$settings->environment = $env;
-		if ( 'live' == $env ) {
-			$settings->liveApiCredentials = $creds;
+		// Save credentials to settings API
+		if ( 'live' === $env ) {
+			$settings_array['environment']     = 'live';
+			$settings_array['api_username']    = $live->get_username();
+			$settings_array['api_password']    = $live->get_password();
+			$settings_array['api_signature']   = is_callable( array( $live, 'get_signature' ) ) ? $live->get_signature() : '';
+			$settings_array['api_certificate'] = is_callable( array( $live, 'get_certificate' ) ) ? $live->get_certificate() : '';
+			$settings_array['api_subject']     = $live->get_subject();
 		} else {
-			$settings->sandboxApiCredentials = $creds;
+			$settings_array['environment']             = 'sandbox';
+			$settings_array['sandbox_api_username']    = $sandbox->get_username();
+			$settings_array['sandbox_api_password']    = $sandbox->get_password();
+			$settings_array['sandbox_api_signature']   = is_callable( array( $sandbox, 'get_signature' ) ) ? $sandbox->get_signature() : '';
+			$settings_array['sandbox_api_certificate'] = is_callable( array( $sandbox, 'get_certificate' ) ) ? $sandbox->get_certificate() : '';
+			$settings_array['sandbox_api_subject']     = $sandbox->get_subject();
 		}
-
-		$settings->saveSettings();
 
 		$this->_redirect_with_messages( $error_msgs );
 	}

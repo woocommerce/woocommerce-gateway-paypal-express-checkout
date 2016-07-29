@@ -50,7 +50,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		$this->debug                      = 'yes' === $this->get_option( 'debug', 'no' );
 		$this->invoice_prefix             = $this->get_option( 'invoice_prefix', 'WC-' );
 		$this->instant_payments           = 'yes' === $this->get_option( 'instant_payments', 'no' );
-		$this->reqiure_billing            = 'yes' === $this->get_option( 'reqiure_billing', 'no' );
+		$this->require_billing            = 'yes' === $this->get_option( 'require_billing', 'no' );
 		$this->paymentaction              = $this->get_option( 'paymentaction', 'sale' );
 		$this->logo_image_url             = $this->get_option( 'logo_image_url' );
 		$this->subtotal_mismatch_behavior = $this->get_option( 'subtotal_mismatch_behavior', 'add' );
@@ -456,7 +456,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 			return false;
 		}
 
-		$api_credentials = $settings->getActiveApiCredentials();
+		$api_credentials = $settings->get_active_api_credentials();
 		if ( ! is_callable( array( $api_credentials, 'get_payer_id' ) ) ) {
 			return false;
 		}

@@ -250,7 +250,7 @@ return array(
 		'desc_tip'    => true,
 		'description' => __( 'If you enable this setting, PayPal will be instructed not to allow the buyer to use funding sources that take additional time to complete (for example, eChecks). Instead, the buyer will be required to use an instant funding source, such as an instant transfer, a credit/debit card, or PayPal Credit.', 'woocommerce-gateway-paypal-express-checkout' ),
 	),
-	'reqiure_billing' => array(
+	'require_billing' => array(
 		'title'       => __( 'Billing Addresses', 'woocommerce-gateway-paypal-express-checkout' ),
 		'type'        => 'checkbox',
 		'label'       => __( 'Collect Billing Address', 'woocommerce-gateway-paypal-express-checkout' ),

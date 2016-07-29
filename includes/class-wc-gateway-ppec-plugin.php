@@ -99,7 +99,7 @@ class WC_Gateway_PPEC_Plugin {
 			$settings_array['environment']                = get_option( 'pp_woo_environment' );
 			$settings_array['button_size']                = get_option( 'pp_woo_buttonSize' );
 			$settings_array['instant_payments']           = get_option( 'pp_woo_blockEChecks' );
-			$settings_array['reqiure_billing']            = get_option( 'pp_woo_requireBillingAddress' );
+			$settings_array['require_billing']            = get_option( 'pp_woo_requireBillingAddress' );
 			$settings_array['debug']                      = get_option( 'pp_woo_logging_enabled' ) ? 'yes' : 'no';
 
 			$live    = get_option( 'woo_pp_liveApiCredentials' );
@@ -232,7 +232,7 @@ class WC_Gateway_PPEC_Plugin {
 	 * @throws Exception
 	 */
 	protected function _check_credentials() {
-		$credential = $this->settings->getActiveApiCredentials();
+		$credential = $this->settings->get_active_api_credentials();
 		if ( ! is_a( $credential, 'WC_Gateway_PPEC_Client_Credential' ) ) {
 			$setting_link = $this->get_admin_setting_link();
 			throw new Exception( __( 'PayPal Express Checkout is almost ready. To get started, <a href="' . $setting_link . '">connect your PayPal account</a>.', 'woocommerce-gateway-paypal-express-checkout' ), self::NOT_CONNECTED );
@@ -403,14 +403,6 @@ class WC_Gateway_PPEC_Plugin {
 	 * Callback for activation hook.
 	 */
 	public function activate() {
-		// Enable some options that we recommend for all merchants.
-		add_option( 'pp_woo_enabled', true );
-		add_option( 'pp_woo_allowGuestCheckout', true );
-		add_option( 'pp_woo_enableInContextCheckout', true );
-		/* defer ppc for next next release.
-		add_option( 'pp_woo_ppc_enabled', true );
-		*/
-
 		if ( ! isset( $this->setings ) ) {
 			require_once( $this->includes_path . 'class-wc-gateway-ppec-settings.php' );
 			$settings = new WC_Gateway_PPEC_Settings();
@@ -452,16 +444,18 @@ class WC_Gateway_PPEC_Plugin {
 		$this->cart           = new WC_Gateway_PPEC_Cart_Handler();
 		$this->ips            = new WC_Gateway_PPEC_IPS_Handler();
 
-		$this->client = new WC_Gateway_PPEC_Client( $this->settings->getActiveApiCredentials(), $this->settings->environment );
+		$this->client = new WC_Gateway_PPEC_Client( $this->settings->get_active_api_credentials(), $this->settings->environment );
 	}
 
+	/**
+	 * Link to settings screen.
+	 */
 	public function get_admin_setting_link() {
 		if ( version_compare( WC()->version, '2.6', '>=' ) ) {
 			$section_slug = 'ppec_paypal';
 		} else {
 			$section_slug = strtolower( 'WC_Gateway_PPEC_With_PayPal' );
 		}
-
 		return admin_url( 'admin.php?page=wc-settings&tab=checkout&section=' . $section_slug );
 	}
 

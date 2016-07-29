@@ -97,7 +97,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 	 */
 	public function enqueue_scripts() {
 		$settings = wc_gateway_ppec()->settings->loadSettings();
-		$api_credentials = $settings->getActiveApiCredentials();
+		$api_credentials = $settings->get_active_api_credentials();
 
 		if ( ! is_callable( array( $api_credentials, 'get_payer_id' ) ) ) {
 			return;

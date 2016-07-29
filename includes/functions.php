@@ -17,7 +17,7 @@ function woo_pp_start_checkout() {
 		$redirect_url = WC()->cart->get_cart_url();
 		$settings = wc_gateway_ppec()->settings->loadSettings();
 
-		if( 'yes' == $settings->enabled && $settings->enableInContextCheckout && $settings->getActiveApiCredentials()->get_payer_id() ) {
+		if( 'yes' == $settings->enabled && $settings->enableInContextCheckout && $settings->get_active_api_credentials()->get_payer_id() ) {
 			ob_end_clean();
 			?>
 			<script type="text/javascript">
