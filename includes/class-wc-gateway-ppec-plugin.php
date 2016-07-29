@@ -232,7 +232,7 @@ class WC_Gateway_PPEC_Plugin {
 	 */
 	protected function _check_credentials() {
 		$credential = $this->settings->get_active_api_credentials();
-		if ( ! is_a( $credential, 'WC_Gateway_PPEC_Client_Credential' ) ) {
+		if ( ! is_a( $credential, 'WC_Gateway_PPEC_Client_Credential' ) || '' === $credential->get_username() ) {
 			$setting_link = $this->get_admin_setting_link();
 			throw new Exception( __( 'PayPal Express Checkout is almost ready. To get started, <a href="' . $setting_link . '">connect your PayPal account</a>.', 'woocommerce-gateway-paypal-express-checkout' ), self::NOT_CONNECTED );
 		}
