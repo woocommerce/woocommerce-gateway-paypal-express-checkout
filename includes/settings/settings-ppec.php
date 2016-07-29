@@ -102,7 +102,7 @@ return array(
 			'medium' => __( 'Medium', 'woocommerce-gateway-paypal-express-checkout' ),
 			'large'  => __( 'Large', 'woocommerce-gateway-paypal-express-checkout' )
 		)
-	),	
+	),
 	'environment' => array(
 		'title'       => __( 'Environment', 'woocommerce-gateway-paypal-express-checkout' ),
 		'type'        => 'select',
@@ -230,7 +230,7 @@ return array(
 	'debug' => array(
 		'title'       => __( 'Debug Log', 'woocommerce-gateway-paypal-express-checkout' ),
 		'type'        => 'checkbox',
-		'label'       => __( 'Enable logging', 'woocommerce-gateway-paypal-express-checkout' ),
+		'label'       => __( 'Enable Logging', 'woocommerce-gateway-paypal-express-checkout' ),
 		'default'     => 'no',
 		'desc_tip'    => true,
 		'description' => __( 'Log PayPal events, such as IPN requests.', 'woocommerce-gateway-paypal-express-checkout' ),

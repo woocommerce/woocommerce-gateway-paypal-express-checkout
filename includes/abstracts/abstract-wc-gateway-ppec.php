@@ -4,14 +4,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+/**
+ * WC_Gateway_PPEC
+ */
 abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 
-	private static $process_admin_options_already_run = false;
-	private static $process_admin_options_validation_error = false;
-
-	protected $buyer_email = false;
-	public static $use_buyer_email = true;
-
+	/**
+	 * Constructor.
+	 */
 	public function __construct() {
 		$this->has_fields  = false;
 		$this->icon        = false;
@@ -26,26 +26,36 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		$this->init_form_fields();
 		$this->init_settings();
 
-		$this->title          = $this->get_option( 'title' );
-		$this->description    = $this->get_option( 'description' );
-		$this->environment    = $this->get_option( 'environment', 'live' );
-		$this->debug          = 'yes' === $this->get_option( 'debug', 'no' );
+		$this->enabled      = $this->get_option( 'enabled', 'yes' );
+		$this->button_size  = $this->get_option( 'button_size', 'large' );
+		$this->environment  = $this->get_option( 'environment', 'live' );
+		$this->mark_enabled = 'yes' === $this->get_option( 'mark_enabled', 'no' );
+		$this->title        = $this->get_option( 'title' );
+		$this->description  = $this->get_option( 'description' );
+
+		if ( 'live' === $this->environment ) {
+			$this->api_username    = $this->get_option( 'api_username' );
+			$this->api_password    = $this->get_option( 'api_password' );
+			$this->api_signature   = $this->get_option( 'api_signature' );
+			$this->api_certificate = $this->get_option( 'api_certificate' );
+			$this->api_subject     = $this->get_option( 'api_subject' );
+		} else {
+			$this->api_username    = $this->get_option( 'sandbox_api_username' );
+			$this->api_password    = $this->get_option( 'sandbox_api_password' );
+			$this->api_signature   = $this->get_option( 'sandbox_api_signature' );
+			$this->api_certificate = $this->get_option( 'sandbox_api_certificate' );
+			$this->api_subject     = $this->get_option( 'sandbox_api_subject' );
+		}
+
+		$this->debug                      = 'yes' === $this->get_option( 'debug', 'no' );
+		$this->invoice_prefix             = $this->get_option( 'invoice_prefix', 'WC-' );
+		$this->instant_payments           = 'yes' === $this->get_option( 'instant_payments', 'no' );
+		$this->reqiure_billing            = 'yes' === $this->get_option( 'reqiure_billing', 'no' );
+		$this->paymentaction              = $this->get_option( 'paymentaction', 'sale' );
+		$this->logo_image_url             = $this->get_option( 'logo_image_url' );
+		$this->subtotal_mismatch_behavior = $this->get_option( 'subtotal_mismatch_behavior', 'add' );
 
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
-
-
-
-
-
-
-
-
-
-
-		$settings = wc_gateway_ppec()->settings->loadSettings();
-
-
-
 
 		// Do we need to auto-select this payment method?
 		// TODO: Move this out to particular handler instead of gateway
@@ -428,13 +438,11 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 	 * @return string
 	 */
 	public function get_transaction_url( $order ) {
-		$settings = wc_gateway_ppec()->settings->loadSettings();
-		if ( 'sandbox' === $settings->environment ) {
+		if ( 'sandbox' === $this->environment ) {
 			$this->view_transaction_url = 'https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_view-a-trans&id=%s';
 		} else {
 			$this->view_transaction_url = 'https://www.paypal.com/cgi-bin/webscr?cmd=_view-a-trans&id=%s';
 		}
-
 		return parent::get_transaction_url( $order );
 	}
 
@@ -444,8 +452,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 	 * @return bool
 	 */
 	public function is_available() {
-		$settings = wc_gateway_ppec()->settings->loadSettings();
-		if ( ! $settings->enabled ) {
+		if ( 'yes' !== $this->enabled ) {
 			return false;
 		}
 

@@ -76,28 +76,56 @@ class WC_Gateway_PPEC_Plugin {
 		$this->plugin_path   = trailingslashit( plugin_dir_path( $this->file ) );
 		$this->plugin_url    = trailingslashit( plugin_dir_url( $this->file ) );
 		$this->includes_path = $this->plugin_path . trailingslashit( 'includes' );
+
+		// Updates
+		if ( ! version_compare( $version, get_option( 'wc_ppec_version' ), '>' ) ) {
+			$this->run_updater( $version );
+		}
 	}
 
-	public function updater() {
-		/*'enabled',
-		'logging_enabled',
-		'ppcEnabled',
-		'environment',
-		'liveApiCredentials',
-		'sandboxApiCredentials',
-		'enableInContextCheckout',
-		'buttonSize',
-		'markSize',
-		'logoImageUrl',
-		'paymentAction',
-		'allowGuestCheckout',
-		'zeroSubtotalBehavior',
-		'subtotalMismatchBehavior',
-		'ipnUrl',
-		'blockEChecks',
-		'requireBillingAddress',
-		'liveAccountIsEnabledForBillingAddress',
-		'sbAccountIsEnabledForBillingAddress',*/
+	/**
+	 * Handle updates.
+	 * @param  [type] $new_version [description]
+	 * @return [type]              [description]
+	 */
+	private function run_updater( $new_version ) {
+		// Map old settings to settings API
+		if ( get_option( 'pp_woo_enabled' ) ) {
+			$settings_array                               = (array) get_option( 'woocommerce_ppec_paypal_settings', array() );
+			$settings_array['enabled']                    = get_option( 'pp_woo_enabled' ) ? 'yes' : 'no';
+			$settings_array['logo_image_url']             = get_option( 'pp_woo_logoImageUrl' );
+			$settings_array['paymentAction']              = get_option( 'pp_woo_paymentAction' );
+			$settings_array['subtotal_mismatch_behavior'] = 'addLineItem' === get_option( 'pp_woo_subtotalMismatchBehavior' ) ? 'add' : 'drop';
+			$settings_array['environment']                = get_option( 'pp_woo_environment' );
+			$settings_array['button_size']                = get_option( 'pp_woo_buttonSize' );
+			$settings_array['instant_payments']           = get_option( 'pp_woo_blockEChecks' );
+			$settings_array['reqiure_billing']            = get_option( 'pp_woo_requireBillingAddress' );
+			$settings_array['debug']                      = get_option( 'pp_woo_logging_enabled' ) ? 'yes' : 'no';
+
+			$live    = get_option( 'woo_pp_liveApiCredentials' );
+			$sandbox = get_option( 'sandboxApiCredentials' );
+
+			if ( $live && is_a( $live, 'WC_Gateway_PPEC_Client_Credential' ) ) {
+				$settings_array['api_username']    = $live->get_username();
+				$settings_array['api_password']    = $live->get_password();
+				$settings_array['api_signature']   = is_callable( array( $live, 'get_signature' ) ) ? $live->get_signature() : '';
+				$settings_array['api_certificate'] = is_callable( array( $live, 'get_certificate' ) ) ? $live->get_certificate() : '';
+				$settings_array['api_subject']     = $live->get_subject();
+			}
+
+			if ( $sandbox && is_a( $live, 'WC_Gateway_PPEC_Client_Credential' ) ) {
+				$settings_array['sandbox_api_username']    = $sandbox->get_username();
+				$settings_array['sandbox_api_password']    = $sandbox->get_password();
+				$settings_array['sandbox_api_signature']   = is_callable( array( $sandbox, 'get_signature' ) ) ? $sandbox->get_signature() : '';
+				$settings_array['sandbox_api_certificate'] = is_callable( array( $sandbox, 'get_certificate' ) ) ? $sandbox->get_certificate() : '';
+				$settings_array['sandbox_api_subject']     = $sandbox->get_subject();
+			}
+
+			update_option( 'woocommerce_ppec_paypal_settings', $settings_array );
+			delete_option( 'pp_woo_enabled' );
+		}
+
+		update_option( 'wc_ppec_version', $new_version );
 	}
 
 	/**
