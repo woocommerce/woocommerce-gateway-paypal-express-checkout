@@ -425,7 +425,6 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		foreach ( $txnData['refundable_txns'] as $key => $value ) {
 			$refundableAmount = $value['amount'] - $value['refunded_amount'];
 
-
 			if ( $amount == $refundableAmount ) {
 				if ( 0 == $value['refunded_amount'] ) {
 					$refundType = 'Full';
@@ -436,7 +435,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 				try {
 					$refundTxnID = WC_Gateway_PPEC_Refund::refund_order( $order, $amount, $refundType, $reason, $order->get_order_currency() );
 					$txnData['refundable_txns'][ $key ]['refunded_amount'] += $amount;
-					$order->add_order_note( sprintf( $refundTxnID, __( 'PayPal refund completed; transaction ID = %s', 'woocommerce-gateway-paypal-express-checkout' ), $refundTxnID ) );
+					$order->add_order_note( sprintf( __( 'PayPal refund completed; transaction ID = %s', 'woocommerce-gateway-paypal-express-checkout' ), $refundTxnID ) );
 					update_post_meta( $order_id, '_woo_pp_txnData', $txnData );
 
 					return true;
