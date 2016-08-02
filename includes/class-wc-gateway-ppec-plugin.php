@@ -78,7 +78,7 @@ class WC_Gateway_PPEC_Plugin {
 		$this->includes_path = $this->plugin_path . trailingslashit( 'includes' );
 
 		// Updates
-		if ( ! version_compare( $version, get_option( 'wc_ppec_version' ), '>' ) ) {
+		if ( version_compare( $version, get_option( 'wc_ppec_version' ), '>' ) ) {
 			$this->run_updater( $version );
 		}
 	}
