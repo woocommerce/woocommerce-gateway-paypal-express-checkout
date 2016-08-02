@@ -25,6 +25,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 	protected $custom;
 	protected $invoiceNumber;
 	protected $shipDiscountAmount;
+	protected $needs_shipping;
 
 	/**
 	 * Currencies that support 0 decimal places -- "zero decimal place" currencies
@@ -225,9 +226,9 @@ class WC_Gateway_PPEC_Cart_Handler {
 		$this->custom = '';
 		$this->invoiceNumber = '';
 
-		if ( ! is_numeric( $this->shipping ) )
+		if ( ! is_numeric( $this->shipping ) ) {
 			$this->shipping = 0;
-
+		}
 	}
 
 	public function loadOrderDetails( $order_id ) {
@@ -335,24 +336,26 @@ class WC_Gateway_PPEC_Cart_Handler {
 		$this->custom = '';
 		$this->invoiceNumber = '';
 
-		if ( ! is_numeric( $this->shipping ) )
+		if ( ! is_numeric( $this->shipping ) ) {
 			$this->shipping = 0;
+		}
 
+		$this->needs_shipping = WC()->cart->needs_shipping();
 	}
 
 	public function setECParams() {
-
 		$stdParams = array (
-			'PAYMENTREQUEST_0_AMT' => $this->orderTotal,
+			'PAYMENTREQUEST_0_AMT'          => $this->orderTotal,
 			'PAYMENTREQUEST_0_CURRENCYCODE' => $this->currency,
-			'PAYMENTREQUEST_0_ITEMAMT' => $this->totalItemAmount,
-			'PAYMENTREQUEST_0_SHIPPINGAMT' => $this->shipping,
+			'PAYMENTREQUEST_0_ITEMAMT'      => $this->totalItemAmount,
+			'PAYMENTREQUEST_0_SHIPPINGAMT'  => $this->shipping,
 			'PAYMENTREQUEST_0_INSURANCEAMT' => $this->insurance,
-			'PAYMENTREQUEST_0_HANDLINGAMT' => $this->handling,
-			'PAYMENTREQUEST_0_TAXAMT' => $this->orderTax,
-			'PAYMENTREQUEST_0_CUSTOM' => $this->custom,
-			'PAYMENTREQUEST_0_INVNUM' => $this->invoiceNumber,
-			'PAYMENTREQUEST_0_SHIPDISCAMT' => $this->shipDiscountAmount
+			'PAYMENTREQUEST_0_HANDLINGAMT'  => $this->handling,
+			'PAYMENTREQUEST_0_TAXAMT'       => $this->orderTax,
+			'PAYMENTREQUEST_0_CUSTOM'       => $this->custom,
+			'PAYMENTREQUEST_0_INVNUM'       => $this->invoiceNumber,
+			'PAYMENTREQUEST_0_SHIPDISCAMT'  => $this->shipDiscountAmount,
+			'NOSHIPPING'                    => $this->needs_shipping ? 0 : 1,
 		);
 
 		if ( ! empty( $this->items ) ) {
@@ -361,8 +364,8 @@ class WC_Gateway_PPEC_Cart_Handler {
 				$lineItemParams = array(
 					'L_PAYMENTREQUEST_0_NAME' . $count => $values['name'],
 					'L_PAYMENTREQUEST_0_DESC' . $count => ! empty( $values['description'] ) ? strip_tags( $values['description'] ) : '',
-					'L_PAYMENTREQUEST_0_QTY' . $count => $values['quantity'],
-					'L_PAYMENTREQUEST_0_AMT' . $count => $values['amount']
+					'L_PAYMENTREQUEST_0_QTY' . $count  => $values['quantity'],
+					'L_PAYMENTREQUEST_0_AMT' . $count  => $values['amount']
 				);
 
 				$stdParams = array_merge( $stdParams, $lineItemParams );
