@@ -102,8 +102,8 @@ class WC_Gateway_PPEC_Plugin {
 			$settings_array['require_billing']            = get_option( 'pp_woo_requireBillingAddress' );
 			$settings_array['debug']                      = get_option( 'pp_woo_logging_enabled' ) ? 'yes' : 'no';
 
-			$live    = get_option( 'woo_pp_liveApiCredentials' );
-			$sandbox = get_option( 'sandboxApiCredentials' );
+			$live    = get_option( 'pp_woo_liveApiCredentials' );
+			$sandbox = get_option( 'pp_woo_sandboxApiCredentials' );
 
 			if ( $live && is_a( $live, 'WC_Gateway_PPEC_Client_Credential' ) ) {
 				$settings_array['api_username']    = $live->get_username();
