@@ -38,11 +38,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 		$order = wc_get_order( $_REQUEST['post'] );
 
 		// bail if the order wasn't paid for with this gateway
-		if ( 'ppec_paypal' !== $order->payment_method ) {
-			return $actions;
-		}
-
-		if ( 'yes' === get_post_meta( $order->id, '_ppec_charge_captured', true ) ) {
+		if ( 'ppec_paypal' !== $order->payment_method || 'pending' !== get_post_meta( $order->id, '_paypal_status', true ) ) {
 			return $actions;
 		}
 
@@ -160,8 +156,6 @@ class WC_Gateway_PPEC_Admin_Handler {
 					$order->add_order_note( __( 'Unable to capture charge!', 'woocommerce-gateway-paypal-express-checkout' ) . ' ' . $result->get_error_message() );
 				} else {
 					$order->add_order_note( sprintf( __( 'PayPal Express Checkout charge complete (Charge ID: %s)', 'woocommerce-gateway-paypal-express-checkout' ), $trans_id ) );
-
-					update_post_meta( $order->id, '_ppec_charge_captured', 'yes' );
 				}
 			}
 		}
@@ -203,7 +197,6 @@ class WC_Gateway_PPEC_Admin_Handler {
 					$order->add_order_note( __( 'Unable to void charge!', 'woocommerce-gateway-paypal-express-checkout' ) . ' ' . $result->get_error_message() );
 				} else {
 					$order->add_order_note( sprintf( __( 'PayPal Express Checkout charge voided (Charge ID: %s)', 'woocommerce-gateway-paypal-express-checkout' ), $trans_id) );
-					delete_post_meta( $order->id, '_ppec_charge_captured' );
 				}
 			}
 		}
