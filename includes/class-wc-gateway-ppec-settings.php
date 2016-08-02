@@ -185,7 +185,6 @@ class WC_Gateway_PPEC_Settings {
 		}
 
 		foreach ( $buckets as $bucketNum ) {
-			//$params[ 'PAYMENTREQUEST_' . $bucketNum . '_NOTIFYURL' ] = $this->ipnUrl;
 			$params[ 'PAYMENTREQUEST_' . $bucketNum . '_PAYMENTACTION' ] = $this->get_paymentaction();
 		}
 
