@@ -166,7 +166,7 @@ class WC_Gateway_PPEC_Settings {
 
 		foreach ( $buckets as $bucketNum ) {
 			$params[ 'PAYMENTREQUEST_' . $bucketNum . '_PAYMENTACTION' ] = $this->get_paymentaction();
-			
+
 			if ( 'yes' === $this->instant_payments && 'sale' === $this->get_paymentaction() ) {
 				$params[ 'PAYMENTREQUEST_' . $bucketNum . '_ALLOWEDPAYMENTMETHOD' ] = 'InstantPaymentOnly';
 			}
@@ -248,7 +248,7 @@ class WC_Gateway_PPEC_Settings {
 	 */
 	public function currency_has_decimal_restriction() {
 		return (
-			'yes' === $settings->enabled
+			'yes' === $this->enabled
 			&&
 			in_array( get_woocommerce_currency(), array( 'HUF', 'TWD', 'JPY' ) )
 			&&
