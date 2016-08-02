@@ -113,7 +113,7 @@ class WC_Gateway_PPEC_Plugin {
 				$settings_array['api_subject']     = $live->get_subject();
 			}
 
-			if ( $sandbox && is_a( $live, 'WC_Gateway_PPEC_Client_Credential' ) ) {
+			if ( $sandbox && is_a( $sandbox, 'WC_Gateway_PPEC_Client_Credential' ) ) {
 				$settings_array['sandbox_api_username']    = $sandbox->get_username();
 				$settings_array['sandbox_api_password']    = $sandbox->get_password();
 				$settings_array['sandbox_api_signature']   = is_callable( array( $sandbox, 'get_signature' ) ) ? $sandbox->get_signature() : '';
