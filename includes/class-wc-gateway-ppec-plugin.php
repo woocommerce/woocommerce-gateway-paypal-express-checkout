@@ -94,7 +94,7 @@ class WC_Gateway_PPEC_Plugin {
 			$settings_array                               = (array) get_option( 'woocommerce_ppec_paypal_settings', array() );
 			$settings_array['enabled']                    = get_option( 'pp_woo_enabled' ) ? 'yes' : 'no';
 			$settings_array['logo_image_url']             = get_option( 'pp_woo_logoImageUrl' );
-			$settings_array['paymentAction']              = get_option( 'pp_woo_paymentAction' );
+			$settings_array['paymentAction']              = strtolower( get_option( 'pp_woo_paymentAction', 'sale' ) );
 			$settings_array['subtotal_mismatch_behavior'] = 'addLineItem' === get_option( 'pp_woo_subtotalMismatchBehavior' ) ? 'add' : 'drop';
 			$settings_array['environment']                = get_option( 'pp_woo_environment' );
 			$settings_array['button_size']                = get_option( 'pp_woo_buttonSize' );

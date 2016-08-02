@@ -682,7 +682,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			}
 
 			$paymentAction = $settings->get_paymentaction();
-			if ( 'Sale' == $paymentAction ) {
+			if ( 'sale' == $paymentAction ) {
 				$txn = array(
 					'txnID' => $payment_details->payments[0]->transaction_id,
 					'amount' => $order->get_total(),
@@ -695,7 +695,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 				}
 				$txnData['refundable_txns'][] = $txn;
 
-			} elseif ( 'Authorization' == $paymentAction ) {
+			} elseif ( 'authorization' == $paymentAction ) {
 				$txnData['auth_status'] = 'NotCompleted';
 			}
 
