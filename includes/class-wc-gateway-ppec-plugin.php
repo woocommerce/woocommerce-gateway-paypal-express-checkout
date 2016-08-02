@@ -101,6 +101,7 @@ class WC_Gateway_PPEC_Plugin {
 			$settings_array['instant_payments']           = get_option( 'pp_woo_blockEChecks' );
 			$settings_array['require_billing']            = get_option( 'pp_woo_requireBillingAddress' );
 			$settings_array['debug']                      = get_option( 'pp_woo_logging_enabled' ) ? 'yes' : 'no';
+
 			// Load client classes before `is_a` check on credentials instance.
 			$this->_load_client();
 
