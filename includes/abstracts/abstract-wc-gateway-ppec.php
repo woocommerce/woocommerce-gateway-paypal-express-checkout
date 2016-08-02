@@ -110,7 +110,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 
 				// Clear Cart
 				WC()->cart->empty_cart();
-				
+
 				return array(
 					'result'   => 'success',
 					'redirect' => $this->get_return_url( $order )
@@ -455,13 +455,6 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		if ( 'yes' !== $this->enabled ) {
 			return false;
 		}
-
-		$client = wc_gateway_ppec()->client;
-
-		if ( ! $client->get_payer_id() ) {
-			return false;
-		}
-
 		return true;
 	}
 }

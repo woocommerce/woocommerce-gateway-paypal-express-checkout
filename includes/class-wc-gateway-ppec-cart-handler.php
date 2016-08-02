@@ -61,8 +61,12 @@ class WC_Gateway_PPEC_Cart_Handler {
 	 * Display paypal button on the cart page
 	 */
 	public function display_paypal_button() {
-		$settings      = wc_gateway_ppec()->settings;
-		$checkout_logo = 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-' . $settings->button_size . '.png';
+		$gateways = WC()->payment_gateways->get_available_payment_gateways();
+		$settings = wc_gateway_ppec()->settings;
+
+		if ( ! isset( $gateways['ppec_paypal'] ) ) {
+			return;
+		}
 		?>
 		<div class="wcppec-checkout-buttons woo_pp_cart_buttons_div">
 
@@ -73,7 +77,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 			<?php endif; ?>
 
 			<a href="<?php echo esc_url( add_query_arg( array( 'startcheckout' => 'true' ), wc_get_page_permalink( 'cart' ) ) ); ?>" id="woo_pp_ec_button" class="wcppec-checkout-buttons__button">
-				<img src="<?php echo esc_url( $checkout_logo ); ?>" alt="<?php _e( 'Check out with PayPal', 'woocommerce-gateway-paypal-express-checkout' ); ?>" style="width: auto; height: auto;">
+				<img src="<?php echo esc_url( 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-' . $settings->button_size . '.png' ); ?>" alt="<?php _e( 'Check out with PayPal', 'woocommerce-gateway-paypal-express-checkout' ); ?>" style="width: auto; height: auto;">
 			</a>
 		</div>
 		<?php
@@ -83,10 +87,15 @@ class WC_Gateway_PPEC_Cart_Handler {
 	 * Display paypal button on the cart widget
 	 */
 	public function display_mini_paypal_button() {
-		$checkout_logo = 'https://www.paypalobjects.com/webstatic/en_US/i/btn/png/gold-rect-paypalcheckout-26px.png';
+		$gateways = WC()->payment_gateways->get_available_payment_gateways();
+		$settings = wc_gateway_ppec()->settings;
+
+		if ( ! isset( $gateways['ppec_paypal'] ) ) {
+			return;
+		}
 		?>
 		<a href="<?php echo esc_url( add_query_arg( array( 'startcheckout' => 'true' ), wc_get_page_permalink( 'cart' ) ) ); ?>" id="woo_pp_ec_button" class="wcppec-cart-widget-button">
-			<img src="<?php echo esc_url( $checkout_logo ); ?>" alt="<?php _e( 'Check out with PayPal', 'woocommerce-gateway-paypal-express-checkout' ); ?>" style="width: auto; height: auto;">
+			<img src="<?php echo esc_url( 'https://www.paypalobjects.com/webstatic/en_US/i/btn/png/gold-rect-paypalcheckout-26px.png' ); ?>" alt="<?php _e( 'Check out with PayPal', 'woocommerce-gateway-paypal-express-checkout' ); ?>" style="width: auto; height: auto;">
 		</a>
 		<?php
 	}
