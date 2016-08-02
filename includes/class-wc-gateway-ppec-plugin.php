@@ -101,6 +101,8 @@ class WC_Gateway_PPEC_Plugin {
 			$settings_array['instant_payments']           = get_option( 'pp_woo_blockEChecks' );
 			$settings_array['require_billing']            = get_option( 'pp_woo_requireBillingAddress' );
 			$settings_array['debug']                      = get_option( 'pp_woo_logging_enabled' ) ? 'yes' : 'no';
+			// Load client classes before `is_a` check on credentials instance.
+			$this->_load_client();
 
 			$live    = get_option( 'pp_woo_liveApiCredentials' );
 			$sandbox = get_option( 'pp_woo_sandboxApiCredentials' );
@@ -269,10 +271,7 @@ class WC_Gateway_PPEC_Plugin {
 	 */
 	protected function _load_handlers() {
 		// Client.
-		require_once( $this->includes_path . 'abstracts/abstract-wc-gateway-ppec-client-credential.php' );
-		require_once( $this->includes_path . 'class-wc-gateway-ppec-client-credential-certificate.php' );
-		require_once( $this->includes_path . 'class-wc-gateway-ppec-client-credential-signature.php' );
-		require_once( $this->includes_path . 'class-wc-gateway-ppec-client.php' );
+		$this->_load_client();
 
 		// Load handlers.
 		require_once( $this->includes_path . 'class-wc-gateway-ppec-settings.php' );
@@ -289,6 +288,18 @@ class WC_Gateway_PPEC_Plugin {
 		$this->cart           = new WC_Gateway_PPEC_Cart_Handler();
 		$this->ips            = new WC_Gateway_PPEC_IPS_Handler();
 		$this->client         = new WC_Gateway_PPEC_Client( $this->settings->get_active_api_credentials(), $this->settings->environment );
+	}
+
+	/**
+	 * Load client.
+	 *
+	 * @since 1.1.0
+	 */
+	protected function _load_client() {
+		require_once( $this->includes_path . 'abstracts/abstract-wc-gateway-ppec-client-credential.php' );
+		require_once( $this->includes_path . 'class-wc-gateway-ppec-client-credential-certificate.php' );
+		require_once( $this->includes_path . 'class-wc-gateway-ppec-client-credential-signature.php' );
+		require_once( $this->includes_path . 'class-wc-gateway-ppec-client.php' );
 	}
 
 	/**
