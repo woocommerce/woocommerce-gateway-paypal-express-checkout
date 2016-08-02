@@ -6,6 +6,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class WC_Gateway_PPEC_Refund {
 
+	/**
+	 * Refund an order.
+	 *
+	 * @throws \PayPal_API_Exception
+	 *
+	 * @param WC_Order $order      Order to refund
+	 * @param float    $amount     Amount to refund
+	 * @param string   $refundType Type of refund (Partial or Full)
+	 * @param string   $reason     Reason to refund
+	 * @param string   $current    Currency of refund
+	 *
+	 * @return null|string If exception is thrown, null is returned. Otherwise
+	 *                     ID of refund transaction is returned.
+	 */
 	public static function refund_order( $order, $amount, $refundType, $reason, $currency ) {
 
 		// add refund params

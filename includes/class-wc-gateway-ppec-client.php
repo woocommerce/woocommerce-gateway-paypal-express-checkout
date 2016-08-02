@@ -39,8 +39,11 @@ class WC_Gateway_PPEC_Client {
 	 *
 	 */
 	public function __construct( $credential, $environment = 'live' ) {
-		$this->_credential  = $credential;
 		$this->_environment = $environment;
+
+		if ( is_a( $credential, 'WC_Gateway_PPEC_Client_Credential' ) ) {
+			$this->set_credential( $credential );
+		}
 	}
 
 	/**
@@ -50,6 +53,26 @@ class WC_Gateway_PPEC_Client {
 	 */
 	public function set_credential( WC_Gateway_PPEC_Client_Credential $credential ) {
 		$this->_credential = $credential;
+	}
+
+	/**
+	 * Get payer ID from API.
+	 */
+	public function get_payer_id() {
+		$option_key = 'woocommerce_ppec_payer_id_' . $this->_environment . '_' . md5( $this->_credential->get_username() . ':' . $this->_credential->get_password() );
+
+		if ( $payer_id = get_option( $option_key ) ) {
+			return $payer_id;
+		} else {
+			$result = $this->get_pal_details();
+
+			if ( ! empty( $result['PAL'] ) ) {
+				update_option( $option_key, wc_clean( $result['PAL'] ) );
+				return $payer_id;
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -289,6 +312,8 @@ class WC_Gateway_PPEC_Client {
 				throw new PayPal_API_Exception( $result );
 			}
 		}
+
+		update_option( 'woocommerce_ppec_payer_id_' . $this->_environment . '_' . md5( $this->_credential->get_username() . ':' . $this->_credential->get_password() ), wc_clean( $result['PAL'] ) );
 
 		return $result['PAL'];
 	}

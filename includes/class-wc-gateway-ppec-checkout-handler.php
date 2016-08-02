@@ -136,12 +136,12 @@ class WC_Gateway_PPEC_Checkout_Handler {
 				}
 
 				if ( $need_to_redirect_back ) {
-					$settings = wc_gateway_ppec()->settings->loadSettings();
+					$settings = wc_gateway_ppec()->settings;
 					$session->checkout_completed = false;
 					$session->leftFrom = 'order';
 					$session->order_id = $order_id;
 					WC()->session->paypal = $session;
-					wp_safe_redirect( $settings->getPayPalRedirectUrl( $session->token, true ) );
+					wp_safe_redirect( $settings->get_paypal_redirect_url( $session->token, true ) );
 					exit;
 				} else {
 					$final_output = '<ul>';
@@ -211,11 +211,11 @@ class WC_Gateway_PPEC_Checkout_Handler {
 					unset( $gateways[ $id ] );
 				}
 			}
-		}
-
-		// If using PayPal standard (this is admin choice) we don't need to also show PayPal EC on checkout.
-		if ( isset( $gateways['paypal'] ) ) {
-			unset( $gateways['ppec_paypal'] );
+		} else {
+			// If using PayPal standard (this is admin choice) we don't need to also show PayPal EC on checkout.
+			if ( isset( $gateways['paypal'] ) || 'no' === wc_gateway_ppec()->settings->mark_enabled ) {
+				unset( $gateways['ppec_paypal'] );
+			}
 		}
 
 		return $gateways;
@@ -456,7 +456,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 
 		wc_gateway_ppec()->cart->loadCartDetails();
 
-		$settings = wc_gateway_ppec()->settings->loadSettings();
+		$settings = wc_gateway_ppec()->settings;
 
 		$needs_shipping = WC()->cart->needs_shipping();
 		$this->suppressShippingAddress( ! $needs_shipping );
@@ -469,7 +469,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		}
 
 		$params = array_merge(
-			$settings->getSetECShortcutParameters(),
+			$settings->get_set_express_checkout_shortcut_params(),
 			$this->getSetExpressCheckoutParameters()
 		);
 
@@ -495,11 +495,11 @@ class WC_Gateway_PPEC_Checkout_Handler {
 				false,
 				$needs_shipping,
 				$this->_requestBillingAgreement,
-				$settings->getECTokenSessionLength(),
+				$settings->get_token_session_length(),
 				$using_ppc
 			);
 
-			return $settings->getPayPalRedirectUrl( $response['TOKEN'], false );
+			return $settings->get_paypal_redirect_url( $response['TOKEN'], false );
 		} else {
 			throw new PayPal_API_Exception( $response );
 		}
@@ -509,7 +509,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 
 		wc_gateway_ppec()->cart->loadOrderDetails( $order_id );
 
-		$settings = wc_gateway_ppec()->settings->loadSettings();
+		$settings = wc_gateway_ppec()->settings;
 
 		//new wc order > get address from that order > new pp address > assign address from order to new pp address > $this->setShippingAddress(pp address object)
 		$getAddress = wc_get_order( $order_id );
@@ -540,7 +540,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		// Do we also need to grab the phone number and pass it through?
 
 		$params = array_merge(
-			$settings->getSetECMarkParameters(),
+			$settings->get_set_express_checkout_mark_params(),
 			$this->getSetExpressCheckoutParameters()
 		);
 
@@ -572,11 +572,11 @@ class WC_Gateway_PPEC_Checkout_Handler {
 				$order_id,
 				$needs_shipping,
 				$this->_requestBillingAgreement,
-				$settings->getECTokenSessionLength(),
+				$settings->get_token_session_length(),
 				$use_ppc
 			);
 
-			return $settings->getPayPalRedirectUrl( $response['TOKEN'], true );
+			return $settings->get_paypal_redirect_url( $response['TOKEN'], true );
 		} else {
 			throw new PayPal_API_Exception( $response );
 		}
@@ -634,7 +634,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 
 		wc_gateway_ppec()->cart->loadOrderDetails( $order_id );
 
-		$settings = wc_gateway_ppec()->settings->loadSettings();
+		$settings = wc_gateway_ppec()->settings;
 
 		$order = wc_get_order( $order_id );
 
@@ -662,11 +662,11 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		}
 
 		$params = array_merge(
-			$settings->getDoECParameters(),
+			$settings->get_do_express_checkout_params(),
 			$this->getDoExpressCheckoutParameters( $token, $payerID )
 		);
 
-		$params['PAYMENTREQUEST_0_INVNUM'] = $order->get_order_number();
+		$params['PAYMENTREQUEST_0_INVNUM'] = $settings->invoice_prefix . $order->get_order_number();
 
 		$response = wc_gateway_ppec()->client->do_express_checkout_payment( $params );
 
@@ -681,8 +681,8 @@ class WC_Gateway_PPEC_Checkout_Handler {
 				$txnData = array( 'refundable_txns' => array() );
 			}
 
-			$paymentAction = $settings->paymentAction;
-			if ( 'Sale' == $paymentAction ) {
+			$paymentAction = $settings->get_paymentaction();
+			if ( 'sale' == $paymentAction ) {
 				$txn = array(
 					'txnID' => $payment_details->payments[0]->transaction_id,
 					'amount' => $order->get_total(),
@@ -695,7 +695,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 				}
 				$txnData['refundable_txns'][] = $txn;
 
-			} elseif ( 'Authorization' == $paymentAction ) {
+			} elseif ( 'authorization' == $paymentAction ) {
 				$txnData['auth_status'] = 'NotCompleted';
 			}
 
