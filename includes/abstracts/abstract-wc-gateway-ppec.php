@@ -9,17 +9,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 
-	protected $buyer_email = false;
-	public static $use_buyer_email = true;
-
 	/**
 	 * Constructor.
 	 */
 	public function __construct() {
-		$this->has_fields  = false;
-		$this->icon        = 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/pp-acceptance-small.png';
-		$this->supports[]  = 'refunds';
-
+		$this->has_fields         = false;
+		$this->icon               = 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/pp-acceptance-small.png';
+		$this->supports[]         = 'refunds';
 		$this->method_title       = __( 'PayPal Express Checkout', 'woocommerce-gateway-paypal-express-checkout' );
 		$this->method_description = __( 'Allow customers to conveniently checkout directly with PayPal.', 'woocommerce-gateway-paypal-express-checkout' );
 
@@ -32,12 +28,12 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		$this->init_form_fields();
 		$this->init_settings();
 
+		$this->title        = $this->method_title;
+		$this->description  = '';
 		$this->enabled      = $this->get_option( 'enabled', 'yes' );
 		$this->button_size  = $this->get_option( 'button_size', 'large' );
 		$this->environment  = $this->get_option( 'environment', 'live' );
 		$this->mark_enabled = 'yes' === $this->get_option( 'mark_enabled', 'no' );
-		$this->title        = $this->get_option( 'title' );
-		$this->description  = $this->get_option( 'description' );
 
 		if ( 'live' === $this->environment ) {
 			$this->api_username    = $this->get_option( 'api_username' );
@@ -63,72 +59,16 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
 
-		// Do we need to auto-select this payment method?
-		// TODO: Move this out to particular handler instead of gateway
+		// Change gateway name if session is active
 		if ( ! is_admin() ) {
-			$session = WC()->session->get( 'paypal' );
-			if ( null != $session && is_a( $session, 'WC_Gateway_PPEC_Session_Data' ) && $session->checkout_completed && $session->expiry_time >= time() && $session->payerID ) {
-				if ( $session->checkout_details && is_a( $session->checkout_details, 'PayPal_Checkout_Details' ) && ( is_checkout() || is_ajax() ) && self::$use_buyer_email ) {
-					$this->buyer_email = $session->checkout_details->payer_details->email;
-					$this->title      .= ' - ' . esc_html( $this->buyer_email );
-					$this->description = '';
-				}
+			$session  = WC()->session->get( 'paypal' );
+			$checkout = wc_gateway_ppec()->checkout;
 
-				$posted = array(
-					'billing_first_name'  => $session->checkout_details->payer_details->first_name,
-					'billing_last_name'   => $session->checkout_details->payer_details->last_name,
-					'billing_email'       => $session->checkout_details->payer_details->email,
-					'billing_phone'       => $session->checkout_details->payer_details->phone_number,
-					'billing_country'     => $session->checkout_details->payer_details->country
-				);
-
-				if ( $session->shipping_required ) {
-					if ( false === strpos( $session->checkout_details->payments[0]->shipping_address->getName(), ' ' ) ) {
-						$posted['shipping_first_name'] = $session->checkout_details->payer_details->first_name;
-						$posted['shipping_last_name']  = $session->checkout_details->payer_details->last_name;
-						$posted['shipping_company']    = $session->checkout_details->payments[0]->shipping_address->getName();
-					} else {
-						$name = explode( ' ', $session->checkout_details->payments[0]->shipping_address->getName() );
-						$posted['shipping_first_name'] = $name[0];
-						array_shift( $name );
-						$posted['shipping_last_name'] = implode( ' ', $name );
-					}
-
-					$posted = array_merge( $posted, array(
-						'shipping_company'          => $session->checkout_details->payer_details->business_name,
-						'shipping_address_1'        => $session->checkout_details->payments[0]->shipping_address->getStreet1(),
-						'shipping_address_2'        => $session->checkout_details->payments[0]->shipping_address->getStreet2(),
-						'shipping_city'             => $session->checkout_details->payments[0]->shipping_address->getCity(),
-						'shipping_state'            => $session->checkout_details->payments[0]->shipping_address->getState(),
-						'shipping_postcode'         => $session->checkout_details->payments[0]->shipping_address->getZip(),
-						'shipping_country'          => $session->checkout_details->payments[0]->shipping_address->getCountry(),
-						'ship_to_different_address' => true
-					) );
-
-				} else {
-					$posted['ship_to_different_address'] = false;
-				}
-
-				$_POST = array_merge( $_POST, $posted );
-
-				// Make sure the proper option is selected based on what the buyer picked
-				if ( ! ( $session->using_ppc xor is_a( $this, 'WC_Gateway_PPEC_With_PayPal_Credit' ) ) ) {
-					$this->chosen = true;
-				} else {
-					$this->chosen = false;
-				}
+			if ( ! $checkout->has_active_session() || ! $session->checkout_completed ) {
+				$this->title        = $this->get_option( 'title' );
+				$this->description  = $this->get_option( 'description' );
 			}
 		}
-	}
-
-	public function before_checkout_billing_form( $checkout ) {
-		$checkout->checkout_fields['billing'] = array(
-			'billing_first_name' => $checkout->checkout_fields['billing']['billing_first_name'],
-			'billing_last_name'  => $checkout->checkout_fields['billing']['billing_last_name'],
-			'billing_country'    => $checkout->checkout_fields['billing']['billing_country'],
-			'billing_email'      => $checkout->checkout_fields['billing']['billing_email'],
-			'billing_phone'      => $checkout->checkout_fields['billing']['billing_phone']
-		);
 	}
 
 	/**
@@ -138,97 +78,63 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		$this->form_fields = include( dirname( dirname( __FILE__ ) ) . '/settings/settings-ppec.php' );
 	}
 
+	/**
+	 * Process payments
+	 */
 	public function process_payment( $order_id ) {
-
 		$checkout = wc_gateway_ppec()->checkout;
+		$order    = wc_get_order( $order_id );
+		$session  = WC()->session->get( 'paypal' );
 
-		// Check the session.  Are we going to just complete an existing payment, or are we going to
-		// send the user over PayPal to pay?
-
-		$session = WC()->session->get( 'paypal' );
-		if ( ! $session || ! is_a( $session, 'WC_Gateway_PPEC_Session_Data' ) ||
-				! $session->checkout_completed || $session->expiry_time < time() ||
-				! $session->payerID ) {
-			// Redirect them over to PayPal.
+		// Redirect them over to PayPal if they have no current session (this is for PayPal Mark).
+		if ( ! $checkout->has_active_session() || ! $session->checkout_completed ) {
 			try {
-				$redirect_url = $checkout->start_checkout_from_checkout( $order_id, 'ppec_paypal_credit' === $this->id );
+				return array(
+					'result'   => 'success',
+					'redirect' => $checkout->start_checkout_from_checkout( $order_id ),
+				);
+			} catch( PayPal_API_Exception $e ) {
+				wc_gateway_ppec_format_paypal_api_exception( $e->errors );
+			}
+		} else {
+			try {
+				// Get details
+				$checkout_details = $checkout->getCheckoutDetails( $session->token );
+
+				// Store addresses given by PayPal
+				$order->set_address( $checkout->get_mapped_billing_address( $checkout_details ), 'billing' );
+				$order->set_address( $checkout->get_mapped_shipping_address( $checkout_details ), 'shipping' );
+
+				// Complete the payment now.
+				$checkout->do_payment( $order, $session->token, $session->payerID );
+
+				// Clear Cart
+				WC()->cart->empty_cart();
 
 				return array(
 					'result'   => 'success',
-					'redirect' => $redirect_url,
-				);
-			} catch( PayPal_API_Exception $e ) {
-				$final_output = '<ul>';
-				foreach ( $e->errors as $error ) {
-					$final_output .= '<li>' . $error->maptoBuyerFriendlyError() . '</li>';
-				}
-				$final_output .= '</ul>';
-				wc_add_notice( __( 'Payment error:', 'woocommerce-gateway-paypal-express-checkout' )  . $final_output, 'error' );
-			}
-		} else {
-			// We have a token we can work with.  Just complete the payment now.
-			try {
-				$payment_details = $checkout->completePayment( $order_id, $session->token, $session->payerID );
-				$transaction_id = $payment_details->payments[0]->transaction_id;
-				$payment_status = $payment_details->payments[0]->payment_status;
-				$pending_reason = $payment_details->payments[0]->pending_reason;
-				$order = wc_get_order( $order_id );
-
-				if ( 'Pending' === $payment_status && 'authorization' === $pending_reason ) {
-					update_post_meta( $order->id, '_ppec_charge_captured', 'no' );
-					add_post_meta( $order->id, '_transaction_id', $transaction_id, true );
-
-					// Mark as on-hold
-					$order->update_status( 'on-hold', sprintf( __( 'PayPal Express Checkout charge authorized (Charge ID: %s). Process order to take payment, or cancel to remove the pre-authorization.', 'woocommerce-gateway-paypal-express-checkout' ), $transaction_id ) );
-
-					$order->reduce_order_stock();
-
-				} else {
-					// TODO: Handle things like eChecks, giropay, etc.
-					$order->payment_complete( $transaction_id );
-					$order->add_order_note( sprintf( __( 'PayPal Express Checkout transaction completed; transaction ID = %s', 'woocommerce-gateway-paypal-express-checkout' ), $transaction_id ) );
-
-					update_post_meta( $order->id, '_ppec_charge_captured', 'yes' );
-				}
-
-				unset( WC()->session->paypal );
-
-				return array(
-					'result' => 'success',
 					'redirect' => $this->get_return_url( $order )
 				);
 			} catch( PayPal_Missing_Session_Exception $e ) {
-				// For some reason, our session data is missing.  Generally, if we've made it this far, this shouldn't happen.
-				wc_add_notice( __( 'Sorry, an error occurred while trying to process your payment.  Please try again.', 'woocommerce-gateway-paypal-express-checkout' ), 'error' );
+				// For some reason, our session data is missing. Generally, if we've made it this far, this shouldn't happen.
+				wc_add_notice( __( 'Sorry, an error occurred while trying to process your payment. Please try again.', 'woocommerce-gateway-paypal-express-checkout' ), 'error' );
 			} catch( PayPal_API_Exception $e ) {
 				// Did we get a 10486 or 10422 back from PayPal?  If so, this means we need to send the buyer back over to
 				// PayPal to have them pick out a new funding method.
-				$need_to_redirect_back = false;
-				foreach ( $e->errors as $error ) {
-					if ( '10486' == $error->error_code || '10422' == $error->error_code ) {
-						$need_to_redirect_back = true;
-					}
-				}
+				$error_codes = wp_list_pluck( $e->errors, 'error_code' );
 
-				if ( $need_to_redirect_back ) {
-					// We're explicitly not loading settings here because we don't want in-context checkout
-					// shown when we're redirecting back to PP for a funding source error.
+				if ( in_array( '10486', $error_codes ) || in_array( '10422', $error_codes ) ) {
 					$session->checkout_completed = false;
-					$session->leftFrom = 'order';
-					$session->order_id = $order_id;
-					WC()->session->paypal = $session;
+					$session->source             = 'order';
+					$session->order_id           = $order_id;
+					WC()->session->set( 'paypal', $session );
+
 					return array(
-						'result' => 'success',
+						'result'   => 'success',
 						'redirect' => wc_gateway_ppec()->settings->get_paypal_redirect_url( $session->token, true )
 					);
 				} else {
-					$final_output = '<ul>';
-					foreach ( $e->errors as $error ) {
-						$final_output .= '<li>' . $error->maptoBuyerFriendlyError() . '</li>';
-					}
-					$final_output .= '</ul>';
-					wc_add_notice( __( 'Payment error:', 'woocommerce-gateway-paypal-express-checkout' ) . $final_output, 'error' );
-					return;
+					wc_gateway_ppec_format_paypal_api_exception( $e->errors );
 				}
 			}
 		}
@@ -549,13 +455,6 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		if ( 'yes' !== $this->enabled ) {
 			return false;
 		}
-
-		$client = wc_gateway_ppec()->client;
-
-		if ( ! $client->get_payer_id() ) {
-			return false;
-		}
-
 		return true;
 	}
 }

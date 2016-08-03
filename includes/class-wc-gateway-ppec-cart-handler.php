@@ -60,8 +60,12 @@ class WC_Gateway_PPEC_Cart_Handler {
 	 * Display paypal button on the cart page
 	 */
 	public function display_paypal_button() {
-		$settings      = wc_gateway_ppec()->settings;
-		$checkout_logo = 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-' . $settings->button_size . '.png';
+		$gateways = WC()->payment_gateways->get_available_payment_gateways();
+		$settings = wc_gateway_ppec()->settings;
+
+		if ( ! isset( $gateways['ppec_paypal'] ) ) {
+			return;
+		}
 		?>
 		<div class="wcppec-checkout-buttons woo_pp_cart_buttons_div">
 
@@ -72,7 +76,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 			<?php endif; ?>
 
 			<a href="<?php echo esc_url( add_query_arg( array( 'startcheckout' => 'true' ), wc_get_page_permalink( 'cart' ) ) ); ?>" id="woo_pp_ec_button" class="wcppec-checkout-buttons__button">
-				<img src="<?php echo esc_url( $checkout_logo ); ?>" alt="<?php _e( 'Check out with PayPal', 'woocommerce-gateway-paypal-express-checkout' ); ?>" style="width: auto; height: auto;">
+				<img src="<?php echo esc_url( 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-' . $settings->button_size . '.png' ); ?>" alt="<?php _e( 'Check out with PayPal', 'woocommerce-gateway-paypal-express-checkout' ); ?>" style="width: auto; height: auto;">
 			</a>
 		</div>
 		<?php
@@ -82,10 +86,15 @@ class WC_Gateway_PPEC_Cart_Handler {
 	 * Display paypal button on the cart widget
 	 */
 	public function display_mini_paypal_button() {
-		$checkout_logo = 'https://www.paypalobjects.com/webstatic/en_US/i/btn/png/gold-rect-paypalcheckout-26px.png';
+		$gateways = WC()->payment_gateways->get_available_payment_gateways();
+		$settings = wc_gateway_ppec()->settings;
+
+		if ( ! isset( $gateways['ppec_paypal'] ) ) {
+			return;
+		}
 		?>
 		<a href="<?php echo esc_url( add_query_arg( array( 'startcheckout' => 'true' ), wc_get_page_permalink( 'cart' ) ) ); ?>" id="woo_pp_ec_button" class="wcppec-cart-widget-button">
-			<img src="<?php echo esc_url( $checkout_logo ); ?>" alt="<?php _e( 'Check out with PayPal', 'woocommerce-gateway-paypal-express-checkout' ); ?>" style="width: auto; height: auto;">
+			<img src="<?php echo esc_url( 'https://www.paypalobjects.com/webstatic/en_US/i/btn/png/gold-rect-paypalcheckout-26px.png' ); ?>" alt="<?php _e( 'Check out with PayPal', 'woocommerce-gateway-paypal-express-checkout' ); ?>" style="width: auto; height: auto;">
 		</a>
 		<?php
 	}
@@ -225,9 +234,9 @@ class WC_Gateway_PPEC_Cart_Handler {
 		$this->custom = '';
 		$this->invoiceNumber = '';
 
-		if ( ! is_numeric( $this->shipping ) )
+		if ( ! is_numeric( $this->shipping ) ) {
 			$this->shipping = 0;
-
+		}
 	}
 
 	public function loadOrderDetails( $order_id ) {
@@ -335,24 +344,24 @@ class WC_Gateway_PPEC_Cart_Handler {
 		$this->custom = '';
 		$this->invoiceNumber = '';
 
-		if ( ! is_numeric( $this->shipping ) )
+		if ( ! is_numeric( $this->shipping ) ) {
 			$this->shipping = 0;
-
+		}
 	}
 
 	public function setECParams() {
-
 		$stdParams = array (
-			'PAYMENTREQUEST_0_AMT' => $this->orderTotal,
+			'PAYMENTREQUEST_0_AMT'          => $this->orderTotal,
 			'PAYMENTREQUEST_0_CURRENCYCODE' => $this->currency,
-			'PAYMENTREQUEST_0_ITEMAMT' => $this->totalItemAmount,
-			'PAYMENTREQUEST_0_SHIPPINGAMT' => $this->shipping,
+			'PAYMENTREQUEST_0_ITEMAMT'      => $this->totalItemAmount,
+			'PAYMENTREQUEST_0_SHIPPINGAMT'  => $this->shipping,
 			'PAYMENTREQUEST_0_INSURANCEAMT' => $this->insurance,
-			'PAYMENTREQUEST_0_HANDLINGAMT' => $this->handling,
-			'PAYMENTREQUEST_0_TAXAMT' => $this->orderTax,
-			'PAYMENTREQUEST_0_CUSTOM' => $this->custom,
-			'PAYMENTREQUEST_0_INVNUM' => $this->invoiceNumber,
-			'PAYMENTREQUEST_0_SHIPDISCAMT' => $this->shipDiscountAmount
+			'PAYMENTREQUEST_0_HANDLINGAMT'  => $this->handling,
+			'PAYMENTREQUEST_0_TAXAMT'       => $this->orderTax,
+			'PAYMENTREQUEST_0_CUSTOM'       => $this->custom,
+			'PAYMENTREQUEST_0_INVNUM'       => $this->invoiceNumber,
+			'PAYMENTREQUEST_0_SHIPDISCAMT'  => $this->shipDiscountAmount,
+			'NOSHIPPING'                    => WC()->cart->needs_shipping() ? 0 : 1,
 		);
 
 		if ( ! empty( $this->items ) ) {
@@ -361,8 +370,8 @@ class WC_Gateway_PPEC_Cart_Handler {
 				$lineItemParams = array(
 					'L_PAYMENTREQUEST_0_NAME' . $count => $values['name'],
 					'L_PAYMENTREQUEST_0_DESC' . $count => ! empty( $values['description'] ) ? strip_tags( $values['description'] ) : '',
-					'L_PAYMENTREQUEST_0_QTY' . $count => $values['quantity'],
-					'L_PAYMENTREQUEST_0_AMT' . $count => $values['amount']
+					'L_PAYMENTREQUEST_0_QTY' . $count  => $values['quantity'],
+					'L_PAYMENTREQUEST_0_AMT' . $count  => $values['amount']
 				);
 
 				$stdParams = array_merge( $stdParams, $lineItemParams );

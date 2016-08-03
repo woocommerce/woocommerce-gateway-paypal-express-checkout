@@ -86,6 +86,7 @@ https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 == Changelog ==
 
 = 1.0.5 =
+* Improved flow after express checkout by removing billing and shipping fields and simply allowing shipping method selection.
 * Fix - Fixed in-context checkout to work after ajax cart reload.
 * Fix - Added missing 'large' button size.
 * Fix - Prevent double stock reduction when payment complete.
