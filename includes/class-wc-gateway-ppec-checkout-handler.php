@@ -99,10 +99,18 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		?>
 		<h3><?php _e( 'Billing details', 'woocommerce-gateway-paypal-express-checkout' ); ?></h3>
 		<ul>
-			<li><?php echo esc_html( $checkout_details->payer_details->first_name . ' ' . $checkout_details->payer_details->last_name ); ?></li>
-			<li><?php echo esc_html( $checkout_details->payer_details->email ); ?></li>
+			<?php if ( $checkout_details->payer_details->billing_address ) : ?>
+				<li><strong><?php _e( 'Address:', 'woocommerce-gateway-paypal-express-checkout' ) ?></strong></br><?php echo WC()->countries->get_formatted_address( $this->get_mapped_billing_address( $checkout_details ) ); ?></li>
+			<?php else : ?>
+				<li><strong><?php _e( 'Name:', 'woocommerce-gateway-paypal-express-checkout' ) ?></strong> <?php echo esc_html( $checkout_details->payer_details->first_name . ' ' . $checkout_details->payer_details->last_name ); ?></li>
+			<?php endif; ?>
+
+			<?php if ( ! empty( $checkout_details->payer_details->email ) ) : ?>
+				<li><strong><?php _e( 'Email:', 'woocommerce-gateway-paypal-express-checkout' ) ?></strong> <?php echo esc_html( $checkout_details->payer_details->email ); ?></li>
+			<?php endif; ?>
+
 			<?php if ( ! empty( $checkout_details->payer_details->phone_number ) ) : ?>
-				<li><?php printf( __( 'Tel: %s', 'woocommerce-gateway-paypal-express-checkout' ), esc_html( $checkout_details->payer_details->phone_number ) ); ?></li>
+				<li><strong><?php _e( 'Tel:', 'woocommerce-gateway-paypal-express-checkout' ) ?></strong> <?php echo esc_html( $checkout_details->payer_details->phone_number ); ?></li>
 			<?php endif; ?>
 		</ul>
 		<?php
