@@ -114,7 +114,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	public function paypal_shipping_details() {
 		$session          = WC()->session->get( 'paypal' );
 		$token            = isset( $_GET['token'] ) ? $_GET['token'] : $session->token;
-		$session          = WC()->session->get( 'paypal' );
+		$checkout_details = $this->getCheckoutDetails( $token );
 
 		if ( ! $session->needs_shipping ) {
 			return;
