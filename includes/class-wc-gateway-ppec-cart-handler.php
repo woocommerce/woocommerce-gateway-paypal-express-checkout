@@ -25,7 +25,6 @@ class WC_Gateway_PPEC_Cart_Handler {
 	protected $custom;
 	protected $invoiceNumber;
 	protected $shipDiscountAmount;
-	protected $needs_shipping;
 
 	/**
 	 * Currencies that support 0 decimal places -- "zero decimal place" currencies
@@ -348,8 +347,6 @@ class WC_Gateway_PPEC_Cart_Handler {
 		if ( ! is_numeric( $this->shipping ) ) {
 			$this->shipping = 0;
 		}
-
-		$this->needs_shipping = WC()->cart->needs_shipping();
 	}
 
 	public function setECParams() {
@@ -364,7 +361,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 			'PAYMENTREQUEST_0_CUSTOM'       => $this->custom,
 			'PAYMENTREQUEST_0_INVNUM'       => $this->invoiceNumber,
 			'PAYMENTREQUEST_0_SHIPDISCAMT'  => $this->shipDiscountAmount,
-			'NOSHIPPING'                    => $this->needs_shipping ? 0 : 1,
+			'NOSHIPPING'                    => WC()->cart->needs_shipping() ? 0 : 1,
 		);
 
 		if ( ! empty( $this->items ) ) {
