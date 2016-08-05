@@ -70,7 +70,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	}
 
 	/**
-	 * Initialize Amazon Payments UI during checkout
+	 * Prepare billing and shipping details if there's active sesssion during checkout.
 	 *
 	 * @param WC_Checkout $checkout
 	 */
