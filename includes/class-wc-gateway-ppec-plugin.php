@@ -97,10 +97,15 @@ class WC_Gateway_PPEC_Plugin {
 			$settings_array['paymentAction']              = strtolower( get_option( 'pp_woo_paymentAction', 'sale' ) );
 			$settings_array['subtotal_mismatch_behavior'] = 'addLineItem' === get_option( 'pp_woo_subtotalMismatchBehavior' ) ? 'add' : 'drop';
 			$settings_array['environment']                = get_option( 'pp_woo_environment' );
-			$settings_array['button_size']                = get_option( 'pp_woo_buttonSize' );
+			$settings_array['button_size']                = get_option( 'pp_woo_button_size' );
 			$settings_array['instant_payments']           = get_option( 'pp_woo_blockEChecks' );
 			$settings_array['require_billing']            = get_option( 'pp_woo_requireBillingAddress' );
 			$settings_array['debug']                      = get_option( 'pp_woo_logging_enabled' ) ? 'yes' : 'no';
+
+			// Make sure button size is correct.
+			if ( ! in_array( $settings_array['button_size'], array( 'small', 'medium', 'large' ) ) ) {
+				$settings_array['button_size'] = 'medium';
+			}
 
 			// Load client classes before `is_a` check on credentials instance.
 			$this->_load_client();
