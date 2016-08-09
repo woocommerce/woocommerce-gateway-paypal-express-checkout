@@ -228,14 +228,17 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		$settings = wc_gateway_ppec()->settings->load_settings( true );
 		$creds    = $settings->get_active_api_credentials();
 
-		if ( ! empty( $creds->get_username() ) ) {
+		$username = $creds->get_username();
+		$password = $creds->get_password();
 
-			if ( empty( $creds->get_password() ) ) {
+		if ( ! empty( $username ) ) {
+
+			if ( empty( $password ) ) {
 				WC_Admin_Settings::add_error( sprintf( __( 'Error: You must enter a %s API password.' ), __( $settings->get_environment(), 'woocommerce-gateway-paypal-express-checkout' ) ) );
 				return false;
 			}
 
-			if ( is_a( $creds, 'WC_Gateway_PPEC_Client_Credential_Signature' ) && ! empty( $creds->get_signature() ) ) {
+			if ( is_a( $creds, 'WC_Gateway_PPEC_Client_Credential_Signature' ) && $creds->get_signature() ) {
 
 				try {
 
@@ -250,7 +253,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 					WC_Admin_Settings::add_error( sprintf( __( 'An error occurred while trying to validate your %s API credentials.  Unable to verify that your API credentials are correct.', 'woocommerce-gateway-paypal-express-checkout' ), __( $settings->get_environment(), 'woocommerce-gateway-paypal-express-checkout' ) ) );
 				}
 
-			} elseif ( is_a( $creds, 'WC_Gateway_PPEC_Client_Credential_Certificate' ) && ! empty( $creds->get_certificate() ) ) {
+			} elseif ( is_a( $creds, 'WC_Gateway_PPEC_Client_Credential_Certificate' ) && $creds->get_certificate() ) {
 
 				$cert = @openssl_x509_read( $creds->get_certificate() );
 

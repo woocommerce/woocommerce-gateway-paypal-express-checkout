@@ -4,8 +4,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$needs_creds         = empty( $this->get_option( 'api_username' ) );
-$needs_sandbox_creds = empty( $this->get_option( 'sandbox_api_username' ) );
+$api_username         = $this->get_option( 'api_username' );
+$sandbox_api_username = $this->get_option( 'sandbox_api_username' );
+
+$needs_creds         = empty( $api_username );
+$needs_sandbox_creds = empty( $sandbox_api_username );
 $enable_ips          = wc_gateway_ppec()->ips->is_supported();
 
 if ( $enable_ips && $needs_creds ) {
