@@ -86,7 +86,7 @@ https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 == Changelog ==
 
 = 1.1.1 =
-* Fixed fatal error prior to PHP 5.5 caused by passing empty() a non-variables
+* Fixed fatal error prior to PHP 5.5 caused by passing empty() a non-variables.
 
 = 1.1.0 =
 * Improved flow after express checkout by removing billing and shipping fields and simply allowing shipping method selection.
