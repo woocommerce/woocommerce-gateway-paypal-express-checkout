@@ -63,11 +63,11 @@ class WC_Gateway_PPEC_Client_Credential_Certificate extends WC_Gateway_PPEC_Clie
 		$certificate_file = $this->_maybe_create_certificate_file( $password );
 
 		if ( false === curl_setopt( $handle, CURLOPT_SSLCERT, $certificate_file ) ) {
-			throw new Exception( __( 'Unable to accept certificate during cURL configuration', 'woocommerce-gateway-ppec' ), WC_Gateway_PPEC_Client::INVALID_ENVIRONMENT_ERROR );
+			throw new Exception( __( 'Unable to accept certificate during cURL configuration', 'woocommerce-gateway-paypal-express-checkout' ), WC_Gateway_PPEC_Client::INVALID_ENVIRONMENT_ERROR );
 		}
 
 		if ( $this->_use_secure_transport() && false === curl_setopt( $handle, CURLOPT_SSLCERTPASSWD, $password ) ) {
-			throw new Exception( __( 'Unable to accept certificate password during cURL configuration', 'woocommerce-gateway-ppec' ), WC_Gateway_PPEC_Client::INVALID_ENVIRONMENT_ERROR );
+			throw new Exception( __( 'Unable to accept certificate password during cURL configuration', 'woocommerce-gateway-paypal-express-checkout' ), WC_Gateway_PPEC_Client::INVALID_ENVIRONMENT_ERROR );
 		}
 	}
 
@@ -84,7 +84,7 @@ class WC_Gateway_PPEC_Client_Credential_Certificate extends WC_Gateway_PPEC_Clie
 	protected function _maybe_create_certificate_file( $password ) {
 		$temp_file = tempnam( sys_get_temp_dir(), 'pptmp_' );
 		if ( ! $temp_file ) {
-			throw new Exception( sprintf( __( 'Unable to write certificate file %s during cURL configuration', 'woocommerce-gateway-ppec' ), $temp_file ), WC_Gateway_PPEC_Client::INVALID_ENVIRONMENT_ERROR );
+			throw new Exception( sprintf( __( 'Unable to write certificate file %s during cURL configuration', 'woocommerce-gateway-paypal-express-checkout' ), $temp_file ), WC_Gateway_PPEC_Client::INVALID_ENVIRONMENT_ERROR );
 		}
 
 		if ( $this->_use_secure_transport() ) {
@@ -110,11 +110,11 @@ class WC_Gateway_PPEC_Client_Credential_Certificate extends WC_Gateway_PPEC_Clie
 		$private_key = openssl_pkey_get_private( $this->_certificate );
 
 		if ( false === $private_key ) {
-			throw new Exception( __( 'Failed to retrieve private key during cURL configuration', 'woocommerce-gateway-ppec' ), WC_Gateway_PPEC_Client::INVALID_ENVIRONMENT_ERROR );
+			throw new Exception( __( 'Failed to retrieve private key during cURL configuration', 'woocommerce-gateway-paypal-express-checkout' ), WC_Gateway_PPEC_Client::INVALID_ENVIRONMENT_ERROR );
 		}
 
 		if ( ! openssl_pkcs12_export_to_file( $this->_certificate, $temp_file, $private_key, $password ) ) {
-			throw new Exception( __( 'Failed to export PKCS12 file during cURL configuration', 'woocommerce-gateway-ppec' ), WC_Gateway_PPEC_Client::INVALID_ENVIRONMENT_ERROR );
+			throw new Exception( __( 'Failed to export PKCS12 file during cURL configuration', 'woocommerce-gateway-paypal-express-checkout' ), WC_Gateway_PPEC_Client::INVALID_ENVIRONMENT_ERROR );
 		}
 	}
 
@@ -130,7 +130,7 @@ class WC_Gateway_PPEC_Client_Credential_Certificate extends WC_Gateway_PPEC_Clie
 	 */
 	protected function _maybe_create_non_secure_certificate_file( $temp_file ) {
 		if ( false === file_put_contents( $temp_file, $this->_certificate ) ) {
-			throw new Exception( sprintf( __( 'Unable to write certificate file %s during cURL configuration', 'woocommerce-gateway-ppec' ), $temp_file ), WC_Gateway_PPEC_Client::INVALID_ENVIRONMENT_ERROR );
+			throw new Exception( sprintf( __( 'Unable to write certificate file %s during cURL configuration', 'woocommerce-gateway-paypal-express-checkout' ), $temp_file ), WC_Gateway_PPEC_Client::INVALID_ENVIRONMENT_ERROR );
 		}
 	}
 
