@@ -406,12 +406,19 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		return $params;
 	}
 
+	/**
+	 * Whether PayPal response indicates an okay message.
+	 *
+	 * @param array $response Response from PayPal
+	 *
+	 * @return bool True if it's okay
+	 */
 	protected function is_success( $response ) {
-		if ( 'Success' == $response['ACK'] || 'SuccessWithWarning' == $response['ACK'] ) {
-			return true;
-		} else {
-			return false;
-		}
+		return (
+			isset( $response['ACK'] )
+			&&
+			in_array( $response['ACK'], array( 'Success', 'SuccessWithWarning' ) )
+		);
 	}
 
 	/**
@@ -549,7 +556,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 
 		$response = wc_gateway_ppec()->client->get_express_checkout_details( $token );
 
-		if ( 'Success' == $response['ACK'] || 'SuccessWithWarning' == $response['ACK'] ) {
+		if ( $this->is_success( $response ) ) {
 			$checkout_details = new PayPal_Checkout_Details();
 			$checkout_details->loadFromGetECResponse( $response );
 			return $checkout_details;
@@ -574,11 +581,8 @@ class WC_Gateway_PPEC_Checkout_Handler {
 
 		// Generate params to send to paypal, then do request
 		$response = wc_gateway_ppec()->client->do_express_checkout_payment( array_merge(
-			$settings->get_do_express_checkout_params(),
 			$this->getDoExpressCheckoutParameters( $token, $payerID ),
-			array(
-				'PAYMENTREQUEST_0_INVNUM' => $settings->invoice_prefix . $order->get_order_number(),
-			)
+			$settings->get_do_express_checkout_params( $order )
 		) );
 
 		if ( $this->is_success( $response ) ) {

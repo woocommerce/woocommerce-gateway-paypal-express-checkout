@@ -174,7 +174,18 @@ class WC_Gateway_PPEC_Settings {
 
 		return $params;
 	}
-	public function get_do_express_checkout_params( $buckets = 1 ) {
+
+	/**
+	 * Get base parameters, based on settings instance, for DoExpressCheckoutCheckout NVP call.
+	 *
+	 * @see https://developer.paypal.com/docs/classic/api/merchant/DoExpressCheckoutPayment_API_Operation_NVP/
+	 *
+	 * @param WC_Order  $order   Order object
+	 * @param int|array $buckets Number of buckets or list of bucket
+	 *
+	 * @return array DoExpressCheckoutPayment parameters
+	 */
+	public function get_do_express_checkout_params( WC_Order $order, $buckets = 1 ) {
 		$params = array();
 		if ( ! is_array( $buckets ) ) {
 			$numBuckets = $buckets;
@@ -185,7 +196,10 @@ class WC_Gateway_PPEC_Settings {
 		}
 
 		foreach ( $buckets as $bucketNum ) {
+			$params[ 'PAYMENTREQUEST_' . $bucketNum . '_NOTIFYURL' ]     = WC()->api_request_url( 'WC_Gateway_PPEC' );
 			$params[ 'PAYMENTREQUEST_' . $bucketNum . '_PAYMENTACTION' ] = $this->get_paymentaction();
+			$params[ 'PAYMENTREQUEST_' . $bucketNum . '_INVNUM' ]        = $this->invoice_prefix . $order->get_order_number();
+			$params[ 'PAYMENTREQUEST_' . $bucketNum . '_CUSTOM' ]        = json_encode( array( 'order_id' => $order->id, 'order_key' => $order->order_key ) );
 		}
 
 		return $params;
