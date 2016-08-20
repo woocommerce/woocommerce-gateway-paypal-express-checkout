@@ -234,7 +234,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		if ( ! empty( $username ) ) {
 
 			if ( empty( $password ) ) {
-				WC_Admin_Settings::add_error( sprintf( __( 'Error: You must enter a %s API password.' ), __( $settings->get_environment(), 'woocommerce-gateway-paypal-express-checkout' ) ) );
+				WC_Admin_Settings::add_error( __( 'Error: You must enter API password.', 'woocommerce-gateway-paypal-express-checkout' ) );
 				return false;
 			}
 

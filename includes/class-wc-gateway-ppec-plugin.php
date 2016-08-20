@@ -144,6 +144,7 @@ class WC_Gateway_PPEC_Plugin {
 
 		add_action( 'plugins_loaded', array( $this, 'bootstrap' ) );
 		add_filter( 'allowed_redirect_hosts' , array( $this, 'whitelist_paypal_domains_for_redirect' ) );
+		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
 	}
 
 	public function bootstrap() {
@@ -337,5 +338,14 @@ class WC_Gateway_PPEC_Plugin {
 		$domains[] = 'www.sandbox.paypal.com';
 		$domains[] = 'sandbox.paypal.com';
 		return $domains;
+	}
+
+	/**
+	 * Load localisation files.
+	 *
+	 * @since 1.1.2
+	 */
+	public function load_plugin_textdomain() {
+		load_plugin_textdomain( 'woocommerce-gateway-paypal-express-checkout', false, plugin_basename( $this->plugin_path ) . '/languages' );
 	}
 }
