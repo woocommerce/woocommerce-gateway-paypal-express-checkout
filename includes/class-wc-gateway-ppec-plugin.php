@@ -143,6 +143,7 @@ class WC_Gateway_PPEC_Plugin {
 		register_activation_hook( $this->file, array( $this, 'activate' ) );
 
 		add_action( 'plugins_loaded', array( $this, 'bootstrap' ) );
+		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
 		add_filter( 'allowed_redirect_hosts' , array( $this, 'whitelist_paypal_domains_for_redirect' ) );
 	}
 
@@ -151,8 +152,6 @@ class WC_Gateway_PPEC_Plugin {
 			if ( $this->_bootstrapped ) {
 				throw new Exception( __( '%s in WooCommerce Gateway PayPal Express Checkout plugin can only be called once', 'woocommerce-gateway-paypal-express-checkout' ), self::ALREADY_BOOTSTRAPED );
 			}
-
-			load_plugin_textdomain( 'woocommerce-gateway-paypal-express-checkout', FALSE, basename( dirname( __FILE__ ) ) . '/languages/' );
 
 			$this->_check_dependencies();
 			$this->_run();
@@ -337,5 +336,14 @@ class WC_Gateway_PPEC_Plugin {
 		$domains[] = 'www.sandbox.paypal.com';
 		$domains[] = 'sandbox.paypal.com';
 		return $domains;
+	}
+
+	/**
+	 * Load the textdomain to read translations.
+	 *
+	 * @return void
+	 */
+	public function load_plugin_textdomain() {
+		load_plugin_textdomain( 'woocommerce-gateway-paypal-express-checkout', false, plugin_basename( $this->plugin_path ) . '/languages' );
 	}
 }
