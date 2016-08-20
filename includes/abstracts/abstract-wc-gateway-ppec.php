@@ -455,9 +455,6 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 	 * @return bool
 	 */
 	public function is_available() {
-		if ( 'yes' !== $this->enabled ) {
-			return false;
-		}
-		return true;
+		return 'yes' === $this->enabled;
 	}
 }

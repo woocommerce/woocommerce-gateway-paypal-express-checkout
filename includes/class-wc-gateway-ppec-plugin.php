@@ -286,6 +286,8 @@ class WC_Gateway_PPEC_Plugin {
 		require_once( $this->includes_path . 'class-wc-gateway-ppec-checkout-handler.php' );
 		require_once( $this->includes_path . 'class-wc-gateway-ppec-cart-handler.php' );
 		require_once( $this->includes_path . 'class-wc-gateway-ppec-ips-handler.php' );
+		require_once( $this->includes_path . 'abstracts/abstract-wc-gateway-ppec-paypal-request-handler.php' );
+		require_once( $this->includes_path . 'class-wc-gateway-ppec-ipn-handler.php' );
 
 		$this->settings       = new WC_Gateway_PPEC_Settings();
 		$this->gateway_loader = new WC_Gateway_PPEC_Gateway_Loader();
