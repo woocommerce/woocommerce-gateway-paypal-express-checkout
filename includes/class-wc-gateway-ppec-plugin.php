@@ -152,6 +152,8 @@ class WC_Gateway_PPEC_Plugin {
 				throw new Exception( __( '%s in WooCommerce Gateway PayPal Express Checkout plugin can only be called once', 'woocommerce-gateway-paypal-express-checkout' ), self::ALREADY_BOOTSTRAPED );
 			}
 
+			load_plugin_textdomain( 'woocommerce-gateway-paypal-express-checkout', FALSE, basename( dirname( __FILE__ ) ) . '/languages/' );
+
 			$this->_check_dependencies();
 			$this->_run();
 			$this->_check_credentials();
