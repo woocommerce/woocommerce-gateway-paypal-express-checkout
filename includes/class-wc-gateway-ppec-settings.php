@@ -148,7 +148,7 @@ class WC_Gateway_PPEC_Settings {
 			$params['LOGOIMG'] = $this->logo_image_url;
 		}
 
-		if ( false === apply_filters( 'woocommerce_paypal_express_checkout_allow_guests', true ) ) {
+		if ( apply_filters( 'woocommerce_paypal_express_checkout_allow_guests', true ) ) {
 			$params['SOLUTIONTYPE'] = 'Sole';
 		}
 
