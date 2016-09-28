@@ -60,10 +60,13 @@ class WC_Gateway_PPEC_Cart_Handler {
 	 * Display paypal button on the cart page
 	 */
 	public function display_paypal_button() {
+
 		$gateways = WC()->payment_gateways->get_available_payment_gateways();
 		$settings = wc_gateway_ppec()->settings;
 
-		if ( ! isset( $gateways['ppec_paypal'] ) ) {
+		// issues/179 don't allow buttons to show on cart page as we need
+		// billing details on checkout page to calculate shipping costs
+		if ( ! isset( $gateways['ppec_paypal'] ) || WC()->cart->needs_shipping() ) {
 			return;
 		}
 		?>
@@ -86,10 +89,12 @@ class WC_Gateway_PPEC_Cart_Handler {
 	 * Display paypal button on the cart widget
 	 */
 	public function display_mini_paypal_button() {
-		$gateways = WC()->payment_gateways->get_available_payment_gateways();
-		$settings = wc_gateway_ppec()->settings;
 
-		if ( ! isset( $gateways['ppec_paypal'] ) ) {
+		$gateways = WC()->payment_gateways->get_available_payment_gateways();
+
+		// issues/179 don't allow buttons to show on cart page as we need
+		// billing details on checkout page to calculate shipping costs
+		if ( ! isset( $gateways['ppec_paypal'] ) || WC()->cart->needs_shipping() ) {
 			return;
 		}
 		?>
