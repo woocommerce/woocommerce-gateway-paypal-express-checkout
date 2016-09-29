@@ -85,6 +85,9 @@ https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 
 == Changelog ==
 
+= 1.1.3 =
+* Fix - Guest users can checkout without giving shipping information when required.
+
 = 1.1.2 =
 * Fix - Make sure translations are loaded properly.
 * Fix - Added IPN (Instant Payment Notification) handler.
