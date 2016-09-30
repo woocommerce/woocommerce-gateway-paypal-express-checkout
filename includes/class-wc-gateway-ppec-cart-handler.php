@@ -126,6 +126,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 					'environment' => $settings->get_environment(),
 					'locale'      => $settings->get_paypal_locale(),
 					'start_flow'  => esc_url( add_query_arg( array( 'startcheckout' => 'true' ), wc_get_page_permalink( 'cart' ) ) ),
+					'show_modal'  => apply_filters( 'woocommerce_paypal_express_checkout_show_cart_modal', 'false' ),
 				)
 			);
 		}
