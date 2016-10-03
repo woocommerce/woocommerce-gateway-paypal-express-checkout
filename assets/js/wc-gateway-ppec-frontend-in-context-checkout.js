@@ -1,8 +1,6 @@
 ;(function ( $, window, document ) {
 
-	var showModalPopup = wc_ppec_context.show_modal;
-
-	if( 'true' === showModalPopup  ){
+	if( 'true' === wc_ppec_context.show_modal  ){
 		window.paypalCheckoutReady = function() {
 			paypal.checkout.setup(
 				wc_ppec_context.payer_id,
