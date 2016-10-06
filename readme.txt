@@ -86,8 +86,9 @@ https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 == Changelog ==
 
 = 1.1.3 =
-* Fix - Guest users can checkout without giving shipping information when required.
-* Fix - Modal popup not working properly. Changed to full page redirect with a hook to add back the modal/popup.
+* Fix   - Guest users can checkout without giving shipping information when required.
+* Fix   - Modal popup not working properly. Changed to full page redirect with a hook to add back the modal/popup.
+* Tweak - Guest checkout is on by default. Should be turned off by using this filter: woocommerce_paypal_express_checkout_allow_guests.
 
 = 1.1.2 =
 * Fix - Make sure translations are loaded properly.
