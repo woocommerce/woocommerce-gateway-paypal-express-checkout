@@ -64,9 +64,8 @@ class WC_Gateway_PPEC_Cart_Handler {
 		$gateways = WC()->payment_gateways->get_available_payment_gateways();
 		$settings = wc_gateway_ppec()->settings;
 
-		// issues/179 don't allow buttons to show on cart page as we need
 		// billing details on checkout page to calculate shipping costs
-		if ( ! isset( $gateways['ppec_paypal'] ) || WC()->cart->needs_shipping() ) {
+		if ( ! isset( $gateways['ppec_paypal'] ) ) {
 			return;
 		}
 		?>
@@ -92,9 +91,8 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 		$gateways = WC()->payment_gateways->get_available_payment_gateways();
 
-		// issues/179 don't allow buttons to show on cart page as we need
 		// billing details on checkout page to calculate shipping costs
-		if ( ! isset( $gateways['ppec_paypal'] ) || WC()->cart->needs_shipping() ) {
+		if ( ! isset( $gateways['ppec_paypal'] ) ) {
 			return;
 		}
 		?>
@@ -126,7 +124,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 					'environment' => $settings->get_environment(),
 					'locale'      => $settings->get_paypal_locale(),
 					'start_flow'  => esc_url( add_query_arg( array( 'startcheckout' => 'true' ), wc_get_page_permalink( 'cart' ) ) ),
-					'show_modal'  => apply_filters( 'woocommerce_paypal_express_checkout_show_cart_modal', 'false' ),
+					'show_modal'  => apply_filters( 'woocommerce_paypal_express_checkout_show_cart_modal', 'true' ),
 				)
 			);
 		}
