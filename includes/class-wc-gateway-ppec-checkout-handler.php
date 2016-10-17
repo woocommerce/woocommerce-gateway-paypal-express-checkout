@@ -41,6 +41,8 @@ class WC_Gateway_PPEC_Checkout_Handler {
 
 		add_action( 'woocommerce_available_payment_gateways', array( $this, 'maybe_disable_other_gateways' ) );
 		add_action( 'woocommerce_review_order_after_submit', array( $this, 'maybe_render_cancel_link' ) );
+
+		add_action( 'woocommerce_cart_shipping_packages', array( $this, 'maybe_add_shipping_information' ) );
 	}
 
 	/**
@@ -226,12 +228,12 @@ class WC_Gateway_PPEC_Checkout_Handler {
 				wp_redirect( $order->get_checkout_order_received_url() );
 				exit;
 			}
-		} catch( PayPal_API_Exception $e ) {
+		} catch ( PayPal_API_Exception $e ) {
 			wc_add_notice( __( 'Sorry, an error occurred while trying to retrieve your information from PayPal. Please try again.', 'woocommerce-gateway-paypal-express-checkout' ), 'error' );
 			$this->maybe_clear_session_data();
 			wp_safe_redirect( wc_get_page_permalink( 'cart' ) );
 			exit;
-		} catch( PayPal_Missing_Session_Exception $e ) {
+		} catch ( PayPal_Missing_Session_Exception $e ) {
 			wc_add_notice( __( 'Your PayPal checkout session has expired. Please check out again.', 'woocommerce-gateway-paypal-express-checkout' ), 'error' );
 			$this->maybe_clear_session_data();
 			wp_safe_redirect( wc_get_page_permalink( 'cart' ) );
@@ -647,5 +649,32 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			}
 			$order->reduce_order_stock();
 		}
+	}
+
+	/**
+	 * This function filter the packages adding shipping information from PayPal on the checkout page
+	 * after the user is authenticated by PayPal.
+	 *
+	 * @since 1.9.13 Introduced
+	 * @param array $packages
+	 *
+	 * @return mixed
+	 */
+	public function maybe_add_shipping_information( $packages ) {
+		if ( is_user_logged_in() || empty( $_GET['woo-paypal-return'] ) || empty( $_GET['token'] ) || empty( $_GET['PayerID'] ) ) {
+			return $packages;
+		}
+		// Shipping details from PayPal
+		$checkout_details = $this->getCheckoutDetails( wc_clean( $_GET['token'] ) );
+		$destination = $this->get_mapped_shipping_address( $checkout_details );
+
+		$packages[0]['destination']['country']   = $destination['country'];
+		$packages[0]['destination']['state']     = $destination['state'];
+		$packages[0]['destination']['postcode']  = $destination['postcode'];
+		$packages[0]['destination']['city']      = $destination['city'];
+		$packages[0]['destination']['address']   = $destination['address_1'];
+		$packages[0]['destination']['address_2'] = $destination['address_2'];
+
+		return $packages;
 	}
 }
