@@ -661,7 +661,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 * @return mixed
 	 */
 	public function maybe_add_shipping_information( $packages ) {
-		if ( is_user_logged_in() || empty( $_GET['woo-paypal-return'] ) || empty( $_GET['token'] ) || empty( $_GET['PayerID'] ) ) {
+		if ( empty( $_GET['woo-paypal-return'] ) || empty( $_GET['token'] ) || empty( $_GET['PayerID'] ) ) {
 			return $packages;
 		}
 		// Shipping details from PayPal
