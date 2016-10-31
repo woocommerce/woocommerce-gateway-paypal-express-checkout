@@ -22,13 +22,35 @@ class WC_Gateway_PPEC_Settings {
 	 * @var array
 	 */
 	protected $_supported_locales = array(
-		'da_DK', 'de_DE', 'en_AU', 'en_GB', 'en_US', 'es_ES', 'fr_CA', 'fr_FR',
-		'he_IL', 'id_ID', 'it_IT', 'ja_JP', 'nl_NL', 'no_NO', 'pl_PL', 'pt_BR',
-		'pt_PT', 'ru_RU', 'sv_SE', 'th_TH', 'tr_TR', 'zh_CN', 'zh_HK', 'zh_TW',
+		'da_DK',
+		'de_DE',
+		'en_AU',
+		'en_GB',
+		'en_US',
+		'es_ES',
+		'fr_CA',
+		'fr_FR',
+		'he_IL',
+		'id_ID',
+		'it_IT',
+		'ja_JP',
+		'nl_NL',
+		'no_NO',
+		'pl_PL',
+		'pt_BR',
+		'pt_PT',
+		'ru_RU',
+		'sv_SE',
+		'th_TH',
+		'tr_TR',
+		'zh_CN',
+		'zh_HK',
+		'zh_TW',
 	);
 
 	/**
 	 * Flag to indicate setting has been loaded from DB.
+	 *
 	 * @var bool
 	 */
 	private $_is_setting_loaded = false;
@@ -51,7 +73,7 @@ class WC_Gateway_PPEC_Settings {
 	/**
 	 * Load settings from DB.
 	 *
-	 * @param bool $force_reload Force reload, ignore
+	 * @param bool $force_reload Force reload settings
 	 *
 	 * @return WC_Gateway_PPEC_Settings Instance of WC_Gateway_PPEC_Settings
 	 */
@@ -65,51 +87,60 @@ class WC_Gateway_PPEC_Settings {
 	}
 
 	/**
-	 * Get API credentials for the live envionment.
-	 * @return object
+	 * Get API credentials for live envionment.
+	 *
+	 * @return WC_Gateway_PPEC_Client_Credential_Signature|WC_Gateway_PPEC_Client_Credential_Certificate
 	 */
 	public function get_live_api_credentials() {
 		if ( $this->api_signature ) {
 			return new WC_Gateway_PPEC_Client_Credential_Signature( $this->api_username, $this->api_password, $this->api_signature, $this->api_subject );
-		} else {
-			return new WC_Gateway_PPEC_Client_Credential_Certificate( $this->api_username, $this->api_password, $this->api_certificate, $this->api_subject );
 		}
+
+		return new WC_Gateway_PPEC_Client_Credential_Certificate( $this->api_username, $this->api_password, $this->api_certificate, $this->api_subject );
+
 	}
 
 	/**
-	 * Get API credentials for the live envionment.
-	 * @return object.
+	 * Get API credentials for sandbox envionment.
+	 *
+	 * @return WC_Gateway_PPEC_Client_Credential_Signature|WC_Gateway_PPEC_Client_Credential_Certificate
 	 */
 	public function get_sandbox_api_credentials() {
 		if ( $this->sandbox_api_signature ) {
 			return new WC_Gateway_PPEC_Client_Credential_Signature( $this->sandbox_api_username, $this->sandbox_api_password, $this->sandbox_api_signature, $this->sandbox_api_subject );
-		} else {
-			return new WC_Gateway_PPEC_Client_Credential_Certificate( $this->sandbox_api_username, $this->sandbox_api_password, $this->sandbox_api_certificate, $this->sandbox_api_subject );
 		}
+
+		return new WC_Gateway_PPEC_Client_Credential_Certificate( $this->sandbox_api_username, $this->sandbox_api_password, $this->sandbox_api_certificate, $this->sandbox_api_subject );
 	}
 
 	/**
 	 * Get API credentials for the current envionment.
-	 * @return object|false if invalid
+	 *
+	 * @return object
 	 */
 	public function get_active_api_credentials() {
-		if ( 'live' === $this->get_environment() ) {
-			return $this->get_live_api_credentials();
-		} else {
-			return $this->get_sandbox_api_credentials();
-		}
+		return 'live' === $this->get_environment() ? $this->get_live_api_credentials() : $this->get_sandbox_api_credentials();
 	}
 
+	/**
+	 * Get PayPal redirect URL.
+	 *
+	 * @param string $token  Token
+	 * @param bool   $commit If set to true, 'useraction' parameter will be set
+	 *                       to 'commit' which makes PayPal sets the button text
+	 *                       to **Pay Now** ont the PayPal _Review your information_
+	 *                       page.
+	 *
+	 * @return string PayPal redirect URL
+	 */
 	public function get_paypal_redirect_url( $token, $commit = false ) {
 		$url = 'https://www.';
 
-		if ( $this->environment !== 'live' ) {
+		if ( 'live' !== $this->environment ) {
 			$url .= 'sandbox.';
 		}
 
-		$url .= 'paypal.com/';
-		$url .= 'checkoutnow?';
-		$url .= 'token=' . urlencode( $token );
+		$url .= 'paypal.com/checkoutnow?token=' . urlencode( $token );
 
 		if ( $commit ) {
 			$url .= '&useraction=commit';
@@ -130,9 +161,9 @@ class WC_Gateway_PPEC_Settings {
 		}
 
 		if ( ! is_array( $buckets ) ) {
-			$numBuckets = $buckets;
+			$num_buckets = $buckets;
 			$buckets = array();
-			for ( $i = 0; $i < $numBuckets; $i++ ) {
+			for ( $i = 0; $i < $num_buckets; $i++ ) {
 				$buckets[] = $i;
 			}
 		}
@@ -141,11 +172,11 @@ class WC_Gateway_PPEC_Settings {
 			$params['REQBILLINGADDRESS'] = '1';
 		}
 
-		foreach ( $buckets as $bucketNum ) {
-			$params[ 'PAYMENTREQUEST_' . $bucketNum . '_PAYMENTACTION' ] = $this->get_paymentaction();
+		foreach ( $buckets as $bucket_num ) {
+			$params[ 'PAYMENTREQUEST_' . $bucket_num . '_PAYMENTACTION' ] = $this->get_paymentaction();
 
 			if ( 'yes' === $this->instant_payments && 'sale' === $this->get_paymentaction() ) {
-				$params[ 'PAYMENTREQUEST_' . $bucketNum . '_ALLOWEDPAYMENTMETHOD' ] = 'InstantPaymentOnly';
+				$params[ 'PAYMENTREQUEST_' . $bucket_num . '_ALLOWEDPAYMENTMETHOD' ] = 'InstantPaymentOnly';
 			}
 		}
 
@@ -164,9 +195,9 @@ class WC_Gateway_PPEC_Settings {
 		}
 
 		if ( ! is_array( $buckets ) ) {
-			$numBuckets = $buckets;
+			$num_buckets = $buckets;
 			$buckets = array();
-			for ( $i = 0; $i < $numBuckets; $i++ ) {
+			for ( $i = 0; $i < $num_buckets; $i++ ) {
 				$buckets[] = $i;
 			}
 		}
@@ -175,11 +206,11 @@ class WC_Gateway_PPEC_Settings {
 			$params['REQBILLINGADDRESS'] = '1';
 		}
 
-		foreach ( $buckets as $bucketNum ) {
-			$params[ 'PAYMENTREQUEST_' . $bucketNum . '_PAYMENTACTION' ] = $this->get_paymentaction();
+		foreach ( $buckets as $bucket_num ) {
+			$params[ 'PAYMENTREQUEST_' . $bucket_num . '_PAYMENTACTION' ] = $this->get_paymentaction();
 
 			if ( 'yes' === $this->instant_payments && 'sale' === $this->get_paymentaction() ) {
-				$params[ 'PAYMENTREQUEST_' . $bucketNum . '_ALLOWEDPAYMENTMETHOD' ] = 'InstantPaymentOnly';
+				$params[ 'PAYMENTREQUEST_' . $bucket_num . '_ALLOWEDPAYMENTMETHOD' ] = 'InstantPaymentOnly';
 			}
 		}
 
@@ -199,25 +230,26 @@ class WC_Gateway_PPEC_Settings {
 	public function get_do_express_checkout_params( WC_Order $order, $buckets = 1 ) {
 		$params = array();
 		if ( ! is_array( $buckets ) ) {
-			$numBuckets = $buckets;
+			$num_buckets = $buckets;
 			$buckets = array();
-			for ( $i = 0; $i < $numBuckets; $i++ ) {
+			for ( $i = 0; $i < $num_buckets; $i++ ) {
 				$buckets[] = $i;
 			}
 		}
 
-		foreach ( $buckets as $bucketNum ) {
-			$params[ 'PAYMENTREQUEST_' . $bucketNum . '_NOTIFYURL' ]     = WC()->api_request_url( 'WC_Gateway_PPEC' );
-			$params[ 'PAYMENTREQUEST_' . $bucketNum . '_PAYMENTACTION' ] = $this->get_paymentaction();
-			$params[ 'PAYMENTREQUEST_' . $bucketNum . '_INVNUM' ]        = $this->invoice_prefix . $order->get_order_number();
-			$params[ 'PAYMENTREQUEST_' . $bucketNum . '_CUSTOM' ]        = json_encode( array( 'order_id' => $order->id, 'order_key' => $order->order_key ) );
+		foreach ( $buckets as $bucket_num ) {
+			$params[ 'PAYMENTREQUEST_' . $bucket_num . '_NOTIFYURL' ]     = WC()->api_request_url( 'WC_Gateway_PPEC' );
+			$params[ 'PAYMENTREQUEST_' . $bucket_num . '_PAYMENTACTION' ] = $this->get_paymentaction();
+			$params[ 'PAYMENTREQUEST_' . $bucket_num . '_INVNUM' ]        = $this->invoice_prefix . $order->get_order_number();
+			$params[ 'PAYMENTREQUEST_' . $bucket_num . '_CUSTOM' ]        = json_encode( array( 'order_id' => $order->id, 'order_key' => $order->order_key ) );
 		}
 
 		return $params;
 	}
 
 	/**
-	 * Is PPEC enabled
+	 * Is PPEC enabled.
+	 *
 	 * @return bool
 	 */
 	public function is_enabled() {
@@ -225,7 +257,8 @@ class WC_Gateway_PPEC_Settings {
 	}
 
 	/**
-	 * Is logging enabled
+	 * Is logging enabled.
+	 *
 	 * @return bool
 	 */
 	public function is_logging_enabled() {
@@ -233,36 +266,41 @@ class WC_Gateway_PPEC_Settings {
 	}
 
 	/**
-	 * Payment action
+	 * Get payment action from setting.
+	 *
 	 * @return string
 	 */
 	public function get_paymentaction() {
-		return $this->paymentaction === 'authorization' ? 'authorization' : 'sale';
+		return 'authorization' === $this->paymentaction ? 'authorization' : 'sale';
 	}
 
 	/**
-	 * Payment action
+	 * Get active environment from setting.
+	 *
 	 * @return string
 	 */
 	public function get_environment() {
-		return $this->environment === 'sandbox' ? 'sandbox' : 'live';
+		return 'sandbox' === $this->environment ? 'sandbox' : 'live';
 	}
 
 	/**
-	 * Subtotal mismatches
+	 * Subtotal mismatches.
+	 *
 	 * @return string
 	 */
 	public function get_subtotal_mismatch_behavior() {
-		return $this->subtotal_mismatch_behavior === 'drop' ? 'drop' : 'add';
+		return 'drop' === $this->subtotal_mismatch_behavior ? 'drop' : 'add';
 	}
 
 	/**
 	 * Get session length.
+	 *
+	 * @todo Map this to a merchant-configurable setting
+	 *
 	 * @return int
 	 */
 	public function get_token_session_length() {
-		// Really, we should map this to a merchant-configurable setting, but for now, we'll just set it to the default (3 hours).
-		return 10800;
+		return 10800; // 3h
 	}
 
 	/**
