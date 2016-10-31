@@ -1,12 +1,12 @@
 <?php
-/**
- * PayPal Express Integrated PayPal Signup Handler.
- */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+/**
+ * PayPal Express Integrated PayPal Signup Handler.
+ */
 class WC_Gateway_PPEC_IPS_Handler {
 
 	const MIDDLEWARE_BASE_URL = 'https://connect.woocommerce.com';
@@ -16,6 +16,7 @@ class WC_Gateway_PPEC_IPS_Handler {
 	 *
 	 * @var array
 	 */
+	// @codingStandardsIgnoreStart
 	private $_supported_countries = array(
 		'AL', 'DZ', 'AO', 'AI', 'AG', 'AR', 'AM', 'AW', 'AU', 'AT', 'AZ', 'BS',
 		'BH', 'BB', 'BE', 'BZ', 'BJ', 'BM', 'BT', 'BO', 'BA', 'BW', 'VG', 'BN',
@@ -34,6 +35,7 @@ class WC_Gateway_PPEC_IPS_Handler {
 		'TG', 'TO', 'TT', 'TN', 'TR', 'TM', 'TC', 'TV', 'UG', 'UA', 'AE', 'GB',
 		'TZ', 'US', 'UY', 'VU', 'VE', 'VN', 'WF', 'YE', 'ZM',
 	);
+	// @codingStandardsIgnoreEnd
 
 	/**
 	 * Get merchant redirect URL for IPS.
@@ -107,9 +109,7 @@ class WC_Gateway_PPEC_IPS_Handler {
 	 */
 	protected function _redirect_with_messages( $error_msg ) {
 		if ( ! is_array( $error_msg ) ) {
-			$error_msgs = array( array(
-				'error' => $error_msg
-			) );
+			$error_msgs = array( array( 'error' => $error_msg ) );
 		} else {
 			$error_msgs = $error_msg;
 		}
@@ -136,7 +136,7 @@ class WC_Gateway_PPEC_IPS_Handler {
 		$env = in_array( $_GET['env'], array( 'live', 'sandbox' ) ) ? $_GET['env'] : 'live';
 
 		// Verify the nonce.
-		if ( ! wp_verify_nonce( $_GET['wc_ppec_ips_admin_nonce'], 'wc_ppec_ips') ) {
+		if ( ! wp_verify_nonce( $_GET['wc_ppec_ips_admin_nonce'], 'wc_ppec_ips' ) ) {
 			wp_die( __( 'Invalid connection request', 'woocommerce-gateway-paypal-express-checkout' ) );
 		}
 
@@ -172,15 +172,14 @@ class WC_Gateway_PPEC_IPS_Handler {
 			if ( ! $payer_id ) {
 				$this->_redirect_with_messages( __( 'Easy Setup was able to obtain your API credentials, but was unable to verify that they work correctly.  Please make sure your PayPal account is set up properly and try Easy Setup again.', 'woocommerce-gateway-paypal-express-checkout' ) );
 			}
-
-		} catch( PayPal_API_Exception $ex ) {
+		} catch ( PayPal_API_Exception $ex ) {
 			$error_msgs[] = array(
-				'warning' => __( 'Easy Setup was able to obtain your API credentials, but an error occurred while trying to verify that they work correctly.  Please try Easy Setup again.', 'woocommerce-gateway-paypal-express-checkout' )
+				'warning' => __( 'Easy Setup was able to obtain your API credentials, but an error occurred while trying to verify that they work correctly.  Please try Easy Setup again.', 'woocommerce-gateway-paypal-express-checkout' ),
 			);
 		}
 
 		$error_msgs[] = array(
-			'success' => __( 'Success!  Your PayPal account has been set up successfully.', 'woocommerce-gateway-paypal-express-checkout' )
+			'success' => __( 'Success!  Your PayPal account has been set up successfully.', 'woocommerce-gateway-paypal-express-checkout' ),
 		);
 
 		if ( ! empty( $error_msgs ) ) {
