@@ -9,8 +9,19 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class WC_Gateway_PPEC_Settings {
 
-	protected $_settings        = array();
-	protected $_supportedLocale = array(
+	/**
+	 * Setting values from get_option.
+	 *
+	 * @var array
+	 */
+	protected $_settings = array();
+
+	/**
+	 * List of locales supported by PayPal.
+	 *
+	 * @var array
+	 */
+	protected $_supported_locales = array(
 		'da_DK', 'de_DE', 'en_AU', 'en_GB', 'en_US', 'es_ES', 'fr_CA', 'fr_FR',
 		'he_IL', 'id_ID', 'it_IT', 'ja_JP', 'nl_NL', 'no_NO', 'pl_PL', 'pt_BR',
 		'pt_PT', 'ru_RU', 'sv_SE', 'th_TH', 'tr_TR', 'zh_CN', 'zh_HK', 'zh_TW',
@@ -271,11 +282,12 @@ class WC_Gateway_PPEC_Settings {
 
 	/**
 	 * Get locale for PayPal.
+	 *
 	 * @return string
 	 */
 	public function get_paypal_locale() {
 		$locale = get_locale();
-		if ( ! in_array( $locale, $this->_supportedLocale ) ) {
+		if ( ! in_array( $locale, $this->_supported_locales ) ) {
 			$locale = 'en_US';
 		}
 		return $locale;
