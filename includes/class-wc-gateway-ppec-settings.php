@@ -183,6 +183,10 @@ class WC_Gateway_PPEC_Settings {
 			$params['LOGOIMG'] = $this->logo_image_url;
 		}
 
+		if ( $this->header_image_url ) {
+			$params['HDRIMG'] = $this->header_image_url;
+		}
+
 		if ( apply_filters( 'woocommerce_paypal_express_checkout_allow_guests', true ) ) {
 			$params['SOLUTIONTYPE'] = 'Sole';
 		}
@@ -215,6 +219,10 @@ class WC_Gateway_PPEC_Settings {
 
 		if ( $this->logo_image_url ) {
 			$params['LOGOIMG'] = $this->logo_image_url;
+		}
+
+		if ( $this->header_image_url ) {
+			$params['HDRIMG'] = $this->header_image_url;
 		}
 
 		if ( apply_filters( 'woocommerce_paypal_express_checkout_allow_guests', true ) ) {
