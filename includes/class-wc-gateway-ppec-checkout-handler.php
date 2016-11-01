@@ -126,7 +126,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		$token            = isset( $_GET['token'] ) ? $_GET['token'] : $session->token;
 		$checkout_details = $this->getCheckoutDetails( $token );
 
-		if ( ! $session->needs_shipping ) {
+		if ( ! WC()->cart->needs_shipping() ) {
 			return;
 		}
 		?>
@@ -471,10 +471,9 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			// Save some data to the session.
 			WC()->session->paypal = new WC_Gateway_PPEC_Session_Data(
 				array(
-					'token'          => $response['TOKEN'],
-					'source'         => 'cart',
-					'needs_shipping' => WC()->cart->needs_shipping(),
-					'expires_in'     => $settings->get_token_session_length()
+					'token'      => $response['TOKEN'],
+					'source'     => 'cart',
+					'expires_in' => $settings->get_token_session_length()
 				)
 			);
 
@@ -537,11 +536,10 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			// Save some data to the session.
 			WC()->session->paypal = new WC_Gateway_PPEC_Session_Data(
 				array(
-					'token'          => $response['TOKEN'],
-					'source'         => 'order',
-					'order_id'       => $order_id,
-					'needs_shipping' => WC()->cart->needs_shipping(),
-					'expires_in'     => $settings->get_token_session_length()
+					'token'      => $response['TOKEN'],
+					'source'     => 'order',
+					'order_id'   => $order_id,
+					'expires_in' => $settings->get_token_session_length()
 				)
 			);
 

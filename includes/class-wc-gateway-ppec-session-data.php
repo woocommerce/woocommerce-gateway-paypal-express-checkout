@@ -30,8 +30,6 @@ class WC_Gateway_PPEC_Session_Data {
 	 */
 	public $order_id;
 
-	public $needs_shipping     = false; // True if a shipping address is required for this transaction, false otherwise
-
 	/**
 	 * Whether the buyer has returned from PayPal.
 	 *
@@ -72,17 +70,15 @@ class WC_Gateway_PPEC_Session_Data {
 	 */
 	public function __construct( $args = array() ) {
 		$args = wp_parse_args( $args, array(
-			'token'          => '',
-			'source'         => 'cart',
-			'order_id'       => false,
-			'needs_shipping' => true,
-			'expires_in'     => 10800,
+			'token'      => '',
+			'source'     => 'cart',
+			'order_id'   => false,
+			'expires_in' => 10800,
 		) );
 
-		$this->token          = $args['token'];
-		$this->source         = $args['source'];
-		$this->needs_shipping = $args['needs_shipping'];
-		$this->expiry_time    = time() + $args['expires_in'];
+		$this->token       = $args['token'];
+		$this->source      = $args['source'];
+		$this->expiry_time = time() + $args['expires_in'];
 
 		if ( 'order' === $this->source ) {
 			$this->order_id = $args['order_id'];
