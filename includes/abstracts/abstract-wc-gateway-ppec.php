@@ -350,11 +350,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 					return true;
 
 				} catch( PayPal_API_Exception $e ) {
-					foreach ( $e->errors as $error ) {
-						$final_output .= sprintf( __( 'Error: %1$s - %2$s', 'woocommerce-gateway-paypal-express-checkout' ), $error->error_code, $error->long_message );
-					}
-
-					return new WP_Error( 'paypal_refund_error', $final_output );
+					return $e->to_wp_error( 'paypal_refund_error' );
 				}
 			}
 		}
@@ -373,11 +369,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 					return true;
 
 				} catch( PayPal_API_Exception $e ) {
-					foreach ( $e->errors as $error ) {
-						$final_output .= sprintf( __( 'Error: %1$s - %2$s', 'woocommerce-gateway-paypal-express-checkout' ), $error->error_code, $error->long_message );
-					}
-
-					return new WP_Error( 'paypal_refund_error', $final_output );
+					return $e->to_wp_error( 'paypal_refund_error' );
 				}
 
 			}
@@ -423,11 +415,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 
 						return true;
 					} catch( PayPal_API_Exception $e ) {
-						foreach ( $e->errors as $error ) {
-							$final_output .= sprintf( __( 'Error: %1$s - %2$s', 'woocommerce-gateway-paypal-express-checkout' ), $error->error_code, $error->long_message );
-						}
-
-						return new WP_Error( 'paypal_refund_error', $final_output );
+						return $e->to_wp_error( 'paypal_refund_error' );
 					}
 				}
 			}
