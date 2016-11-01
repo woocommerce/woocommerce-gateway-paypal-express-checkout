@@ -129,7 +129,7 @@ class WC_Gateway_PPEC_Client {
 			}
 
 			// First, add in the necessary credential parameters.
-			$body = array_merge( $params, $this->_credential->get_request_params() );
+			$body = apply_filters( 'woocommerce_paypal_express_checkout_request_body', array_merge( $params, $this->_credential->get_request_params() ) );
 			$args = array(
 				'method'      => 'POST',
 				'body'        => $body,
