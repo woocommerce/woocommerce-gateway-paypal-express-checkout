@@ -25,7 +25,6 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 	 */
 	public function check_request() {
 		try {
-
 			if ( empty( $_POST ) ) {
 				throw new Exception( esc_html__( 'Empty POST data.', 'woocommerce-gateway-paypal-express-checkout' ) );
 			}
@@ -38,11 +37,8 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 				wc_gateway_ppec_log( 'IPN request is NOT valid according to PayPal.' );
 				throw new Exception( esc_html__( 'Invalid IPN request.' , 'woocommerce-gateway-paypal-express-checkout' ) );
 			}
-
 		} catch ( Exception $e ) {
-
 			wp_die( $e->getMessage(), esc_html__( 'PayPal IPN Request Failure', 'woocommerce-gateway-paypal-express-checkout' ), array( 'response' => 500 ) );
-
 		}
 	}
 
@@ -97,7 +93,6 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 	 */
 	public function handle_valid_ipn( $posted_data ) {
 		if ( ! empty( $posted_data['custom'] ) && ( $order = $this->get_paypal_order( $posted_data['custom'] ) ) ) {
-
 			// Lowercase returned variables.
 			$posted_data['payment_status'] = strtolower( $posted_data['payment_status'] );
 
@@ -112,7 +107,6 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 			if ( method_exists( $this, 'payment_status_' . $posted_data['payment_status'] ) ) {
 				call_user_func( array( $this, 'payment_status_' . $posted_data['payment_status'] ), $order, $posted_data );
 			}
-
 		} else {
 			wc_gateway_ppec_log( sprintf( '%s: %s', __FUNCTION__, 'No order data being passed' ) );
 		}
@@ -256,7 +250,7 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 			$order->update_status( 'refunded', sprintf( __( 'Payment %s via IPN.', 'woocommerce-gateway-paypal-express-checkout' ), strtolower( $posted_data['payment_status'] ) ) );
 			$this->send_ipn_email_notification(
 				sprintf( __( 'Payment for order %s refunded', 'woocommerce-gateway-paypal-express-checkout' ), '<a class="link" href="' . esc_url( admin_url( 'post.php?post=' . $order->id . '&action=edit' ) ) . '">' . $order->get_order_number() . '</a>' ),
-				sprintf( __( 'Order #%s has been marked as refunded - PayPal reason code: %s', 'woocommerce-gateway-paypal-express-checkout' ), $order->get_order_number(), $posted_data['reason_code'] )
+				sprintf( __( 'Order #%1$s has been marked as refunded - PayPal reason code: %2$s', 'woocommerce-gateway-paypal-express-checkout' ), $order->get_order_number(), $posted_data['reason_code'] )
 			);
 		}
 	}
@@ -271,7 +265,7 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 		$order->update_status( 'on-hold', sprintf( __( 'Payment %s via IPN.', 'woocommerce-gateway-paypal-express-checkout' ), wc_clean( $posted_data['payment_status'] ) ) );
 		$this->send_ipn_email_notification(
 			sprintf( __( 'Payment for order %s reversed', 'woocommerce-gateway-paypal-express-checkout' ), '<a class="link" href="' . esc_url( admin_url( 'post.php?post=' . $order->id . '&action=edit' ) ) . '">' . $order->get_order_number() . '</a>' ),
-			sprintf( __( 'Order #%s has been marked on-hold due to a reversal - PayPal reason code: %s', 'woocommerce-gateway-paypal-express-checkout' ), $order->get_order_number(), wc_clean( $posted_data['reason_code'] ) )
+			sprintf( __( 'Order #%1$s has been marked on-hold due to a reversal - PayPal reason code: %2$s', 'woocommerce-gateway-paypal-express-checkout' ), $order->get_order_number(), wc_clean( $posted_data['reason_code'] ) )
 		);
 	}
 
@@ -284,7 +278,7 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 	protected function payment_status_canceled_reversal( $order, $posted_data ) {
 		$this->send_ipn_email_notification(
 			sprintf( __( 'Reversal cancelled for order #%s', 'woocommerce-gateway-paypal-express-checkout' ), $order->get_order_number() ),
-			sprintf( __( 'Order #%s has had a reversal cancelled. Please check the status of payment and update the order status accordingly here: %s', 'woocommerce-gateway-paypal-express-checkout' ), $order->get_order_number(), esc_url( admin_url( 'post.php?post=' . $order->id . '&action=edit' ) ) )
+			sprintf( __( 'Order #%1$s has had a reversal cancelled. Please check the status of payment and update the order status accordingly here: %2$s', 'woocommerce-gateway-paypal-express-checkout' ), $order->get_order_number(), esc_url( admin_url( 'post.php?post=' . $order->id . '&action=edit' ) ) )
 		);
 	}
 
