@@ -160,8 +160,9 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	}
 
 	/**
-	 * Map PayPal shipping address to WC shipping address
-	 * @param  object $checkout_details
+	 * Map PayPal shipping address to WC shipping address.
+	 *
+	 * @param  object $checkout_details Checkout details
 	 * @return array
 	 */
 	public function get_mapped_shipping_address( $checkout_details ) {
@@ -201,9 +202,9 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			return;
 		}
 
-		// Store values in session
+		// Store values in session.
 		$session->checkout_completed = true;
-		$session->payerID            = $payer_id;
+		$session->payer_id           = $payer_id;
 		WC()->session->set( 'paypal', $session );
 
 		try {
@@ -219,7 +220,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 				$order->set_address( $this->get_mapped_shipping_address( $checkout_details ), 'shipping' );
 
 				// Complete the payment now.
-				$this->do_payment( $order, $session->token, $session->payerID );
+				$this->do_payment( $order, $session->token, $session->payer_id );
 
 				// Clear Cart
 				WC()->cart->empty_cart();
@@ -330,7 +331,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 */
 	public function has_active_session() {
 		$session = WC()->session->paypal;
-		return ( is_a( $session, 'WC_Gateway_PPEC_Session_Data' ) && $session->payerID && $session->expiry_time > time() );
+		return ( is_a( $session, 'WC_Gateway_PPEC_Session_Data' ) && $session->payer_id && $session->expiry_time > time() );
 	}
 
 	/**
@@ -570,11 +571,11 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	/**
 	 * Complete a payment that has been authorized via PPEC.
 	 */
-	public function do_payment( $order, $token, $payerID ) {
+	public function do_payment( $order, $token, $payer_id ) {
 		$settings     = wc_gateway_ppec()->settings;
 		$session_data = WC()->session->get( 'paypal', null );
 
-		if ( ! $order || null === $session_data || $this->session_has_expired( $token ) || empty( $payerID ) ) {
+		if ( ! $order || null === $session_data || $this->session_has_expired( $token ) || empty( $payer_id ) ) {
 			throw new PayPal_Missing_Session_Exception();
 		}
 
@@ -583,7 +584,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 
 		// Generate params to send to paypal, then do request
 		$response = wc_gateway_ppec()->client->do_express_checkout_payment( array_merge(
-			$this->getDoExpressCheckoutParameters( $token, $payerID ),
+			$this->getDoExpressCheckoutParameters( $token, $payer_id ),
 			$settings->get_do_express_checkout_params( $order )
 		) );
 

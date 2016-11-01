@@ -4,20 +4,71 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+/**
+ * PayPal Express Checkout session wrapper.
+ */
 class WC_Gateway_PPEC_Session_Data {
 
-	public $source             = false; // 'cart' or 'order'
-	public $order_id           = false; // if $source is 'order', this should be the order ID
-	public $checkout_details   = false; // Will be populated with the GetEC details later
-	public $needs_shipping     = false; // True if a shipping address is required for this transaction, false otherwise
-	public $checkout_completed = false; // True if the buyer has just returned from PayPal and we should select PayPal as the payment method
-	public $token              = false; // The EC token
-	public $payerID            = false; // The buyer's payer ID, once they come back from PayPal
-	public $expiry_time        = false; // The time at which the token will expire
+	/**
+	 * Source where the session is set from. Valid value is either 'cart' or
+	 * 'order'.
+	 *
+	 * If source is 'cart' then buyer starts it from cart page, otherwise it
+	 * starts from checkout page or flow that has order created (e.g. from cart
+	 * then the process_payment encountered error).
+	 *
+	 * @var string
+	 */
+	public $source;
 
 	/**
-	 * Constructor
-	 * @param array $args
+	 * WooCommerce Order ID.
+	 *
+	 * If self::$source is 'order', this must be set to order ID.
+	 *
+	 * @var int
+	 */
+	public $order_id;
+
+	public $needs_shipping     = false; // True if a shipping address is required for this transaction, false otherwise
+
+	/**
+	 * Whether the buyer has returned from PayPal.
+	 *
+	 * If checkout_completed is true PPEC should be selected as the payment
+	 * method.
+	 *
+	 * @var bool
+	 */
+	public $checkout_completed = false;
+
+	/**
+	 * Express checkout token.
+	 *
+	 * @var string
+	 */
+	public $token;
+
+	/**
+	 * The buyer's payer ID.
+	 *
+	 * Retrieved after buyer comes back from PayPal in-context dialog.
+	 *
+	 * @var string
+	 */
+	public $payer_id;
+
+	/**
+	 * How long the token will expires (in seconds).
+	 *
+	 * @var int
+	 */
+	public $expiry_time;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param array $args Arguments for session data
 	 */
 	public function __construct( $args = array() ) {
 		$args = wp_parse_args( $args, array(

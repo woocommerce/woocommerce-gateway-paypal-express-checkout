@@ -106,7 +106,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 				$order->set_address( $checkout->get_mapped_shipping_address( $checkout_details ), 'shipping' );
 
 				// Complete the payment now.
-				$checkout->do_payment( $order, $session->token, $session->payerID );
+				$checkout->do_payment( $order, $session->token, $session->payer_id );
 
 				// Clear Cart
 				WC()->cart->empty_cart();
