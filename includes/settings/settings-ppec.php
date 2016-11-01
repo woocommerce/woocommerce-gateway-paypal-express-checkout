@@ -15,14 +15,32 @@ if ( $enable_ips && $needs_creds ) {
 	$ips_button         = '<a href="' . esc_url( wc_gateway_ppec()->ips->get_signup_url( 'live' ) ) . '" class="button button-primary">' . __( 'Setup or link an existing PayPal account', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>';
 	$api_creds_text = sprintf( __( '%s or <a href="#" class="ppec-toggle-settings">click here to toggle manual API credential input</a>.', 'woocommerce-gateway-paypal-express-checkout' ), $ips_button );
 } else {
-	$api_creds_text         = '';
+	$reset_link = add_query_arg(
+		array(
+			'reset_ppec_api_credentials' => 'true',
+			'environment'                => 'live',
+			'reset_nonce'                => wp_create_nonce( 'reset_ppec_api_credentials' ),
+		),
+		wc_gateway_ppec()->get_admin_setting_link()
+	);
+
+	$api_creds_text = sprintf( __( 'To reset current credentials and use other account <a href="%1$s" title="%2$s">click here</a>.', 'woocommerce-gateway-paypal-express-checkout' ), $reset_link, __( 'Reset current credentials', 'woocommerce-gateway-paypal-express-checkout' ) );
 }
 
 if ( $enable_ips && $needs_sandbox_creds ) {
 	$sandbox_ips_button = '<a href="' . esc_url( wc_gateway_ppec()->ips->get_signup_url( 'sandbox' ) ) . '" class="button button-primary">' . __( 'Setup or link an existing PayPal Sandbox account', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>';
 	$sandbox_api_creds_text = sprintf( __( '%s or <a href="#" class="ppec-toggle-sandbox-settings">click here to toggle manual API credential input</a>.', 'woocommerce-gateway-paypal-express-checkout' ), $sandbox_ips_button );
 } else {
-	$sandbox_api_creds_text = '';
+	$reset_link = add_query_arg(
+		array(
+			'reset_ppec_api_credentials' => 'true',
+			'environment'                => 'sandbox',
+			'reset_nonce'                => wp_create_nonce( 'reset_ppec_api_credentials' ),
+		),
+		wc_gateway_ppec()->get_admin_setting_link()
+	);
+
+	$sandbox_api_creds_text = sprintf( __( 'Your account setting is set to sandbox, no real charging takes place. To accept live payments, switch your environment to live and connect your PayPal account. To reset current credentials and use other sandbox account <a href="%1$s" title="%2$s">click here</a>.', 'woocommerce-gateway-paypal-express-checkout' ), $reset_link, __( 'Reset current sandbox credentials', 'woocommerce-gateway-paypal-express-checkout' ) );
 }
 
 wc_enqueue_js( "
@@ -71,13 +89,15 @@ wc_enqueue_js( "
 		}).change();
 
 		if ( enable_toggle ) {
-			$( document ).on( 'click', '.ppec-toggle-settings', function() {
-				$( ppec_live_fields ).closest( 'tr' ).toggle();
+			$( document ).on( 'click', '.ppec-toggle-settings', function( e ) {
+				$( ppec_live_fields ).closest( 'tr' ).toggle( 'fast' );
+				e.preventDefault();
 			} );
 		}
 		if ( enable_sandbox_toggle ) {
-			$( document ).on( 'click', '.ppec-toggle-sandbox-settings', function() {
-				$( ppec_sandbox_fields ).closest( 'tr' ).toggle();
+			$( document ).on( 'click', '.ppec-toggle-sandbox-settings', function( e ) {
+				$( ppec_sandbox_fields ).closest( 'tr' ).toggle( 'fast' );
+				e.preventDefault();
 			} );
 		}
 	});
@@ -93,7 +113,7 @@ return array(
 		'label'   => __( 'Enable PayPal Express Checkout', 'woocommerce-gateway-paypal-express-checkout' ),
 		'description' => __( 'This enables PayPal Express Checkout which allows customers to checkout directly via PayPal from your cart page.', 'woocommerce-gateway-paypal-express-checkout' ),
 		'desc_tip'    => true,
-		'default'     => 'yes'
+		'default'     => 'yes',
 	),
 	'button_size' => array(
 		'title'       => __( 'Button Size', 'woocommerce-gateway-paypal-express-checkout' ),
@@ -105,20 +125,8 @@ return array(
 		'options'     => array(
 			'small'  => __( 'Small', 'woocommerce-gateway-paypal-express-checkout' ),
 			'medium' => __( 'Medium', 'woocommerce-gateway-paypal-express-checkout' ),
-			'large'  => __( 'Large', 'woocommerce-gateway-paypal-express-checkout' )
-		)
-	),
-	'environment' => array(
-		'title'       => __( 'Environment', 'woocommerce-gateway-paypal-express-checkout' ),
-		'type'        => 'select',
-		'class'       => 'wc-enhanced-select',
-		'description' => __( 'This setting specifies whether you will process live transactions, or whether you will process simulated transactions using the PayPal Sandbox.', 'woocommerce-gateway-paypal-express-checkout' ),
-		'default'     => 'live',
-		'desc_tip'    => true,
-		'options'     => array(
-			'live'    => __( 'Live', 'woocommerce-gateway-paypal-express-checkout' ),
-			'sandbox' => __( 'Sandbox', 'woocommerce-gateway-paypal-express-checkout' ),
-		)
+			'large'  => __( 'Large', 'woocommerce-gateway-paypal-express-checkout' ),
+		),
 	),
 	'mark_enabled' => array(
 		'title'       => __( 'PayPal Mark', 'woocommerce-gateway-paypal-express-checkout' ),
@@ -126,7 +134,7 @@ return array(
 		'label'       => __( 'Enable the PayPal Mark on regular checkout', 'woocommerce-gateway-paypal-express-checkout' ),
 		'description' => __( 'This enables the PayPal mark, which can be shown on regular WooCommerce checkout to use PayPal Express Checkout like a regular WooCommerce gateway.', 'woocommerce-gateway-paypal-express-checkout' ),
 		'desc_tip'    => true,
-		'default'     => 'no'
+		'default'     => 'no',
 	),
 	'title' => array(
 		'title'       => __( 'Title', 'woocommerce-gateway-paypal-express-checkout' ),
@@ -140,7 +148,25 @@ return array(
 		'type'        => 'text',
 		'desc_tip'    => true,
 		'description' => __( 'This controls the description which the user sees during checkout.', 'woocommerce-gateway-paypal-express-checkout' ),
-		'default'     => __( 'Pay using either your PayPal account or credit card. All credit card payments will be processed by PayPal.', 'woocommerce-gateway-paypal-express-checkout' )
+		'default'     => __( 'Pay using either your PayPal account or credit card. All credit card payments will be processed by PayPal.', 'woocommerce-gateway-paypal-express-checkout' ),
+	),
+
+	'account_settings' => array(
+		'title'       => __( 'Account Settings', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'        => 'title',
+		'description' => '',
+	),
+	'environment' => array(
+		'title'       => __( 'Environment', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'        => 'select',
+		'class'       => 'wc-enhanced-select',
+		'description' => __( 'This setting specifies whether you will process live transactions, or whether you will process simulated transactions using the PayPal Sandbox.', 'woocommerce-gateway-paypal-express-checkout' ),
+		'default'     => 'live',
+		'desc_tip'    => true,
+		'options'     => array(
+			'live'    => __( 'Live', 'woocommerce-gateway-paypal-express-checkout' ),
+			'sandbox' => __( 'Sandbox', 'woocommerce-gateway-paypal-express-checkout' ),
+		),
 	),
 
 	'api_credentials' => array(
@@ -168,7 +194,7 @@ return array(
 		'description' => __( 'Get your API credentials from PayPal.', 'woocommerce-gateway-paypal-express-checkout' ),
 		'default'     => '',
 		'desc_tip'    => true,
-		'placeholder' => __( 'Optional if you provide a certificate below', 'woocommerce-gateway-paypal-express-checkout' )
+		'placeholder' => __( 'Optional if you provide a certificate below', 'woocommerce-gateway-paypal-express-checkout' ),
 	),
 	'api_certificate' => array(
 		'title'       => __( 'Live API Certificate', 'woocommerce-gateway-paypal-express-checkout' ),
@@ -182,7 +208,7 @@ return array(
 		'description' => __( 'If you\'re processing transactions on behalf of someone else\'s PayPal account, enter their email address or Secure Merchant Account ID (also known as a Payer ID) here. Generally, you must have API permissions in place with the other account in order to process anything other than "sale" transactions for them.', 'woocommerce-gateway-paypal-express-checkout' ),
 		'default'     => '',
 		'desc_tip'    => true,
-		'placeholder' => __( 'Optional', 'woocommerce-gateway-paypal-express-checkout' )
+		'placeholder' => __( 'Optional', 'woocommerce-gateway-paypal-express-checkout' ),
 	),
 
 	'sandbox_api_credentials' => array(
@@ -224,7 +250,7 @@ return array(
 		'description' => __( 'If you\'re processing transactions on behalf of someone else\'s PayPal account, enter their email address or Secure Merchant Account ID (also known as a Payer ID) here. Generally, you must have API permissions in place with the other account in order to process anything other than "sale" transactions for them.', 'woocommerce-gateway-paypal-express-checkout' ),
 		'default'     => '',
 		'desc_tip'    => true,
-		'placeholder' => __( 'Optional', 'woocommerce-gateway-paypal-express-checkout' )
+		'placeholder' => __( 'Optional', 'woocommerce-gateway-paypal-express-checkout' ),
 	),
 
 	'advanced' => array(
@@ -264,8 +290,8 @@ return array(
 		'desc_tip'    => true,
 		'options'     => array(
 			'sale'          => __( 'Sale', 'woocommerce-gateway-paypal-express-checkout' ),
-			'authorization' => __( 'Authorize', 'woocommerce-gateway-paypal-express-checkout' )
-		)
+			'authorization' => __( 'Authorize', 'woocommerce-gateway-paypal-express-checkout' ),
+		),
 	),
 	'instant_payments' => array(
 		'title'       => __( 'Instant Payments', 'woocommerce-gateway-paypal-express-checkout' ),
@@ -293,6 +319,6 @@ return array(
 		'options'     => array(
 			'add'  => __( 'Add another line item', 'woocommerce-gateway-paypal-express-checkout' ),
 			'drop' => __( 'Do not send line items to PayPal', 'woocommerce-gateway-paypal-express-checkout' ),
-		)
+		),
 	),
 );
