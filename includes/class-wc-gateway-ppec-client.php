@@ -98,7 +98,6 @@ class WC_Gateway_PPEC_Client {
 	public function get_endpoint() {
 		return sprintf(
 			'https://%s%s.paypal.com/nvp',
-
 			$this->_credential->get_endpoint_subdomain(),
 			'sandbox' === $this->_environment ? '.sandbox' : ''
 		);
@@ -175,7 +174,7 @@ class WC_Gateway_PPEC_Client {
 				'L_ERRORCODE0'    => $e->getCode(),
 				'L_SHORTMESSAGE0' => 'Error in ' . __METHOD__,
 				'L_LONGMESSAGE0'  => $e->getMessage(),
-				'L_SEVERITYCODE0' => 'Error'
+				'L_SEVERITYCODE0' => 'Error',
 			);
 
 			wc_gateway_ppec_log( sprintf( '%s: exception is thrown while trying to make a request to PayPal: %s', __METHOD__, $e->getMessage() ) );
@@ -330,7 +329,7 @@ class WC_Gateway_PPEC_Client {
 			'RETURNURL'         => home_url( '/' ),
 			'CANCELURL'         => home_url( '/' ),
 			'REQBILLINGADDRESS' => '1',
-			'AMT'               => '1.00'
+			'AMT'               => '1.00',
 		);
 		$result = $this->set_express_checkout( $req );
 
