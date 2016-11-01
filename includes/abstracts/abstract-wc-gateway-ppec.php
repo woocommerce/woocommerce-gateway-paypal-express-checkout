@@ -225,7 +225,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 	 * Validate the provided credentials.
 	 */
 	protected function validate_active_credentials() {
-		$settings = wc_gateway_ppec()->settings->load_settings( true );
+		$settings = wc_gateway_ppec()->settings->load( true );
 		$creds    = $settings->get_active_api_credentials();
 
 		$username = $creds->get_username();
