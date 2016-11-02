@@ -187,6 +187,10 @@ class WC_Gateway_PPEC_Settings {
 			$params['HDRIMG'] = $this->header_image_url;
 		}
 
+		if ( $this->page_style ) {
+			$params['PAGESTYLE'] = $this->page_style;
+		}
+
 		if ( apply_filters( 'woocommerce_paypal_express_checkout_allow_guests', true ) ) {
 			$params['SOLUTIONTYPE'] = 'Sole';
 		}
@@ -223,6 +227,10 @@ class WC_Gateway_PPEC_Settings {
 
 		if ( $this->header_image_url ) {
 			$params['HDRIMG'] = $this->header_image_url;
+		}
+
+		if ( $this->page_style ) {
+			$params['PAGESTYLE'] = $this->page_style;
 		}
 
 		if ( apply_filters( 'woocommerce_paypal_express_checkout_allow_guests', true ) ) {

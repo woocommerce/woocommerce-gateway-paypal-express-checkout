@@ -282,6 +282,14 @@ return array(
 		'desc_tip'    => true,
 		'placeholder' => __( 'Optional', 'woocommerce-gateway-paypal-express-checkout' ),
 	),
+	'page_style' => array(
+		'title'       => __( 'Page Style', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'        => 'text',
+		'description' => __( 'Optionally enter the name of the page style you wish to use. These are defined within your PayPal account.', 'woocommerce-gateway-paypal-express-checkout' ),
+		'default'     => '',
+		'desc_tip'    => true,
+		'placeholder' => __( 'Optional', 'woocommerce-gateway-paypal-express-checkout' ),
+	),
 
 	'advanced' => array(
 		'title'       => __( 'Advanced Settings', 'woocommerce-gateway-paypal-express-checkout' ),
