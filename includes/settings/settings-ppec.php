@@ -290,6 +290,18 @@ return array(
 		'desc_tip'    => true,
 		'placeholder' => __( 'Optional', 'woocommerce-gateway-paypal-express-checkout' ),
 	),
+	'landing_page' => array(
+		'title'       => __( 'Landing Page', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'        => 'select',
+		'class'       => 'wc-enhanced-select',
+		'description' => __( 'Type of PayPal page to display.', 'woocommerce-gateway-paypal-express-checkout' ),
+		'default'     => 'Login',
+		'desc_tip'    => true,
+		'options'     => array(
+			'Billing' => _x( 'Billing (Non-PayPal account)', 'Type of PayPal page', 'woocommerce-gateway-paypal-express-checkout' ),
+			'Login'   => _x( 'Login (PayPal account login)', 'Type of PayPal page', 'woocommerce-gateway-paypal-express-checkout' ),
+		),
+	),
 
 	'advanced' => array(
 		'title'       => __( 'Advanced Settings', 'woocommerce-gateway-paypal-express-checkout' ),

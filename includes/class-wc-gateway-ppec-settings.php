@@ -191,6 +191,10 @@ class WC_Gateway_PPEC_Settings {
 			$params['PAGESTYLE'] = $this->page_style;
 		}
 
+		if ( in_array( $this->landing_page, array( 'Billing', 'Login' ) ) ) {
+			$params['LANDINGPAGE'] = $this->landing_page;
+		}
+
 		if ( apply_filters( 'woocommerce_paypal_express_checkout_allow_guests', true ) ) {
 			$params['SOLUTIONTYPE'] = 'Sole';
 		}
@@ -231,6 +235,10 @@ class WC_Gateway_PPEC_Settings {
 
 		if ( $this->page_style ) {
 			$params['PAGESTYLE'] = $this->page_style;
+		}
+
+		if ( in_array( $this->landing_page, array( 'Billing', 'Login' ) ) ) {
+			$params['LANDINGPAGE'] = $this->landing_page;
 		}
 
 		if ( apply_filters( 'woocommerce_paypal_express_checkout_allow_guests', true ) ) {
