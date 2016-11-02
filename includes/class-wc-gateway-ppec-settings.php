@@ -55,6 +55,12 @@ class WC_Gateway_PPEC_Settings {
 	 */
 	private $_is_setting_loaded = false;
 
+	public function __set( $key, $value ) {
+		if ( array_key_exists( $key, $this->_settings ) ) {
+			$this->_settings[ $key ] = $value;
+		}
+	}
+
 	public function __get( $key ) {
 		if ( array_key_exists( $key, $this->_settings ) ) {
 			return $this->_settings[ $key ];
@@ -67,23 +73,44 @@ class WC_Gateway_PPEC_Settings {
 	}
 
 	public function __construct() {
-		$this->load_settings();
+		$this->load();
 	}
 
 	/**
 	 * Load settings from DB.
 	 *
+	 * @since 1.2.0
+	 *
 	 * @param bool $force_reload Force reload settings
 	 *
 	 * @return WC_Gateway_PPEC_Settings Instance of WC_Gateway_PPEC_Settings
 	 */
-	public function load_settings( $force_reload = false ) {
+	public function load( $force_reload = false ) {
 		if ( $this->_is_setting_loaded && ! $force_reload ) {
 			return $this;
 		}
 		$this->_settings          = (array) get_option( 'woocommerce_ppec_paypal_settings', array() );
 		$this->_is_setting_loaded = true;
 		return $this;
+	}
+
+	/**
+	 * Load settings from DB.
+	 *
+	 * @deprecated
+	 */
+	public function load_settings( $force_reload = false ) {
+		_deprecated_function( __METHOD__, '1.2.0', 'WC_Gateway_PPEC_Settings::load' );
+		return $this->load( $force_reload );
+	}
+
+	/**
+	 * Save current settings.
+	 *
+	 * @since 1.2.0
+	 */
+	public function save() {
+		update_option( 'woocommerce_ppec_paypal_settings', $this->_settings );
 	}
 
 	/**
