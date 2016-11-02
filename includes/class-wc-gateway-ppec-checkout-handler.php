@@ -457,12 +457,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			$this->getSetExpressCheckoutParameters()
 		);
 
-		$brand_name = get_bloginfo( 'name', 'display' );
-		if ( ! empty( $brand_name ) ) {
-			$brand_name          = substr( $brand_name, 0, 127 );
-			$params['BRANDNAME'] = $brand_name;
-		}
-
+		$params['BRANDNAME'] = $settings->get_brand_name();
 		$params['RETURNURL'] = $this->get_return_url();
 		$params['CANCELURL'] = $this->get_cancel_url();
 
@@ -521,12 +516,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			$this->getSetExpressCheckoutParameters()
 		);
 
-		$brand_name = get_bloginfo( 'name', 'display' );
-		if ( ! empty( $brand_name ) ) {
-			$brand_name          = substr( $brand_name, 0, 127 );
-			$params['BRANDNAME'] = $brand_name;
-		}
-
+		$params['BRANDNAME']    = $settings->get_brand_name();
 		$params['RETURNURL']    = $this->get_return_url();
 		$params['CANCELURL']    = $this->get_cancel_url();
 		$params['ADDROVERRIDE'] = '1';

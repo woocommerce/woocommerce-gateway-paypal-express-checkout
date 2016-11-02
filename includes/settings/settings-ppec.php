@@ -115,27 +115,7 @@ return array(
 		'desc_tip'    => true,
 		'default'     => 'yes',
 	),
-	'button_size' => array(
-		'title'       => __( 'Button Size', 'woocommerce-gateway-paypal-express-checkout' ),
-		'type'        => 'select',
-		'class'       => 'wc-enhanced-select',
-		'description' => __( 'PayPal offers different sizes of the "PayPal Checkout" buttons, allowing you to select a size that best fits your site\'s theme. This setting will allow you to choose which size button(s) appear on your cart page.', 'woocommerce-gateway-paypal-express-checkout' ),
-		'default'     => 'large',
-		'desc_tip'    => true,
-		'options'     => array(
-			'small'  => __( 'Small', 'woocommerce-gateway-paypal-express-checkout' ),
-			'medium' => __( 'Medium', 'woocommerce-gateway-paypal-express-checkout' ),
-			'large'  => __( 'Large', 'woocommerce-gateway-paypal-express-checkout' ),
-		),
-	),
-	'mark_enabled' => array(
-		'title'       => __( 'PayPal Mark', 'woocommerce-gateway-paypal-express-checkout' ),
-		'type'        => 'checkbox',
-		'label'       => __( 'Enable the PayPal Mark on regular checkout', 'woocommerce-gateway-paypal-express-checkout' ),
-		'description' => __( 'This enables the PayPal mark, which can be shown on regular WooCommerce checkout to use PayPal Express Checkout like a regular WooCommerce gateway.', 'woocommerce-gateway-paypal-express-checkout' ),
-		'desc_tip'    => true,
-		'default'     => 'no',
-	),
+
 	'title' => array(
 		'title'       => __( 'Title', 'woocommerce-gateway-paypal-express-checkout' ),
 		'type'        => 'text',
@@ -148,7 +128,7 @@ return array(
 		'type'        => 'text',
 		'desc_tip'    => true,
 		'description' => __( 'This controls the description which the user sees during checkout.', 'woocommerce-gateway-paypal-express-checkout' ),
-		'default'     => __( 'Pay using either your PayPal account or credit card. All credit card payments will be processed by PayPal.', 'woocommerce-gateway-paypal-express-checkout' ),
+		'default'     => __( 'Pay via PayPal; you can pay with your credit card if you don\'t have a PayPal account.', 'woocommerce-gateway-paypal-express-checkout' ),
 	),
 
 	'account_settings' => array(
@@ -253,6 +233,76 @@ return array(
 		'placeholder' => __( 'Optional', 'woocommerce-gateway-paypal-express-checkout' ),
 	),
 
+	'display_settings' => array(
+		'title'       => __( 'Display Settings', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'        => 'title',
+		'description' => __( 'Customize the appearance of Express Checkout in your store.', 'woocommerce-gateway-paypal-express-checkout' ),
+	),
+	'brand_name' => array(
+		'title'       => __( 'Brand Name', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'        => 'text',
+		'description' => __( 'A label that overrides the business name in the PayPal account on the PayPal hosted checkout pages.', 'woocommerce-gateway-paypal-express-checkout' ),
+		'default'     => get_bloginfo( 'name', 'display' ),
+		'desc_tip'    => true,
+	),
+	'button_size' => array(
+		'title'       => __( 'Button Size', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'        => 'select',
+		'class'       => 'wc-enhanced-select',
+		'description' => __( 'PayPal offers different sizes of the "PayPal Checkout" buttons, allowing you to select a size that best fits your site\'s theme. This setting will allow you to choose which size button(s) appear on your cart page.', 'woocommerce-gateway-paypal-express-checkout' ),
+		'default'     => 'large',
+		'desc_tip'    => true,
+		'options'     => array(
+			'small'  => __( 'Small', 'woocommerce-gateway-paypal-express-checkout' ),
+			'medium' => __( 'Medium', 'woocommerce-gateway-paypal-express-checkout' ),
+			'large'  => __( 'Large', 'woocommerce-gateway-paypal-express-checkout' ),
+		),
+	),
+	'mark_enabled' => array(
+		'title'       => __( 'PayPal Mark', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'        => 'checkbox',
+		'label'       => __( 'Enable the PayPal Mark on regular checkout', 'woocommerce-gateway-paypal-express-checkout' ),
+		'description' => __( 'This enables the PayPal mark, which can be shown on regular WooCommerce checkout to use PayPal Express Checkout like a regular WooCommerce gateway.', 'woocommerce-gateway-paypal-express-checkout' ),
+		'desc_tip'    => true,
+		'default'     => 'no',
+	),
+	'logo_image_url' => array(
+		'title'       => __( 'Logo Image (190×60)', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'        => 'text',
+		'description' => __( 'If you want PayPal to co-brand the checkout page with your logo, enter the URL of your logo image here.<br/>The image must be no larger than 190x60, GIF, PNG, or JPG format, and should be served over HTTPS.', 'woocommerce-gateway-paypal-express-checkout' ),
+		'default'     => '',
+		'desc_tip'    => true,
+		'placeholder' => __( 'Optional', 'woocommerce-gateway-paypal-express-checkout' ),
+	),
+	'header_image_url' => array(
+		'title'       => __( 'Header Image (750×90)', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'        => 'text',
+		'description' => __( 'If you want PayPal to co-brand the checkout page with your header, enter the URL of your header image here.<br/>The image must be no larger than 750x90, GIF, PNG, or JPG format, and should be served over HTTPS.', 'woocommerce-gateway-paypal-express-checkout' ),
+		'default'     => '',
+		'desc_tip'    => true,
+		'placeholder' => __( 'Optional', 'woocommerce-gateway-paypal-express-checkout' ),
+	),
+	'page_style' => array(
+		'title'       => __( 'Page Style', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'        => 'text',
+		'description' => __( 'Optionally enter the name of the page style you wish to use. These are defined within your PayPal account.', 'woocommerce-gateway-paypal-express-checkout' ),
+		'default'     => '',
+		'desc_tip'    => true,
+		'placeholder' => __( 'Optional', 'woocommerce-gateway-paypal-express-checkout' ),
+	),
+	'landing_page' => array(
+		'title'       => __( 'Landing Page', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'        => 'select',
+		'class'       => 'wc-enhanced-select',
+		'description' => __( 'Type of PayPal page to display.', 'woocommerce-gateway-paypal-express-checkout' ),
+		'default'     => 'Login',
+		'desc_tip'    => true,
+		'options'     => array(
+			'Billing' => _x( 'Billing (Non-PayPal account)', 'Type of PayPal page', 'woocommerce-gateway-paypal-express-checkout' ),
+			'Login'   => _x( 'Login (PayPal account login)', 'Type of PayPal page', 'woocommerce-gateway-paypal-express-checkout' ),
+		),
+	),
+
 	'advanced' => array(
 		'title'       => __( 'Advanced Settings', 'woocommerce-gateway-paypal-express-checkout' ),
 		'type'        => 'title',
@@ -300,14 +350,6 @@ return array(
 		'default'     => 'no',
 		'desc_tip'    => true,
 		'description' => __( 'If you enable this setting, PayPal will be instructed not to allow the buyer to use funding sources that take additional time to complete (for example, eChecks). Instead, the buyer will be required to use an instant funding source, such as an instant transfer, a credit/debit card, or PayPal Credit.', 'woocommerce-gateway-paypal-express-checkout' ),
-	),
-	'logo_image_url' => array(
-		'title'       => __( 'Logo Image URL', 'woocommerce-gateway-paypal-express-checkout' ),
-		'type'        => 'text',
-		'description' => __( 'If you want PayPal to co-brand the checkout page with your logo, enter the URL of your logo image here.<br/>The image must be no larger than 190x60, GIF, PNG, or JPG format, and should be served over HTTPS.', 'woocommerce-gateway-paypal-express-checkout' ),
-		'default'     => '',
-		'desc_tip'    => true,
-		'placeholder' => __( 'Optional', 'woocommerce-gateway-paypal-express-checkout' ),
 	),
 	'subtotal_mismatch_behavior' => array(
 		'title'       => __( 'Subtotal Mismatch Behavior', 'woocommerce-gateway-paypal-express-checkout' ),

@@ -183,6 +183,18 @@ class WC_Gateway_PPEC_Settings {
 			$params['LOGOIMG'] = $this->logo_image_url;
 		}
 
+		if ( $this->header_image_url ) {
+			$params['HDRIMG'] = $this->header_image_url;
+		}
+
+		if ( $this->page_style ) {
+			$params['PAGESTYLE'] = $this->page_style;
+		}
+
+		if ( in_array( $this->landing_page, array( 'Billing', 'Login' ) ) ) {
+			$params['LANDINGPAGE'] = $this->landing_page;
+		}
+
 		if ( apply_filters( 'woocommerce_paypal_express_checkout_allow_guests', true ) ) {
 			$params['SOLUTIONTYPE'] = 'Sole';
 		}
@@ -215,6 +227,18 @@ class WC_Gateway_PPEC_Settings {
 
 		if ( $this->logo_image_url ) {
 			$params['LOGOIMG'] = $this->logo_image_url;
+		}
+
+		if ( $this->header_image_url ) {
+			$params['HDRIMG'] = $this->header_image_url;
+		}
+
+		if ( $this->page_style ) {
+			$params['PAGESTYLE'] = $this->page_style;
+		}
+
+		if ( in_array( $this->landing_page, array( 'Billing', 'Login' ) ) ) {
+			$params['LANDINGPAGE'] = $this->landing_page;
 		}
 
 		if ( apply_filters( 'woocommerce_paypal_express_checkout_allow_guests', true ) ) {
@@ -356,5 +380,37 @@ class WC_Gateway_PPEC_Settings {
 			$locale = 'en_US';
 		}
 		return $locale;
+	}
+
+	/**
+	 * Get brand name form settings.
+	 *
+	 * Default to site's name if brand_name in settings empty.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return string
+	 */
+	public function get_brand_name() {
+		$brand_name = $this->brand_name ? $this->brand_name : get_bloginfo( 'name', 'display' );
+
+		/**
+		 * Character length and limitations for this parameter is 127 single-byte
+		 * alphanumeric characters.
+		 *
+		 * @see https://developer.paypal.com/docs/classic/api/merchant/SetExpressCheckout_API_Operation_NVP/
+		 */
+		if ( ! empty( $brand_name ) ) {
+			$brand_name = substr( $brand_name, 0, 127 );
+		}
+
+		/**
+		 * Filters the brand name in PayPal hosted checkout pages.
+		 *
+		 * @since 1.2.0
+		 *
+		 * @param string Brand name
+		 */
+		return apply_filters( 'woocommerce_paypal_express_checkout_get_brand_name', $brand_name );
 	}
 }
