@@ -28,6 +28,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 		add_action( 'woocommerce_order_action_ppec_capture_charge', array( $this, 'maybe_capture_charge' ) );
 
 		add_action( 'load-woocommerce_page_wc-settings', array( $this, 'maybe_redirect_to_ppec_settings' ) );
+		add_action( 'load-woocommerce_page_wc-settings', array( $this, 'maybe_reset_api_credentials' ) );
 	}
 
 	public function add_capture_charge_order_action( $actions ) {
@@ -106,7 +107,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 		// current section. (Note: The option will be empty if it has never been enabled)
 
 		$simplify_commerce_options = get_option( 'woocommerce_simplify_commerce_settings', array() );
-		if ( empty( $simplify_commerce_options ) || ( "no" === $simplify_commerce_options['enabled'] ) ) {
+		if ( empty( $simplify_commerce_options ) || ( 'no' === $simplify_commerce_options['enabled'] ) ) {
 			if ( 'wc_gateway_simplify_commerce' !== $current_section ) {
 				$sections_to_remove[] = 'wc_gateway_simplify_commerce';
 			}
@@ -115,8 +116,8 @@ class WC_Gateway_PPEC_Admin_Handler {
 			}
 		}
 
-		foreach( $sections_to_remove as $section_to_remove ) {
-			unset( $sections[$section_to_remove] );
+		foreach ( $sections_to_remove as $section_to_remove ) {
+			unset( $sections[ $section_to_remove ] );
 		}
 
 		return $sections;
@@ -196,7 +197,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 				if ( is_wp_error( $result ) ) {
 					$order->add_order_note( __( 'Unable to void charge!', 'woocommerce-gateway-paypal-express-checkout' ) . ' ' . $result->get_error_message() );
 				} else {
-					$order->add_order_note( sprintf( __( 'PayPal Express Checkout charge voided (Charge ID: %s)', 'woocommerce-gateway-paypal-express-checkout' ), $trans_id) );
+					$order->add_order_note( sprintf( __( 'PayPal Express Checkout charge voided (Charge ID: %s)', 'woocommerce-gateway-paypal-express-checkout' ), $trans_id ) );
 				}
 			}
 		}
@@ -234,5 +235,46 @@ class WC_Gateway_PPEC_Admin_Handler {
 			$redirect = add_query_arg( array( 'section' => 'wc_gateway_ppec_with_paypal' ) );
 			wp_safe_redirect( $redirect );
 		}
+	}
+
+	/**
+	 * Reset API credentials if merchant clicked the reset credential link.
+	 *
+	 * When API credentials empty, the connect button will be displayed again,
+	 * allowing merchant to reconnect with other account.
+	 *
+	 * When WooCommerce Branding is active, this handler may not be invoked as
+	 * screen ID may evaluates to something else.
+	 *
+	 * @since 1.2.0
+	 */
+	public function maybe_reset_api_credentials() {
+		if ( empty( $_GET['reset_ppec_api_credentials'] ) ) {
+			return;
+		}
+
+		if ( empty( $_GET['reset_nonce'] ) || ! wp_verify_nonce( $_GET['reset_nonce'], 'reset_ppec_api_credentials' ) ) {
+			return;
+		}
+
+		$settings = wc_gateway_ppec()->settings;
+		$env      = $settings->_environment;
+		if ( ! empty( $_GET['environment'] ) ) {
+			$env = $_GET['environment'];
+		}
+		$prefix = 'sandbox' === $env ? 'sandbox_' : '';
+
+		foreach ( array( 'api_username', 'api_password', 'api_signature', 'api_certificate' ) as $key ) {
+			$key = $prefix . $key;
+			$settings->{$key} = '';
+		}
+
+		// Save environment too as when it switches to another env and merchant
+		// click the reset they'd expect to save the environment too.
+		$settings->environment = 'sandbox' === $env ? 'sandbox' : 'live';
+
+		$settings->save();
+
+		wp_safe_redirect( wc_gateway_ppec()->get_admin_setting_link() );
 	}
 }
