@@ -128,7 +128,7 @@ return array(
 		'type'        => 'text',
 		'desc_tip'    => true,
 		'description' => __( 'This controls the description which the user sees during checkout.', 'woocommerce-gateway-paypal-express-checkout' ),
-		'default'     => __( 'Pay using either your PayPal account or credit card. All credit card payments will be processed by PayPal.', 'woocommerce-gateway-paypal-express-checkout' ),
+		'default'     => __( 'Pay via PayPal; you can pay with your credit card if you don\'t have a PayPal account.', 'woocommerce-gateway-paypal-express-checkout' ),
 	),
 
 	'account_settings' => array(
