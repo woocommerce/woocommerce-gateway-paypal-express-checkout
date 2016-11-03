@@ -43,6 +43,12 @@ if ( $enable_ips && $needs_sandbox_creds ) {
 	$sandbox_api_creds_text = sprintf( __( 'Your account setting is set to sandbox, no real charging takes place. To accept live payments, switch your environment to live and connect your PayPal account. To reset current credentials and use other sandbox account <a href="%1$s" title="%2$s">click here</a>.', 'woocommerce-gateway-paypal-express-checkout' ), $reset_link, __( 'Reset current sandbox credentials', 'woocommerce-gateway-paypal-express-checkout' ) );
 }
 
+$credit_enabled_label = __( 'Enable PayPal Credit', 'woocommerce-gateway-paypal-express-checkout' );
+if ( ! $this->is_credit_supported() ) {
+	$credit_enabled_label .= '<p>';
+	$credit_enabled_label .= '<em>' . __( 'This option is disabled. Currently PayPal Credit only available for U.S. merchants.', 'woocommerce-gateway-paypal-express-checkout' ) . '</em></p>';
+}
+
 wc_enqueue_js( "
 	jQuery( function( $ ) {
 		var ppec_mark_fields      = '#woocommerce_ppec_paypal_title, #woocommerce_ppec_paypal_description';
@@ -301,6 +307,15 @@ return array(
 			'Billing' => _x( 'Billing (Non-PayPal account)', 'Type of PayPal page', 'woocommerce-gateway-paypal-express-checkout' ),
 			'Login'   => _x( 'Login (PayPal account login)', 'Type of PayPal page', 'woocommerce-gateway-paypal-express-checkout' ),
 		),
+	),
+	'credit_enabled' => array(
+		'title'       => __( 'Enable PayPal Credit', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'        => 'checkbox',
+		'label'       => $credit_enabled_label,
+		'disabled'    => ! $this->is_credit_supported(),
+		'default'     => 'no',
+		'desc_tip'    => true,
+		'description' => __( 'This enableds PayPal Credit, which display PayPal Credit button next to Express Checkout button.', 'woocommerce-gateway-paypal-express-checkout' ),
 	),
 
 	'advanced' => array(

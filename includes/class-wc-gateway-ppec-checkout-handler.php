@@ -446,6 +446,11 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		return add_query_arg( 'woo-paypal-cancel', 'true', WC()->cart->get_cart_url() );
 	}
 
+	/**
+	 * Handler when buyer is checking out from cart page.
+	 *
+	 * @throws PayPal_API_Exception
+	 */
 	public function start_checkout_from_cart() {
 
 		wc_gateway_ppec()->cart->loadCartDetails();
@@ -478,6 +483,13 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		}
 	}
 
+	/**
+	 * Handler when buyer is checking out from checkout page.
+	 *
+	 * @throws PayPal_API_Exception
+	 *
+	 * @param int $order_id Order ID
+	 */
 	public function start_checkout_from_checkout( $order_id ) {
 
 		wc_gateway_ppec()->cart->loadOrderDetails( $order_id );
