@@ -45,8 +45,7 @@ if ( $enable_ips && $needs_sandbox_creds ) {
 
 $credit_enabled_label = __( 'Enable PayPal Credit', 'woocommerce-gateway-paypal-express-checkout' );
 if ( ! $this->is_credit_supported() ) {
-	$credit_enabled_label .= '<p>';
-	$credit_enabled_label .= '<em>' . __( 'This option is disabled. Currently PayPal Credit only available for U.S. merchants.', 'woocommerce-gateway-paypal-express-checkout' ) . '</em></p>';
+	$credit_enabled_label .= '<p><em>' . __( 'This option is disabled. Currently PayPal Credit only available for U.S. merchants.', 'woocommerce-gateway-paypal-express-checkout' ) . '</em></p>';
 }
 
 wc_enqueue_js( "
