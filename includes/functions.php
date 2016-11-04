@@ -68,3 +68,14 @@ function wc_gateway_ppec_log( $message ) {
 		error_log( $message );
 	}
 }
+
+/**
+ * Checks whether buyer is checking out with PayPal Credit.
+ *
+ * @since 1.2.0
+ *
+ * @return bool Returns true if buyer is checking out with PayPal Credit
+ */
+function wc_gateway_ppec_is_using_credit() {
+	return ! empty( $_GET['use-ppc'] ) && 'true' === $_GET['use-ppc'];
+}

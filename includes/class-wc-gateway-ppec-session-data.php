@@ -64,21 +64,32 @@ class WC_Gateway_PPEC_Session_Data {
 	public $expiry_time;
 
 	/**
+	 * Whether the buyer is checking out with PayPal Credit.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @var bool
+	 */
+	public $use_paypal_credit;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param array $args Arguments for session data
 	 */
 	public function __construct( $args = array() ) {
 		$args = wp_parse_args( $args, array(
-			'token'      => '',
-			'source'     => 'cart',
-			'order_id'   => false,
-			'expires_in' => 10800,
+			'token'             => '',
+			'source'            => 'cart',
+			'order_id'          => false,
+			'expires_in'        => 10800,
+			'use_paypal_credit' => false,
 		) );
 
-		$this->token       = $args['token'];
-		$this->source      = $args['source'];
-		$this->expiry_time = time() + $args['expires_in'];
+		$this->token             = $args['token'];
+		$this->source            = $args['source'];
+		$this->expiry_time       = time() + $args['expires_in'];
+		$this->use_paypal_credit = $args['use_paypal_credit'];
 
 		if ( 'order' === $this->source ) {
 			$this->order_id = $args['order_id'];

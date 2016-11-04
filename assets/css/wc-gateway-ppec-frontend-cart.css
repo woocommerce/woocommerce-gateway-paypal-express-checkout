@@ -12,6 +12,7 @@
 	display: block;
 	text-decoration: none !important;
 	border: 0 !important;
+	padding-top: 1em;
 }
 .wcppec-checkout-buttons__button img {
 	margin: 0 auto;

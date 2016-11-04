@@ -446,6 +446,11 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		return add_query_arg( 'woo-paypal-cancel', 'true', WC()->cart->get_cart_url() );
 	}
 
+	/**
+	 * Handler when buyer is checking out from cart page.
+	 *
+	 * @throws PayPal_API_Exception
+	 */
 	public function start_checkout_from_cart() {
 
 		wc_gateway_ppec()->cart->loadCartDetails();
@@ -461,14 +466,19 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		$params['RETURNURL'] = $this->get_return_url();
 		$params['CANCELURL'] = $this->get_cancel_url();
 
+		if ( wc_gateway_ppec_is_using_credit() ) {
+			$params['USERSELECTEDFUNDINGSOURCE'] = 'Finance';
+		}
+
 		$response = wc_gateway_ppec()->client->set_express_checkout( $params );
 		if ( $this->is_success( $response ) ) {
 			// Save some data to the session.
 			WC()->session->paypal = new WC_Gateway_PPEC_Session_Data(
 				array(
-					'token'      => $response['TOKEN'],
-					'source'     => 'cart',
-					'expires_in' => $settings->get_token_session_length()
+					'token'             => $response['TOKEN'],
+					'source'            => 'cart',
+					'expires_in'        => $settings->get_token_session_length(),
+					'use_paypal_credit' => wc_gateway_ppec_is_using_credit(),
 				)
 			);
 
@@ -478,6 +488,13 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		}
 	}
 
+	/**
+	 * Handler when buyer is checking out from checkout page.
+	 *
+	 * @throws PayPal_API_Exception
+	 *
+	 * @param int $order_id Order ID
+	 */
 	public function start_checkout_from_checkout( $order_id ) {
 
 		wc_gateway_ppec()->cart->loadOrderDetails( $order_id );
@@ -487,7 +504,6 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		//new wc order > get address from that order > new pp address > assign address from order to new pp address > $this->setShippingAddress(pp address object)
 		$getAddress = wc_get_order( $order_id );
 		$shipAddressName = $getAddress->shipping_first_name . ' ' . $getAddress->shipping_last_name;
-
 
 		$shipAddress = new PayPal_Address;
 		$shipAddress->setName($shipAddressName);
@@ -520,6 +536,11 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		$params['RETURNURL']    = $this->get_return_url();
 		$params['CANCELURL']    = $this->get_cancel_url();
 		$params['ADDROVERRIDE'] = '1';
+
+		if ( wc_gateway_ppec_is_using_credit() ) {
+			$params['USERSELECTEDFUNDINGSOURCE'] = 'Finance';
+		}
+
 		$response = wc_gateway_ppec()->client->set_express_checkout( $params );
 
 		if ( $this->is_success( $response ) ) {
