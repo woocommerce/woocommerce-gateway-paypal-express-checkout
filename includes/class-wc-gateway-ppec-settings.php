@@ -413,4 +413,20 @@ class WC_Gateway_PPEC_Settings {
 		 */
 		return apply_filters( 'woocommerce_paypal_express_checkout_get_brand_name', $brand_name );
 	}
+
+	/**
+	 * Checks whether PayPal Credit is enabled.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return bool Returns true if PayPal Credit is enabled and supported
+	 */
+	public function is_credit_enabled() {
+		$gateways = WC()->payment_gateways->get_available_payment_gateways();
+		if ( ! isset( $gateways['ppec_paypal'] ) ) {
+			return false;
+		}
+
+		return 'yes' === $this->credit_enabled && $gateways['ppec_paypal']->is_credit_supported();
+	}
 }

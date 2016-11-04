@@ -81,8 +81,8 @@ class WC_Gateway_PPEC_Cart_Handler {
 				<img src="<?php echo esc_url( 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-' . $settings->button_size . '.png' ); ?>" alt="<?php _e( 'Check out with PayPal', 'woocommerce-gateway-paypal-express-checkout' ); ?>" style="width: auto; height: auto;">
 			</a>
 
-			<?php if ( $settings->credit_enabled && $gateways['ppec_paypal']->is_credit_supported() ) : ?>
-				<a href="<?php echo esc_url( add_query_arg( array( 'startcheckout' => 'true', 'use-ppc' => 'true' ) ) ); ?>" id="woo_pp_ppc_button" class="wcppec-checkout-buttons__button">
+			<?php if ( $settings->is_credit_enabled() ) : ?>
+				<a href="<?php echo esc_url( add_query_arg( array( 'startcheckout' => 'true', 'use-ppc' => 'true' ), wc_get_page_permalink( 'cart' ) ) ); ?>" id="woo_pp_ppc_button" class="wcppec-checkout-buttons__button">
 				<img src="<?php echo esc_url( 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/ppcredit-logo-' . $settings->button_size . '.png' ); ?>" alt="<?php _e( 'Pay with PayPal Credit', 'woocommerce-gateway-paypal-express-checkout' ); ?>" style="width: auto; height: auto;">
 				</a>
 			<?php endif; ?>
@@ -130,7 +130,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 					'environment' => $settings->get_environment(),
 					'locale'      => $settings->get_paypal_locale(),
 					'start_flow'  => esc_url( add_query_arg( array( 'startcheckout' => 'true' ), wc_get_page_permalink( 'cart' ) ) ),
-					'show_modal'  => apply_filters( 'woocommerce_paypal_express_checkout_show_cart_modal', 'true' ),
+					'show_modal'  => apply_filters( 'woocommerce_paypal_express_checkout_show_cart_modal', true ),
 				)
 			);
 		}
