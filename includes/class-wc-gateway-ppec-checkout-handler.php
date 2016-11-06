@@ -375,7 +375,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 
 	public function getSetExpressCheckoutParameters() {
 		// First off, get the cart parameters
-		$params = wc_gateway_ppec()->cart->setECParams();
+		$params = wc_gateway_ppec()->cart->get_set_express_checkout_params();
 
 		if ( false !== $this->_shippingAddress ) {
 			if ( is_array( $this->_shippingAddress ) ) {
@@ -391,7 +391,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	}
 
 	public function getDoExpressCheckoutParameters( $token, $payer_id ) {
-		$params = wc_gateway_ppec()->cart->setECParams();
+		$params = wc_gateway_ppec()->cart->get_set_express_checkout_params();
 
 		if ( false !== $this->_shippingAddress ) {
 			if ( is_array( $this->_shippingAddress ) ) {
@@ -453,7 +453,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 */
 	public function start_checkout_from_cart() {
 
-		wc_gateway_ppec()->cart->loadCartDetails();
+		wc_gateway_ppec()->cart->load_cart_details();
 
 		$settings = wc_gateway_ppec()->settings;
 
@@ -497,7 +497,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 */
 	public function start_checkout_from_checkout( $order_id ) {
 
-		wc_gateway_ppec()->cart->loadOrderDetails( $order_id );
+		wc_gateway_ppec()->cart->load_order_details( $order_id );
 
 		$settings = wc_gateway_ppec()->settings;
 
@@ -589,7 +589,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		}
 
 		// Ensure details are set
-		wc_gateway_ppec()->cart->loadOrderDetails( $order->id );
+		wc_gateway_ppec()->cart->load_order_details( $order->id );
 
 		// Generate params to send to paypal, then do request
 		$response = wc_gateway_ppec()->client->do_express_checkout_payment( array_merge(

@@ -12,22 +12,91 @@ if ( ! defined( 'ABSPATH' ) ) {
 class WC_Gateway_PPEC_Cart_Handler {
 
 	/**
-	 * TODO rename this to underscore var names
+	 * Total cost of the transaction to the buyer.
+	 *
+	 * The value includes shipping cost and tax.
+	 *
+	 * @var float
 	 */
-	protected $orderTotal;
-	protected $orderTax;
-	protected $shipping;
-	protected $insurance;
-	protected $handling;
-	protected $items;
-	protected $totalItemAmount;
-	protected $currency;
-	protected $custom;
-	protected $invoiceNumber;
-	protected $shipDiscountAmount;
+	protected $order_total;
 
 	/**
-	 * Currencies that support 0 decimal places -- "zero decimal place" currencies
+	 * Sum of tax for all items in this order.
+	 *
+	 * The value is set for PAYMENTREQUEST_0_TAXAMT param in SetExpressCheckout
+	 * call.
+	 *
+	 * @var float
+	 */
+	protected $order_tax;
+
+	/**
+	 * Total shipping cost for this order.
+	 *
+	 * @var float
+	 */
+	protected $shipping;
+
+	/**
+	 * Total shipping insurance for this order.
+	 *
+	 * @var float
+	 */
+	protected $insurance;
+
+	/**
+	 * Total handling costs for this order.
+	 *
+	 * @var float
+	 */
+	protected $handling;
+
+	/**
+	 * Payment details item type fields.
+	 *
+	 * @var array
+	 */
+	protected $items;
+
+	/**
+	 * Sum of cost of all items from cart contents.
+	 *
+	 * @var float
+	 */
+	protected $total_item_amount;
+
+	/**
+	 * A 3-chars currency code.
+	 *
+	 * @var string
+	 */
+	protected $currency;
+
+	/**
+	 * A free-form field for custom thing.
+	 *
+	 * Currently just empty string.
+	 *
+	 * @var string
+	 */
+	protected $custom;
+
+	/**
+	 * Ivoice number.
+	 *
+	 * @var string
+	 */
+	protected $invoice_number;
+
+	/**
+	 * Shipping discount for this order, specified as negative number.
+	 *
+	 * @var float
+	 */
+	protected $ship_discount_amount;
+
+	/**
+	 * Currencies that support 0 decimal places -- "zero decimal place" currencies.
 	 *
 	 * @var array
 	 */
@@ -47,6 +116,9 @@ class WC_Gateway_PPEC_Cart_Handler {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 	}
 
+	/**
+	 * Start checkout handler when cart is loaded.
+	 */
 	public function before_cart_totals() {
 		// If there then call start_checkout() else do nothing so page loads as normal.
 		if ( ! empty( $_GET['startcheckout'] ) && 'true' === $_GET['startcheckout'] ) {
@@ -57,7 +129,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 	}
 
 	/**
-	 * Display paypal button on the cart page
+	 * Display paypal button on the cart page.
 	 */
 	public function display_paypal_button() {
 
@@ -137,11 +209,19 @@ class WC_Gateway_PPEC_Cart_Handler {
 	}
 
 	/**
-	 * Load cart details.
+	 * @deprecated
 	 */
 	public function loadCartDetails() {
+		_deprecated_function( __METHOD__, '1.2.0', 'WC_Gateway_PPEC_Cart_Handler::load_cart_details' );
+		return $this->laod_cart_details();
+	}
 
-		$this->totalItemAmount = 0;
+	/**
+	 * Load cart details.
+	 */
+	public function load_cart_details() {
+
+		$this->total_item_amount = 0;
 		$this->items = array();
 
 		// load all cart items into an array
@@ -169,19 +249,19 @@ class WC_Gateway_PPEC_Cart_Handler {
 			$roundedPayPalTotal += round( $amount * $values['quantity'], $decimals );
 		}
 
-		$this->orderTax = round( WC()->cart->tax_total + WC()->cart->shipping_tax_total, $decimals );
+		$this->order_tax = round( WC()->cart->tax_total + WC()->cart->shipping_tax_total, $decimals );
 		$this->shipping = round( WC()->cart->shipping_total, $decimals );
-		$this->totalItemAmount = round( WC()->cart->cart_contents_total, $decimals ) + $discounts;
-		$this->orderTotal = round( $this->totalItemAmount + $this->orderTax + $this->shipping, $decimals );
+		$this->total_item_amount = round( WC()->cart->cart_contents_total, $decimals ) + $discounts;
+		$this->order_total = round( $this->total_item_amount + $this->order_tax + $this->shipping, $decimals );
 
 		// need to compare WC totals with what PayPal will calculate to see if they match
 		// if they do not match, check to see what the merchant would like to do
 		// options are to remove line items or add a line item to adjust for the difference
-		if ( $this->totalItemAmount != $roundedPayPalTotal ) {
+		if ( $this->total_item_amount != $roundedPayPalTotal ) {
 			if ( 'add' === wc_gateway_ppec()->settings->get_subtotal_mismatch_behavior() ) {
 				// ...
 				// Add line item to make up different between WooCommerce calculations and PayPal calculations
-				$cartItemAmountDifference = $this->totalItemAmount - $roundedPayPalTotal;
+				$cartItemAmountDifference = $this->total_item_amount - $roundedPayPalTotal;
 
 				$modifyLineItem = array(
 					'name'			=> 'Line Item Amount Offset',
@@ -191,8 +271,8 @@ class WC_Gateway_PPEC_Cart_Handler {
 					);
 
 				$this->items[] = $modifyLineItem;
-				$this->totalItemAmount += $modifyLineItem[ 'amount' ];
-				$this->orderTotal += $modifyLineItem[ 'amount' ];
+				$this->total_item_amount += $modifyLineItem[ 'amount' ];
+				$this->order_total += $modifyLineItem[ 'amount' ];
 
 			} else {
 				// ...
@@ -203,13 +283,13 @@ class WC_Gateway_PPEC_Cart_Handler {
 		}
 
 		// enter discount shenanigans. item total cannot be 0 so make modifications accordingly
-		if ( $this->totalItemAmount == $discounts ) {
+		if ( $this->total_item_amount == $discounts ) {
 			// ...
 			// Omit line items altogether
 			unset($this->items);
-			$this->shipDiscountAmount = 0;
-			$this->totalItemAmount -= $discounts;
-			$this->orderTotal -= $discounts;
+			$this->ship_discount_amount = 0;
+			$this->total_item_amount -= $discounts;
+			$this->order_total -= $discounts;
 		} else {
 			// Build PayPal_Cart object as normal
 			if ( $discounts > 0 ) {
@@ -223,36 +303,49 @@ class WC_Gateway_PPEC_Cart_Handler {
 				$this->items[] = $discLineItem;
 			}
 
-			$this->shipDiscountAmount = 0;
-			$this->totalItemAmount -= $discounts;
-			$this->orderTotal -= $discounts;
+			$this->ship_discount_amount = 0;
+			$this->total_item_amount -= $discounts;
+			$this->order_total -= $discounts;
 		}
 
 		// If the totals don't line up, adjust the tax to make it work (cause it's probably a tax mismatch).
 		$wooOrderTotal = round( WC()->cart->total, $decimals );
-		if( $wooOrderTotal != $this->orderTotal ) {
-			$this->orderTax += $wooOrderTotal - $this->orderTotal;
-			$this->orderTotal = $wooOrderTotal;
+		if( $wooOrderTotal != $this->order_total ) {
+			$this->order_tax += $wooOrderTotal - $this->order_total;
+			$this->order_total = $wooOrderTotal;
 		}
 
-		$this->orderTax = round( $this->orderTax, $decimals );
+		$this->order_tax = round( $this->order_tax, $decimals );
 
 		// after all of the discount shenanigans, load up the other standard variables
 		$this->insurance = 0;
 		$this->handling = 0;
 		$this->currency = get_woocommerce_currency();
 		$this->custom = '';
-		$this->invoiceNumber = '';
+		$this->invoice_number = '';
 
 		if ( ! is_numeric( $this->shipping ) ) {
 			$this->shipping = 0;
 		}
 	}
 
+	/**
+	 * @deprecated
+	 */
 	public function loadOrderDetails( $order_id ) {
+		_deprecated_function( __METHOD__, '1.2.0', 'WC_Gateway_PPEC_Cart_Handler::load_order_details' );
+		return $this->load_order_details( $order_id );
+	}
+
+	/**
+	 * Load order details from given order_id.
+	 *
+	 * @param int $order_id Order ID
+	 */
+	public function load_order_details( $order_id ) {
 
 		$order = wc_get_order( $order_id );
-		$this->totalItemAmount = 0;
+		$this->total_item_amount = 0;
 		$this->items = array();
 
 		// load all cart items into an array
@@ -279,22 +372,22 @@ class WC_Gateway_PPEC_Cart_Handler {
 			$roundedPayPalTotal += round( $amount * $values['qty'], $decimals );
 		}
 
-		$this->orderTax = round( $order->get_total_tax(), $decimals );
+		$this->order_tax = round( $order->get_total_tax(), $decimals );
 		$this->shipping = round( $order->get_total_shipping(), $decimals );
 		// if ( $order->get_shipping_tax() != 0 ) {
 		// 	$this->shipping += round( $order->get_shipping_tax(), $decimals );
 		// }
-		$this->totalItemAmount = round( $order->get_subtotal(), $decimals );
-		$this->orderTotal = round( $this->totalItemAmount + $this->orderTax + $this->shipping, $decimals );
+		$this->total_item_amount = round( $order->get_subtotal(), $decimals );
+		$this->order_total = round( $this->total_item_amount + $this->order_tax + $this->shipping, $decimals );
 
 		// need to compare WC totals with what PayPal will calculate to see if they match
 		// if they do not match, check to see what the merchant would like to do
 		// options are to remove line items or add a line item to adjust for the difference
-		if ( $this->totalItemAmount != $roundedPayPalTotal ) {
+		if ( $this->total_item_amount != $roundedPayPalTotal ) {
 			if ( 'add' === wc_gateway_ppec()->settings->get_subtotal_mismatch_behavior() ) {
 				// ...
 				// Add line item to make up different between WooCommerce calculations and PayPal calculations
-				$cartItemAmountDifference = $this->totalItemAmount - $roundedPayPalTotal;
+				$cartItemAmountDifference = $this->total_item_amount - $roundedPayPalTotal;
 
 				$modifyLineItem = array(
 					'name'			=> 'Line Item Amount Offset',
@@ -314,12 +407,12 @@ class WC_Gateway_PPEC_Cart_Handler {
 		}
 
 		// enter discount shenanigans. item total cannot be 0 so make modifications accordingly
-		if ( $this->totalItemAmount == $discounts ) {
+		if ( $this->total_item_amount == $discounts ) {
 			// Omit line items altogether
 			unset($this->items);
-			$this->shipDiscountAmount = 0;
-			$this->totalItemAmount -= $discounts;
-			$this->orderTotal -= $discounts;
+			$this->ship_discount_amount = 0;
+			$this->total_item_amount -= $discounts;
+			$this->order_total -= $discounts;
 		} else {
 			// Build PayPal_Cart object as normal
 			if ( $discounts > 0 ) {
@@ -331,46 +424,61 @@ class WC_Gateway_PPEC_Cart_Handler {
 					);
 
 				$this->items[] = $discLineItem;
-				$this->totalItemAmount -= $discounts;
-				$this->orderTotal -= $discounts;
+				$this->total_item_amount -= $discounts;
+				$this->order_total -= $discounts;
 			}
 
-			$this->shipDiscountAmount = 0;
+			$this->ship_discount_amount = 0;
 		}
 
 		// If the totals don't line up, adjust the tax to make it work (cause it's probably a tax mismatch).
 		$wooOrderTotal = round( $order->get_total(), $decimals );
-		if( $wooOrderTotal != $this->orderTotal ) {
-			$this->orderTax += $wooOrderTotal - $this->orderTotal;
-			$this->orderTotal = $wooOrderTotal;
+		if( $wooOrderTotal != $this->order_total ) {
+			$this->order_tax += $wooOrderTotal - $this->order_total;
+			$this->order_total = $wooOrderTotal;
 		}
 
-		$this->orderTax = round( $this->orderTax, $decimals );
+		$this->order_tax = round( $this->order_tax, $decimals );
 
 		// after all of the discount shenanigans, load up the other standard variables
 		$this->insurance = 0;
 		$this->handling = 0;
 		$this->currency = get_woocommerce_currency();
 		$this->custom = '';
-		$this->invoiceNumber = '';
+		$this->invoice_number = '';
 
 		if ( ! is_numeric( $this->shipping ) ) {
 			$this->shipping = 0;
 		}
 	}
 
+	/**
+	 * @deprecated
+	 */
 	public function setECParams() {
+		_deprecated_function( __METHOD__, '1.2.0', 'WC_Gateway_PPEC_Cart_Handler::get_set_express_checkout_params' );
+		return $this->get_set_express_checkout_params();
+	}
+
+	/**
+	 * Get parameters for SetExpressCheckout call.
+	 *
+	 * @todo Merge this method with getter in client wrapper.
+	 *
+	 * @return array Params for SetExpressCheckout call
+	 */
+	public function get_set_express_checkout_params() {
 		$stdParams = array (
-			'PAYMENTREQUEST_0_AMT'          => $this->orderTotal,
+			'PAYMENTREQUEST_0_AMT'          => $this->order_total,
 			'PAYMENTREQUEST_0_CURRENCYCODE' => $this->currency,
-			'PAYMENTREQUEST_0_ITEMAMT'      => $this->totalItemAmount,
+			'PAYMENTREQUEST_0_ITEMAMT'      => $this->total_item_amount,
 			'PAYMENTREQUEST_0_SHIPPINGAMT'  => $this->shipping,
 			'PAYMENTREQUEST_0_INSURANCEAMT' => $this->insurance,
 			'PAYMENTREQUEST_0_HANDLINGAMT'  => $this->handling,
-			'PAYMENTREQUEST_0_TAXAMT'       => $this->orderTax,
+			'PAYMENTREQUEST_0_TAXAMT'       => $this->order_tax,
 			'PAYMENTREQUEST_0_CUSTOM'       => $this->custom,
-			'PAYMENTREQUEST_0_INVNUM'       => $this->invoiceNumber,
-			'PAYMENTREQUEST_0_SHIPDISCAMT'  => $this->shipDiscountAmount,
+			'PAYMENTREQUEST_0_INVNUM'       => $this->invoice_number,
+			'PAYMENTREQUEST_0_SHIPDISCAMT'  => $this->ship_discount_amount,
 			'NOSHIPPING'                    => WC()->cart->needs_shipping() ? 0 : 1,
 		);
 
