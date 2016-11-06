@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * WC_Gateway_PPEC_Cart_Handler handles button display in the cart.
+ * PayPal Instant Payment Notification handler.
  *
  * @see https://developer.paypal.com/docs/classic/ipn/integration-guide/IPNImplementation/
  * @since 1.1.2
