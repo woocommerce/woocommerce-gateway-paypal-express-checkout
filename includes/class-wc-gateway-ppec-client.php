@@ -201,6 +201,458 @@ class WC_Gateway_PPEC_Client {
 	}
 
 	/**
+	 * Get params for SetExpressCheckout call.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param array $args Args
+	 *
+	 * @return array Params for SetExpressCheckout call
+	 */
+	public function get_set_express_checkout_params( array $args ) {
+		$args = wp_parse_args(
+			$args,
+			array(
+				'start_from' => 'cart', // Where the buyer starts checking out.
+				'order_id'   => '',     // Should be set when checking out from checkout page.
+			)
+		);
+
+		$settings = wc_gateway_ppec()->settings;
+
+		$params              = array();
+		$params['LOGOIMG']   = $settings->logo_image_url;
+		$params['HDRIMG']    = $settings->header_image_url;
+		$params['PAGESTYLE'] = $settings->page_style;
+		$params['BRANDNAME'] = $settings->get_brand_name();
+		$params['RETURNURL'] = $this->_get_return_url();
+		$params['CANCELURL'] = $this->_get_cancel_url();
+
+		if ( wc_gateway_ppec_is_using_credit() ) {
+			$params['USERSELECTEDFUNDINGSOURCE'] = 'Finance';
+		}
+
+		if ( 'checkout' === $args['start_from'] ) {
+			$params['ADDROVERRIDE'] = '1';
+		}
+
+		if ( in_array( $settings->landing_page, array( 'Billing', 'Login' ) ) ) {
+			$params['LANDINGPAGE'] = $settings->landing_page;
+		}
+
+		if ( apply_filters( 'woocommerce_paypal_express_checkout_allow_guests', true ) ) {
+			$params['SOLUTIONTYPE'] = 'Sole';
+		}
+
+		if ( 'yes' === $settings->require_billing ) {
+			$params['REQBILLINGADDRESS'] = '1';
+		}
+
+		$params['PAYMENTREQUEST_0_PAYMENTACTION'] = $settings->get_paymentaction();
+		if ( 'yes' === $settings->instant_payments && 'sale' === $settings->get_paymentaction() ) {
+			$params['PAYMENTREQUEST_0_ALLOWEDPAYMENTMETHOD'] = 'InstantPaymentOnly';
+		}
+
+		$params['PAYMENTREQUEST_0_INSURANCEAMT'] = 0;
+		$params['PAYMENTREQUEST_0_HANDLINGAMT']  = 0;
+		$params['PAYMENTREQUEST_0_CUSTOM']       = '';
+		$params['PAYMENTREQUEST_0_INVNUM']       = '';
+		$params['PAYMENTREQUEST_0_CURRENCYCODE'] = get_woocommerce_currency();
+
+		switch ( $args['start_from'] ) {
+			case 'checkout':
+				$details = $this->_get_details_from_order( $args['order_id'] );
+				break;
+			case 'cart':
+				$details = $this->_get_details_from_cart();
+				break;
+		}
+
+		$params = array_merge(
+			$params,
+			array(
+				'PAYMENTREQUEST_0_AMT'          => $details['order_total'],
+				'PAYMENTREQUEST_0_ITEMAMT'      => $details['total_item_amount'],
+				'PAYMENTREQUEST_0_SHIPPINGAMT'  => $details['shipping'],
+				'PAYMENTREQUEST_0_TAXAMT'       => $details['order_tax'],
+				'PAYMENTREQUEST_0_SHIPDISCAMT'  => $details['ship_discount_amount'],
+				'NOSHIPPING'                    => WC()->cart->needs_shipping() ? 0 : 1,
+			)
+		);
+
+		if ( ! empty( $details['shipping_address'] ) ) {
+			$params = array_merge(
+				$params,
+				$details['shipping_address']->getAddressParams( 'PAYMENTREQUEST_0_SHIPTO' )
+			);
+		}
+
+		if ( ! empty( $details['items'] ) ) {
+			$count = 0;
+			foreach ( $details['items'] as $line_item_key => $values ) {
+				$line_item_params = array(
+					'L_PAYMENTREQUEST_0_NAME' . $count => $values['name'],
+					'L_PAYMENTREQUEST_0_DESC' . $count => ! empty( $values['description'] ) ? strip_tags( $values['description'] ) : '',
+					'L_PAYMENTREQUEST_0_QTY' . $count  => $values['quantity'],
+					'L_PAYMENTREQUEST_0_AMT' . $count  => $values['amount'],
+				);
+
+				$params = array_merge( $params, $line_item_params );
+				$count++;
+			}
+		}
+
+		return $params;
+	}
+
+	/**
+	 * Get return URL.
+	 *
+	 * The URL to return from express checkout.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return string Return URL
+	 */
+	protected function _get_return_url() {
+		return add_query_arg( 'woo-paypal-return', 'true', WC()->cart->get_checkout_url() );
+	}
+
+	/**
+	 * Get cancel URL.
+	 *
+	 * The URL to return when canceling the express checkout.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return string Cancel URL
+	 */
+	protected function _get_cancel_url() {
+		return add_query_arg( 'woo-paypal-cancel', 'true', WC()->cart->get_cart_url() );
+	}
+
+	/**
+	 * Get extra line item when for subtotal mismatch.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param float $amount Item's amount
+	 *
+	 * @return array Line item
+	 */
+	protected function _get_extra_offset_line_item( $amount ) {
+		return array(
+			'name'        => 'Line Item Amount Offset',
+			'description' => 'Adjust cart calculation discrepancy',
+			'quantity'    => 1,
+			'amount'      => $amount,
+		);
+	}
+
+	/**
+	 * Get extra line item when for discount.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param float $amount Item's amount
+	 *
+	 * @return array Line item
+	 */
+	protected function _get_extra_discount_line_item( $amount ) {
+		return  array(
+			'name'        => 'Discount',
+			'description' => 'Discount Amount',
+			'quantity'    => 1,
+			'amount'      => '-' . $amount,
+		);
+	}
+
+	/**
+	 * Get details, not params to be passed in PayPal API request, from cart contents.
+	 *
+	 * This is the details when buyer is checking out from cart page.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return array Order details
+	 */
+	protected function _get_details_from_cart() {
+		$settings = wc_gateway_ppec()->settings;
+
+		$decimals      = $settings->get_number_of_decimal_digits();
+		$discounts     = round( WC()->cart->get_cart_discount_total(), $decimals );
+		$rounded_total = $this->_get_rounded_total_in_cart();
+
+		$details = array(
+			'total_item_amount' => round( WC()->cart->cart_contents_total, $decimals ) + $discounts,
+			'order_tax'         => round( WC()->cart->tax_total + WC()->cart->shipping_tax_total, $decimals ),
+			'shipping'          => round( WC()->cart->shipping_total, $decimals ),
+			'items'             => $this->_get_paypal_line_items_from_cart(),
+		);
+
+		$details['order_total'] = round(
+			$details['total_item_amount'] + $details['order_tax'] + $details['shipping'],
+			$decimals
+		);
+
+		// Compare WC totals with what PayPal will calculate to see if they match.
+		// if they do not match, check to see what the merchant would like to do.
+		// Options are to remove line items or add a line item to adjust for
+		// the difference.
+		if ( $details['total_item_amount'] != $rounded_total ) {
+			if ( 'add' === $settings->get_subtotal_mismatch_behavior() ) {
+				// Add line item to make up different between WooCommerce
+				// calculations and PayPal calculations.
+				$diff = round( $details['total_item_amount'] - $rounded_total, $decimals );
+				if ( $diff != 0 ) {
+					$extra_line_item = $this->_get_extra_offset_line_item( $diff );
+
+					$details['items'][]            = $extra_line_item;
+					$details['total_item_amount'] += $extra_line_item['amount'];
+					$details['order_total']       += $extra_line_item['amount'];
+				}
+			} else {
+				// Omit line items altogether.
+				unset( $details['items'] );
+			}
+		}
+
+		// Enter discount shenanigans. Item total cannot be 0 so make modifications
+		// accordingly.
+		if ( $details['total_item_amount'] == $discounts ) {
+			// Omit line items altogether.
+			unset( $details['items'] );
+			$details['ship_discount_amount'] = 0;
+			$details['total_item_amount']   -= $discounts;
+			$details['order_total']         -= $discounts;
+		} else {
+			if ( $discounts > 0 ) {
+				$details['items'][] = $this->_get_extra_offset_line_item( $discounts );
+			}
+
+			$details['ship_discount_amount'] = 0;
+			$details['total_item_amount']   -= $discounts;
+			$details['order_total']         -= $discounts;
+		}
+
+		// If the totals don't line up, adjust the tax to make it work (it's
+		// probably a tax mismatch).
+		$wc_order_total = round( WC()->cart->total, $decimals );
+		if ( $wc_order_total != $details['order_total'] ) {
+			$details['order_tax']  += $wc_order_total - $details['order_total'];
+			$details['order_total'] = $wc_order_total;
+		}
+		$details['order_tax'] = round( $details['order_tax'], $decimals );
+
+		if ( ! is_numeric( $details['shipping'] ) ) {
+			$details['shipping'] = 0;
+		}
+
+		return $details;
+	}
+
+	/**
+	 * Get line items from cart contents.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return array Line items
+	 */
+	protected function _get_paypal_line_items_from_cart() {
+		$settings = wc_gateway_ppec()->settings;
+		$decimals = $settings->get_number_of_decimal_digits();
+
+		$items = array();
+		foreach ( WC()->cart->cart_contents as $cart_item_key => $values ) {
+			$amount = round( $values['line_subtotal'] / $values['quantity'] , $decimals );
+			$item   = array(
+				'name'        => $values['data']->post->post_title,
+				'description' => $values['data']->post->post_content,
+				'quantity'    => $values['quantity'],
+				'amount'      => $amount,
+			);
+
+			$items[] = $item;
+		}
+
+		return $items;
+	}
+
+	/**
+	 * Get rounded total of items in cart.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return float Rounded total in cart
+	 */
+	protected function _get_rounded_total_in_cart() {
+		$settings = wc_gateway_ppec()->settings;
+		$decimals = $settings->get_number_of_decimal_digits();
+
+		$rounded_total = 0;
+		foreach ( WC()->cart->cart_contents as $cart_item_key => $values ) {
+			$amount         = round( $values['line_subtotal'] / $values['quantity'] , $decimals );
+			$rounded_total += round( $amount * $values['quantity'], $decimals );
+		}
+
+		return $rounded_total;
+	}
+
+	/**
+	 * Get details from given order_id.
+	 *
+	 * This is the details when buyer is checking out from checkout page.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param int $order_id Order ID
+	 *
+	 * @return array Order details
+	 */
+	protected function _get_details_from_order( $order_id ) {
+		$order    = wc_get_order( $order_id );
+		$settings = wc_gateway_ppec()->settings;
+
+		$decimals      = $settings->is_currency_supports_zero_decimal() ? 0 : 2;
+		$discounts     = round( $order->get_total_discount(), $decimals );
+		$rounded_total = $this->_get_rounded_total_in_order( $order );
+
+		$details = array(
+			'order_tax'         => round( $order->get_total_tax(), $decimals ),
+			'shipping'          => round( $order->get_total_shipping(), $decimals ),
+			'total_item_amount' => round( $order->get_subtotal(), $decimals ),
+			'items'             => $this->_get_paypal_line_items_from_order( $order ),
+		);
+
+		$details['order_total'] = round( $details['total_item_amount'] + $details['order_tax'] + $details['shipping'], $decimals );
+
+		// Compare WC totals with what PayPal will calculate to see if they match.
+		// if they do not match, check to see what the merchant would like to do.
+		// Options are to remove line items or add a line item to adjust for
+		// the difference.
+		if ( $details['total_item_amount'] != $rounded_total ) {
+			if ( 'add' === $settings->get_subtotal_mismatch_behavior() ) {
+				// Add line item to make up different between WooCommerce
+				// calculations and PayPal calculations.
+				$diff = round( $details['total_item_amount'] - $rounded_total, $decimals );
+
+				$details['items'][] = $this->_get_extra_offset_line_item( $diff );
+
+			} else {
+				// Omit line items altogether.
+				unset( $details['items'] );
+			}
+		}
+
+		// Enter discount shenanigans. Item total cannot be 0 so make modifications
+		// accordingly.
+		if ( $details['total_item_amount'] == $discounts ) {
+			// Omit line items altogether.
+			unset( $details['items'] );
+			$details['ship_discount_amount'] = 0;
+			$details['total_item_amount']   -= $discounts;
+			$details['order_total']         -= $discounts;
+		} else {
+			if ( $discounts > 0 ) {
+				$details['items'][] = $this->_get_extra_discount_line_item( $discounts );
+
+				$details['total_item_amount'] -= $discounts;
+				$details['order_total']       -= $discounts;
+			}
+
+			$details['ship_discount_amount'] = 0;
+		}
+
+		// If the totals don't line up, adjust the tax to make it work (it's
+		// probably a tax mismatch).
+		$wc_order_total = round( $order->get_total(), $decimals );
+		if ( $wc_order_total != $details['order_total'] ) {
+			$details['order_tax']  += $wc_order_total - $details['order_total'];
+			$details['order_total'] = $wc_order_total;
+		}
+		$details['order_tax'] = round( $details['order_tax'], $decimals );
+
+		if ( ! is_numeric( $details['shipping'] ) ) {
+			$details['shipping'] = 0;
+		}
+
+		// PayPal shipping address from order.
+		$shipping_address = new PayPal_Address;
+		$shipping_address->setName( $order->shipping_first_name . ' ' . $order->shipping_last_name );
+		$shipping_address->setStreet1( $order->shipping_address_1 );
+		$shipping_address->setStreet2( $order->shipping_address_2 );
+		$shipping_address->setCity( $order->shipping_city );
+		$shipping_address->setState( $order->shipping_state );
+		$shipping_address->setZip( $order->shipping_postcode );
+
+		// In case merchant only expects domestic shipping and hides shipping
+		// country, fallback to base country.
+		//
+		// @see https://github.com/woothemes/woocommerce-gateway-paypal-express-checkout/issues/139
+		$shipping_country = $order->shipping_country;
+		if ( empty( $shipping_country ) ) {
+			$shipping_country = WC()->countries->get_base_country();
+		}
+		$shipping_address->setCountry( $shipping_country );
+
+		$details['shipping_address'] = $shipping_address;
+
+		return $details;
+	}
+
+	/**
+	 * Get line items from given order.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param int|WC_Order $order Order ID or order object
+	 *
+	 * @return array Line items
+	 */
+	protected function _get_paypal_line_items_from_order( $order ) {
+		$settings = wc_gateway_ppec()->settings;
+		$decimals = $settings->get_number_of_decimal_digits();
+		$order    = wc_get_order( $order );
+
+		$items = array();
+		foreach ( $order->get_items() as $cart_item_key => $values ) {
+			$amount = round( $values['line_subtotal'] / $values['qty'] , $decimals );
+			$item   = array(
+				'name'     => $values['name'],
+				'quantity' => $values['qty'],
+				'amount'   => $amount,
+			);
+
+			$items[] = $item;
+		}
+
+		return $items;
+	}
+
+	/**
+	 * Get rounded total of a given order.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param int|WC_Order Order ID or order object
+	 *
+	 * @return float
+	 */
+	protected function _get_rounded_total_in_order( $order ) {
+		$settings = wc_gateway_ppec()->settings;
+		$decimals = $settings->get_number_of_decimal_digits();
+		$order    = wc_get_order( $order );
+
+		$rounded_total = 0;
+		foreach ( $order->get_items() as $cart_item_key => $values ) {
+			$amount         = round( $values['line_subtotal'] / $values['qty'] , $decimals );
+			$rounded_total += round( $amount * $values['qty'], $decimals );
+		}
+
+		return $rounded_total;
+	}
+
+	/**
 	 * Get details from a given token.
 	 *
 	 * @see https://developer.paypal.com/docs/classic/api/merchant/GetExpressCheckoutDetails_API_Operation_NVP/
@@ -234,6 +686,68 @@ class WC_Gateway_PPEC_Client {
 		$params['BUTTONSOURCE'] = 'WooThemes_EC';
 
 		return $this->_request( $params );
+	}
+
+	/**
+	 * Get params for DoExpressCheckoutPayment call.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param array $args Args
+	 *
+	 * @return array Params for DoExpressCheckoutPayment call
+	 */
+	public function get_do_express_checkout_params( array $args ) {
+		$settings = wc_gateway_ppec()->settings;
+		$order    = wc_get_order( $args['order_id'] );
+		$details  = $this->_get_details_from_order( $args['order_id'] );
+
+		$params = array(
+			'TOKEN'                          => $args['token'],
+			'PAYERID'                        => $args['payer_id'],
+			'PAYMENTREQUEST_0_AMT'           => $details['order_total'],
+			'PAYMENTREQUEST_0_ITEMAMT'       => $details['total_item_amount'],
+			'PAYMENTREQUEST_0_SHIPPINGAMT'   => $details['shipping'],
+			'PAYMENTREQUEST_0_TAXAMT'        => $details['order_tax'],
+			'PAYMENTREQUEST_0_SHIPDISCAMT'   => $details['ship_discount_amount'],
+			'PAYMENTREQUEST_0_INSURANCEAMT'  => 0,
+			'PAYMENTREQUEST_0_HANDLINGAMT'   => 0,
+			'PAYMENTREQUEST_0_CUSTOM'        => '',
+			'PAYMENTREQUEST_0_INVNUM'        => '',
+			'PAYMENTREQUEST_0_CURRENCYCODE'  => get_woocommerce_currency(),
+			'NOSHIPPING'                     => WC()->cart->needs_shipping() ? 0 : 1,
+			'PAYMENTREQUEST_0_NOTIFYURL'     => WC()->api_request_url( 'WC_Gateway_PPEC' ),
+			'PAYMENTREQUEST_0_PAYMENTACTION' => $settings->get_paymentaction(),
+			'PAYMENTREQUEST_0_INVNUM'        => $settings->invoice_prefix . $order->get_order_number(),
+			'PAYMENTREQUEST_0_CUSTOM'        => json_encode( array(
+				'order_id'  => $order->id,
+				'order_key' => $order->order_key,
+			) ),
+		);
+
+		if ( ! empty( $details['shipping_address'] ) ) {
+			$params = array_merge(
+				$params,
+				$details['shipping_address']->getAddressParams( 'PAYMENTREQUEST_0_SHIPTO' )
+			);
+		}
+
+		if ( ! empty( $details['items'] ) ) {
+			$count = 0;
+			foreach ( $details['items'] as $line_item_key => $values ) {
+				$line_item_params = array(
+					'L_PAYMENTREQUEST_0_NAME' . $count => $values['name'],
+					'L_PAYMENTREQUEST_0_DESC' . $count => ! empty( $values['description'] ) ? strip_tags( $values['description'] ) : '',
+					'L_PAYMENTREQUEST_0_QTY' . $count  => $values['quantity'],
+					'L_PAYMENTREQUEST_0_AMT' . $count  => $values['amount'],
+				);
+
+				$params = array_merge( $params, $line_item_params );
+				$count++;
+			}
+		}
+
+		return $params;
 	}
 
 	public function do_express_checkout_capture( $params ) {

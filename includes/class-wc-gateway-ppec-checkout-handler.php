@@ -352,61 +352,29 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		return $token;
 	}
 
+	/**
+	 * @deprecated
+	 */
 	public function setShippingAddress( $address ) {
-		if ( is_a( $address, 'PayPal_Address' ) ) {
-			$this->_shippingAddress = $address;
-		}
-		if ( is_array( $address ) ) {
-			// Check each of the elements to make sure they're all PayPal_Address objects as well
-			foreach ( $address as $index => $value ) {
-				if ( ! is_a( $value, 'PayPal_Address' ) ) {
-					return;
-				}
-				// And also check to make sure we're not exceeding the maximum number of parallel
-				// payments PayPal will allow
-				if ( ! is_int( $index ) || $value > 9 ) {
-					return;
-				}
-			}
-
-			$this->_shippingAddress = $address;
-		}
+		_deprecated_function( __METHOD__, '1.2.0', '' );
 	}
 
+	/**
+	 * @deprecated
+	 */
 	public function getSetExpressCheckoutParameters() {
-		// First off, get the cart parameters
-		$params = wc_gateway_ppec()->cart->get_set_express_checkout_params();
-
-		if ( false !== $this->_shippingAddress ) {
-			if ( is_array( $this->_shippingAddress ) ) {
-				foreach ( $this->_shippingAddress as $index => $value ) {
-					$params = array_merge( $params, $value->getAddressParams( 'PAYMENTREQUEST_' . $index . '_SHIPTO' ) );
-				}
-			} else {
-				$params = array_merge( $params, $this->_shippingAddress->getAddressParams( 'PAYMENTREQUEST_0_SHIPTO' ) );
-			}
-		}
-
-		return $params;
+		// No replacement because WC_Gateway_PPEC_Client::get_set_express_checkout_params
+		// needs context from where the buyer starts checking out.
+		_deprecated_function( __METHOD__, '1.2.0', '' );
 	}
 
+	/**
+	 * @deprecated
+	 */
 	public function getDoExpressCheckoutParameters( $token, $payer_id ) {
-		$params = wc_gateway_ppec()->cart->get_set_express_checkout_params();
-
-		if ( false !== $this->_shippingAddress ) {
-			if ( is_array( $this->_shippingAddress ) ) {
-				foreach ( $this->_shippingAddress as $index => $value ) {
-					$params = array_merge( $params, $value->getAddressParams( 'PAYMENTREQUEST_' . $index . '_SHIPTO' ) );
-				}
-			} else {
-				$params = array_merge( $params, $this->_shippingAddress->getAddressParams( 'PAYMENTREQUEST_0_SHIPTO' ) );
-			}
-		}
-
-		$params['TOKEN'] = $token;
-		$params['PAYERID'] = $payer_id;
-
-		return $params;
+		// No replacement because WC_Gateway_PPEC_Client::get_do_express_checkout_params
+		// needs order_id to return properly.
+		_deprecated_function( __METHOD__, '1.2.0', '' );
 	}
 
 	/**
@@ -425,52 +393,16 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	}
 
 	/**
-	 * Get return URL.
-	 *
-	 * The URL to return from express checkout.
-	 *
-	 * @return string Return URL
-	 */
-	protected function get_return_url() {
-		return add_query_arg( 'woo-paypal-return', 'true', WC()->cart->get_checkout_url() );
-	}
-
-	/**
-	 * Get cancel URL.
-	 *
-	 * The URL to return when canceling the express checkout.
-	 *
-	 * @return string Cancel URL
-	 */
-	protected function get_cancel_url() {
-		return add_query_arg( 'woo-paypal-cancel', 'true', WC()->cart->get_cart_url() );
-	}
-
-	/**
 	 * Handler when buyer is checking out from cart page.
 	 *
 	 * @throws PayPal_API_Exception
 	 */
 	public function start_checkout_from_cart() {
-
-		wc_gateway_ppec()->cart->load_cart_details();
-
 		$settings = wc_gateway_ppec()->settings;
+		$client   = wc_gateway_ppec()->client;
+		$params   = $client->get_set_express_checkout_params( array( 'start_from' => 'cart' ) );
 
-		$params = array_merge(
-			$settings->get_set_express_checkout_shortcut_params(),
-			$this->getSetExpressCheckoutParameters()
-		);
-
-		$params['BRANDNAME'] = $settings->get_brand_name();
-		$params['RETURNURL'] = $this->get_return_url();
-		$params['CANCELURL'] = $this->get_cancel_url();
-
-		if ( wc_gateway_ppec_is_using_credit() ) {
-			$params['USERSELECTEDFUNDINGSOURCE'] = 'Finance';
-		}
-
-		$response = wc_gateway_ppec()->client->set_express_checkout( $params );
+		$response = $client->set_express_checkout( $params );
 		if ( $this->is_success( $response ) ) {
 			// Save some data to the session.
 			WC()->session->paypal = new WC_Gateway_PPEC_Session_Data(
@@ -496,52 +428,14 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 * @param int $order_id Order ID
 	 */
 	public function start_checkout_from_checkout( $order_id ) {
-
-		wc_gateway_ppec()->cart->load_order_details( $order_id );
-
 		$settings = wc_gateway_ppec()->settings;
+		$client   = wc_gateway_ppec()->client;
+		$params   = $client->get_set_express_checkout_params( array(
+			'start_from' => 'cart',
+			'order_id'   => $order_id,
+		) );
 
-		//new wc order > get address from that order > new pp address > assign address from order to new pp address > $this->setShippingAddress(pp address object)
-		$getAddress = wc_get_order( $order_id );
-		$shipAddressName = $getAddress->shipping_first_name . ' ' . $getAddress->shipping_last_name;
-
-		$shipAddress = new PayPal_Address;
-		$shipAddress->setName($shipAddressName);
-		$shipAddress->setStreet1($getAddress->shipping_address_1);
-		$shipAddress->setStreet2($getAddress->shipping_address_2);
-		$shipAddress->setCity($getAddress->shipping_city);
-		$shipAddress->setState($getAddress->shipping_state);
-		$shipAddress->setZip($getAddress->shipping_postcode);
-
-		// In case merchant only expects domestic shipping and hides shipping
-		// country, fallback to base country.
-		//
-		// @see https://github.com/woothemes/woocommerce-gateway-paypal-express-checkout/issues/139
-		$shipping_country = $getAddress->shipping_country;
-		if ( empty( $shipping_country ) ) {
-			$shipping_country = WC()->countries->get_base_country();
-		}
-		$shipAddress->setCountry( $shipping_country );
-
-		$this->setShippingAddress( $shipAddress );
-
-		// Do we also need to grab the phone number and pass it through?
-
-		$params = array_merge(
-			$settings->get_set_express_checkout_mark_params(),
-			$this->getSetExpressCheckoutParameters()
-		);
-
-		$params['BRANDNAME']    = $settings->get_brand_name();
-		$params['RETURNURL']    = $this->get_return_url();
-		$params['CANCELURL']    = $this->get_cancel_url();
-		$params['ADDROVERRIDE'] = '1';
-
-		if ( wc_gateway_ppec_is_using_credit() ) {
-			$params['USERSELECTEDFUNDINGSOURCE'] = 'Finance';
-		}
-
-		$response = wc_gateway_ppec()->client->set_express_checkout( $params );
+		$response = $client->set_express_checkout( $params );
 
 		if ( $this->is_success( $response ) ) {
 			// Save some data to the session.
@@ -558,7 +452,6 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		} else {
 			throw new PayPal_API_Exception( $response );
 		}
-
 	}
 
 	public function getCheckoutDetails( $token = false ) {
@@ -588,14 +481,14 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			throw new PayPal_Missing_Session_Exception();
 		}
 
-		// Ensure details are set
-		wc_gateway_ppec()->cart->load_order_details( $order->id );
-
-		// Generate params to send to paypal, then do request
-		$response = wc_gateway_ppec()->client->do_express_checkout_payment( array_merge(
-			$this->getDoExpressCheckoutParameters( $token, $payer_id ),
-			$settings->get_do_express_checkout_params( $order )
+		$client = wc_gateway_ppec()->client;
+		$params = $client->get_do_express_checkout_params( array(
+			'order_id' => $order->id,
+			'token'    => $token,
+			'payer_id' => $payer_id,
 		) );
+
+		$response = $client->do_express_checkout_payment( $params );
 
 		if ( $this->is_success( $response ) ) {
 			$payment_details = new PayPal_Payment_Details();
