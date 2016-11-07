@@ -177,95 +177,18 @@ class WC_Gateway_PPEC_Settings {
 	}
 
 	public function get_set_express_checkout_shortcut_params( $buckets = 1 ) {
-		$params = array();
+		_deprecated_function( __METHOD__, '1.2.0', 'WC_Gateway_PPEC_Client::get_set_express_checkout_params' );
 
-		if ( $this->logo_image_url ) {
-			$params['LOGOIMG'] = $this->logo_image_url;
-		}
-
-		if ( $this->header_image_url ) {
-			$params['HDRIMG'] = $this->header_image_url;
-		}
-
-		if ( $this->page_style ) {
-			$params['PAGESTYLE'] = $this->page_style;
-		}
-
-		if ( in_array( $this->landing_page, array( 'Billing', 'Login' ) ) ) {
-			$params['LANDINGPAGE'] = $this->landing_page;
-		}
-
-		if ( apply_filters( 'woocommerce_paypal_express_checkout_allow_guests', true ) ) {
-			$params['SOLUTIONTYPE'] = 'Sole';
-		}
-
-		if ( ! is_array( $buckets ) ) {
-			$num_buckets = $buckets;
-			$buckets = array();
-			for ( $i = 0; $i < $num_buckets; $i++ ) {
-				$buckets[] = $i;
-			}
-		}
-
-		if ( 'yes' === $this->require_billing ) {
-			$params['REQBILLINGADDRESS'] = '1';
-		}
-
-		foreach ( $buckets as $bucket_num ) {
-			$params[ 'PAYMENTREQUEST_' . $bucket_num . '_PAYMENTACTION' ] = $this->get_paymentaction();
-
-			if ( 'yes' === $this->instant_payments && 'sale' === $this->get_paymentaction() ) {
-				$params[ 'PAYMENTREQUEST_' . $bucket_num . '_ALLOWEDPAYMENTMETHOD' ] = 'InstantPaymentOnly';
-			}
-		}
-
-		return $params;
+		return wc_gateway_ppec()->client->get_set_express_checkout_params( array( 'start_from' => 'cart' ) );
 	}
 
 	public function get_set_express_checkout_mark_params( $buckets = 1 ) {
-		$params = array();
+		_deprecated_function( __METHOD__, '1.2.0', 'WC_Gateway_PPEC_Client::get_set_express_checkout_params' );
 
-		if ( $this->logo_image_url ) {
-			$params['LOGOIMG'] = $this->logo_image_url;
-		}
-
-		if ( $this->header_image_url ) {
-			$params['HDRIMG'] = $this->header_image_url;
-		}
-
-		if ( $this->page_style ) {
-			$params['PAGESTYLE'] = $this->page_style;
-		}
-
-		if ( in_array( $this->landing_page, array( 'Billing', 'Login' ) ) ) {
-			$params['LANDINGPAGE'] = $this->landing_page;
-		}
-
-		if ( apply_filters( 'woocommerce_paypal_express_checkout_allow_guests', true ) ) {
-			$params['SOLUTIONTYPE'] = 'Sole';
-		}
-
-		if ( ! is_array( $buckets ) ) {
-			$num_buckets = $buckets;
-			$buckets = array();
-			for ( $i = 0; $i < $num_buckets; $i++ ) {
-				$buckets[] = $i;
-			}
-		}
-
-		if ( 'yes' === $this->require_billing ) {
-			$params['REQBILLINGADDRESS'] = '1';
-		}
-
-		foreach ( $buckets as $bucket_num ) {
-			$params[ 'PAYMENTREQUEST_' . $bucket_num . '_PAYMENTACTION' ] = $this->get_paymentaction();
-
-			if ( 'yes' === $this->instant_payments && 'sale' === $this->get_paymentaction() ) {
-				$params[ 'PAYMENTREQUEST_' . $bucket_num . '_ALLOWEDPAYMENTMETHOD' ] = 'InstantPaymentOnly';
-			}
-		}
-
-		return $params;
+		// Still missing order_id in args.
+		return wc_gateway_ppec()->client->get_set_express_checkout_params( array(
+			'start_from' => 'checkout',
+		) );
 	}
 
 	/**
@@ -428,5 +351,27 @@ class WC_Gateway_PPEC_Settings {
 		}
 
 		return 'yes' === $this->credit_enabled && $gateways['ppec_paypal']->is_credit_supported();
+	}
+
+	/**
+	 * Checks if currency in setting supports 0 decimal places.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return bool Returns true if currency supports 0 decimal places
+	 */
+	public function is_currency_supports_zero_decimal() {
+		return in_array( get_woocommerce_currency(), array( 'HUF', 'JPY', 'TWD' ) );
+	}
+
+	/**
+	 * Get number of digits after the decimal point.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return int Number of digits after the decimal point. Either 2 or 0
+	 */
+	public function get_number_of_decimal_digits() {
+		return $this->is_currency_supports_zero_decimal() ? 0 : 2;
 	}
 }
