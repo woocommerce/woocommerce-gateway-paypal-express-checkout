@@ -61,10 +61,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 
 		// Change gateway name if session is active
 		if ( ! is_admin() ) {
-			$session  = WC()->session->get( 'paypal' );
-			$checkout = wc_gateway_ppec()->checkout;
-
-			if ( ! $checkout->has_active_session() || ! $session->checkout_completed ) {
+			if ( wc_gateway_ppec()->checkout->is_started_from_checkout_page() ) {
 				$this->title        = $this->get_option( 'title' );
 				$this->description  = $this->get_option( 'description' );
 			}
@@ -92,7 +89,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 
 		// Redirect them over to PayPal if they have no current session (this
 		// is for PayPal Mark).
-		if ( ! $checkout->has_active_session() || ! $session->checkout_completed ) {
+		if ( $checkout->is_started_from_checkout_page() ) {
 			try {
 				return array(
 					'result'   => 'success',
