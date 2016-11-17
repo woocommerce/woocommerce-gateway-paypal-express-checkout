@@ -24,13 +24,7 @@ require_once( $includes_path . 'class-wc-gateway-ppec-address.php' );
 
 class WC_Gateway_PPEC_Checkout_Handler {
 
-	// $_shippingAddress can be a single PayPal_Address object, or an array of PayPal_Address objects
-	// (for the purposes of doing parallel payments).
-	protected $_shippingAddress;
-
 	public function __construct() {
-		$this->_shippingAddress         = false;
-
 		add_action( 'init', array( $this, 'init' ) );
 		add_filter( 'the_title', array( $this, 'endpoint_page_titles' ) );
 		add_action( 'woocommerce_checkout_init', array( $this, 'checkout_init' ) );
