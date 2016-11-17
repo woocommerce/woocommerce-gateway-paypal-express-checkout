@@ -105,7 +105,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 			try {
 
 				// Get details
-				$checkout_details = $checkout->getCheckoutDetails( $session->token );
+				$checkout_details = $checkout->get_checkout_details( $session->token );
 
 				// Store addresses given by PayPal
 				$order->set_address( $checkout->get_mapped_billing_address( $checkout_details ), 'billing' );

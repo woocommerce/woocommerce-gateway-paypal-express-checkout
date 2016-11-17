@@ -91,7 +91,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	public function paypal_billing_details() {
 		$session          = WC()->session->get( 'paypal' );
 		$token            = isset( $_GET['token'] ) ? $_GET['token'] : $session->token;
-		$checkout_details = $this->getCheckoutDetails( $token );
+		$checkout_details = $this->get_checkout_details( $token );
 		?>
 		<h3><?php _e( 'Billing details', 'woocommerce-gateway-paypal-express-checkout' ); ?></h3>
 		<ul>
@@ -118,7 +118,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	public function paypal_shipping_details() {
 		$session          = WC()->session->get( 'paypal' );
 		$token            = isset( $_GET['token'] ) ? $_GET['token'] : $session->token;
-		$checkout_details = $this->getCheckoutDetails( $token );
+		$checkout_details = $this->get_checkout_details( $token );
 
 		if ( ! WC()->cart->needs_shipping() ) {
 			return;
@@ -202,7 +202,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		WC()->session->set( 'paypal', $session );
 
 		try {
-			$checkout_details = $this->getCheckoutDetails( $token );
+			$checkout_details = $this->get_checkout_details( $token );
 
 			// If commit was true, take payment right now
 			if ( 'order' === $session->source && $session->order_id ) {
@@ -448,8 +448,25 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		}
 	}
 
+	/**
+	 * @deprecated
+	 */
 	public function getCheckoutDetails( $token = false ) {
-		if ( false === $token ) {
+		_deprecated_function( __METHOD__, '1.2.0', 'WC_Gateway_PPEC_Checkout_Handler::get_checkout_details' );
+		return $this->get_checkout_details( $token );
+	}
+
+	/**
+	 * Get checkout details from token.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @throws \Exception
+	 *
+	 * @param bool|string $token Express Checkout token
+	 */
+	public function get_checkout_details( $token = false ) {
+		if ( false === $token && ! empty( $_GET['token'] ) ) {
 			$token = $_GET['token'];
 		}
 
@@ -562,7 +579,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			return $packages;
 		}
 		// Shipping details from PayPal
-		$checkout_details = $this->getCheckoutDetails( wc_clean( $_GET['token'] ) );
+		$checkout_details = $this->get_checkout_details( wc_clean( $_GET['token'] ) );
 		$destination = $this->get_mapped_shipping_address( $checkout_details );
 
 		$packages[0]['destination']['country']   = $destination['country'];
