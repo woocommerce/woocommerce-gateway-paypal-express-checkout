@@ -61,10 +61,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 
 		// Change gateway name if session is active
 		if ( ! is_admin() ) {
-			$session  = WC()->session->get( 'paypal' );
-			$checkout = wc_gateway_ppec()->checkout;
-
-			if ( ! $checkout->has_active_session() || ! $session->checkout_completed ) {
+			if ( wc_gateway_ppec()->checkout->is_started_from_checkout_page() ) {
 				$this->title        = $this->get_option( 'title' );
 				$this->description  = $this->get_option( 'description' );
 			}
@@ -92,7 +89,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 
 		// Redirect them over to PayPal if they have no current session (this
 		// is for PayPal Mark).
-		if ( ! $checkout->has_active_session() || ! $session->checkout_completed ) {
+		if ( $checkout->is_started_from_checkout_page() ) {
 			try {
 				return array(
 					'result'   => 'success',
@@ -103,9 +100,16 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 			}
 		} else {
 			try {
-
 				// Get details
-				$checkout_details = $checkout->getCheckoutDetails( $session->token );
+				$checkout_details = $checkout->get_checkout_details( $session->token );
+
+				$checkout_context = array(
+					'start_from' => 'checkout',
+					'order_id'   => $order_id,
+				);
+				if ( $checkout->needs_billing_agreement_creation( $checkout_context ) ) {
+					$checkout->create_billing_agreement( $order, $checkout_details );
+				}
 
 				// Store addresses given by PayPal
 				$order->set_address( $checkout->get_mapped_billing_address( $checkout_details ), 'billing' );
