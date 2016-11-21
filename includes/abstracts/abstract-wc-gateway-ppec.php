@@ -100,9 +100,16 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 			}
 		} else {
 			try {
-
 				// Get details
 				$checkout_details = $checkout->get_checkout_details( $session->token );
+
+				$checkout_context = array(
+					'start_from' => 'checkout',
+					'order_id'   => $order_id,
+				);
+				if ( $checkout->needs_billing_agreement_creation( $checkout_context ) ) {
+					$checkout->create_billing_agreement( $order, $checkout_details );
+				}
 
 				// Store addresses given by PayPal
 				$order->set_address( $checkout->get_mapped_billing_address( $checkout_details ), 'billing' );

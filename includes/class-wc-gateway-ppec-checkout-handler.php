@@ -187,9 +187,10 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			return;
 		}
 
-		$token    = $_GET['token'];
-		$payer_id = $_GET['PayerID'];
-		$session  = WC()->session->get( 'paypal' );
+		$token                    = $_GET['token'];
+		$payer_id                 = $_GET['PayerID'];
+		$create_billing_agreement = ! empty( $_GET['create-billing-agreement'] );
+		$session                  = WC()->session->get( 'paypal' );
 
 		if ( empty( $session ) || $this->session_has_expired( $token ) ) {
 			wc_add_notice( __( 'Your PayPal checkout session has expired. Please check out again.', 'woocommerce-gateway-paypal-express-checkout' ), 'error' );
@@ -202,13 +203,17 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		WC()->session->set( 'paypal', $session );
 
 		try {
-			$checkout_details = $this->get_checkout_details( $token );
-
 			// If commit was true, take payment right now
 			if ( 'order' === $session->source && $session->order_id ) {
+				$checkout_details = $this->get_checkout_details( $token );
 
 				// Get order
 				$order = wc_get_order( $session->order_id );
+
+				// Maybe create billing agreement.
+				if ( $create_billing_agreement ) {
+					$this->create_billing_agreement( $order, $checkout_details );
+				}
 
 				// Store address given by PayPal
 				$order->set_address( $this->get_mapped_shipping_address( $checkout_details ), 'shipping' );
@@ -281,11 +286,18 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		}
 	}
 
+	/**
+	 * Buyer cancels checkout with PayPal.
+	 *
+	 * Clears the session data and display notice.
+	 */
 	public function maybe_cancel_checkout_with_paypal() {
 		if ( is_cart() && ! empty( $_GET['wc-gateway-ppec-clear-session'] ) ) {
 			$this->maybe_clear_session_data();
-			if ( ! wc_has_notice( __( 'You have cancelled Checkout with PayPal. Please try to process your order again.', 'woocommerce-gateway-paypal-express-checkout' ), 'notice' ) ) {
-				wc_add_notice( __( 'You have cancelled Checkout with PayPal. Please try to process your order again.', 'woocommerce-gateway-paypal-express-checkout' ), 'notice' );
+
+			$notice =  __( 'You have cancelled Checkout with PayPal. Please try to process your order again.', 'woocommerce-gateway-paypal-express-checkout' );
+			if ( ! wc_has_notice( $notice, 'notice' ) ) {
+				wc_add_notice( $notice, 'notice' );
 			}
 		}
 	}
@@ -324,6 +336,10 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 * @return bool Returns true if PPEC session exists and still valid
 	 */
 	public function has_active_session() {
+		if ( ! WC()->session ) {
+			return false;
+		}
+
 		$session = WC()->session->paypal;
 		return ( is_a( $session, 'WC_Gateway_PPEC_Session_Data' ) && $session->payer_id && $session->expiry_time > time() );
 	}
@@ -372,33 +388,34 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	}
 
 	/**
-	 * Whether PayPal response indicates an okay message.
-	 *
-	 * @param array $response Response from PayPal
-	 *
-	 * @return bool True if it's okay
+	 * @deprecated
 	 */
 	protected function is_success( $response ) {
-		return (
-			isset( $response['ACK'] )
-			&&
-			in_array( $response['ACK'], array( 'Success', 'SuccessWithWarning' ) )
-		);
+		_deprecated_function( __METHOD__, '1.2.0', 'WC_Gateway_PPEC_Client::response_has_success_status' );
+
+		$client = wc_gateway_ppec()->client;
+		return $client->response_has_success_status( $response );
 	}
 
 	/**
 	 * Handler when buyer is checking out from cart page.
 	 *
+	 * @todo This methods looks similar to start_checkout_from_checkout. Please
+	 *       refactor by merging them.
+	 *
 	 * @throws PayPal_API_Exception
 	 */
 	public function start_checkout_from_cart() {
-		$settings = wc_gateway_ppec()->settings;
-		$client   = wc_gateway_ppec()->client;
-		$params   = $client->get_set_express_checkout_params( array( 'start_from' => 'cart' ) );
+		$settings     = wc_gateway_ppec()->settings;
+		$client       = wc_gateway_ppec()->client;
+		$context_args = array(
+			'start_from' => 'cart',
+		);
+		$context_args['create_billing_agreement'] = $this->needs_billing_agreement_creation( $context_args );
 
+		$params   = $client->get_set_express_checkout_params( $context_args );
 		$response = $client->set_express_checkout( $params );
-		if ( $this->is_success( $response ) ) {
-			// Save some data to the session.
+		if ( $client->response_has_success_status( $response ) ) {
 			WC()->session->paypal = new WC_Gateway_PPEC_Session_Data(
 				array(
 					'token'             => $response['TOKEN'],
@@ -417,22 +434,25 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	/**
 	 * Handler when buyer is checking out from checkout page.
 	 *
+	 * @todo This methods looks similar to start_checkout_from_cart. Please
+	 *       refactor by merging them.
+	 *
 	 * @throws PayPal_API_Exception
 	 *
 	 * @param int $order_id Order ID
 	 */
 	public function start_checkout_from_checkout( $order_id ) {
-		$settings = wc_gateway_ppec()->settings;
-		$client   = wc_gateway_ppec()->client;
-		$params   = $client->get_set_express_checkout_params( array(
-			'start_from' => 'cart',
+		$settings     = wc_gateway_ppec()->settings;
+		$client       = wc_gateway_ppec()->client;
+		$context_args = array(
+			'start_from' => 'checkout',
 			'order_id'   => $order_id,
-		) );
+		);
+		$context_args['create_billing_agreement'] = $this->needs_billing_agreement_creation( $context_args );
 
+		$params   = $client->get_set_express_checkout_params( $context_args );
 		$response = $client->set_express_checkout( $params );
-
-		if ( $this->is_success( $response ) ) {
-			// Save some data to the session.
+		if ( $client->response_has_success_status( $response ) ) {
 			WC()->session->paypal = new WC_Gateway_PPEC_Session_Data(
 				array(
 					'token'      => $response['TOKEN'],
@@ -487,14 +507,54 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			$token = $_GET['token'];
 		}
 
-		$response = wc_gateway_ppec()->client->get_express_checkout_details( $token );
+		$client   = wc_gateway_ppec()->client;
+		$response = $client->get_express_checkout_details( $token );
 
-		if ( $this->is_success( $response ) ) {
+		if ( $client->response_has_success_status( $response ) ) {
 			$checkout_details = new PayPal_Checkout_Details();
 			$checkout_details->loadFromGetECResponse( $response );
 			return $checkout_details;
 		} else {
 			throw new PayPal_API_Exception( $response );
+		}
+	}
+
+	/**
+	 * Creates billing agreement and stores the billing agreement ID in order's
+	 * meta and subscriptions meta.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @throws \Exception
+	 *
+	 * @param WC_Order                $order            Order object
+	 * @param PayPal_Checkout_Details $checkout_details Checkout details
+	 */
+	public function create_billing_agreement( $order, $checkout_details ) {
+		if ( 1 !== intval( $checkout_details->billing_agreement_accepted ) ) {
+			throw new PayPal_API_Exception( $checkout_details->raw_response );
+		}
+
+		$client = wc_gateway_ppec()->client;
+		$resp   = $client->create_billing_agreement( $checkout_details->token );
+
+		if ( ! $client->response_has_success_status( $resp ) || empty( $resp['BILLINGAGREEMENTID'] ) ) {
+			throw new PayPal_API_Exception( $resp );
+		}
+
+		update_post_meta( $order->id, '_ppec_billing_agreement_id', $resp['BILLINGAGREEMENTID'] );
+
+		$subscriptions = array();
+		if ( function_exists( 'wcs_order_contains_subscription' ) && wcs_order_contains_subscription( $order->id ) ) {
+			$subscriptions = wcs_get_subscriptions_for_order( $order->id );
+		} elseif ( function_exists( 'wcs_order_contains_renewal' ) && wcs_order_contains_renewal( $order->id ) ) {
+			$subscriptions = wcs_get_subscriptions_for_renewal_order( $order->id );
+		}
+
+		$billing_agreement_id = get_post_meta( $order->id, '_ppec_billing_agreement_id', true );
+
+		foreach ( $subscriptions as $subscription ) {
+			update_post_meta( $subscription->id, '_ppec_billing_agreement_id', $billing_agreement_id );
 		}
 	}
 
@@ -518,7 +578,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 
 		$response = $client->do_express_checkout_payment( $params );
 
-		if ( $this->is_success( $response ) ) {
+		if ( $client->response_has_success_status( $response ) ) {
 			$payment_details = new PayPal_Payment_Details();
 			$payment_details->loadFromDoECResponse( $response );
 
@@ -607,5 +667,40 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		$packages[0]['destination']['address_2'] = $destination['address_2'];
 
 		return $packages;
+	}
+
+	/**
+	 * Checks whether checkout needs billing agreement creation.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param array $args {
+	 *     Context args to retrieve SetExpressCheckout parameters.
+	 *
+	 *     @type string $start_from Start from 'cart' or 'checkout'.
+	 *     @type int    $order_id   Order ID if $start_from is 'checkout'.
+	 * }
+	 *
+	 * @return bool Returns true if billing agreement is needed in the purchase
+	 */
+	public function needs_billing_agreement_creation( $args ) {
+		$needs_billing_agreement = false;
+		switch ( $args['start_from'] ) {
+			case 'cart':
+				if ( class_exists( 'WC_Subscriptions_Cart' ) ) {
+					$needs_billing_agreement = WC_Subscriptions_Cart::cart_contains_subscription();
+				}
+				break;
+			case 'checkout':
+				if ( function_exists( 'wcs_order_contains_subscription' ) ) {
+					$needs_billing_agreement = wcs_order_contains_subscription( $args['order_id'] );
+				}
+				if ( function_exists( 'wcs_order_contains_renewal' ) ) {
+					$needs_billing_agreement = ( $needs_billing_agreement || wcs_order_contains_renewal( $args['order_id'] ) );
+				}
+				break;
+		}
+
+		return $needs_billing_agreement;
 	}
 }

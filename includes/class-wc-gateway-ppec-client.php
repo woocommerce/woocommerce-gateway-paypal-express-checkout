@@ -224,7 +224,14 @@ class WC_Gateway_PPEC_Client {
 	 *
 	 * @since 1.2.0
 	 *
-	 * @param array $args Args
+	 * @param array $args {
+	 *     Context args to retrieve SetExpressCheckout parameters.
+	 *
+	 *     @type string $start_from               Start from 'cart' or 'checkout'.
+	 *     @type int    $order_id                 Order ID if $start_from is 'checkout'.
+	 *     @type bool   $create_billing_agreement Whether billing agreement creation
+	 *                                            is needed after returned from PayPal.
+	 * }
 	 *
 	 * @return array Params for SetExpressCheckout call
 	 */
@@ -232,8 +239,9 @@ class WC_Gateway_PPEC_Client {
 		$args = wp_parse_args(
 			$args,
 			array(
-				'start_from' => 'cart', // Where the buyer starts checking out.
-				'order_id'   => '',     // Should be set when checking out from checkout page.
+				'start_from'               => 'cart',
+				'order_id'                 => '',
+				'create_billing_agreement' => false,
 			)
 		);
 
@@ -244,7 +252,7 @@ class WC_Gateway_PPEC_Client {
 		$params['HDRIMG']    = $settings->header_image_url;
 		$params['PAGESTYLE'] = $settings->page_style;
 		$params['BRANDNAME'] = $settings->get_brand_name();
-		$params['RETURNURL'] = $this->_get_return_url();
+		$params['RETURNURL'] = $this->_get_return_url( $args );
 		$params['CANCELURL'] = $this->_get_cancel_url();
 
 		if ( wc_gateway_ppec_is_using_credit() ) {
@@ -299,6 +307,12 @@ class WC_Gateway_PPEC_Client {
 			)
 		);
 
+		if ( $args['create_billing_agreement'] ) {
+			$params['L_BILLINGTYPE0']                 = 'MerchantInitiatedBillingSingleAgreement';
+			$params['L_BILLINGAGREEMENTDESCRIPTION0'] = $this->_get_billing_agreement_description();
+			$params['L_BILLINGAGREEMENTCUSTOM0']      = '';
+		}
+
 		if ( ! empty( $details['shipping_address'] ) ) {
 			$params = array_merge(
 				$params,
@@ -331,10 +345,26 @@ class WC_Gateway_PPEC_Client {
 	 *
 	 * @since 1.2.0
 	 *
+	 * @param array $context_args {
+	 *     Context args to retrieve SetExpressCheckout parameters.
+	 *
+	 *     @type string $start_from               Start from 'cart' or 'checkout'.
+	 *     @type int    $order_id                 Order ID if $start_from is 'checkout'.
+	 *     @type bool   $create_billing_agreement Whether billing agreement creation
+	 *                                            is needed after returned from PayPal.
+	 * }
+	 *
 	 * @return string Return URL
 	 */
-	protected function _get_return_url() {
-		return add_query_arg( 'woo-paypal-return', 'true', WC()->cart->get_checkout_url() );
+	protected function _get_return_url( array $context_args ) {
+		$query_args = array(
+			'woo-paypal-return' => 'true',
+		);
+		if ( $context_args['create_billing_agreement'] ) {
+			$query_args['create-billing-agreement'] = 'true';
+		}
+
+		return add_query_arg( $query_args, WC()->cart->get_checkout_url() );
 	}
 
 	/**
@@ -348,6 +378,24 @@ class WC_Gateway_PPEC_Client {
 	 */
 	protected function _get_cancel_url() {
 		return add_query_arg( 'woo-paypal-cancel', 'true', WC()->cart->get_cart_url() );
+	}
+
+	/**
+	 * Get billing agreement description to be passed to PayPal.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return string Billing agreement description
+	 */
+	protected function _get_billing_agreement_description() {
+		/* translators: placeholder is blogname */
+		$description = sprintf( _x( 'Orders with %s', 'data sent to PayPal', 'woocommerce-subscriptions'  ), get_bloginfo( 'name' ) );
+
+		if ( strlen( $description  ) > 127  ) {
+			$description = substr( $description, 0, 124  ) . '...';
+		}
+
+		return html_entity_decode( $description, ENT_NOQUOTES, 'UTF-8' );
 	}
 
 	/**
@@ -676,7 +724,7 @@ class WC_Gateway_PPEC_Client {
 	 *
 	 * @see https://developer.paypal.com/docs/classic/api/merchant/GetExpressCheckoutDetails_API_Operation_NVP/
 	 *
-	 * @param  array $params NVP params
+	 * @param  string $token Token from SetExpressCheckout response
 	 * @return array         NVP response
 	 */
 	public function get_express_checkout_details( $token ) {
@@ -699,7 +747,7 @@ class WC_Gateway_PPEC_Client {
 	 * @param  array $params NVP params
 	 * @return array         NVP response
 	 */
-	public function do_express_checkout_payment( $params ) {
+	public function do_express_checkout_payment( array $params ) {
 		$params['METHOD']       = 'DoExpressCheckoutPayment';
 		$params['VERSION']      = self::API_VERSION;
 		$params['BUTTONSOURCE'] = 'WooThemes_EC';
@@ -731,10 +779,7 @@ class WC_Gateway_PPEC_Client {
 			'PAYMENTREQUEST_0_SHIPDISCAMT'   => $details['ship_discount_amount'],
 			'PAYMENTREQUEST_0_INSURANCEAMT'  => 0,
 			'PAYMENTREQUEST_0_HANDLINGAMT'   => 0,
-			'PAYMENTREQUEST_0_CUSTOM'        => '',
-			'PAYMENTREQUEST_0_INVNUM'        => '',
 			'PAYMENTREQUEST_0_CURRENCYCODE'  => get_woocommerce_currency(),
-			'NOSHIPPING'                     => WC()->cart->needs_shipping() ? 0 : 1,
 			'PAYMENTREQUEST_0_NOTIFYURL'     => WC()->api_request_url( 'WC_Gateway_PPEC' ),
 			'PAYMENTREQUEST_0_PAYMENTACTION' => $settings->get_paymentaction(),
 			'PAYMENTREQUEST_0_INVNUM'        => $settings->invoice_prefix . $order->get_order_number(),
@@ -759,6 +804,124 @@ class WC_Gateway_PPEC_Client {
 					'L_PAYMENTREQUEST_0_DESC' . $count => ! empty( $values['description'] ) ? strip_tags( $values['description'] ) : '',
 					'L_PAYMENTREQUEST_0_QTY' . $count  => $values['quantity'],
 					'L_PAYMENTREQUEST_0_AMT' . $count  => $values['amount'],
+				);
+
+				$params = array_merge( $params, $line_item_params );
+				$count++;
+			}
+		}
+
+		return $params;
+	}
+
+	/**
+	 * Creates a billing agreement with a PayPal account holder.
+	 *
+	 * Used for subscription products in the purchase.
+	 *
+	 * @see https://developer.paypal.com/docs/classic/api/merchant/CreateBillingAgreement_API_Operation_NVP/
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param string $token Token from SetExpressCheckout response
+	 */
+	public function create_billing_agreement( $token ) {
+		$params = array(
+			'METHOD'  => 'CreateBillingAgreement',
+			'VERSION' => self::API_VERSION,
+			'TOKEN'   => $token,
+		);
+
+		return $this->_request( $params );
+	}
+
+	/**
+	 * Updates or deletes a billing agreement.
+	 *
+	 * @see https://developer.paypal.com/docs/classic/api/merchant/BAUpdate_API_Operation_NVP/
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param string $billing_agreement_id Billing agreement ID
+	 */
+	public function update_billing_agreement( $billing_agreement_id ) {
+		$params = array(
+			'METHOD'      => 'BillAgreementUpdate',
+			'VERSION'     => self::API_VERSION,
+			'REFERENCEID' => $billing_agreement_id,
+		);
+	}
+
+	/**
+	 * Processes a payment from a buyer's account, which is identified by a
+	 * previous transaction
+	 *
+	 * @see https://developer.paypal.com/docs/classic/api/merchant/DoReferenceTransaction_API_Operation_NVP/
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param  array $params NVP params
+	 * @return array         NVP response
+	 */
+	public function do_reference_transaction( array $params ) {
+		$params['METHOD']       = 'DoReferenceTransaction';
+		$params['VERSION']      = self::API_VERSION;
+		$params['BUTTONSOURCE'] = 'WooThemes_EC';
+
+		return $this->_request( $params );
+	}
+
+	/**
+	 * Get params for DoReferenceTransaction call.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param array $args Args
+	 *
+	 * @return array Params for DoReferenceTransaction call
+	 */
+	public function get_do_reference_transaction_params( array $args ) {
+		$settings = wc_gateway_ppec()->settings;
+		$order    = wc_get_order( $args['order_id'] );
+		$details  = $this->_get_details_from_order( $args['order_id'] );
+
+		$params = array(
+			'REFERENCEID'   => $args['reference_id'],
+			'AMT'           => $args['amount'],
+			'ITEMAMT'       => $details['total_item_amount'],
+			'SHIPPINGAMT'   => $details['shipping'],
+			'TAXAMT'        => $details['order_tax'],
+			'SHIPDISCAMT'   => $details['ship_discount_amount'],
+			'INSURANCEAMT'  => 0,
+			'HANDLINGAMT'   => 0,
+			'CURRENCYCODE'  => get_woocommerce_currency(),
+			'NOTIFYURL'     => WC()->api_request_url( 'WC_Gateway_PPEC' ),
+			'PAYMENTACTION' => $settings->get_paymentaction(),
+			'INVNUM'        => $settings->invoice_prefix . $order->get_order_number(),
+			'CUSTOM'        => json_encode( array(
+				'order_id'  => $order->id,
+				'order_key' => $order->order_key,
+			) ),
+		);
+
+		if ( ! empty( $details['shipping_address'] ) ) {
+			$params = array_merge(
+				$params,
+				$details['shipping_address']->getAddressParams( 'SHIPTO' )
+			);
+
+			$params['SHIPTOCOUNTRY'] = $params['SHIPTOCOUNTRYCODE'];
+			unset( $params['SHIPTOCOUNTRYCODE'] );
+		}
+
+		if ( ! empty( $details['items'] ) ) {
+			$count = 0;
+			foreach ( $details['items'] as $line_item_key => $values ) {
+				$line_item_params = array(
+					'L_NAME' . $count => $values['name'],
+					'L_DESC' . $count => ! empty( $values['description'] ) ? strip_tags( $values['description'] ) : '',
+					'L_QTY' . $count  => $values['quantity'],
+					'L_AMT' . $count  => $values['amount'],
 				);
 
 				$params = array_merge( $params, $line_item_params );
@@ -884,5 +1047,22 @@ class WC_Gateway_PPEC_Client {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Checks whether response indicates a successful operation.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param array $response NVP response
+	 *
+	 * @return bool Returns true if response indicates a successful operation
+	 */
+	public function response_has_success_status( $response ) {
+		return (
+			isset( $response['ACK'] )
+			&&
+			in_array( $response['ACK'], array( 'Success', 'SuccessWithWarning' ) )
+		);
 	}
 }
