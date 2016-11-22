@@ -45,6 +45,9 @@ class WC_Gateway_PPEC_Cart_Handler {
 		$gateways = WC()->payment_gateways->get_available_payment_gateways();
 		$settings = wc_gateway_ppec()->settings;
 
+		$express_checkout_img_url = apply_filters( 'woocommerce_paypal_express_checkout_button_img_url', sprintf( 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-%s.png', $settings->button_size ) );
+		$paypal_credit_img_url    = apply_filters( 'woocommerce_paypal_express_checkout_credit_button_img_url', sprintf( 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/ppcredit-logo-%s.png', $settings->button_size ) );
+
 		// billing details on checkout page to calculate shipping costs
 		if ( ! isset( $gateways['ppec_paypal'] ) ) {
 			return;
@@ -59,12 +62,12 @@ class WC_Gateway_PPEC_Cart_Handler {
 			<?php endif; ?>
 
 			<a href="<?php echo esc_url( add_query_arg( array( 'startcheckout' => 'true' ), wc_get_page_permalink( 'cart' ) ) ); ?>" id="woo_pp_ec_button" class="wcppec-checkout-buttons__button">
-				<img src="<?php echo esc_url( 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-' . $settings->button_size . '.png' ); ?>" alt="<?php _e( 'Check out with PayPal', 'woocommerce-gateway-paypal-express-checkout' ); ?>" style="width: auto; height: auto;">
+				<img src="<?php echo esc_url( $express_checkout_img_url ); ?>" alt="<?php _e( 'Check out with PayPal', 'woocommerce-gateway-paypal-express-checkout' ); ?>" style="width: auto; height: auto;">
 			</a>
 
 			<?php if ( $settings->is_credit_enabled() ) : ?>
 				<a href="<?php echo esc_url( add_query_arg( array( 'startcheckout' => 'true', 'use-ppc' => 'true' ), wc_get_page_permalink( 'cart' ) ) ); ?>" id="woo_pp_ppc_button" class="wcppec-checkout-buttons__button">
-				<img src="<?php echo esc_url( 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/ppcredit-logo-' . $settings->button_size . '.png' ); ?>" alt="<?php _e( 'Pay with PayPal Credit', 'woocommerce-gateway-paypal-express-checkout' ); ?>" style="width: auto; height: auto;">
+				<img src="<?php echo esc_url( $paypal_credit_img_url ); ?>" alt="<?php _e( 'Pay with PayPal Credit', 'woocommerce-gateway-paypal-express-checkout' ); ?>" style="width: auto; height: auto;">
 				</a>
 			<?php endif; ?>
 		</div>
