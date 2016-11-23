@@ -24,6 +24,15 @@ require_once( $includes_path . 'class-wc-gateway-ppec-address.php' );
 
 class WC_Gateway_PPEC_Checkout_Handler {
 
+	/**
+	 * Cached result from self::get_checkout_defails.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @var PayPal_Checkout_Details
+	 */
+	protected $_checkout_details;
+
 	public function __construct() {
 		add_action( 'init', array( $this, 'init' ) );
 		add_filter( 'the_title', array( $this, 'endpoint_page_titles' ) );
@@ -72,19 +81,38 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 * @param WC_Checkout $checkout
 	 */
 	function checkout_init( $checkout ) {
-		global $wp_query, $wp;
-
-		if ( $this->has_active_session() ) {
-			// We don't neeed billing and shipping to confirm a paypal order.
-			$checkout->checkout_fields['billing']  = array();
-			$checkout->checkout_fields['shipping'] = array();
-
-			remove_action( 'woocommerce_checkout_billing', array( $checkout, 'checkout_form_billing' ) );
-			remove_action( 'woocommerce_checkout_shipping', array( $checkout, 'checkout_form_shipping' ) );
-			add_action( 'woocommerce_checkout_billing', array( $this, 'paypal_billing_details' ) );
-			add_action( 'woocommerce_checkout_billing', array( $this, 'account_registration' ) );
-			add_action( 'woocommerce_checkout_shipping', array( $this, 'paypal_shipping_details' ) );
+		if ( ! $this->has_active_session() ) {
+			return;
 		}
+
+		try {
+			$session          = WC()->session->get( 'paypal' );
+			$token            = isset( $_GET['token'] ) ? $_GET['token'] : $session->token;
+			$checkout_details = $this->get_checkout_details( $token );
+		} catch ( PayPal_API_Exception $e ) {
+			/**
+			 * @todo maybe redirect to cart page with notice
+			 */
+			wc_gateway_ppec_log( sprintf( '%s: Failed to retrieve checkout details', __METHOD__ ) );
+			return;
+		}
+
+		// Sets customer shipping address in session based on checkout details
+		// from PayPal.
+		WC()->customer->set_shipping_country( $checkout_details->payments[0]->shipping_address->getCountry() );
+		WC()->customer->set_shipping_state( $checkout_details->payments[0]->shipping_address->getState() );
+		WC()->customer->set_shipping_postcode( $checkout_details->payments[0]->shipping_address->getZip() );
+		WC()->customer->set_shipping_city( $checkout_details->payments[0]->shipping_address->getCity() );
+
+		// We don't neeed billing and shipping to confirm a paypal order.
+		$checkout->checkout_fields['billing']  = array();
+		$checkout->checkout_fields['shipping'] = array();
+
+		remove_action( 'woocommerce_checkout_billing', array( $checkout, 'checkout_form_billing' ) );
+		remove_action( 'woocommerce_checkout_shipping', array( $checkout, 'checkout_form_shipping' ) );
+		add_action( 'woocommerce_checkout_billing', array( $this, 'paypal_billing_details' ) );
+		add_action( 'woocommerce_checkout_billing', array( $this, 'account_registration' ) );
+		add_action( 'woocommerce_checkout_shipping', array( $this, 'paypal_shipping_details' ) );
 	}
 
 	/**
@@ -583,6 +611,10 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 * @param bool|string $token Express Checkout token
 	 */
 	public function get_checkout_details( $token = false ) {
+		if ( is_a( $this->_checkout_details, 'PayPal_Checkout_Details' ) ) {
+			return $this->_checkout_details;
+		}
+
 		if ( false === $token && ! empty( $_GET['token'] ) ) {
 			$token = $_GET['token'];
 		}
@@ -593,6 +625,8 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		if ( $client->response_has_success_status( $response ) ) {
 			$checkout_details = new PayPal_Checkout_Details();
 			$checkout_details->loadFromGetECResponse( $response );
+
+			$this->_checkout_details = $checkout_details;
 			return $checkout_details;
 		} else {
 			throw new PayPal_API_Exception( $response );
