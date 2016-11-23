@@ -97,7 +97,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			return;
 		}
 
-		// Sets customer shipping address in session based on checkout details =
+		// Sets customer shipping address in session based on checkout details
 		// from PayPal.
 		WC()->customer->set_shipping_country( $checkout_details->payments[0]->shipping_address->getCountry() );
 		WC()->customer->set_shipping_state( $checkout_details->payments[0]->shipping_address->getState() );
