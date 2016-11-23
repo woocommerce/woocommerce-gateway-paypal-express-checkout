@@ -28,6 +28,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		add_action( 'init', array( $this, 'init' ) );
 		add_filter( 'the_title', array( $this, 'endpoint_page_titles' ) );
 		add_action( 'woocommerce_checkout_init', array( $this, 'checkout_init' ) );
+		add_action( 'woocommerce_after_checkout_validation', array( $this, 'after_checkout_validation' ) );
 
 		add_action( 'wp', array( $this, 'maybe_return_from_paypal' ) );
 		add_action( 'wp', array( $this, 'maybe_cancel_checkout_with_paypal' ) );
@@ -81,6 +82,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			remove_action( 'woocommerce_checkout_billing', array( $checkout, 'checkout_form_billing' ) );
 			remove_action( 'woocommerce_checkout_shipping', array( $checkout, 'checkout_form_shipping' ) );
 			add_action( 'woocommerce_checkout_billing', array( $this, 'paypal_billing_details' ) );
+			add_action( 'woocommerce_checkout_billing', array( $this, 'account_registration' ) );
 			add_action( 'woocommerce_checkout_shipping', array( $this, 'paypal_shipping_details' ) );
 		}
 	}
@@ -113,6 +115,45 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	}
 
 	/**
+	 * Render fields for new customer registration in checkout page.
+	 *
+	 * @since 1.2.0
+	 */
+	public function account_registration() {
+		$checkout = WC()->checkout();
+
+		if ( ! is_user_logged_in() && $checkout->enable_signup ) {
+
+			if ( $checkout->enable_guest_checkout ) {
+				?>
+				<p class="form-row form-row-wide create-account">
+					<input class="input-checkbox" id="createaccount" <?php checked( ( true === $checkout->get_value( 'createaccount' ) || ( true === apply_filters( 'woocommerce_create_account_default_checked', false ) ) ), true) ?> type="checkbox" name="createaccount" value="1" /> <label for="createaccount" class="checkbox"><?php _e( 'Create an account?', '' ); ?></label>
+				</p>
+				<?php
+			}
+
+			if ( ! empty( $checkout->checkout_fields['account'] ) ) {
+				?>
+				<div class="create-account">
+
+					<p><?php _e( 'Create an account by entering the information below. If you are a returning customer please login at the top of the page.', 'woocommerce' ); ?></p>
+
+					<?php foreach ( $checkout->checkout_fields['account'] as $key => $field ) : ?>
+
+						<?php woocommerce_form_field( $key, $field, $checkout->get_value( $key ) ); ?>
+
+					<?php endforeach; ?>
+
+					<div class="clear"></div>
+
+				</div>
+				<?php
+			}
+
+		}
+	}
+
+	/**
 	 * Show shipping information.
 	 */
 	public function paypal_shipping_details() {
@@ -127,6 +168,45 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		<h3><?php _e( 'Shipping details', 'woocommerce-gateway-paypal-express-checkout' ); ?></h3>
 		<?php
 		echo WC()->countries->get_formatted_address( $this->get_mapped_shipping_address( $checkout_details ) );
+	}
+
+	/**
+	 * Inject new customer info from payer info.
+	 *
+	 * If guest checkout is disabled, the validation will failed because missing
+	 * posted data for new customer.
+	 *
+	 * @since 1.2.0
+	 */
+	public function after_checkout_validation() {
+		if ( is_user_logged_in() ) {
+			return;
+		}
+
+		$checkout      = WC()->checkout();
+		$session       = WC()->session->get( 'paypal' );
+		$token         = isset( $_GET['token'] ) ? $_GET['token'] : $session->token;
+		$payer_info    = array();
+
+		try {
+			$checkout_details                 = $this->get_checkout_details( $token );
+			$payer_info['billing_email']      = $checkout_details->payer_details->email;
+			$payer_info['billing_first_name'] = $checkout_details->payer_details->first_name;
+			$payer_info['billing_last_name']  = $checkout_details->payer_details->last_name;
+
+		} catch ( PayPal_API_Exception $e ) {
+			wc_gateway_ppec_log( sprintf( '%s - Failed to retrieve checkout details', __METHOD__ ) );
+		}
+
+		if ( empty( $payer_info ) ) {
+			return;
+		}
+
+		if ( $checkout->must_create_account || ! empty( $checkout->posted['createaccount'] ) ) {
+			foreach ( $payer_info as $k => $v ) {
+				$checkout->posted[ $k ] = $v;
+			}
+		}
 	}
 
 	/**
