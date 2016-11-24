@@ -145,6 +145,8 @@ class WC_Gateway_PPEC_Plugin {
 		add_action( 'plugins_loaded', array( $this, 'bootstrap' ) );
 		add_filter( 'allowed_redirect_hosts' , array( $this, 'whitelist_paypal_domains_for_redirect' ) );
 		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
+
+		add_filter( 'plugin_action_links_' . plugin_basename( $this->file ), array( $this, 'plugin_action_links' ) );
 	}
 
 	public function bootstrap() {
@@ -243,7 +245,7 @@ class WC_Gateway_PPEC_Plugin {
 		$credential = $this->settings->get_active_api_credentials();
 		if ( ! is_a( $credential, 'WC_Gateway_PPEC_Client_Credential' ) || '' === $credential->get_username() ) {
 			$setting_link = $this->get_admin_setting_link();
-			throw new Exception( __( 'PayPal Express Checkout is almost ready. To get started, <a href="' . $setting_link . '">connect your PayPal account</a>.', 'woocommerce-gateway-paypal-express-checkout' ), self::NOT_CONNECTED );
+			throw new Exception( sprintf( __( 'PayPal Express Checkout is almost ready. To get started, <a href="%s">connect your PayPal account</a>.', 'woocommerce-gateway-paypal-express-checkout' ), esc_url( $setting_link ) ), self::NOT_CONNECTED );
 		}
 	}
 
@@ -347,5 +349,24 @@ class WC_Gateway_PPEC_Plugin {
 	 */
 	public function load_plugin_textdomain() {
 		load_plugin_textdomain( 'woocommerce-gateway-paypal-express-checkout', false, plugin_basename( $this->plugin_path ) . '/languages' );
+	}
+
+	/**
+	 * Add relevant links to plugins page.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param array $links Plugin action links
+	 *
+	 * @return array Plugin action links
+	 */
+	public function plugin_action_links( $links ) {
+		$setting_url = $this->get_admin_setting_link();
+
+		$plugin_links = array(
+			'<a href="' . esc_url( $setting_url ) . '">' . esc_html__( 'Settings', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>',
+			'<a href="https://docs.woocommerce.com/document/paypal-express-checkout/">' . esc_html__( 'Docs', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>',
+		);
+		return array_merge( $plugin_links, $links );
 	}
 }
