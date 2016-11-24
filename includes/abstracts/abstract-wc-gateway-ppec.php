@@ -96,7 +96,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 					'redirect' => $checkout->start_checkout_from_checkout( $order_id ),
 				);
 			} catch ( PayPal_API_Exception $e ) {
-				wc_gateway_ppec_format_paypal_api_exception( $e->errors );
+				wc_add_notice( $e->getMessage(), 'error' );
 			}
 		} else {
 			try {
@@ -148,7 +148,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 						'redirect' => wc_gateway_ppec()->settings->get_paypal_redirect_url( $session->token, true ),
 					);
 				} else {
-					wc_gateway_ppec_format_paypal_api_exception( $e->errors );
+					wc_add_notice( $e->getMessage(), 'error' );
 				}
 			}
 		}
@@ -363,7 +363,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 					return true;
 
 				} catch ( PayPal_API_Exception $e ) {
-					return $e->to_wp_error( 'paypal_refund_error' );
+					return new WP_Error( 'paypal_refund_error', $e->getMessage() );
 				}
 			}
 		}
@@ -382,7 +382,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 					return true;
 
 				} catch ( PayPal_API_Exception $e ) {
-					return $e->to_wp_error( 'paypal_refund_error' );
+					return new WP_Error( 'paypal_refund_error', $e->getMessage() );
 				}
 
 			}
@@ -427,7 +427,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 
 						return true;
 					} catch ( PayPal_API_Exception $e ) {
-						return $e->to_wp_error( 'paypal_refund_error' );
+						return new WP_Error( 'paypal_refund_error', $e->getMessage() );
 					}
 				}
 			}

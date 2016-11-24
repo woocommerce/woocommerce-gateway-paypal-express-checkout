@@ -8,7 +8,7 @@ function woo_pp_start_checkout() {
 		wp_safe_redirect( $redirect_url );
 		exit;
 	} catch( PayPal_API_Exception $e ) {
-		wc_gateway_ppec_format_paypal_api_exception( $e->errors );
+		wc_add_notice( $e->getMessage(), 'error' );
 
 		$redirect_url = WC()->cart->get_cart_url();
 		$settings     = wc_gateway_ppec()->settings;
@@ -37,12 +37,11 @@ function woo_pp_start_checkout() {
 	}
 }
 
+/**
+ * @deprecated
+ */
 function wc_gateway_ppec_format_paypal_api_exception( $errors ) {
-	$error_strings = array();
-	foreach ( $errors as $error ) {
-		$error_strings[] = $error->maptoBuyerFriendlyError();
-	}
-	wc_add_notice( __( 'Payment error:', 'woocommerce-gateway-paypal-express-checkout' ) . '<ul><li>' . implode( '</li><li>', $error_strings ) . '</li></ul>', 'error' );
+	_deprecated_function( 'wc_gateway_ppec_format_paypal_api_exception', '1.2.0', '' );
 }
 
 /**

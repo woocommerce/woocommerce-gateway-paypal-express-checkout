@@ -90,10 +90,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			$token            = isset( $_GET['token'] ) ? $_GET['token'] : $session->token;
 			$checkout_details = $this->get_checkout_details( $token );
 		} catch ( PayPal_API_Exception $e ) {
-			/**
-			 * @todo maybe redirect to cart page with notice
-			 */
-			wc_gateway_ppec_log( sprintf( '%s: Failed to retrieve checkout details', __METHOD__ ) );
+			wc_add_notice( $e->getMessage(), 'error' );
 			return;
 		}
 
@@ -121,7 +118,12 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	public function paypal_billing_details() {
 		$session          = WC()->session->get( 'paypal' );
 		$token            = isset( $_GET['token'] ) ? $_GET['token'] : $session->token;
-		$checkout_details = $this->get_checkout_details( $token );
+		try {
+			$checkout_details = $this->get_checkout_details( $token );
+		} catch ( PayPal_API_Exception $e ) {
+			wc_add_notice( $e->getMessage(), 'error' );
+			return;
+		}
 		?>
 		<h3><?php _e( 'Billing details', 'woocommerce-gateway-paypal-express-checkout' ); ?></h3>
 		<ul>
@@ -187,7 +189,13 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	public function paypal_shipping_details() {
 		$session          = WC()->session->get( 'paypal' );
 		$token            = isset( $_GET['token'] ) ? $_GET['token'] : $session->token;
-		$checkout_details = $this->get_checkout_details( $token );
+
+		try {
+			$checkout_details = $this->get_checkout_details( $token );
+		} catch ( PayPal_API_Exception $e ) {
+			wc_add_notice( $e->getMessage(), 'error' );
+			return;
+		}
 
 		if ( ! WC()->cart->needs_shipping() ) {
 			return;
@@ -221,9 +229,9 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			$payer_info['billing_email']      = $checkout_details->payer_details->email;
 			$payer_info['billing_first_name'] = $checkout_details->payer_details->first_name;
 			$payer_info['billing_last_name']  = $checkout_details->payer_details->last_name;
-
 		} catch ( PayPal_API_Exception $e ) {
-			wc_gateway_ppec_log( sprintf( '%s - Failed to retrieve checkout details', __METHOD__ ) );
+			wc_add_notice( $e->getMessage(), 'error' );
+			return;
 		}
 
 		if ( empty( $payer_info ) ) {
@@ -770,7 +778,13 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			return $packages;
 		}
 		// Shipping details from PayPal
-		$checkout_details = $this->get_checkout_details( wc_clean( $_GET['token'] ) );
+
+		try {
+			$checkout_details = $this->get_checkout_details( wc_clean( $_GET['token'] ) );
+		} catch ( PayPal_API_Exception $e ) {
+			return $packages;
+		}
+
 		$destination = $this->get_mapped_shipping_address( $checkout_details );
 
 		$packages[0]['destination']['country']   = $destination['country'];
