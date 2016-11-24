@@ -54,32 +54,20 @@ class PayPal_API_Exception extends Exception {
 			}
 		}
 
-		$error_objects = array();
-		foreach ( $errors as $value ) {
-			$error_objects[] = new PayPal_API_Error( $value['code'], $value['message'], $value['long'], $value['severity'] );
-		}
-
-		$this->errors = $error_objects;
-	}
-
-	/**
-	 * Returns the errors as WP_Error.
-	 *
-	 * @param string $code WP_Error code
-	 *
-	 * @return WP_Error Returns the errors as WP_Error
-	 */
-	public function to_wp_error( $code ) {
+		$this->errors   = array();
 		$error_messages = array();
-		foreach ( $this->errors as $error ) {
-			/* translators: error code and error message about refund from PayPal API. */
-			$error_messages[] = sprintf( __( 'Error: %1$s - %2$s.', 'woocommerce-gateway-paypal-express-checkout' ), $error->error_code, $error->long_message );
+		foreach ( $errors as $value ) {
+			$error = new PayPal_API_Error( $value['code'], $value['message'], $value['long'], $value['severity'] );
+			$this->errors[] = $error;
+
+			/* translators: placeholders are error code and message from PayPal */
+			$error_messages[] = sprintf( __( 'PayPal error (%1$s): %2$s', 'woocommerce-gateway-paypal-express-checkout' ), $error->error_code, $error->maptoBuyerFriendlyError() );
 		}
 
 		if ( empty( $error_messages ) ) {
 			$error_messages[] = __( 'An error occurred while calling the PayPal API.', 'woocommerce-gateway-paypal-express-checkout' );
 		}
 
-		return new WP_Error( $code, implode( PHP_EOL, $error_messages ) );
+		$this->message = implode( PHP_EOL, $error_messages );
 	}
 }
