@@ -218,7 +218,8 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 * @since 1.2.0
 	 */
 	public function after_checkout_validation() {
-		if ( is_user_logged_in() ) {
+
+		if ( is_user_logged_in() || ! wc_gateway_ppec()->settings->is_enabled() ) {
 			return;
 		}
 
