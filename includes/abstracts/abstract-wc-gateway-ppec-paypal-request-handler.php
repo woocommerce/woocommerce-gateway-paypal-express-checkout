@@ -77,7 +77,7 @@ abstract class WC_Gateway_PPEC_PayPal_Request_Handler {
 	 */
 	protected function payment_on_hold( $order, $reason = '' ) {
 		$order->update_status( 'on-hold', $reason );
-		wc_reduce_stock_levels( $order_id );
+		$order->reduce_order_stock();
 		WC()->cart->empty_cart();
 	}
 }
