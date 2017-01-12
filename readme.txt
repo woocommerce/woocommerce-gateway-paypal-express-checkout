@@ -85,6 +85,9 @@ https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 
 == Changelog ==
 
+= 1.2.0 =
+* Fix - Prevent conflict with other gateways.
+
 = 1.1.3 =
 * Fix   - Guest users can checkout without giving shipping information when required.
 * Fix   - Modal popup not working properly. Changed to full page redirect with a hook to add back the modal/popup.

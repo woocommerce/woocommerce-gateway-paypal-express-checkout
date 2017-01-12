@@ -216,10 +216,11 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 * posted data for new customer.
 	 *
 	 * @since 1.2.0
+	 * @param array $posted_checkout
 	 */
-	public function after_checkout_validation() {
+	public function after_checkout_validation( $posted_checkout ) {
 
-		if ( is_user_logged_in() || ! wc_gateway_ppec()->settings->is_enabled() ) {
+		if ( is_user_logged_in() || ! wc_gateway_ppec()->settings->is_enabled() || 'ppec_paypal' !== $posted_checkout['payment_method'] ) {
 			return;
 		}
 
