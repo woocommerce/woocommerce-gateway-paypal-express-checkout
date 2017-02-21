@@ -251,6 +251,14 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			return;
 		}
 
+		// TODO: When https://github.com/woocommerce/woocommerce/issues/13269 is fixed
+		// we don't need to do this anymore to avoid "undefined index" notices for
+		// billing_first_name and billing_last_name
+		if ( version_compare( WC_VERSION, '2.7', '>=' ) ) {
+			$checkout->posted['billing_first_name'] = $payer_info['billing_first_name'];
+			$checkout->posted['billing_last_name'] = $payer_info['billing_last_name'];
+		}
+
 		if ( $checkout->must_create_account || ! empty( $checkout->posted['createaccount'] ) ) {
 			foreach ( $payer_info as $k => $v ) {
 				$checkout->posted[ $k ] = $v;
