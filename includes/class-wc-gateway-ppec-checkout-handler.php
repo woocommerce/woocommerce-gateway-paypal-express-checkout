@@ -104,9 +104,17 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		WC()->customer->set_shipping_postcode( $checkout_details->payments[0]->shipping_address->getZip() );
 		WC()->customer->set_shipping_city( $checkout_details->payments[0]->shipping_address->getCity() );
 
-		// We don't neeed billing and shipping to confirm a paypal order.
-		$checkout->checkout_fields['billing']  = array();
-		$checkout->checkout_fields['shipping'] = array();
+		// We don't need billing and shipping to confirm a paypal order.
+		$old_wc = version_compare( WC_VERSION, '2.7', '<' );
+		if ( $old_wc ) {
+			$checkout->checkout_fields['billing']  = array();
+			$checkout->checkout_fields['shipping'] = array();
+		} else {
+			$checkout_fields = $checkout->get_checkout_fields();
+			$checkout_fields['billing'] = array();
+			$checkout_fields['billing'] = array();
+			$checkout->checkout_fields = $checkout_fields;
+		}
 
 		remove_action( 'woocommerce_checkout_billing', array( $checkout, 'checkout_form_billing' ) );
 		remove_action( 'woocommerce_checkout_shipping', array( $checkout, 'checkout_form_shipping' ) );
@@ -401,7 +409,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		if ( $this->has_active_session() ) {
 			printf(
 				'<a href="%s" class="wc-gateway-ppec-cancel">%s</a>',
-				esc_url( add_query_arg( 'wc-gateway-ppec-clear-session', true, WC()->cart->get_cart_url() ) ),
+				esc_url( add_query_arg( 'wc-gateway-ppec-clear-session', true, wc_get_cart_url() ) ),
 				esc_html__( 'Cancel', 'woocommerce-gateway-paypal-express-checkout' )
 			);
 		}
@@ -669,16 +677,22 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			throw new PayPal_API_Exception( $resp );
 		}
 
-		update_post_meta( $order->id, '_ppec_billing_agreement_id', $resp['BILLINGAGREEMENTID'] );
-
-		$subscriptions = array();
-		if ( function_exists( 'wcs_order_contains_subscription' ) && wcs_order_contains_subscription( $order->id ) ) {
-			$subscriptions = wcs_get_subscriptions_for_order( $order->id );
-		} elseif ( function_exists( 'wcs_order_contains_renewal' ) && wcs_order_contains_renewal( $order->id ) ) {
-			$subscriptions = wcs_get_subscriptions_for_renewal_order( $order->id );
+		$old_wc = version_compare( WC_VERSION, '2.7', '<' );
+		$order_id = $old_wc ? $order->id : $order->get_id();
+		if ( $old_wc ) {
+			update_post_meta( $order_id, '_ppec_billing_agreement_id', $resp['BILLINGAGREEMENTID'] );
+		} else {
+			$order->update_meta_data( '_ppec_billing_agreement_id', $resp['BILLINGAGREEMENTID'] );
 		}
 
-		$billing_agreement_id = get_post_meta( $order->id, '_ppec_billing_agreement_id', true );
+		$subscriptions = array();
+		if ( function_exists( 'wcs_order_contains_subscription' ) && wcs_order_contains_subscription( $order_id ) ) {
+			$subscriptions = wcs_get_subscriptions_for_order( $order_id );
+		} elseif ( function_exists( 'wcs_order_contains_renewal' ) && wcs_order_contains_renewal( $order_id ) ) {
+			$subscriptions = wcs_get_subscriptions_for_renewal_order( $order_id );
+		}
+
+		$billing_agreement_id = $old_wc ? get_post_meta( $order_id, '_ppec_billing_agreement_id', true ) : $order->get_meta( '_ppec_billing_agreement_id', true );
 
 		foreach ( $subscriptions as $subscription ) {
 			update_post_meta( $subscription->id, '_ppec_billing_agreement_id', $billing_agreement_id );
@@ -697,8 +711,10 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		}
 
 		$client = wc_gateway_ppec()->client;
+		$old_wc = version_compare( WC_VERSION, '2.7', '<' );
+		$order_id = $old_wc ? $order->id : $order->get_id();
 		$params = $client->get_do_express_checkout_params( array(
-			'order_id' => $order->id,
+			'order_id' => $order_id,
 			'token'    => $token,
 			'payer_id' => $payer_id,
 		) );
@@ -709,7 +725,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			$payment_details = new PayPal_Payment_Details();
 			$payment_details->loadFromDoECResponse( $response );
 
-			$meta = get_post_meta( $order->id, '_woo_pp_txnData', true );
+			$meta = $old_wc ? get_post_meta( $order_id, '_woo_pp_txnData', true ) : $order->get_meta( '_woo_pp_txnData', true );
 			if ( ! empty( $meta ) ) {
 				$txnData = $meta;
 			} else {
@@ -736,7 +752,11 @@ class WC_Gateway_PPEC_Checkout_Handler {
 
 			$txnData['txn_type'] = $paymentAction;
 
-			update_post_meta( $order->id, '_woo_pp_txnData', $txnData );
+			if ( $old_wc ) {
+				update_post_meta( $order_id, '_woo_pp_txnData', $txnData );
+			} else {
+				$order->update_meta_data( '_woo_pp_txnData', $txnData );
+			}
 
 			// Payment was taken so clear session
 			$this->maybe_clear_session_data();
@@ -753,8 +773,15 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 */
 	public function handle_payment_response( $order, $payment ) {
 		// Store meta data to order
-		update_post_meta( $order->id, '_paypal_status', strtolower( $payment->payment_status ) );
-		update_post_meta( $order->id, '_transaction_id', $payment->transaction_id );
+
+		$old_wc = version_compare( WC_VERSION, '2.7', '<' );
+		if ( $old_wc ) {
+			update_post_meta( $order_id, '_paypal_status', strtolower( $payment->payment_status ) );
+			update_post_meta( $order_id, '_transaction_id', $payment->transaction_id );
+		} else {
+			$order->update_meta_data( '_paypal_status', strtolower( $payment->payment_status ) );
+			$order->update_meta_data( '_transaction_id', $payment->transaction_id );
+		}
 
 		// Handle $payment response
 		if ( 'completed' === strtolower( $payment->payment_status ) ) {

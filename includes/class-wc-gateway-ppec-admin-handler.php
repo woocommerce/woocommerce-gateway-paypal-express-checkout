@@ -38,8 +38,13 @@ class WC_Gateway_PPEC_Admin_Handler {
 
 		$order = wc_get_order( $_REQUEST['post'] );
 
+		$old_wc         = version_compare( WC_VERSION, '2.7', '<' );
+		$order_id       = $old_wc ? $order->id : $order->get_id();
+		$payment_method = $old_wc ? $order->payment_method : $order->get_payment_method();
+		$paypal_status  = $old_wc ? get_post_meta( $order_id, '_paypal_status', true ) : $order->get_meta( '_paypal_status', true );
+
 		// bail if the order wasn't paid for with this gateway
-		if ( 'ppec_paypal' !== $order->payment_method || 'pending' !== get_post_meta( $order->id, '_paypal_status', true ) ) {
+		if ( 'ppec_paypal' !== $payment_method || 'pending' !== $paypal_status ) {
 			return $actions;
 		}
 
@@ -129,7 +134,8 @@ class WC_Gateway_PPEC_Admin_Handler {
 			$order = wc_get_order( $order );
 		}
 
-		$this->capture_payment( $order->id );
+		$order_id = version_compare( WC_VERSION, '2.7', '<' ) ? $order->id : $order->get_id();
+		$this->capture_payment( $order_id );
 
 		return true;
 	}
@@ -140,15 +146,20 @@ class WC_Gateway_PPEC_Admin_Handler {
 	 * @param int $order_id
 	 */
 	public function capture_payment( $order_id ) {
-		$order = wc_get_order( $order_id );
+		$order  = wc_get_order( $order_id );
+		$old_wc = version_compare( WC_VERSION, '2.7', '<' );
 
-		if ( 'ppec_paypal' === $order->payment_method ) {
-			$trans_id = get_post_meta( $order_id, '_transaction_id', true );
+		$payment_method = $old_wc ? $order->payment_method : $order->get_payment_method();
+		if ( 'ppec_paypal' === $payment_method ) {
+
+			$trans_id = $old_wc ? get_post_meta( $order_id, '_transaction_id', true ) : $order->get_meta( '_transaction_id', true );
 			$trans_details = wc_gateway_ppec()->client->get_transaction_details( array( 'TRANSACTIONID' => $trans_id ) );
 
 			if ( $trans_id && $this->is_authorized_only( $trans_details ) ) {
+				$order_total = $old_wc ? $order->order_total : $order->get_total();
+
 				$params['AUTHORIZATIONID'] = $trans_id;
-				$params['AMT'] = floatval( $order->order_total );
+				$params['AMT'] = floatval( $order_total );
 				$params['COMPLETETYPE'] = 'Complete';
 
 				$result = wc_gateway_ppec()->client->do_express_checkout_capture( $params );
@@ -184,9 +195,12 @@ class WC_Gateway_PPEC_Admin_Handler {
 	 */
 	public function cancel_payment( $order_id ) {
 		$order = wc_get_order( $order_id );
+		$old_wc = version_compare( WC_VERSION, '2.7', '<' );
+		$payment_method = $old_wc ? $order->payment_method : $order->get_payment_method();
 
-		if ( 'ppec_paypal' === $order->payment_method ) {
-			$trans_id = get_post_meta( $order_id, '_transaction_id', true );
+		if ( 'ppec_paypal' === $payment_method ) {
+
+			$trans_id = $old_wc ? get_post_meta( $order_id, '_transaction_id', true ) : $order->get_meta( '_transaction_id', true );
 			$trans_details = wc_gateway_ppec()->client->get_transaction_details( array( 'TRANSACTIONID' => $trans_id ) );
 
 			if ( $trans_id && $this->is_authorized_only( $trans_details ) ) {

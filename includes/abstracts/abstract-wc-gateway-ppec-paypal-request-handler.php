@@ -50,7 +50,14 @@ abstract class WC_Gateway_PPEC_PayPal_Request_Handler {
 			$order_id = wc_get_order_id_by_order_key( $order_key );
 			$order    = wc_get_order( $order_id );
 		}
-		if ( ! $order || $order->order_key !== $order_key ) {
+
+		if ( $order ) {
+			$order_key_from_order = version_compare( WC_VERSION, '2.7', '<' ) ? $order->order_key : $order->get_order_key();
+		} else {
+			$order_key_from_order = '';
+		}
+
+		if ( ! $order || $order_key_from_order !== $order_key ) {
 			wc_gateway_ppec_log( sprintf( '%s: %s', __FUNCTION__, 'Error: Order Keys do not match.' ) );
 			return false;
 		}

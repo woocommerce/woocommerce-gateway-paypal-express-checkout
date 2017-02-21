@@ -364,7 +364,7 @@ class WC_Gateway_PPEC_Client {
 			$query_args['create-billing-agreement'] = 'true';
 		}
 
-		return add_query_arg( $query_args, WC()->cart->get_checkout_url() );
+		return add_query_arg( $query_args, wc_get_checkout_url() );
 	}
 
 	/**
@@ -377,7 +377,7 @@ class WC_Gateway_PPEC_Client {
 	 * @return string Cancel URL
 	 */
 	protected function _get_cancel_url() {
-		return add_query_arg( 'woo-paypal-cancel', 'true', WC()->cart->get_cart_url() );
+		return add_query_arg( 'woo-paypal-cancel', 'true', wc_get_cart_url() );
 	}
 
 	/**
@@ -532,9 +532,19 @@ class WC_Gateway_PPEC_Client {
 		$items = array();
 		foreach ( WC()->cart->cart_contents as $cart_item_key => $values ) {
 			$amount = round( $values['line_subtotal'] / $values['quantity'] , $decimals );
+
+			if ( version_compare( WC_VERSION, '2.7', '<' ) ) {
+				$name = $values['data']->post->post_title;
+				$description = $values['data']->post->post_content;
+			} else {
+				$product = $values['data'];
+				$name = $product->get_name();
+				$description = $product->get_description();
+			}
+
 			$item   = array(
-				'name'        => $values['data']->post->post_title,
-				'description' => $values['data']->post->post_content,
+				'name'        => $name,
+				'description' => $description,
 				'quantity'    => $values['quantity'],
 				'amount'      => $amount,
 			);
@@ -645,18 +655,28 @@ class WC_Gateway_PPEC_Client {
 
 		// PayPal shipping address from order.
 		$shipping_address = new PayPal_Address;
-		$shipping_address->setName( $order->shipping_first_name . ' ' . $order->shipping_last_name );
-		$shipping_address->setStreet1( $order->shipping_address_1 );
-		$shipping_address->setStreet2( $order->shipping_address_2 );
-		$shipping_address->setCity( $order->shipping_city );
-		$shipping_address->setState( $order->shipping_state );
-		$shipping_address->setZip( $order->shipping_postcode );
+
+		$old_wc = version_compare( WC_VERSION, '2.7', '<' );
+		$shipping_first_name = $old_wc ? $order->shipping_first_name : $order->get_shipping_first_name();
+		$shipping_last_name  = $old_wc ? $order->shipping_last_name  : $order->get_shipping_last_name();
+		$shipping_address_1  = $old_wc ? $order->shipping_address_1  : $order->get_shipping_address_1();
+		$shipping_address_2  = $old_wc ? $order->shipping_address_2  : $order->get_shipping_address_2();
+		$shipping_city       = $old_wc ? $order->shipping_city       : $order->get_shipping_city();
+		$shipping_state      = $old_wc ? $order->shipping_state      : $order->get_shipping_state();
+		$shipping_postcode   = $old_wc ? $order->shipping_postcode   : $order->get_shipping_postcode();
+		$shipping_country    = $old_wc ? $order->shipping_country    : $order->get_shipping_country();
+
+		$shipping_address->setName( $shipping_first_name . ' ' . $shipping_last_name );
+		$shipping_address->setStreet1( $shipping_address_1 );
+		$shipping_address->setStreet2( $shipping_address_2 );
+		$shipping_address->setCity( $shipping_city );
+		$shipping_address->setState( $shipping_state );
+		$shipping_address->setZip( $shipping_postcode );
 
 		// In case merchant only expects domestic shipping and hides shipping
 		// country, fallback to base country.
 		//
 		// @see https://github.com/woothemes/woocommerce-gateway-paypal-express-checkout/issues/139
-		$shipping_country = $order->shipping_country;
 		if ( empty( $shipping_country ) ) {
 			$shipping_country = WC()->countries->get_base_country();
 		}
@@ -765,9 +785,13 @@ class WC_Gateway_PPEC_Client {
 	 * @return array Params for DoExpressCheckoutPayment call
 	 */
 	public function get_do_express_checkout_params( array $args ) {
-		$settings = wc_gateway_ppec()->settings;
-		$order    = wc_get_order( $args['order_id'] );
-		$details  = $this->_get_details_from_order( $args['order_id'] );
+		$settings  = wc_gateway_ppec()->settings;
+		$order     = wc_get_order( $args['order_id'] );
+
+		$old_wc    = version_compare( WC_VERSION, '2.7', '<' );
+		$order_id  = $old_wc ? $order->id : $order->get_id();
+		$details   = $this->_get_details_from_order( $order_id );
+		$order_key = $old_wc ? $order->order_key : $order->get_order_key();
 
 		$params = array(
 			'TOKEN'                          => $args['token'],
@@ -784,8 +808,8 @@ class WC_Gateway_PPEC_Client {
 			'PAYMENTREQUEST_0_PAYMENTACTION' => $settings->get_paymentaction(),
 			'PAYMENTREQUEST_0_INVNUM'        => $settings->invoice_prefix . $order->get_order_number(),
 			'PAYMENTREQUEST_0_CUSTOM'        => json_encode( array(
-				'order_id'  => $order->id,
-				'order_key' => $order->order_key,
+				'order_id'  => $order_id,
+				'order_key' => $order_key,
 			) ),
 		);
 
@@ -882,8 +906,12 @@ class WC_Gateway_PPEC_Client {
 	 */
 	public function get_do_reference_transaction_params( array $args ) {
 		$settings = wc_gateway_ppec()->settings;
-		$order    = wc_get_order( $args['order_id'] );
-		$details  = $this->_get_details_from_order( $args['order_id'] );
+		$order     = wc_get_order( $args['order_id'] );
+
+		$old_wc    = version_compare( WC_VERSION, '2.7', '<' );
+		$order_id  = $old_wc ? $order->id : $order->get_id();
+		$details   = $this->_get_details_from_order( $order_id );
+		$order_key = $old_wc ? $order->order_key : $order->get_order_key();
 
 		$params = array(
 			'REFERENCEID'   => $args['reference_id'],
@@ -899,8 +927,8 @@ class WC_Gateway_PPEC_Client {
 			'PAYMENTACTION' => $settings->get_paymentaction(),
 			'INVNUM'        => $settings->invoice_prefix . $order->get_order_number(),
 			'CUSTOM'        => json_encode( array(
-				'order_id'  => $order->id,
-				'order_key' => $order->order_key,
+				'order_id'  => $order_id,
+				'order_key' => $order_key,
 			) ),
 		);
 

@@ -3,7 +3,7 @@ Contributors: automattic, woothemes, akeda, dwainm, royho, allendav, slash1andy,
 Tags: ecommerce, e-commerce, commerce, woothemes, wordpress ecommerce, store, sales, sell, shop, shopping, cart, checkout, configurable, paypal
 Requires at least: 4.4
 Tested up to: 4.4
-Stable tag: 1.1.2
+Stable tag: 1.2.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -87,6 +87,7 @@ https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 
 = 1.2.0 =
 * Fix - Prevent conflict with other gateways.
+* Fix - Compatibility with WooCommerce 2.7
 
 = 1.1.3 =
 * Fix   - Guest users can checkout without giving shipping information when required.

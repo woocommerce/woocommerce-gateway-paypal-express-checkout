@@ -81,17 +81,18 @@ class WC_Gateway_PPEC_With_PayPal_Addons extends WC_Gateway_PPEC_With_PayPal {
 	 * @return array
 	 */
 	public function process_subscription( $order_id ) {
-		$resp  = parent::process_payment( $order_id );
-		$order = wc_get_order( $order_id );
+		$old_wc = version_compare( WC_VERSION, '2.7', '<' );
+		$resp   = parent::process_payment( $order_id );
+		$order  = wc_get_order( $order_id );
 
 		$subscriptions = array();
-		if ( function_exists( 'wcs_order_contains_subscription' ) && wcs_order_contains_subscription( $order->id ) ) {
-			$subscriptions = wcs_get_subscriptions_for_order( $order->id );
-		} elseif ( function_exists( 'wcs_order_contains_renewal' ) && wcs_order_contains_renewal( $order->id ) ) {
-			$subscriptions = wcs_get_subscriptions_for_renewal_order( $order->id );
+		if ( function_exists( 'wcs_order_contains_subscription' ) && wcs_order_contains_subscription( $order_id ) ) {
+			$subscriptions = wcs_get_subscriptions_for_order( $order_id );
+		} elseif ( function_exists( 'wcs_order_contains_renewal' ) && wcs_order_contains_renewal( $order_id ) ) {
+			$subscriptions = wcs_get_subscriptions_for_renewal_order( $order_id );
 		}
 
-		$billing_agreement_id = get_post_meta( $order->id, '_ppec_billing_agreement_id', true );
+		$billing_agreement_id = $old_wc ? get_post_meta( $order_id, '_ppec_billing_agreement_id', true ) : $order->get_meta( '_ppec_billing_agreement_id', true );
 
 		// Shipping / billing addresses and billing agreement were not copied
 		// because it's not available during subscription creation.
@@ -112,8 +113,10 @@ class WC_Gateway_PPEC_With_PayPal_Addons extends WC_Gateway_PPEC_With_PayPal {
 	 * @param int|WC_Order $order  Order ID or order object
 	 */
 	public function scheduled_subscription_payment( $amount, $order ) {
+		$old_wc               = version_compare( WC_VERSION, '2.7', '<' );
 		$order                = wc_get_order( $order );
-		$billing_agreement_id = get_post_meta( $order->id, '_ppec_billing_agreement_id', true );
+		$order_id             = $old_wc ? $order->id : $order->get_id();
+		$billing_agreement_id = $old_wc ? get_post_meta( $order_id, '_ppec_billing_agreement_id', true ) : $order->get_meta( '_ppec_billing_agreement_id', true );
 
 		if ( empty( $billing_agreement_id ) ) {
 			wc_gateway_ppec_log( sprintf( '%s: Could not found billing agreement. Skip reference transaction', __METHOD__ ) );
@@ -129,7 +132,7 @@ class WC_Gateway_PPEC_With_PayPal_Addons extends WC_Gateway_PPEC_With_PayPal {
 		$params = $client->get_do_reference_transaction_params( array(
 			'reference_id' => $billing_agreement_id,
 			'amount'       => $amount,
-			'order_id'     => $order->id,
+			'order_id'     => $order_id,
 		) );
 
 		$resp = $client->do_reference_transaction( $params );
