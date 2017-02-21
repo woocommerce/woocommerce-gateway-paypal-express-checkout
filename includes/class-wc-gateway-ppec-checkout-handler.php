@@ -112,7 +112,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		} else {
 			$checkout_fields = $checkout->get_checkout_fields();
 			$checkout_fields['billing'] = array();
-			$checkout_fields['billing'] = array();
+			$checkout_fields['shipping'] = array();
 			$checkout->checkout_fields = $checkout_fields;
 		}
 
