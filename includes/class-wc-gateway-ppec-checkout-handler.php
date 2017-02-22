@@ -227,7 +227,6 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 * @param array $posted_checkout
 	 */
 	public function after_checkout_validation( $posted_checkout ) {
-
 		if ( is_user_logged_in() || ! wc_gateway_ppec()->settings->is_enabled() || 'ppec_paypal' !== $posted_checkout['payment_method'] ) {
 			return;
 		}
@@ -260,13 +259,16 @@ class WC_Gateway_PPEC_Checkout_Handler {
 
 	/**
 	 * Map PayPal billing address to WC shipping address
+	 * NOTE: Not all PayPal_Checkout_Payer_Details objects include a billing address
 	 * @param  object $checkout_details
 	 * @return array
 	 */
 	public function get_mapped_billing_address( $checkout_details ) {
+
 		if ( empty( $checkout_details->payer_details ) ) {
 			return array();
 		}
+
 		return array(
 			'first_name' => $checkout_details->payer_details->first_name,
 			'last_name'  => $checkout_details->payer_details->last_name,
@@ -773,7 +775,6 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 */
 	public function handle_payment_response( $order, $payment ) {
 		// Store meta data to order
-
 		$old_wc = version_compare( WC_VERSION, '2.7', '<' );
 		if ( $old_wc ) {
 			update_post_meta( $order->id, '_paypal_status', strtolower( $payment->payment_status ) );
@@ -792,7 +793,11 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			} else {
 				$order->update_status( 'on-hold', sprintf( __( 'Payment pending (%s).', 'woocommerce-gateway-paypal-express-checkout' ), $payment->pending_reason ) );
 			}
-			$order->reduce_order_stock();
+			if ( $old_wc ) {
+				$order->reduce_order_stock();
+			} else {
+				wc_reduce_stock_levels( $order->get_id() );
+			}
 		}
 	}
 
@@ -816,6 +821,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		} catch ( PayPal_API_Exception $e ) {
 			return $packages;
 		}
+
 
 		$destination = $this->get_mapped_shipping_address( $checkout_details );
 
