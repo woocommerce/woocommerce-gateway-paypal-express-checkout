@@ -87,7 +87,7 @@ https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 
 = 1.2.0 =
 * Fix - Prevent conflict with other gateways.
-* Fix - Compatibility with WooCommerce 2.7
+* Fix - Compatibility with WooCommerce 2.7, including ensuring the customer address is saved correctly.
 
 = 1.1.3 =
 * Fix   - Guest users can checkout without giving shipping information when required.
