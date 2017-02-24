@@ -114,6 +114,9 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 				// Store addresses given by PayPal
 				$order->set_address( $checkout->get_mapped_billing_address( $checkout_details ), 'billing' );
 				$order->set_address( $checkout->get_mapped_shipping_address( $checkout_details ), 'shipping' );
+				if ( version_compare( WC_VERSION, '2.7', '>=' ) ) {
+					$order->save(); // required to avoid other wc_get_order calls in this same http context returning stale orders
+				}
 
 				// Complete the payment now.
 				$checkout->do_payment( $order, $session->token, $session->payer_id );
@@ -346,7 +349,9 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		// loop through each transaction to compile list of txns that are able to be refunded
 		// process refunds against each txn in the list until full amount of refund is reached
 		// first loop through, try to find a transaction that equals the refund amount being requested
-		$txn_data = get_post_meta( $order_id, '_woo_pp_txnData', true );
+		$old_wc = version_compare( WC_VERSION, '2.7', '<' );
+		$txn_data = $old_wc ? get_post_meta( $order_id, '_woo_pp_txnData', true ) : $order->get_meta( '_woo_pp_txnData', true );
+		$order_currency = $old_wc ? $order->order_currency : $order->get_currency();
 
 		foreach ( $txn_data['refundable_txns'] as $key => $value ) {
 			$refundable_amount = $value['amount'] - $value['refunded_amount'];
@@ -355,10 +360,14 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 				$refund_type = ( 0 == $value['refunded_amount'] ) ? 'Full' : 'Partial';
 
 				try {
-					$refund_txn_id = WC_Gateway_PPEC_Refund::refund_order( $order, $amount, $refund_type, $reason, $order->get_order_currency() );
+					$refund_txn_id = WC_Gateway_PPEC_Refund::refund_order( $order, $amount, $refund_type, $reason, $order_currency );
 					$txn_data['refundable_txns'][ $key ]['refunded_amount'] += $amount;
 					$order->add_order_note( sprintf( __( 'PayPal refund completed; transaction ID = %s', 'woocommerce-gateway-paypal-express-checkout' ), $refund_txn_id ) );
-					update_post_meta( $order_id, '_woo_pp_txnData', $txn_data );
+					if ( $old_wc ) {
+						update_post_meta( $order_id, '_woo_pp_txnData', $txn_data );
+					} else {
+						$order->update_meta_data( '_woo_pp_txnData', $txn_data );
+					}
 
 					return true;
 
@@ -374,10 +383,14 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 			if ( $amount < $refundable_amount ) {
 
 				try {
-					$refund_txn_id = WC_Gateway_PPEC_Refund::refund_order( $order, $amount, 'Partial', $reason, $order->get_order_currency() );
+					$refund_txn_id = WC_Gateway_PPEC_Refund::refund_order( $order, $amount, 'Partial', $reason, $order_currency );
 					$txn_data['refundable_txns'][ $key ]['refunded_amount'] += $amount;
 					$order->add_order_note( sprintf( __( 'PayPal refund completed; transaction ID = %s', 'woocommerce-gateway-paypal-express-checkout' ), $refund_txn_id ) );
-					update_post_meta( $order_id, '_woo_pp_txnData', $txn_data );
+					if ( $old_wc ) {
+						update_post_meta( $order_id, '_woo_pp_txnData', $txn_data );
+					} else {
+						$order->update_meta_data( '_woo_pp_txnData', $txn_data );
+					}
 
 					return true;
 
@@ -419,11 +432,15 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 					}
 
 					try {
-						$refund_txn_id = WC_Gateway_PPEC_Refund::refund_order( $order, $amount_to_refund, $refund_type, $reason, $order->get_order_currency() );
+						$refund_txn_id = WC_Gateway_PPEC_Refund::refund_order( $order, $amount_to_refund, $refund_type, $reason, $order_currency );
 						$total_to_refund -= $amount_to_refund;
 						$txn_data['refundable_txns'][ $key ]['refunded_amount'] += $amount_to_refund;
 						$order->add_order_note( sprintf( __( 'PayPal refund completed; transaction ID = %s', 'woocommerce-gateway-paypal-express-checkout' ), $refund_txn_id ) );
-						update_post_meta( $order_id, '_woo_pp_txnData', $txn_data );
+						if ( $old_wc ) {
+							update_post_meta( $order_id, '_woo_pp_txnData', $txn_data );
+						} else {
+							$order->update_meta_data( '_woo_pp_txnData', $txn_data );
+						}
 
 						return true;
 					} catch ( PayPal_API_Exception $e ) {
