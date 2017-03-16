@@ -101,7 +101,7 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 				$posted_data['payment_status'] = 'completed';
 			}
 
-			$order_id = version_compare( WC_VERSION, '2.7', '<' ) ? $order->id : $order->get_id();
+			$order_id = version_compare( WC_VERSION, '3.0', '<' ) ? $order->id : $order->get_id();
 			wc_gateway_ppec_log( 'Found order #' . $order_id );
 			wc_gateway_ppec_log( 'Payment status: ' . $posted_data['payment_status'] );
 
@@ -133,7 +133,7 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 	 * @param string $currency Currency
 	 */
 	protected function validate_currency( $order, $currency ) {
-		$old_wc = version_compare( WC_VERSION, '2.7', '<' );
+		$old_wc = version_compare( WC_VERSION, '3.0', '<' );
 		$order_currency = $old_wc ? $order->order_currency : $order->get_currency();
 
 		if ( $order_currency !== $currency ) {
@@ -166,7 +166,7 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 	 * @param array $posted_data Posted data
 	 */
 	protected function payment_status_completed( $order, $posted_data ) {
-		$old_wc = version_compare( WC_VERSION, '2.7', '<' );
+		$old_wc = version_compare( WC_VERSION, '3.0', '<' );
 		$order_id = $old_wc ? $order->id : $order->get_id();
 
 		if ( $order->has_status( array( 'processing', 'completed' ) ) ) {
@@ -257,7 +257,7 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 	 */
 	protected function payment_status_refunded( $order, $posted_data ) {
 		// Only handle full refunds, not partial.
-		$order_id = version_compare( WC_VERSION, '2.7', '<' ) ? $order->id : $order->get_id();
+		$order_id = version_compare( WC_VERSION, '3.0', '<' ) ? $order->id : $order->get_id();
 		if ( $order->get_total() == ( $posted_data['mc_gross'] * -1 ) ) {
 			// Mark order as refunded.
 			$order->update_status( 'refunded', sprintf( __( 'Payment %s via IPN.', 'woocommerce-gateway-paypal-express-checkout' ), strtolower( $posted_data['payment_status'] ) ) );
@@ -275,7 +275,7 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 	 * @param array $posted_data Posted data
 	 */
 	protected function payment_status_reversed( $order, $posted_data ) {
-		$order_id = version_compare( WC_VERSION, '2.7', '<' ) ? $order->id : $order->get_id();
+		$order_id = version_compare( WC_VERSION, '3.0', '<' ) ? $order->id : $order->get_id();
 		$order->update_status( 'on-hold', sprintf( __( 'Payment %s via IPN.', 'woocommerce-gateway-paypal-express-checkout' ), wc_clean( $posted_data['payment_status'] ) ) );
 		$this->send_ipn_email_notification(
 			sprintf( __( 'Payment for order %s reversed', 'woocommerce-gateway-paypal-express-checkout' ), '<a class="link" href="' . esc_url( admin_url( 'post.php?post=' . $order_id . '&action=edit' ) ) . '">' . $order->get_order_number() . '</a>' ),
@@ -290,7 +290,7 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 	 * @param array $posted_data Posted data
 	 */
 	protected function payment_status_canceled_reversal( $order, $posted_data ) {
-		$order_id = version_compare( WC_VERSION, '2.7', '<' ) ? $order->id : $order->get_id();
+		$order_id = version_compare( WC_VERSION, '3.0', '<' ) ? $order->id : $order->get_id();
 		$this->send_ipn_email_notification(
 			sprintf( __( 'Reversal cancelled for order #%s', 'woocommerce-gateway-paypal-express-checkout' ), $order->get_order_number() ),
 			sprintf( __( 'Order #%1$s has had a reversal cancelled. Please check the status of payment and update the order status accordingly here: %2$s', 'woocommerce-gateway-paypal-express-checkout' ), $order->get_order_number(), esc_url( admin_url( 'post.php?post=' . $order_id . '&action=edit' ) ) )
@@ -315,7 +315,7 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 			'payment_status' => '_paypal_status'
 		);
 
-		$old_wc = version_compare( WC_VERSION, '2.7', '<' );
+		$old_wc = version_compare( WC_VERSION, '3.0', '<' );
 		foreach ( $mapped_keys as $post_key => $meta_key ) {
 			if ( ! empty( $posted_data[ $post_key ] ) ) {
 				$value = wc_clean( $posted_data[ $post_key ] );

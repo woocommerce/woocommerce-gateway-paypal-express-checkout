@@ -38,7 +38,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 
 		$order = wc_get_order( $_REQUEST['post'] );
 
-		$old_wc         = version_compare( WC_VERSION, '2.7', '<' );
+		$old_wc         = version_compare( WC_VERSION, '3.0', '<' );
 		$order_id       = $old_wc ? $order->id : $order->get_id();
 		$payment_method = $old_wc ? $order->payment_method : $order->get_payment_method();
 		$paypal_status  = $old_wc ? get_post_meta( $order_id, '_paypal_status', true ) : $order->get_meta( '_paypal_status', true );
@@ -134,7 +134,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 			$order = wc_get_order( $order );
 		}
 
-		$order_id = version_compare( WC_VERSION, '2.7', '<' ) ? $order->id : $order->get_id();
+		$order_id = version_compare( WC_VERSION, '3.0', '<' ) ? $order->id : $order->get_id();
 		$this->capture_payment( $order_id );
 
 		return true;
@@ -147,7 +147,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 	 */
 	public function capture_payment( $order_id ) {
 		$order  = wc_get_order( $order_id );
-		$old_wc = version_compare( WC_VERSION, '2.7', '<' );
+		$old_wc = version_compare( WC_VERSION, '3.0', '<' );
 
 		$payment_method = $old_wc ? $order->payment_method : $order->get_payment_method();
 		if ( 'ppec_paypal' === $payment_method ) {
@@ -195,7 +195,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 	 */
 	public function cancel_payment( $order_id ) {
 		$order = wc_get_order( $order_id );
-		$old_wc = version_compare( WC_VERSION, '2.7', '<' );
+		$old_wc = version_compare( WC_VERSION, '3.0', '<' );
 		$payment_method = $old_wc ? $order->payment_method : $order->get_payment_method();
 
 		if ( 'ppec_paypal' === $payment_method ) {

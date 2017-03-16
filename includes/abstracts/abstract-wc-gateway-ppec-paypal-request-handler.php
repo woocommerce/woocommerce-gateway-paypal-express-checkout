@@ -52,7 +52,7 @@ abstract class WC_Gateway_PPEC_PayPal_Request_Handler {
 		}
 
 		if ( $order ) {
-			$order_key_from_order = version_compare( WC_VERSION, '2.7', '<' ) ? $order->order_key : $order->get_order_key();
+			$order_key_from_order = version_compare( WC_VERSION, '3.0', '<' ) ? $order->order_key : $order->get_order_key();
 		} else {
 			$order_key_from_order = '';
 		}

@@ -114,7 +114,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 				// Store addresses given by PayPal
 				$order->set_address( $checkout->get_mapped_billing_address( $checkout_details ), 'billing' );
 				$order->set_address( $checkout->get_mapped_shipping_address( $checkout_details ), 'shipping' );
-				if ( version_compare( WC_VERSION, '2.7', '>=' ) ) {
+				if ( version_compare( WC_VERSION, '3.0', '>=' ) ) {
 					$order->save(); // required to avoid other wc_get_order calls in this same http context returning stale orders
 				}
 
@@ -349,7 +349,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		// loop through each transaction to compile list of txns that are able to be refunded
 		// process refunds against each txn in the list until full amount of refund is reached
 		// first loop through, try to find a transaction that equals the refund amount being requested
-		$old_wc = version_compare( WC_VERSION, '2.7', '<' );
+		$old_wc = version_compare( WC_VERSION, '3.0', '<' );
 		$txn_data = $old_wc ? get_post_meta( $order_id, '_woo_pp_txnData', true ) : $order->get_meta( '_woo_pp_txnData', true );
 		$order_currency = $old_wc ? $order->order_currency : $order->get_currency();
 
