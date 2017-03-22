@@ -533,7 +533,7 @@ class WC_Gateway_PPEC_Client {
 		foreach ( WC()->cart->cart_contents as $cart_item_key => $values ) {
 			$amount = round( $values['line_subtotal'] / $values['quantity'] , $decimals );
 
-			if ( version_compare( WC_VERSION, '2.7', '<' ) ) {
+			if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
 				$name = $values['data']->post->post_title;
 				$description = $values['data']->post->post_content;
 			} else {
@@ -596,7 +596,7 @@ class WC_Gateway_PPEC_Client {
 
 		$details = array(
 			'order_tax'         => round( $order->get_total_tax(), $decimals ),
-			'shipping'          => round( $order->get_total_shipping(), $decimals ),
+			'shipping'          => round( ( version_compare( WC_VERSION, '3.0', '<' ) ? $order->get_total_shipping() : $order->get_shipping_total() ), $decimals ),
 			'total_item_amount' => round( $order->get_subtotal(), $decimals ),
 			'items'             => $this->_get_paypal_line_items_from_order( $order ),
 		);
@@ -656,7 +656,7 @@ class WC_Gateway_PPEC_Client {
 		// PayPal shipping address from order.
 		$shipping_address = new PayPal_Address;
 
-		$old_wc = version_compare( WC_VERSION, '2.7', '<' );
+		$old_wc = version_compare( WC_VERSION, '3.0', '<' );
 		$shipping_first_name = $old_wc ? $order->shipping_first_name : $order->get_shipping_first_name();
 		$shipping_last_name  = $old_wc ? $order->shipping_last_name  : $order->get_shipping_last_name();
 		$shipping_address_1  = $old_wc ? $order->shipping_address_1  : $order->get_shipping_address_1();
@@ -788,7 +788,7 @@ class WC_Gateway_PPEC_Client {
 		$settings  = wc_gateway_ppec()->settings;
 		$order     = wc_get_order( $args['order_id'] );
 
-		$old_wc    = version_compare( WC_VERSION, '2.7', '<' );
+		$old_wc    = version_compare( WC_VERSION, '3.0', '<' );
 		$order_id  = $old_wc ? $order->id : $order->get_id();
 		$details   = $this->_get_details_from_order( $order_id );
 		$order_key = $old_wc ? $order->order_key : $order->get_order_key();
@@ -908,7 +908,7 @@ class WC_Gateway_PPEC_Client {
 		$settings = wc_gateway_ppec()->settings;
 		$order     = wc_get_order( $args['order_id'] );
 
-		$old_wc    = version_compare( WC_VERSION, '2.7', '<' );
+		$old_wc    = version_compare( WC_VERSION, '3.0', '<' );
 		$order_id  = $old_wc ? $order->id : $order->get_id();
 		$details   = $this->_get_details_from_order( $order_id );
 		$order_key = $old_wc ? $order->order_key : $order->get_order_key();

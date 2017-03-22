@@ -81,7 +81,7 @@ class WC_Gateway_PPEC_With_PayPal_Addons extends WC_Gateway_PPEC_With_PayPal {
 	 * @return array
 	 */
 	public function process_subscription( $order_id ) {
-		$old_wc = version_compare( WC_VERSION, '2.7', '<' );
+		$old_wc = version_compare( WC_VERSION, '3.0', '<' );
 		$resp   = parent::process_payment( $order_id );
 		$order  = wc_get_order( $order_id );
 
@@ -113,7 +113,7 @@ class WC_Gateway_PPEC_With_PayPal_Addons extends WC_Gateway_PPEC_With_PayPal {
 	 * @param int|WC_Order $order  Order ID or order object
 	 */
 	public function scheduled_subscription_payment( $amount, $order ) {
-		$old_wc               = version_compare( WC_VERSION, '2.7', '<' );
+		$old_wc               = version_compare( WC_VERSION, '3.0', '<' );
 		$order                = wc_get_order( $order );
 		$order_id             = $old_wc ? $order->id : $order->get_id();
 		$billing_agreement_id = $old_wc ? get_post_meta( $order_id, '_ppec_billing_agreement_id', true ) : $order->get_meta( '_ppec_billing_agreement_id', true );

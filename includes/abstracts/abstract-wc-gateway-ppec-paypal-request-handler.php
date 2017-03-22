@@ -52,7 +52,7 @@ abstract class WC_Gateway_PPEC_PayPal_Request_Handler {
 		}
 
 		if ( $order ) {
-			$order_key_from_order = version_compare( WC_VERSION, '2.7', '<' ) ? $order->order_key : $order->get_order_key();
+			$order_key_from_order = version_compare( WC_VERSION, '3.0', '<' ) ? $order->order_key : $order->get_order_key();
 		} else {
 			$order_key_from_order = '';
 		}
@@ -84,7 +84,11 @@ abstract class WC_Gateway_PPEC_PayPal_Request_Handler {
 	 */
 	protected function payment_on_hold( $order, $reason = '' ) {
 		$order->update_status( 'on-hold', $reason );
-		$order->reduce_order_stock();
+		if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
+			$order->reduce_order_stock();
+		} else {
+			wc_reduce_stock_levels( $order->get_id() );
+		}
 		WC()->cart->empty_cart();
 	}
 }

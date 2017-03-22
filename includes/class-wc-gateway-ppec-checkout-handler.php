@@ -105,7 +105,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		WC()->customer->set_shipping_city( $checkout_details->payments[0]->shipping_address->getCity() );
 
 		// We don't need billing and shipping to confirm a paypal order.
-		$old_wc = version_compare( WC_VERSION, '2.7', '<' );
+		$old_wc = version_compare( WC_VERSION, '3.0', '<' );
 		if ( $old_wc ) {
 			$checkout->checkout_fields['billing']  = array();
 			$checkout->checkout_fields['shipping'] = array();
@@ -679,7 +679,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			throw new PayPal_API_Exception( $resp );
 		}
 
-		$old_wc = version_compare( WC_VERSION, '2.7', '<' );
+		$old_wc = version_compare( WC_VERSION, '3.0', '<' );
 		$order_id = $old_wc ? $order->id : $order->get_id();
 		if ( $old_wc ) {
 			update_post_meta( $order_id, '_ppec_billing_agreement_id', $resp['BILLINGAGREEMENTID'] );
@@ -713,7 +713,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		}
 
 		$client = wc_gateway_ppec()->client;
-		$old_wc = version_compare( WC_VERSION, '2.7', '<' );
+		$old_wc = version_compare( WC_VERSION, '3.0', '<' );
 		$order_id = $old_wc ? $order->id : $order->get_id();
 		$params = $client->get_do_express_checkout_params( array(
 			'order_id' => $order_id,
@@ -775,7 +775,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 */
 	public function handle_payment_response( $order, $payment ) {
 		// Store meta data to order
-		$old_wc = version_compare( WC_VERSION, '2.7', '<' );
+		$old_wc = version_compare( WC_VERSION, '3.0', '<' );
 		if ( $old_wc ) {
 			update_post_meta( $order->id, '_paypal_status', strtolower( $payment->payment_status ) );
 			update_post_meta( $order->id, '_transaction_id', $payment->transaction_id );
