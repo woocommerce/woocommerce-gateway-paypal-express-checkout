@@ -314,7 +314,7 @@ return array(
 		'disabled'    => ! $this->is_credit_supported(),
 		'default'     => 'no',
 		'desc_tip'    => true,
-		'description' => __( 'This enableds PayPal Credit, which display PayPal Credit button next to Express Checkout button.', 'woocommerce-gateway-paypal-express-checkout' ),
+		'description' => __( 'This enables PayPal Credit, which displays a PayPal Credit button next to the Express Checkout button. PayPal Express Checkout lets you give customers access to financing through PayPal Credit® - at no additional cost to you. You get paid up front, even though customers have more time to pay. A pre-integrated payment button shows up next to the PayPal Button, and lets customers pay quickly with PayPal Credit®.', 'woocommerce-gateway-paypal-express-checkout' ),
 	),
 
 	'advanced' => array(
@@ -343,7 +343,7 @@ return array(
 		'label'       => __( 'Require Billing Address', 'woocommerce-gateway-paypal-express-checkout' ),
 		'default'     => 'no',
 		'desc_tip'    => true,
-		'description' => __( 'PayPal does not share buyer billing details with you. However, there are times when you must collect the buyer billing address to fulfill an essential business function (such as determining whether you must charge the buyer tax). Enable this function to collect the address before payment is taken.', 'woocommerce-gateway-paypal-express-checkout' ),
+		'description' => __( 'PayPal does not share buyer billing details with you. However, there are times when you must collect the buyer billing address to fulfill an essential business function (such as determining whether you must charge the buyer tax). Enable this function to collect the address before payment is taken. To enable this functionality on your PayPal account, please call PayPal customer support.', 'woocommerce-gateway-paypal-express-checkout' ),
 	),
 	'paymentaction' => array(
 		'title'       => __( 'Payment Action', 'woocommerce-gateway-paypal-express-checkout' ),
