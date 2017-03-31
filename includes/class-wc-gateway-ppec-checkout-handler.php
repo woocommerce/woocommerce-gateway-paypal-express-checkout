@@ -128,10 +128,6 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 * Show billing information.
 	 */
 	public function paypal_billing_details() {
-		if ( ! $this->has_active_session() ) {
-			return;
-		}
-
 		$session          = WC()->session->get( 'paypal' );
 		$token            = isset( $_GET['token'] ) ? $_GET['token'] : $session->token;
 		try {
@@ -166,10 +162,6 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 * @since 1.2.0
 	 */
 	public function account_registration() {
-		if ( ! $this->has_active_session() ) {
-			return;
-		}
-
 		$checkout = WC()->checkout();
 
 		if ( ! is_user_logged_in() && $checkout->enable_signup ) {
@@ -207,10 +199,6 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 * Show shipping information.
 	 */
 	public function paypal_shipping_details() {
-		if ( ! $this->has_active_session() ) {
-			return;
-		}
-
 		$session          = WC()->session->get( 'paypal' );
 		$token            = isset( $_GET['token'] ) ? $_GET['token'] : $session->token;
 
@@ -241,10 +229,6 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 */
 	public function after_checkout_validation( $posted_checkout ) {
 		if ( is_user_logged_in() || ! wc_gateway_ppec()->settings->is_enabled() || 'ppec_paypal' !== $posted_checkout['payment_method'] ) {
-			return;
-		}
-
-		if ( ! $this->has_active_session() ) {
 			return;
 		}
 
@@ -285,10 +269,6 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			return array();
 		}
 
-		if ( ! $this->has_active_session() ) {
-			return array();
-		}
-
 		return array(
 			'first_name' => $checkout_details->payer_details->first_name,
 			'last_name'  => $checkout_details->payer_details->last_name,
@@ -312,10 +292,6 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 */
 	public function get_mapped_shipping_address( $checkout_details ) {
 		if ( empty( $checkout_details->payments[0] ) || empty( $checkout_details->payments[0]->shipping_address ) ) {
-			return array();
-		}
-
-		if ( ! $this->has_active_session() ) {
 			return array();
 		}
 
@@ -497,7 +473,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		}
 
 		$session = WC()->session->paypal;
-		return ( is_a( $session, 'WC_Gateway_PPEC_Session_Data' ) && $session->payer_id && $session->token && $session->expiry_time > time() );
+		return ( is_a( $session, 'WC_Gateway_PPEC_Session_Data' ) && $session->payer_id && $session->expiry_time > time() );
 	}
 
 	/**
