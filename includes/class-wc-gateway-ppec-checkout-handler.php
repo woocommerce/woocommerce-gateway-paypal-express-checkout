@@ -232,10 +232,19 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			return;
 		}
 
-		$checkout      = WC()->checkout();
-		$session       = WC()->session->get( 'paypal' );
-		$token         = isset( $_GET['token'] ) ? $_GET['token'] : $session->token;
-		$payer_info    = array();
+		$checkout = WC()->checkout();
+		$session  = WC()->session->get( 'paypal' );
+		$token    = isset( $_GET['token'] ) ? $_GET['token'] : '';
+
+		if ( empty( $token ) && ! empty( $session ) && property_exists( $session, 'token' ) ) {
+			$token = $session->token;
+		}
+
+		if ( empty( $token ) ) {
+			return;
+		}
+
+		$payer_info = array();
 
 		try {
 			$checkout_details                 = $this->get_checkout_details( $token );
