@@ -283,7 +283,6 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 * @return array
 	 */
 	public function get_mapped_billing_address( $checkout_details ) {
-
 		if ( empty( $checkout_details->payer_details ) ) {
 			return array();
 		}
@@ -313,6 +312,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		if ( empty( $checkout_details->payments[0] ) || empty( $checkout_details->payments[0]->shipping_address ) ) {
 			return array();
 		}
+
 		$name       = explode( ' ', $checkout_details->payments[0]->shipping_address->getName() );
 		$first_name = array_shift( $name );
 		$last_name  = implode( ' ', $name );
@@ -492,21 +492,10 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	}
 
 	/**
-	 * Get token from session.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return string Token from session
+	 * @deprecated
 	 */
 	public function get_token_from_session() {
-		$token   = '';
-		$session = WC()->session->paypal;
-
-		if ( is_a( $session, 'WC_Gateway_PPEC_Session_Data' ) && $session->token ) {
-			$token = $session->token;
-		}
-
-		return $token;
+		_deprecated_function( __METHOD__, '1.2.0', '' );
 	}
 
 	/**
