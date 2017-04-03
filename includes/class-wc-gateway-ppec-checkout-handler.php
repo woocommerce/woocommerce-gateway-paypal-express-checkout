@@ -104,7 +104,8 @@ class WC_Gateway_PPEC_Checkout_Handler {
 
 	/**
 	 * Since PayPal doesn't always give us the phone number for the buyer, we need to make
-	 * that field is not required
+	 * that field not required. And if the cart doesn't need shipping at all, don't require
+	 * the address fields either (this is unique to PPEC)
 	 *
 	 * @since 1.2.0
 	 * @param $billing_fields array
@@ -115,6 +116,16 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		if ( array_key_exists( 'billing_phone', $billing_fields ) ) {
 			$billing_fields['billing_phone']['required'] = false;
 		};
+
+		if ( ! WC()->cart->needs_shipping() ) {
+			$not_required_fields = array( 'billing_address_1', 'billing_city', 'billing_state', 'billing_postcode' );
+			foreach ( $not_required_fields as $not_required_field ) {
+				if ( array_key_exists( $not_required_field, $billing_fields ) ) {
+					$billing_fields[ $not_required_field ]['required'] = false;
+				}
+			}
+		}
+
 		return $billing_fields;
 	}
 
@@ -156,7 +167,9 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		if ( empty( $billing_details['address_1'] ) ) {
 			$copyable_keys = array( 'address_1', 'address_2', 'city', 'state', 'postcode', 'country' );
 			foreach ( $copyable_keys as $copyable_key ) {
-				$billing_details[ $copyable_key ] = $shipping_details[ $copyable_key ];
+				if ( array_key_exists( $copyable_key, $shipping_details ) ) {
+					$billing_details[ $copyable_key ] = $shipping_details[ $copyable_key ];
+				}
 			}
 		}
 		foreach( $billing_details as $key => $value ) {
