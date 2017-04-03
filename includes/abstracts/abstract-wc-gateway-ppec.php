@@ -111,13 +111,6 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 					$checkout->create_billing_agreement( $order, $checkout_details );
 				}
 
-				// Store addresses given by PayPal
-				$order->set_address( $checkout->get_mapped_billing_address( $checkout_details ), 'billing' );
-				$order->set_address( $checkout->get_mapped_shipping_address( $checkout_details ), 'shipping' );
-				if ( version_compare( WC_VERSION, '3.0', '>=' ) ) {
-					$order->save(); // required to avoid other wc_get_order calls in this same http context returning stale orders
-				}
-
 				// Complete the payment now.
 				$checkout->do_payment( $order, $session->token, $session->payer_id );
 

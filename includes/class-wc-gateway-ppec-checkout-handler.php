@@ -37,7 +37,8 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		add_action( 'init', array( $this, 'init' ) );
 		add_filter( 'the_title', array( $this, 'endpoint_page_titles' ) );
 		add_action( 'woocommerce_checkout_init', array( $this, 'checkout_init' ) );
-		add_action( 'woocommerce_after_checkout_validation', array( $this, 'after_checkout_validation' ) );
+		add_filter( 'woocommerce_billing_fields', array( $this, 'filter_billing_fields' ) );
+		add_action( 'woocommerce_checkout_process', array( $this, 'copy_checkout_details_to_post' ) );
 
 		add_action( 'wp', array( $this, 'maybe_return_from_paypal' ) );
 		add_action( 'wp', array( $this, 'maybe_cancel_checkout_with_paypal' ) );
@@ -76,7 +77,11 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	}
 
 	/**
-	 * Prepare billing and shipping details if there's active sesssion during checkout.
+	 * If there's an active PayPal session during checkout (e.g. if the customer started checkout
+	 * with PayPal from the cart), import billing and shipping details from PayPal using the
+	 * token we have for the customer.
+	 *
+	 * Hooked to the woocommerce_checkout_init action
 	 *
 	 * @param WC_Checkout $checkout
 	 */
@@ -85,6 +90,53 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			return;
 		}
 
+		// Since we've removed the billing and shipping checkout fields, we should also remove the
+		// billing and shipping portion of the checkout form
+		remove_action( 'woocommerce_checkout_billing', array( $checkout, 'checkout_form_billing' ) );
+		remove_action( 'woocommerce_checkout_shipping', array( $checkout, 'checkout_form_shipping' ) );
+
+		// Lastly, let's add back in 1) displaying customer details from PayPal, 2) allow for
+		// account registration and 3) shipping details from PayPal
+		add_action( 'woocommerce_checkout_billing', array( $this, 'paypal_billing_details' ) );
+		add_action( 'woocommerce_checkout_billing', array( $this, 'account_registration' ) );
+		add_action( 'woocommerce_checkout_shipping', array( $this, 'paypal_shipping_details' ) );
+	}
+
+	/**
+	 * Since PayPal doesn't always give us the phone number for the buyer, we need to make
+	 * that field is not required
+	 *
+	 * @since 1.2.0
+	 * @param $billing_fields array
+	 *
+	 * @return array
+	 */
+	public function filter_billing_fields( $billing_fields ) {
+		if ( array_key_exists( 'billing_phone', $billing_fields ) ) {
+			$billing_fields['billing_phone']['required'] = false;
+		};
+		return $billing_fields;
+	}
+
+	/**
+	 * When an active session is present, gets (from PayPal) the buyer details
+	 * and replaces the appropriate checkout fields in $_POST
+	 *
+	 * Hooked to woocommerce_checkout_process
+	 *
+	 * @since 1.2.0
+	 */
+	public function copy_checkout_details_to_post() {
+		if ( ! $this->has_active_session() ) {
+			return;
+		}
+
+		// Make sure the selected payment method is ppec_paypal
+		if ( ! isset( $_POST['payment_method'] ) || ( 'ppec_paypal' !== $_POST['payment_method'] ) ) {
+			return;
+		}
+
+		// Get the buyer details from PayPal
 		try {
 			$session          = WC()->session->get( 'paypal' );
 			$token            = isset( $_GET['token'] ) ? $_GET['token'] : $session->token;
@@ -94,37 +146,30 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			return;
 		}
 
-		if ( empty( $checkout_details->payments[0]->shipping_address ) ) {
-			return;
-		}
-		// Sets customer shipping address in session based on checkout details
-		// from PayPal.
-		WC()->customer->set_shipping_country( $checkout_details->payments[0]->shipping_address->getCountry() );
-		WC()->customer->set_shipping_state( $checkout_details->payments[0]->shipping_address->getState() );
-		WC()->customer->set_shipping_postcode( $checkout_details->payments[0]->shipping_address->getZip() );
-		WC()->customer->set_shipping_city( $checkout_details->payments[0]->shipping_address->getCity() );
-
-		// We don't need billing and shipping to confirm a paypal order.
-		$old_wc = version_compare( WC_VERSION, '3.0', '<' );
-		if ( $old_wc ) {
-			$checkout->checkout_fields['billing']  = array();
-			$checkout->checkout_fields['shipping'] = array();
-		} else {
-			$checkout_fields = $checkout->get_checkout_fields();
-			$checkout_fields['billing'] = array();
-			$checkout_fields['shipping'] = array();
-			$checkout->checkout_fields = $checkout_fields;
+		$shipping_details = $this->get_mapped_shipping_address( $checkout_details );
+		foreach( $shipping_details as $key => $value ) {
+			$_POST['shipping_' . $key] = $value;
 		}
 
-		remove_action( 'woocommerce_checkout_billing', array( $checkout, 'checkout_form_billing' ) );
-		remove_action( 'woocommerce_checkout_shipping', array( $checkout, 'checkout_form_shipping' ) );
-		add_action( 'woocommerce_checkout_billing', array( $this, 'paypal_billing_details' ) );
-		add_action( 'woocommerce_checkout_billing', array( $this, 'account_registration' ) );
-		add_action( 'woocommerce_checkout_shipping', array( $this, 'paypal_shipping_details' ) );
+		$billing_details = $this->get_mapped_billing_address( $checkout_details );
+		// If the billing address is empty, copy address from shipping
+		if ( empty( $billing_details['address_1'] ) ) {
+			$copyable_keys = array( 'address_1', 'address_2', 'city', 'state', 'postcode', 'country' );
+			foreach ( $copyable_keys as $copyable_key ) {
+				$billing_details[ $copyable_key ] = $shipping_details[ $copyable_key ];
+			}
+		}
+		foreach( $billing_details as $key => $value ) {
+			$_POST['billing_' . $key] = $value;
+		}
 	}
 
 	/**
-	 * Show billing information.
+	 * Show billing information obtained from PayPal. This replaces the billing fields
+	 * that the customer would ordinarily fill in. Should only happen if we have an active
+	 * session (e.g. if the customer started checkout with PayPal from their cart.)
+	 *
+	 * Is hooked to woocommerce_checkout_billing action by checkout_init
 	 */
 	public function paypal_billing_details() {
 		$session          = WC()->session->get( 'paypal' );
@@ -156,8 +201,11 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	}
 
 	/**
-	 * Render fields for new customer registration in checkout page.
+	 * If there is an active session (e.g. the customer initiated checkout from the cart), since we
+	 * removed the checkout_form_billing action, we need to put a registration form back in to
+	 * allow the customer to create an account.
 	 *
+	 *  Is hooked to woocommerce_checkout_billing action by checkout_init
 	 * @since 1.2.0
 	 */
 	public function account_registration() {
@@ -195,7 +243,11 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	}
 
 	/**
-	 * Show shipping information.
+	 * Show shipping information obtained from PayPal. This replaces the shipping fields
+	 * that the customer would ordinarily fill in. Should only happen if we have an active
+	 * session (e.g. if the customer started checkout with PayPal from their cart.)
+	 *
+	 * Is hooked to woocommerce_checkout_shipping action by checkout_init
 	 */
 	public function paypal_shipping_details() {
 		$session          = WC()->session->get( 'paypal' );
@@ -218,43 +270,10 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	}
 
 	/**
-	 * Inject new customer info from payer info.
-	 *
-	 * If guest checkout is disabled, the validation will failed because missing
-	 * posted data for new customer.
-	 *
-	 * @since 1.2.0
-	 * @param array $posted_checkout
+	 * @deprecated 1.2.0
 	 */
 	public function after_checkout_validation( $posted_checkout ) {
-		if ( is_user_logged_in() || ! wc_gateway_ppec()->settings->is_enabled() || 'ppec_paypal' !== $posted_checkout['payment_method'] ) {
-			return;
-		}
-
-		$checkout      = WC()->checkout();
-		$session       = WC()->session->get( 'paypal' );
-		$token         = isset( $_GET['token'] ) ? $_GET['token'] : $session->token;
-		$payer_info    = array();
-
-		try {
-			$checkout_details                 = $this->get_checkout_details( $token );
-			$payer_info['billing_email']      = $checkout_details->payer_details->email;
-			$payer_info['billing_first_name'] = $checkout_details->payer_details->first_name;
-			$payer_info['billing_last_name']  = $checkout_details->payer_details->last_name;
-		} catch ( PayPal_API_Exception $e ) {
-			wc_add_notice( $e->getMessage(), 'error' );
-			return;
-		}
-
-		if ( empty( $payer_info ) ) {
-			return;
-		}
-
-		if ( $checkout->must_create_account || ! empty( $checkout->posted['createaccount'] ) ) {
-			foreach ( $payer_info as $k => $v ) {
-				$checkout->posted[ $k ] = $v;
-			}
-		}
+		_deprecated_function( 'after_checkout_validation', '1.2.0', '' );
 	}
 
 	/**
@@ -345,9 +364,6 @@ class WC_Gateway_PPEC_Checkout_Handler {
 				if ( $create_billing_agreement ) {
 					$this->create_billing_agreement( $order, $checkout_details );
 				}
-
-				// Store address given by PayPal
-				$order->set_address( $this->get_mapped_shipping_address( $checkout_details ), 'shipping' );
 
 				// Complete the payment now.
 				$this->do_payment( $order, $session->token, $session->payer_id );
