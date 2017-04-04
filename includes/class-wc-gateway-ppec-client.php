@@ -811,9 +811,10 @@ class WC_Gateway_PPEC_Client {
 				'order_id'  => $order_id,
 				'order_key' => $order_key,
 			) ),
+			'NOSHIPPING'                     => WC()->cart->needs_shipping() ? 0 : 1,
 		);
 
-		if ( ! empty( $details['shipping_address'] ) ) {
+		if ( WC()->cart->needs_shipping() && ! empty( $details['shipping_address'] ) ) {
 			$params = array_merge(
 				$params,
 				$details['shipping_address']->getAddressParams( 'PAYMENTREQUEST_0_SHIPTO' )
