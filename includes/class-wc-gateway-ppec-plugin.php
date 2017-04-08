@@ -361,14 +361,14 @@ class WC_Gateway_PPEC_Plugin {
 	 * @return array Plugin action links
 	 */
 	public function plugin_action_links( $links ) {
-		$plugin_links = array(
-			'<a href="https://docs.woocommerce.com/document/paypal-express-checkout/">' . esc_html__( 'Docs', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>',
-		);
+		$plugin_links = array();
 
 		if ( $this->_bootstrapped ) {
 			$setting_url = $this->get_admin_setting_link();
 			$plugin_links[] = '<a href="' . esc_url( $setting_url ) . '">' . esc_html__( 'Settings', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>';
 		}
+
+		$plugin_links[] = '<a href="https://docs.woocommerce.com/document/paypal-express-checkout/">' . esc_html__( 'Docs', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>';
 
 		return array_merge( $plugin_links, $links );
 	}
