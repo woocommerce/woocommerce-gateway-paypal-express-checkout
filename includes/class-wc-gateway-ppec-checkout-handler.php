@@ -402,9 +402,11 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	}
 
 	/**
-	 * Maybe disable other gateways.
+	 * Maybe disable this or other gateways.
 	 *
 	 * @since 1.0.0
+	 * @version 1.2.1
+	 *
 	 * @param array $gateways Available gateways
 	 *
 	 * @return array Available gateways
@@ -421,6 +423,13 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		// If using PayPal standard (this is admin choice) we don't need to also show PayPal EC on checkout.
 		} elseif ( is_checkout() && ( isset( $gateways['paypal'] ) || 'no' === wc_gateway_ppec()->settings->mark_enabled ) ) {
 			unset( $gateways['ppec_paypal'] );
+		}
+
+		// If the cart total is zero (e.g. because of a coupon), don't allow this gateway
+		if ( is_cart() || is_checkout() ) {
+			if ( isset( $gateways['ppec_paypal'] ) && ( 0 >= WC()->cart->total ) ) {
+				unset( $gateways['ppec_paypal'] );
+			}
 		}
 
 		return $gateways;
