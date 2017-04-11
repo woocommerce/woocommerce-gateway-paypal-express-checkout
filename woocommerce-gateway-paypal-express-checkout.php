@@ -25,6 +25,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+if ( ! defined( 'WC_GATEWAY_PPEC_VERSION' ) ) {
+	define( 'WC_GATEWAY_PPEC_VERSION', '1.2.1' );
+}
+
 /**
  * Return instance of WC_Gateway_PPEC_Plugin.
  *
@@ -36,7 +40,7 @@ function wc_gateway_ppec() {
 	if ( ! isset( $plugin ) ) {
 		require_once( 'includes/class-wc-gateway-ppec-plugin.php' );
 
-		$plugin = new WC_Gateway_PPEC_Plugin( __FILE__, '1.2.1' );
+		$plugin = new WC_Gateway_PPEC_Plugin( __FILE__, WC_GATEWAY_PPEC_VERSION );
 	}
 
 	return $plugin;
