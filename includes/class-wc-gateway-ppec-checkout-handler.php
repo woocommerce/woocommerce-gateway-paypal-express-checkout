@@ -37,6 +37,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		add_action( 'init', array( $this, 'init' ) );
 		add_filter( 'the_title', array( $this, 'endpoint_page_titles' ) );
 		add_action( 'woocommerce_checkout_init', array( $this, 'checkout_init' ) );
+		add_filter( 'woocommerce_default_address_fields', array( $this, 'filter_default_address_fields' ) );
 		add_filter( 'woocommerce_billing_fields', array( $this, 'filter_billing_fields' ) );
 		add_action( 'woocommerce_checkout_process', array( $this, 'copy_checkout_details_to_post' ) );
 
@@ -103,11 +104,39 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	}
 
 	/**
+	 * If the cart doesn't need shipping at all, don't require the address fields
+	 * (this is unique to PPEC). This is one of two places we need to filter fields.
+	 * See also filter_billing_fields below.
+	 *
+	 * @since 1.2.1
+	 * @param $fields array
+	 *
+	 * @return array
+	 */
+	public function filter_default_address_fields( $fields ) {
+		if ( ! WC()->cart->needs_shipping() ) {
+			$not_required_fields = array( 'address_1', 'city', 'state', 'postcode', 'country' );
+			foreach ( $not_required_fields as $not_required_field ) {
+				if ( array_key_exists( $not_required_field, $fields ) ) {
+					$fields[ $not_required_field ]['required'] = false;
+				}
+			}
+		}
+
+		return $fields;
+
+	}
+
+	/**
 	 * Since PayPal doesn't always give us the phone number for the buyer, we need to make
-	 * that field not required. And if the cart doesn't need shipping at all, don't require
-	 * the address fields either (this is unique to PPEC)
+	 * that field not required. Note that core WooCommerce adds the phone field after calling
+	 * get_default_address_fields, so the woocommerce_default_address_fields cannot
+	 * be used to make the phone field not required.
+	 *
+	 * This is one of two places we need to filter fields. See also filter_default_address_fields above.
 	 *
 	 * @since 1.2.0
+	 * @version 1.2.1
 	 * @param $billing_fields array
 	 *
 	 * @return array
@@ -116,15 +145,6 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		if ( array_key_exists( 'billing_phone', $billing_fields ) ) {
 			$billing_fields['billing_phone']['required'] = false;
 		};
-
-		if ( ! WC()->cart->needs_shipping() ) {
-			$not_required_fields = array( 'billing_address_1', 'billing_city', 'billing_state', 'billing_postcode' );
-			foreach ( $not_required_fields as $not_required_field ) {
-				if ( array_key_exists( $not_required_field, $billing_fields ) ) {
-					$billing_fields[ $not_required_field ]['required'] = false;
-				}
-			}
-		}
 
 		return $billing_fields;
 	}
