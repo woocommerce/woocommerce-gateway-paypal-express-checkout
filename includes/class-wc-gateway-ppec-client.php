@@ -440,6 +440,7 @@ class WC_Gateway_PPEC_Client {
 	 * This is the details when buyer is checking out from cart page.
 	 *
 	 * @since 1.2.0
+	 * @version 1.2.1
 	 *
 	 * @return array Order details
 	 */
@@ -494,7 +495,7 @@ class WC_Gateway_PPEC_Client {
 			$details['order_total']         -= $discounts;
 		} else {
 			if ( $discounts > 0 ) {
-				$details['items'][] = $this->_get_extra_offset_line_item( $discounts );
+				$details['items'][] = $this->_get_extra_offset_line_item( - abs( $discounts ) );
 			}
 
 			$details['ship_discount_amount'] = 0;
