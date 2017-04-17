@@ -440,7 +440,7 @@ class WC_Gateway_PPEC_Client {
 	 * This is the details when buyer is checking out from cart page.
 	 *
 	 * @since 1.2.0
-	 * @version 1.2.2
+	 * @version 1.2.1
 	 *
 	 * @return array Order details
 	 */

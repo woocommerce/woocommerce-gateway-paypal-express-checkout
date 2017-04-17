@@ -85,12 +85,10 @@ https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 
 == Changelog ==
 
-= 1.2.2 =
-* Fix - Fix 10413 error that prevents checking out with a coupon
-
 = 1.2.1 =
 * Fix - Avoid plugin links notice when WooCommerce is not active - props rellect
 * Fix - Do not show this gateway when the cart amount is zero
+* Fix - Fix 10413 error that prevents checking out with a coupon
 
 = 1.2.0 =
 * Fix - Prevent conflict with other gateways.
