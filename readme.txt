@@ -85,6 +85,9 @@ https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 
 == Changelog ==
 
+= 1.3.0 =
+* Fix - Fatal Error calling is_main_query.
+
 = 1.2.1 =
 * Fix - Avoid plugin links notice when WooCommerce is not active - props rellect
 * Fix - Do not show this gateway when the cart amount is zero

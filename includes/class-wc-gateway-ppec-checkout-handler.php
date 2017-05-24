@@ -70,7 +70,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 * @return string
 	 */
 	public function endpoint_page_titles( $title ) {
-		if ( is_main_query() && in_the_loop() && is_page() && is_checkout() && $this->has_active_session() ) {
+		if ( ! is_admin() && is_main_query() && in_the_loop() && is_page() && is_checkout() && $this->has_active_session() ) {
 			$title = __( 'Confirm your PayPal order', 'woocommerce-gateway-paypal-express-checkout' );
 			remove_filter( 'the_title', array( $this, 'endpoint_page_titles' ) );
 		}
