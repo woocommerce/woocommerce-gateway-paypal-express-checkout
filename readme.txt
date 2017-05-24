@@ -87,6 +87,7 @@ https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 
 = 1.3.0 =
 * Fix - Fatal Error calling is_main_query.
+* Fix - Customer invoice email doesn't allow payment with PPEC.
 
 = 1.2.1 =
 * Fix - Avoid plugin links notice when WooCommerce is not active - props rellect

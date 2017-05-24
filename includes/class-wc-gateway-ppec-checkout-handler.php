@@ -445,8 +445,9 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			unset( $gateways['ppec_paypal'] );
 		}
 
-		// If the cart total is zero (e.g. because of a coupon), don't allow this gateway
-		if ( is_cart() || is_checkout() ) {
+		// If the cart total is zero (e.g. because of a coupon), don't allow this gateway.
+		// We do this only if we're on the checkout page (is_checkout), but not on the order-pay page (is_checkout_pay_page)
+		if ( is_cart() || ( is_checkout() && ! is_checkout_pay_page() ) ) {
 			if ( isset( $gateways['ppec_paypal'] ) && ( 0 >= WC()->cart->total ) ) {
 				unset( $gateways['ppec_paypal'] );
 			}
