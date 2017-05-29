@@ -85,9 +85,11 @@ abstract class WC_Gateway_PPEC_PayPal_Request_Handler {
 	protected function payment_on_hold( $order, $reason = '' ) {
 		$order->update_status( 'on-hold', $reason );
 		if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
-			$order->reduce_order_stock();
+			if ( ! get_post_meta( $order->id, '_order_stock_reduced', true ) ) {
+				$order->reduce_order_stock();
+			}
 		} else {
-			wc_reduce_stock_levels( $order->get_id() );
+			wc_maybe_reduce_stock_levels( $order->get_id() );
 		}
 		WC()->cart->empty_cart();
 	}
