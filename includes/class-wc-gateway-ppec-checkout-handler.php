@@ -842,9 +842,11 @@ class WC_Gateway_PPEC_Checkout_Handler {
 				$order->update_status( 'on-hold', sprintf( __( 'Payment pending (%s).', 'woocommerce-gateway-paypal-express-checkout' ), $payment->pending_reason ) );
 			}
 			if ( $old_wc ) {
-				$order->reduce_order_stock();
+				if ( ! get_post_meta( $order->id, '_order_stock_reduced', true ) ) {
+					$order->reduce_order_stock();
+				}
 			} else {
-				wc_reduce_stock_levels( $order->get_id() );
+				wc_maybe_reduce_stock_levels( $order->get_id() );
 			}
 		}
 	}
