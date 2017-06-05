@@ -73,14 +73,7 @@ abstract class WC_Gateway_PPEC_PayPal_Request_Handler {
 	 */
 	protected function payment_complete( $order, $txn_id = '', $note = '' ) {
 		$order->add_order_note( $note );
-
-		if ( ! empty( $txn_id ) ) {
-			$order->set_transaction_id( $txn_id );
-		}
-
-		if ( ! $order->get_date_paid( 'edit' ) ) {
-			$order->set_date_paid( current_time( 'timestamp', true ) );
-		}
+		$order->payment_complete( $txn_id );
 	}
 
 	/**
