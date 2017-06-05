@@ -97,7 +97,7 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 			$posted_data['payment_status'] = strtolower( $posted_data['payment_status'] );
 
 			// Sandbox fix.
-			if ( isset( $posted_data['test_ipn'], $posted_data['pending_reason'] ) && 'authorization' !== $posted_data['pending_reason'] && 1 == $posted_data['test_ipn'] && 'pending' == $posted_data['payment_status'] ) {
+			if ( ( empty( $posted_data['pending_reason'] ) || 'authorization' !== $posted_data['pending_reason'] ) && isset( $posted_data['test_ipn'] ) && 1 == $posted_data['test_ipn'] && 'pending' == $posted_data['payment_status'] ) {
 				$posted_data['payment_status'] = 'completed';
 			}
 
