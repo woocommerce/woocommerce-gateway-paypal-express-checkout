@@ -114,11 +114,13 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 * @return array
 	 */
 	public function filter_default_address_fields( $fields ) {
+		$require_phone_number = wc_gateway_ppec()->settings->require_phone_number;
+
 		if ( method_exists( WC()->cart, 'needs_shipping' ) && ! WC()->cart->needs_shipping() ) {
 			$not_required_fields = array( 'address_1', 'city', 'state', 'postcode', 'country' );
 			foreach ( $not_required_fields as $not_required_field ) {
 				if ( array_key_exists( $not_required_field, $fields ) ) {
-					$fields[ $not_required_field ]['required'] = false;
+					$fields[ $not_required_field ]['required'] = 'no' !== $require_phone_number;
 				}
 			}
 		}
@@ -142,8 +144,10 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 * @return array
 	 */
 	public function filter_billing_fields( $billing_fields ) {
+		$require_phone_number = wc_gateway_ppec()->settings->require_phone_number;
+
 		if ( array_key_exists( 'billing_phone', $billing_fields ) ) {
-			$billing_fields['billing_phone']['required'] = false;
+			$billing_fields['billing_phone']['required'] = 'no' !== $require_phone_number;
 		};
 
 		return $billing_fields;

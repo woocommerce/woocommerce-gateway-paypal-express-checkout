@@ -344,6 +344,13 @@ return array(
 		'default'     => 'no',
 		'description' => sprintf( __( 'PayPal only returns a shipping address back to the website. To make sure billing address is returned as well, please enable this functionality on your PayPal account by calling %1$sPayPal Technical Support%2$s.', 'woocommerce-gateway-paypal-express-checkout' ), '<a href="https://www.paypal.com/us/selfhelp/contact/call">', '</a>' ),
 	),
+	'require_phone_number' => array(
+		'title'       => __( 'Require Phone Number', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'        => 'checkbox',
+		'label'       => __( 'Require Phone Number', 'woocommerce-gateway-paypal-express-checkout' ),
+		'default'     => 'no',
+		'description' => __( 'Require buyer to enter their telephone number during checkout if none is provided by PayPal', 'woocommerce-gateway-paypal-express-checkout' ),
+	),
 	'paymentaction' => array(
 		'title'       => __( 'Payment Action', 'woocommerce-gateway-paypal-express-checkout' ),
 		'type'        => 'select',
