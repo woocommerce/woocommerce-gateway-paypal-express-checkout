@@ -342,8 +342,7 @@ return array(
 		'type'        => 'checkbox',
 		'label'       => __( 'Require Billing Address', 'woocommerce-gateway-paypal-express-checkout' ),
 		'default'     => 'no',
-		'desc_tip'    => true,
-		'description' => __( 'PayPal does not share buyer billing details with you. However, there are times when you must collect the buyer billing address to fulfill an essential business function (such as determining whether you must charge the buyer tax). Enable this function to collect the address before payment is taken. To enable this functionality on your PayPal account, please call PayPal customer support.', 'woocommerce-gateway-paypal-express-checkout' ),
+		'description' => sprintf( __( 'PayPal only returns a shipping address back to the website. To make sure billing address is returned as well, please enable this functionality on your PayPal account by calling %1$sPayPal Technical Support%2$s.', 'woocommerce-gateway-paypal-express-checkout' ), '<a href="https://www.paypal.com/us/selfhelp/contact/call">', '</a>' ),
 	),
 	'paymentaction' => array(
 		'title'       => __( 'Payment Action', 'woocommerce-gateway-paypal-express-checkout' ),
