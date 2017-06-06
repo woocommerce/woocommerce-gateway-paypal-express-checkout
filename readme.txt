@@ -88,6 +88,7 @@ https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 = 1.4.0 =
 * Tweak - Use shipping discount instead of tax when adjustment negative.
 * Fix   - Cannot process refunds on "authorize" transactions.
+* Add   - Option for displaying express checkout button on the product page.
 
 = 1.3.0 =
 * Fix - Fatal Error calling is_main_query.
