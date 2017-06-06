@@ -507,14 +507,15 @@ class WC_Gateway_PPEC_Client {
 		// probably a tax mismatch).
 		$wc_order_total = round( WC()->cart->total, $decimals );
 		if ( $wc_order_total != $details['order_total'] ) {
-			if ( $details['order_total'] < $wc_order_total ) { // tax cannot be negative
-				$details['order_tax']  += $wc_order_total - $details['order_total'];
+			// tax cannot be negative
+			if ( $details['order_total'] < $wc_order_total ) {
+				$details['order_tax'] += $wc_order_total - $details['order_total'];
 				$details['order_tax'] = round( $details['order_tax'], $decimals );
-			}
-			else {
+			} else {
 				$details['ship_discount_amount'] += $wc_order_total - $details['order_total'];
 				$details['ship_discount_amount'] = round( $details['ship_discount_amount'], $decimals );
 			}
+
 			$details['order_total'] = $wc_order_total;
 		}
 
@@ -651,14 +652,15 @@ class WC_Gateway_PPEC_Client {
 		// probably a tax mismatch).
 		$wc_order_total = round( $order->get_total(), $decimals );
 		if ( $wc_order_total != $details['order_total'] ) {
-			if ( $details['order_total'] < $wc_order_total ) { // tax cannot be negative
-				$details['order_tax']  += $wc_order_total - $details['order_total'];
+			// tax cannot be negative
+			if ( $details['order_total'] < $wc_order_total ) {
+				$details['order_tax'] += $wc_order_total - $details['order_total'];
 				$details['order_tax'] = round( $details['order_tax'], $decimals );
-			}
-			else {
+			} else {
 				$details['ship_discount_amount'] += $wc_order_total - $details['order_total'];
 				$details['ship_discount_amount'] = round( $details['ship_discount_amount'], $decimals );
 			}
+
 			$details['order_total'] = $wc_order_total;
 		}
 
