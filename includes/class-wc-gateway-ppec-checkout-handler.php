@@ -783,20 +783,20 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			}
 
 			$paymentAction = $settings->get_paymentaction();
-			if ( 'sale' == $paymentAction ) {
-				$txn = array(
-					'txnID'           => $payment_details->payments[0]->transaction_id,
-					'amount'          => $order->get_total(),
-					'refunded_amount' => 0
-				);
-				if ( 'Completed' == $payment_details->payments[0]->payment_status ) {
-					$txn['status'] = 'Completed';
-				} else {
-					$txn['status'] = $payment_details->payments[0]->payment_status . '_' . $payment_details->payments[0]->pending_reason;
-				}
-				$txnData['refundable_txns'][] = $txn;
 
-			} elseif ( 'authorization' == $paymentAction ) {
+			$txn = array(
+				'txnID'           => $payment_details->payments[0]->transaction_id,
+				'amount'          => $order->get_total(),
+				'refunded_amount' => 0
+			);
+			if ( 'Completed' == $payment_details->payments[0]->payment_status ) {
+				$txn['status'] = 'Completed';
+			} else {
+				$txn['status'] = $payment_details->payments[0]->payment_status . '_' . $payment_details->payments[0]->pending_reason;
+			}
+			$txnData['refundable_txns'][] = $txn;
+
+			if ( 'authorization' == $paymentAction ) {
 				$txnData['auth_status'] = 'NotCompleted';
 			}
 
@@ -826,11 +826,11 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		$old_wc = version_compare( WC_VERSION, '3.0', '<' );
 		if ( $old_wc ) {
 			update_post_meta( $order->id, '_paypal_status', strtolower( $payment->payment_status ) );
-			update_post_meta( $order->id, '_transaction_id', $payment->transaction_id );
 		} else {
 			$order->update_meta_data( '_paypal_status', strtolower( $payment->payment_status ) );
-			$order->update_meta_data( '_transaction_id', $payment->transaction_id );
 		}
+
+		update_post_meta( $old_wc ? $order->id : $order->get_id(), '_transaction_id', $payment->transaction_id );
 
 		// Handle $payment response
 		if ( 'completed' === strtolower( $payment->payment_status ) ) {
