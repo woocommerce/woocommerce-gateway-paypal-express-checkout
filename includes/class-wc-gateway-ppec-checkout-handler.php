@@ -783,20 +783,20 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			}
 
 			$paymentAction = $settings->get_paymentaction();
-			if ( 'sale' == $paymentAction ) {
-				$txn = array(
-					'txnID'           => $payment_details->payments[0]->transaction_id,
-					'amount'          => $order->get_total(),
-					'refunded_amount' => 0
-				);
-				if ( 'Completed' == $payment_details->payments[0]->payment_status ) {
-					$txn['status'] = 'Completed';
-				} else {
-					$txn['status'] = $payment_details->payments[0]->payment_status . '_' . $payment_details->payments[0]->pending_reason;
-				}
-				$txnData['refundable_txns'][] = $txn;
 
-			} elseif ( 'authorization' == $paymentAction ) {
+			$txn = array(
+				'txnID'           => $payment_details->payments[0]->transaction_id,
+				'amount'          => $order->get_total(),
+				'refunded_amount' => 0
+			);
+			if ( 'Completed' == $payment_details->payments[0]->payment_status ) {
+				$txn['status'] = 'Completed';
+			} else {
+				$txn['status'] = $payment_details->payments[0]->payment_status . '_' . $payment_details->payments[0]->pending_reason;
+			}
+			$txnData['refundable_txns'][] = $txn;
+
+			if ( 'authorization' == $paymentAction ) {
 				$txnData['auth_status'] = 'NotCompleted';
 			}
 
