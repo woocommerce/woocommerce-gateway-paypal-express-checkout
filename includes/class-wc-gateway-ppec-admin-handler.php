@@ -152,7 +152,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 		$payment_method = $old_wc ? $order->payment_method : $order->get_payment_method();
 		if ( 'ppec_paypal' === $payment_method ) {
 
-			$trans_id = $old_wc ? get_post_meta( $order_id, '_transaction_id', true ) : $order->get_meta( '_transaction_id', true );
+			$trans_id = get_post_meta( $order_id, '_transaction_id', true );
 			$trans_details = wc_gateway_ppec()->client->get_transaction_details( array( 'TRANSACTIONID' => $trans_id ) );
 
 			if ( $trans_id && $this->is_authorized_only( $trans_details ) ) {
@@ -200,7 +200,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 
 		if ( 'ppec_paypal' === $payment_method ) {
 
-			$trans_id = $old_wc ? get_post_meta( $order_id, '_transaction_id', true ) : $order->get_meta( '_transaction_id', true );
+			$trans_id = get_post_meta( $order_id, '_transaction_id', true );
 			$trans_details = wc_gateway_ppec()->client->get_transaction_details( array( 'TRANSACTIONID' => $trans_id ) );
 
 			if ( $trans_id && $this->is_authorized_only( $trans_details ) ) {
