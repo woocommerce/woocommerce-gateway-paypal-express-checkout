@@ -303,7 +303,7 @@ class WC_Gateway_PPEC_Client {
 				'PAYMENTREQUEST_0_SHIPPINGAMT'  => $details['shipping'],
 				'PAYMENTREQUEST_0_TAXAMT'       => $details['order_tax'],
 				'PAYMENTREQUEST_0_SHIPDISCAMT'  => $details['ship_discount_amount'],
-				'NOSHIPPING'                    => WC()->cart->needs_shipping() ? 0 : 1,
+				'NOSHIPPING'                    => 0,
 			)
 		);
 
@@ -672,14 +672,28 @@ class WC_Gateway_PPEC_Client {
 		$shipping_address = new PayPal_Address;
 
 		$old_wc = version_compare( WC_VERSION, '3.0', '<' );
-		$shipping_first_name = $old_wc ? $order->shipping_first_name : $order->get_shipping_first_name();
-		$shipping_last_name  = $old_wc ? $order->shipping_last_name  : $order->get_shipping_last_name();
-		$shipping_address_1  = $old_wc ? $order->shipping_address_1  : $order->get_shipping_address_1();
-		$shipping_address_2  = $old_wc ? $order->shipping_address_2  : $order->get_shipping_address_2();
-		$shipping_city       = $old_wc ? $order->shipping_city       : $order->get_shipping_city();
-		$shipping_state      = $old_wc ? $order->shipping_state      : $order->get_shipping_state();
-		$shipping_postcode   = $old_wc ? $order->shipping_postcode   : $order->get_shipping_postcode();
-		$shipping_country    = $old_wc ? $order->shipping_country    : $order->get_shipping_country();
+
+		if ( ( $old_wc && ( $order->shipping_address_1 || $order->shipping_address_2 ) ) || ( ! $old_wc && $order->has_shipping_address() ) ) {
+			$shipping_first_name = $old_wc ? $order->shipping_first_name : $order->get_shipping_first_name();
+			$shipping_last_name  = $old_wc ? $order->shipping_last_name  : $order->get_shipping_last_name();
+			$shipping_address_1  = $old_wc ? $order->shipping_address_1  : $order->get_shipping_address_1();
+			$shipping_address_2  = $old_wc ? $order->shipping_address_2  : $order->get_shipping_address_2();
+			$shipping_city       = $old_wc ? $order->shipping_city       : $order->get_shipping_city();
+			$shipping_state      = $old_wc ? $order->shipping_state      : $order->get_shipping_state();
+			$shipping_postcode   = $old_wc ? $order->shipping_postcode   : $order->get_shipping_postcode();
+			$shipping_country    = $old_wc ? $order->shipping_country    : $order->get_shipping_country();
+		} else {
+			// Fallback to billing in case no shipping methods are set. The address returned from PayPal
+			// will be stored in the order as billing.
+			$shipping_first_name = $old_wc ? $order->billing_first_name : $order->get_billing_first_name();
+			$shipping_last_name  = $old_wc ? $order->billing_last_name  : $order->get_billing_last_name();
+			$shipping_address_1  = $old_wc ? $order->billing_address_1  : $order->get_billing_address_1();
+			$shipping_address_2  = $old_wc ? $order->billing_address_2  : $order->get_billing_address_2();
+			$shipping_city       = $old_wc ? $order->billing_city       : $order->get_billing_city();
+			$shipping_state      = $old_wc ? $order->billing_state      : $order->get_billing_state();
+			$shipping_postcode   = $old_wc ? $order->billing_postcode   : $order->get_billing_postcode();
+			$shipping_country    = $old_wc ? $order->billing_country    : $order->get_billing_country();
+		}
 
 		$shipping_address->setName( $shipping_first_name . ' ' . $shipping_last_name );
 		$shipping_address->setStreet1( $shipping_address_1 );
@@ -826,10 +840,10 @@ class WC_Gateway_PPEC_Client {
 				'order_id'  => $order_id,
 				'order_key' => $order_key,
 			) ),
-			'NOSHIPPING'                     => WC()->cart->needs_shipping() ? 0 : 1,
+			'NOSHIPPING'                     => 0,
 		);
 
-		if ( WC()->cart->needs_shipping() && ! empty( $details['shipping_address'] ) ) {
+		if ( ! empty( $details['shipping_address'] ) ) {
 			$params = array_merge(
 				$params,
 				$details['shipping_address']->getAddressParams( 'PAYMENTREQUEST_0_SHIPTO' )
