@@ -24,7 +24,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 		add_action( 'woocommerce_proceed_to_checkout', array( $this, 'display_paypal_button' ), 20 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
-		if ( 'yes' === wc_gateway_ppec()->settings->checkout_product ) {
+		if ( 'yes' === wc_gateway_ppec()->settings->checkout_on_single_product_enabled ) {
 			add_action( 'woocommerce_after_add_to_cart_form', array( $this, 'display_paypal_button_product' ), 1 );
 			add_action( 'wc_ajax_wc_ppec_generate_cart', array( $this, 'generate_cart' ) );
 		}
