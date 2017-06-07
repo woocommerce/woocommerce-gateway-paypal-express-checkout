@@ -17,7 +17,35 @@
 		}
 	}
 
-	if ( wc_ppec_context.show_modal  ) {
+	var costs_updated = false;
+
+	$( '#woo_pp_ec_button' ).click( function( event ) {
+		if ( costs_updated ) {
+			costs_updated = false;
+
+			return;
+		}
+
+		event.preventDefault();
+
+		var data = {
+			'nonce':      wc_ppec_context.update_shipping_costs_nonce,
+		};
+
+		var href = $(this).attr( 'href' );
+
+		$.ajax( {
+			type:    'POST',
+			data:    data,
+			url:     wc_ppec_context.ajaxurl,
+			success: function( response ) {
+				costs_updated = true;
+				$( '#woo_pp_ec_button' ).click();
+			}
+		} );
+	} );
+
+	if ( wc_ppec_context.show_modal ) {
 		$wc_ppec.init();
 	}
 })( jQuery, window, document );

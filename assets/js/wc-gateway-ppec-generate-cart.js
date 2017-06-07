@@ -38,14 +38,14 @@
 
 		var href = $(this).attr( 'href' );
 
-		$.ajax({
+		$.ajax( {
 			type:    'POST',
 			data:    data,
 			url:     wc_ppec_context.ajaxurl,
 			success: function( response ) {
 				window.location.href = href;
 			}
-		});
+		} );
 	} );
 
 })( jQuery, window, document );

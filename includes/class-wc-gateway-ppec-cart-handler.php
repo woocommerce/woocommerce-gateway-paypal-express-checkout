@@ -26,8 +26,10 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 		if ( 'yes' === wc_gateway_ppec()->settings->checkout_on_single_product_enabled ) {
 			add_action( 'woocommerce_after_add_to_cart_form', array( $this, 'display_paypal_button_product' ), 1 );
-			add_action( 'wc_ajax_wc_ppec_generate_cart', array( $this, 'generate_cart' ) );
+			add_action( 'wc_ajax_wc_ppec_generate_cart', array( $this, 'wc_ajax_generate_cart' ) );
 		}
+
+		add_action( 'wc_ajax_wc_ppec_update_shipping_costs', array( $this, 'wc_ajax_update_shipping_costs' ) );
 	}
 
 	/**
@@ -47,7 +49,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 	 *
 	 * @since 1.4.0
 	 */
-	public function generate_cart() {
+	public function wc_ajax_generate_cart() {
 		global $post;
 
 		if ( ! wp_verify_nonce( $_POST['nonce'], '_wc_ppec_generate_cart_nonce' ) ) {
@@ -86,6 +88,27 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 			WC()->cart->calculate_totals();
 		}
+
+		wp_send_json( new stdClass() );
+	}
+
+	/**
+	 * Update shipping costs. Trigger this update before checking out to have total costs up to date.
+	 *
+	 * @since 1.4.0
+	 */
+	public function wc_ajax_update_shipping_costs() {
+		if ( ! wp_verify_nonce( $_POST['nonce'], '_wc_ppec_update_shipping_costs_nonce' ) ) {
+			wp_die( __( 'Cheatin&#8217; huh?', 'woocommerce-gateway-paypal-express-checkout' ) );
+		}
+
+		if ( ! defined( 'WOOCOMMERCE_CART' ) ) {
+			define( 'WOOCOMMERCE_CART', true );
+		}
+
+		WC()->shipping->reset_shipping();
+
+		WC()->cart->calculate_totals();
 
 		wp_send_json( new stdClass() );
 	}
@@ -195,6 +218,8 @@ class WC_Gateway_PPEC_Cart_Handler {
 					'locale'      => $settings->get_paypal_locale(),
 					'start_flow'  => esc_url( add_query_arg( array( 'startcheckout' => 'true' ), wc_get_page_permalink( 'cart' ) ) ),
 					'show_modal'  => apply_filters( 'woocommerce_paypal_express_checkout_show_cart_modal', true ),
+					'update_shipping_costs_nonce' => wp_create_nonce( '_wc_ppec_update_shipping_costs_nonce' ),
+					'ajaxurl'     => WC_AJAX::get_endpoint( 'wc_ppec_update_shipping_costs' ),
 				)
 			);
 		}
