@@ -80,7 +80,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 				}
 
 				WC()->cart->add_to_cart( $product->get_id(), $qty, $variation_id, $attributes );
-			} elseif ( $product->is_type( 'simple' ) {
+			} elseif ( $product->is_type( 'simple' ) ) {
 				WC()->cart->add_to_cart( $product->get_id(), $qty );
 			}
 
