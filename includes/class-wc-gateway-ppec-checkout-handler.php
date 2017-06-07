@@ -293,9 +293,6 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			return;
 		}
 
-		if ( ! WC()->cart->needs_shipping() ) {
-			return;
-		}
 		?>
 		<h3><?php _e( 'Shipping details', 'woocommerce-gateway-paypal-express-checkout' ); ?></h3>
 		<?php
