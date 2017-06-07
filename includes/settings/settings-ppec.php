@@ -263,6 +263,14 @@ return array(
 			'large'  => __( 'Large', 'woocommerce-gateway-paypal-express-checkout' ),
 		),
 	),
+	'cart_checkout' => array(
+		'title'       => __( 'Checkout on cart page', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'        => 'checkbox',
+		'label'       => __( 'Enable PayPal checkout on the cart page', 'woocommerce-gateway-paypal-express-checkout' ),
+		'description' => __( 'This shows or hides the PayPal checkout button on the cart page.', 'woocommerce-gateway-paypal-express-checkout' ),
+		'desc_tip'    => true,
+		'default'     => 'yes',
+	),
 	'mark_enabled' => array(
 		'title'       => __( 'PayPal Mark', 'woocommerce-gateway-paypal-express-checkout' ),
 		'type'        => 'checkbox',

@@ -45,13 +45,13 @@ class WC_Gateway_PPEC_Cart_Handler {
 		$gateways = WC()->payment_gateways->get_available_payment_gateways();
 		$settings = wc_gateway_ppec()->settings;
 
-		$express_checkout_img_url = apply_filters( 'woocommerce_paypal_express_checkout_button_img_url', sprintf( 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-%s.png', $settings->button_size ) );
-		$paypal_credit_img_url    = apply_filters( 'woocommerce_paypal_express_checkout_credit_button_img_url', sprintf( 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/ppcredit-logo-%s.png', $settings->button_size ) );
-
 		// billing details on checkout page to calculate shipping costs
-		if ( ! isset( $gateways['ppec_paypal'] ) ) {
+		if ( ! isset( $gateways['ppec_paypal'] ) || 'no' === $settings->cart_checkout ) {
 			return;
 		}
+
+		$express_checkout_img_url = apply_filters( 'woocommerce_paypal_express_checkout_button_img_url', sprintf( 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-%s.png', $settings->button_size ) );
+		$paypal_credit_img_url    = apply_filters( 'woocommerce_paypal_express_checkout_credit_button_img_url', sprintf( 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/ppcredit-logo-%s.png', $settings->button_size ) );
 		?>
 		<div class="wcppec-checkout-buttons woo_pp_cart_buttons_div">
 
@@ -80,9 +80,10 @@ class WC_Gateway_PPEC_Cart_Handler {
 	public function display_mini_paypal_button() {
 
 		$gateways = WC()->payment_gateways->get_available_payment_gateways();
+		$settings = wc_gateway_ppec()->settings;
 
 		// billing details on checkout page to calculate shipping costs
-		if ( ! isset( $gateways['ppec_paypal'] ) ) {
+		if ( ! isset( $gateways['ppec_paypal'] ) || 'no' === $settings->cart_checkout ) {
 			return;
 		}
 		?>
