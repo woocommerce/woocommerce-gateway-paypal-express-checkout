@@ -142,8 +142,10 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 * @return array
 	 */
 	public function filter_billing_fields( $billing_fields ) {
+		$require_phone_number = wc_gateway_ppec()->settings->require_phone_number;
+
 		if ( array_key_exists( 'billing_phone', $billing_fields ) ) {
-			$billing_fields['billing_phone']['required'] = false;
+			$billing_fields['billing_phone']['required'] = 'no' !== $require_phone_number;
 		};
 
 		return $billing_fields;
