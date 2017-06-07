@@ -88,6 +88,7 @@ https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 = 1.4.0 =
 * Tweak - Use shipping discount instead of tax when adjustment negative.
 * Fix   - Cannot process refunds on "authorize" transactions.
+* Add   - Option for displaying express checkout button on the product page.
 * Fix   - If there are no shipping options in WooCommerce, PayPal doesn't pass a shipping address to WC.
 * Tweak - Add option to set Billing phone number mandatory.
 * Add   - Option to disable checkout with PayPal button on Cart page.
