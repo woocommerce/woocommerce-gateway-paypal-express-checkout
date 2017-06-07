@@ -1,5 +1,5 @@
 /* global wc_ppec_context */
-;(function ( $, window, document ) {
+;(function( $, window, document ) {
 	'use strict';
 
 	var get_attributes = function() {
@@ -13,12 +13,12 @@
 			var value	  = $( this ).val() || '';
 
 			if ( value.length > 0 ) {
-				chosen ++;
+				chosen++;
 			}
 
-			count ++;
+			count++;
 			data[ attribute_name ] = value;
-		});
+		} );
 
 		return {
 			'count'      : count,
@@ -27,7 +27,7 @@
 		};
 	};
 
-	$( '#woo_pp_ec_button' ).click( function ( event ) {
+	$( '#woo_pp_ec_button' ).click( function( event ) {
 		event.preventDefault();
 
 		var data = {

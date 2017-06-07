@@ -48,6 +48,8 @@ class WC_Gateway_PPEC_Cart_Handler {
 	 * @since 1.4.0
 	 */
 	public function generate_cart() {
+		global $post;
+
 		if ( ! wp_verify_nonce( $_POST['nonce'], '_wc_ppec_generate_cart_nonce' ) ) {
 			wp_die( __( 'Cheatin&#8217; huh?', 'woocommerce-gateway-paypal-express-checkout' ) );
 		}
@@ -58,21 +60,16 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 		WC()->shipping->reset_shipping();
 
-		global $post;
-
-		$product = wc_get_product( $post->ID );
-		$qty     = ! isset( $_POST['qty'] ) ? 1 : absint( $_POST['qty'] );
-
 		/**
 		 * If this page is single product page, we need to simulate
 		 * adding the product to the cart taken account if it is a
 		 * simple or variable product.
 		 */
-		if ( is_single() ) {
-			// First empty the cart to prevent wrong calculation.
-			WC()->cart->empty_cart();
+		if ( is_product() ) {
+			$product = wc_get_product( $post->ID );
+			$qty     = ! isset( $_POST['qty'] ) ? 1 : absint( $_POST['qty'] );
 
-			if ( 'variable' === $product->get_type() && isset( $_POST['attributes'] ) ) {
+			if ( $product->is_type( 'variable' ) ) {
 				$attributes = array_map( 'wc_clean', $_POST['attributes'] );
 
 				if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
@@ -83,12 +80,12 @@ class WC_Gateway_PPEC_Cart_Handler {
 				}
 
 				WC()->cart->add_to_cart( $product->get_id(), $qty, $variation_id, $attributes );
-			} elseif ( 'simple' === $product->get_type() ) {
+			} elseif ( $product->is_type( 'simple' ) {
 				WC()->cart->add_to_cart( $product->get_id(), $qty );
 			}
-		}
 
-		WC()->cart->calculate_totals();
+			WC()->cart->calculate_totals();
+		}
 
 		wp_send_json( new stdClass() );
 	}
@@ -101,7 +98,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 	public function display_paypal_button_product() {
 		$gateways = WC()->payment_gateways->get_available_payment_gateways();
 
-		if ( ! is_single() || ! isset( $gateways['ppec_paypal'] ) ) {
+		if ( ! is_product() || ! isset( $gateways['ppec_paypal'] ) ) {
 			return;
 		}
 
