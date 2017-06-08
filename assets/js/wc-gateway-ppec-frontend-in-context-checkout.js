@@ -26,7 +26,7 @@
 			return;
 		}
 
-		event.preventDefault();
+		event.stopPropagation();
 
 		var data = {
 			'nonce':      wc_ppec_context.update_shipping_costs_nonce,
