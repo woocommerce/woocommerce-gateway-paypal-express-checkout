@@ -85,6 +85,9 @@ https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 
 == Changelog ==
 
+= 1.4.1 =
+* Fix   - Properly calculate whether Billing phone is required or not.
+
 = 1.4.0 =
 * Tweak - Use shipping discount instead of tax when adjustment negative.
 * Fix   - Cannot process refunds on "authorize" transactions.
