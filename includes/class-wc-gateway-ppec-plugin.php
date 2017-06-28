@@ -372,4 +372,21 @@ class WC_Gateway_PPEC_Plugin {
 
 		return array_merge( $plugin_links, $links );
 	}
+
+	/**
+	 * Check if shipping is needed for PayPal.
+	 *
+	 * @since 1.4.1
+	 *
+	 * @return bool
+	 */
+	public static function needs_shipping() {
+		// In case there are no shipping methods defined, we still return true (see #249)
+		if ( ! wc_shipping_enabled() || 0 === wc_get_shipping_method_count( true ) ) {
+			return true;
+		}
+
+		// Otherwise go through all items and see if they require shipping (e.g. virtual items will not, see #286)
+		return WC()->cart->needs_shipping();
+	}
 }
