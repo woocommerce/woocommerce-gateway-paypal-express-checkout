@@ -377,6 +377,7 @@ class WC_Gateway_PPEC_Plugin {
 	 * Check if shipping is needed for PayPal.
 	 *
 	 * @since 1.4.1
+	 * @version 1.4.1
 	 *
 	 * @return bool
 	 */
