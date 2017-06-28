@@ -303,7 +303,7 @@ class WC_Gateway_PPEC_Client {
 				'PAYMENTREQUEST_0_SHIPPINGAMT'  => $details['shipping'],
 				'PAYMENTREQUEST_0_TAXAMT'       => $details['order_tax'],
 				'PAYMENTREQUEST_0_SHIPDISCAMT'  => $details['ship_discount_amount'],
-				'NOSHIPPING'                    => 0,
+				'NOSHIPPING'                    => WC_Gateway_PPEC_Plugin::needs_shipping() ? 0 : 1,
 			)
 		);
 
@@ -840,10 +840,10 @@ class WC_Gateway_PPEC_Client {
 				'order_id'  => $order_id,
 				'order_key' => $order_key,
 			) ),
-			'NOSHIPPING'                     => 0,
+			'NOSHIPPING'                     => WC_Gateway_PPEC_Plugin::needs_shipping() ? 0 : 1,
 		);
 
-		if ( ! empty( $details['shipping_address'] ) ) {
+		if ( WC_Gateway_PPEC_Plugin::needs_shipping() && ! empty( $details['shipping_address'] ) ) {
 			$params = array_merge(
 				$params,
 				$details['shipping_address']->getAddressParams( 'PAYMENTREQUEST_0_SHIPTO' )
