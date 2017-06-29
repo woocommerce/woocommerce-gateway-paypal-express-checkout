@@ -88,6 +88,7 @@ https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 = 1.4.3 =
 * Fix   - Refunds not working on authorize then captured transactions.
 * Fix   - Checkout on single product available before variations are chosen.
+* Fix   - Not Returning PayPal Transaction Fee.
 
 = 1.4.2 =
 * Fix   - _paypal_status on Authorize transactions not updating to processing after capture.
@@ -96,7 +97,7 @@ https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 
 = 1.4.1 =
 * Fix   - Properly calculate whether Billing phone is required or not.
-* Fix   - Set NOSHIPPING based on product shipping requiredness (e.g. virtual products do not need shipping, etc)
+* Fix   - Set NOSHIPPING based on product shipping requiredness (e.g. virtual products do not need shipping, etc).
 
 = 1.4.0 =
 * Tweak - Use shipping discount instead of tax when adjustment negative.

@@ -166,8 +166,7 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 	 * @param array $posted_data Posted data
 	 */
 	protected function payment_status_completed( $order, $posted_data ) {
-		$old_wc = version_compare( WC_VERSION, '3.0', '<' );
-		$order_id = $old_wc ? $order->id : $order->get_id();
+		$order_id = version_compare( WC_VERSION, '3.0', '<' ) ? $order->id : $order->get_id();
 
 		if ( $order->has_status( array( 'processing', 'completed' ) ) ) {
 			wc_gateway_ppec_log( 'Aborting, Order #' . $order_id . ' is already complete.' );
@@ -184,11 +183,7 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 			if ( ! empty( $posted_data['mc_fee'] ) ) {
 				// Log paypal transaction fee.
 				$transaction_fee = wc_clean( $posted_data['mc_fee'] );
-				if ( $old_wc ) {
-					update_post_meta( $order_id, 'PayPal Transaction Fee', $transaction_fee );
-				} else {
-					$order->update_meta_data( 'PayPal Transaction Fee', $transaction_fee );
-				}
+				update_post_meta( $order_id, 'PayPal Transaction Fee', $transaction_fee );
 			}
 		} else {
 			if ( 'authorization' === $posted_data['pending_reason'] ) {
