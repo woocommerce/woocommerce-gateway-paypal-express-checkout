@@ -382,8 +382,9 @@ class WC_Gateway_PPEC_Plugin {
 	 * @return bool
 	 */
 	public static function needs_shipping() {
-		// In case there are no shipping methods defined, we still return true (see #249)
-		if ( ! wc_shipping_enabled() || 0 === wc_get_shipping_method_count( true ) ) {
+		// In case there are no shipping methods defined, we check for setting 'always send shipping' (see #249 and #288)
+		$settings_array = (array) get_option( 'woocommerce_ppec_paypal_settings', array() );
+		if ( 'yes' === $settings_array['always_send_shipping'] ) {
 			return true;
 		}
 
