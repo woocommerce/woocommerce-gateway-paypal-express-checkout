@@ -827,12 +827,8 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	public function handle_payment_response( $order, $payment ) {
 		// Store meta data to order
 		$old_wc = version_compare( WC_VERSION, '3.0', '<' );
-		if ( $old_wc ) {
-			update_post_meta( $order->id, '_paypal_status', strtolower( $payment->payment_status ) );
-		} else {
-			$order->update_meta_data( '_paypal_status', strtolower( $payment->payment_status ) );
-		}
 
+		update_post_meta( $old_wc ? $order->id : $order->get_id(), '_paypal_status', strtolower( $payment->payment_status ) );
 		update_post_meta( $old_wc ? $order->id : $order->get_id(), '_transaction_id', $payment->transaction_id );
 
 		// Handle $payment response
