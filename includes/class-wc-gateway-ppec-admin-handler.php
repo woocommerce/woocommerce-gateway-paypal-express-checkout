@@ -167,7 +167,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 				if ( is_wp_error( $result ) ) {
 					$order->add_order_note( __( 'Unable to capture charge!', 'woocommerce-gateway-paypal-express-checkout' ) . ' ' . $result->get_error_message() );
 				} else {
-					update_post_meta( $order_id, '_paypal_status', 'processing' );
+					update_post_meta( $order_id, '_paypal_status', ! empty( $trans_details['PAYMENTSTATUS'] ) ? $trans_details['PAYMENTSTATUS'] : 'processing' );
 					$order->add_order_note( sprintf( __( 'PayPal Express Checkout charge complete (Charge ID: %s)', 'woocommerce-gateway-paypal-express-checkout' ), $trans_id ) );
 				}
 			}
