@@ -89,6 +89,7 @@ https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 * Fix   - Properly calculate whether Billing phone is required or not.
 * Fix   - Set NOSHIPPING based on product shipping requiredness (e.g. virtual products do not need shipping, etc)
 * Fix   - _paypal_status on Authorize transactions not updating to processing after capture.
+* Fix   - 10413 (The totals of the cart item amounts do not match order amounts) error with discounts.
 
 = 1.4.0 =
 * Tweak - Use shipping discount instead of tax when adjustment negative.
