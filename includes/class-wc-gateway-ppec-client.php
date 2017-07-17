@@ -458,7 +458,7 @@ class WC_Gateway_PPEC_Client {
 			'items'             => $this->_get_paypal_line_items_from_cart(),
 		);
 
-		return $this->_get_details( $details, $discounts, $rounded_total, WC()->cart->total );
+		return $this->get_details( $details, $discounts, $rounded_total, WC()->cart->total );
 	}
 
 	/**
@@ -527,7 +527,7 @@ class WC_Gateway_PPEC_Client {
 	 *
 	 * @return array Details
 	 */
-	protected function _get_details( $details, $discounts, $rounded_total, $total ) {
+	protected function get_details( $details, $discounts, $rounded_total, $total ) {
 		$settings = wc_gateway_ppec()->settings;
 		$decimals = $settings->get_number_of_decimal_digits();
 
@@ -636,7 +636,7 @@ class WC_Gateway_PPEC_Client {
 			'items'             => $this->_get_paypal_line_items_from_order( $order ),
 		);
 
-		$details = $this->_get_details( $details, $order->get_total_discount(), $rounded_total, $order->get_total() );
+		$details = $this->get_details( $details, $order->get_total_discount(), $rounded_total, $order->get_total() );
 
 		// PayPal shipping address from order.
 		$shipping_address = new PayPal_Address;
