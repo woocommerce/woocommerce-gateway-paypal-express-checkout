@@ -359,6 +359,13 @@ return array(
 		'default'     => 'no',
 		'description' => sprintf( __( 'PayPal only returns a shipping address back to the website. To make sure billing address is returned as well, please enable this functionality on your PayPal account by calling %1$sPayPal Technical Support%2$s.', 'woocommerce-gateway-paypal-express-checkout' ), '<a href="https://www.paypal.com/us/selfhelp/contact/call">', '</a>' ),
 	),
+	'always_send_shipping' => array(
+		'title'       => __( 'Send Shipping Addresses', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'        => 'checkbox',
+		'label'       => __( 'Always send Shipping Address', 'woocommerce-gateway-paypal-express-checkout' ),
+		'default'     => 'no',
+		'description' => __( 'Send shipping address to PayPal even if shipping method is not setup in WooCommerce.', 'woocommerce-gateway-paypal-express-checkout' ),
+	),	
 	'require_phone_number' => array(
 		'title'       => __( 'Require Phone Number', 'woocommerce-gateway-paypal-express-checkout' ),
 		'type'        => 'checkbox',
