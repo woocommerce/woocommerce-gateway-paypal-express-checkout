@@ -169,8 +169,8 @@ class WC_Gateway_PPEC_Admin_Handler {
 				} else {
 					update_post_meta( $order_id, '_paypal_status', ! empty( $trans_details['PAYMENTSTATUS'] ) ? $trans_details['PAYMENTSTATUS'] : 'completed' );
 
-					if ( ! empty( $trans_details['TRANSACTIONID'] ) ) {
-						update_post_meta( $order_id, '_paypal_status', $trans_details['TRANSACTIONID'] );
+					if ( ! empty( $result['TRANSACTIONID'] ) ) {
+						update_post_meta( $order_id, '_transaction_id', $result['TRANSACTIONID'] );
 					}
 
 					$order->add_order_note( sprintf( __( 'PayPal Express Checkout charge complete (Charge ID: %s)', 'woocommerce-gateway-paypal-express-checkout' ), $trans_id ) );
