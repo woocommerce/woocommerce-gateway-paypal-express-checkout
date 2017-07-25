@@ -7,14 +7,18 @@
 	var toggle_button_availability = function( available ) {
 		if ( available ) {
 			button_enabled = true;
-			$( '#woo_pp_ec_button' ).css( 'cursor', '' );
-			$( '#woo_pp_ec_button' ).css( '-webkit-filter', '' ); // Safari 6.0 - 9.0
-			$( '#woo_pp_ec_button' ).css( 'filter', '' );
+			$( '#woo_pp_ec_button_product' ).css( {
+				'cursor': '',
+				'-webkit-filter': '', // Safari 6.0 - 9.0
+				'filter': '',
+			} );
 		} else {
 			button_enabled = false;
-			$( '#woo_pp_ec_button' ).css( 'cursor', 'not-allowed' );
-			$( '#woo_pp_ec_button' ).css( '-webkit-filter', 'grayscale( 100% )' ); // Safari 6.0 - 9.0
-			$( '#woo_pp_ec_button' ).css( 'filter', 'grayscale( 100% )' );
+			$( '#woo_pp_ec_button_product' ).css( {
+				'cursor': 'not-allowed',
+				'-webkit-filter': 'grayscale( 100% )', // Safari 6.0 - 9.0
+				'filter': 'grayscale( 100% )',
+			} );
 		}
 	}
 
@@ -56,7 +60,7 @@
 		} );
 	}
 
-	$( '#woo_pp_ec_button' ).click( function( event ) {
+	$( '#woo_pp_ec_button_product' ).click( function( event ) {
 		event.preventDefault();
 
 		if ( ! button_enabled ) {
