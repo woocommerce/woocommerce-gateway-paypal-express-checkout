@@ -85,6 +85,9 @@ https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 
 == Changelog ==
 
+= 1.4.3 =
+* Fix   - Checkout on single product available before variations are chosen.
+
 = 1.4.2 =
 * Fix   - _paypal_status on Authorize transactions not updating to processing after capture.
 * Fix   - 10413 (The totals of the cart item amounts do not match order amounts) error with discounts.
