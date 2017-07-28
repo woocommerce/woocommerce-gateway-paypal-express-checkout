@@ -86,6 +86,7 @@ https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 == Changelog ==
 
 = 1.4.3 =
+* Fix   - Refunds not working on authorize then captured transactions.
 * Fix   - Checkout on single product available before variations are chosen.
 
 = 1.4.2 =
