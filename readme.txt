@@ -89,6 +89,7 @@ https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 * Fix   - Refunds not working on authorize then captured transactions.
 * Fix   - Checkout on single product available before variations are chosen.
 * Fix   - Not Returning PayPal Transaction Fee.
+* Fix   - 10431 (Item Amount Invalid at Checkout) error with discounts.
 
 = 1.4.2 =
 * Fix   - _paypal_status on Authorize transactions not updating to processing after capture.
