@@ -229,7 +229,9 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			<?php endif; ?>
 
 			<?php if ( ! empty( $checkout_details->payer_details->phone_number ) ) : ?>
-				<li><strong><?php _e( 'Tel:', 'woocommerce-gateway-paypal-express-checkout' ) ?></strong> <?php echo esc_html( $checkout_details->payer_details->phone_number ); ?></li>
+				<li><strong><?php _e( 'Phone:', 'woocommerce-gateway-paypal-express-checkout' ) ?></strong> <?php echo esc_html( $checkout_details->payer_details->phone_number ); ?></li>
+			<?php elseif ( 'yes' === wc_gateway_ppec()->settings->require_phone_number ) : ?>
+				<li><?php $fields = WC()->checkout->get_checkout_fields( 'billing' ); woocommerce_form_field( 'billing_phone', $fields['billing_phone'], WC()->checkout->get_value( 'billing_phone' ) ); ?></li>
 			<?php endif; ?>
 		</ul>
 		<?php
@@ -323,6 +325,14 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			return array();
 		}
 
+		$phone = '';
+
+		if ( ! empty( $checkout_details->payer_details->phone_number ) ) {
+			$phone = $checkout_details->payer_details->phone_number;
+		} elseif ( 'yes' === wc_gateway_ppec()->settings->require_phone_number && ! empty( $_POST['billing_phone'] ) ) {
+			$phone = wc_clean( $_POST['billing_phone'] );
+		}
+
 		return array(
 			'first_name' => $checkout_details->payer_details->first_name,
 			'last_name'  => $checkout_details->payer_details->last_name,
@@ -333,7 +343,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			'state'      => $checkout_details->payer_details->billing_address ? $checkout_details->payer_details->billing_address->getState() : '',
 			'postcode'   => $checkout_details->payer_details->billing_address ? $checkout_details->payer_details->billing_address->getZip() : '',
 			'country'    => $checkout_details->payer_details->billing_address ? $checkout_details->payer_details->billing_address->getCountry() : $checkout_details->payer_details->country,
-			'phone'      => $checkout_details->payer_details->phone_number,
+			'phone'      => $phone,
 			'email'      => $checkout_details->payer_details->email,
 		);
 	}
