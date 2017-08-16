@@ -2,8 +2,8 @@
 Contributors: automattic, woothemes, akeda, dwainm, royho, allendav, slash1andy, woosteve, spraveenitpro, mikedmoore, fernashes, shellbeezy, danieldudzic, mikaey, fullysupportedphil, dsmithweb, corsonr, bor0, zandyring
 Tags: ecommerce, e-commerce, commerce, woothemes, wordpress ecommerce, store, sales, sell, shop, shopping, cart, checkout, configurable, paypal
 Requires at least: 4.4
-Tested up to: 4.7
-Stable tag: 1.4.2
+Tested up to: 4.8.1
+Stable tag: 1.4.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -90,6 +90,7 @@ https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 * Fix   - Checkout on single product available before variations are chosen.
 * Fix   - Not Returning PayPal Transaction Fee.
 * Fix   - 10431 (Item Amount Invalid at Checkout) error with discounts.
+* Fix   - Phone not returned and "Require Phone Number" setting not working.
 
 = 1.4.2 =
 * Fix   - _paypal_status on Authorize transactions not updating to processing after capture.
