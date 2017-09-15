@@ -599,8 +599,10 @@ class WC_Gateway_PPEC_Client {
 
 		$lisum = 0;
 
-		foreach ( $details['items'] as $li => $values ) {
-			$lisum += $values['quantity'] * $values['amount'];
+		if ( ! empty( $details['items'] ) ) {
+			foreach ( $details['items'] as $li => $values ) {
+				$lisum += $values['quantity'] * $values['amount'];
+			}
 		}
 
 		if ( abs( $lisum ) > 0.000001 ) {
