@@ -2,8 +2,8 @@
 Contributors: automattic, woothemes, akeda, dwainm, royho, allendav, slash1andy, woosteve, spraveenitpro, mikedmoore, fernashes, shellbeezy, danieldudzic, mikaey, fullysupportedphil, dsmithweb, corsonr, bor0, zandyring
 Tags: ecommerce, e-commerce, commerce, woothemes, wordpress ecommerce, store, sales, sell, shop, shopping, cart, checkout, configurable, paypal
 Requires at least: 4.4
-Tested up to: 4.8.1
-Stable tag: 1.4.3
+Tested up to: 4.8.2
+Stable tag: 1.4.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -87,6 +87,7 @@ https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 
 = 1.4.4 =
 * Fix   - PayPal error (10431).
+* Fix   - PHP notices.
 
 = 1.4.3 =
 * Fix   - Refunds not working on authorize then captured transactions.
