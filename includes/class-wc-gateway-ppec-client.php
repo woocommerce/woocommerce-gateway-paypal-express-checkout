@@ -408,11 +408,14 @@ class WC_Gateway_PPEC_Client {
 	 * @return array Line item
 	 */
 	protected function _get_extra_offset_line_item( $amount ) {
+		$settings = wc_gateway_ppec()->settings;
+		$decimals = $settings->get_number_of_decimal_digits();
+
 		return array(
 			'name'        => 'Line Item Amount Offset',
 			'description' => 'Adjust cart calculation discrepancy',
 			'quantity'    => 1,
-			'amount'      => $amount,
+			'amount'      => round( $amount, $decimals ),
 		);
 	}
 
@@ -426,11 +429,14 @@ class WC_Gateway_PPEC_Client {
 	 * @return array Line item
 	 */
 	protected function _get_extra_discount_line_item( $amount ) {
+		$settings = wc_gateway_ppec()->settings;
+		$decimals = $settings->get_number_of_decimal_digits();
+
 		return  array(
 			'name'        => 'Discount',
 			'description' => 'Discount Amount',
 			'quantity'    => 1,
-			'amount'      => '-' . $amount,
+			'amount'      => '-' . round( $amount, $decimals ),
 		);
 	}
 
