@@ -50,7 +50,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		}
 
 		$this->debug                      = 'yes' === $this->get_option( 'debug', 'no' );
-		$this->invoice_prefix             = $this->get_option( 'invoice_prefix', 'WC-' );
+		$this->invoice_prefix             = $this->get_option( 'invoice_prefix', '' );
 		$this->instant_payments           = 'yes' === $this->get_option( 'instant_payments', 'no' );
 		$this->require_billing            = 'yes' === $this->get_option( 'require_billing', 'no' );
 		$this->paymentaction              = $this->get_option( 'paymentaction', 'sale' );

@@ -85,6 +85,9 @@ https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 
 == Changelog ==
 
+= 1.4.5 =
+* Add   - Invoice Prefix now has the ability to be empty.
+
 = 1.4.4 =
 * Fix   - PayPal error (10431).
 * Fix   - PHP notices.
