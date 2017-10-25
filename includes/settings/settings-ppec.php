@@ -77,7 +77,7 @@ wc_enqueue_js( "
 			}
 		}).change();
 
-		$( '#woocommerce_ppec_paypal_mark_enabled' ).change(function(){
+		$( '#woocommerce_ppec_paypal_enabled' ).change(function(){
 			if ( $( this ).is( ':checked' ) ) {
 				$( ppec_mark_fields ).closest( 'tr' ).show();
 			} else {
