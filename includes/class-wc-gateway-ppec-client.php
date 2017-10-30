@@ -553,7 +553,7 @@ class WC_Gateway_PPEC_Client {
 				// Add line item to make up different between WooCommerce
 				// calculations and PayPal calculations.
 				$diff = round( $details['total_item_amount'] - $rounded_total, $decimals );
-				if ( abs( $diff ) > 0.000001 ) {
+				if ( abs( $diff ) > 0.000001 && 0.0 !== (float) $diff ) {
 					$extra_line_item = $this->_get_extra_offset_line_item( $diff );
 
 					$details['items'][]            = $extra_line_item;
@@ -611,7 +611,7 @@ class WC_Gateway_PPEC_Client {
 			}
 		}
 
-		if ( abs( $lisum ) > 0.000001 ) {
+		if ( abs( $lisum ) > 0.000001 && 0.0 !== (float) $diff ) {
 			$details['items'][] = $this->_get_extra_offset_line_item( $details['total_item_amount'] - $lisum );
 		}
 
