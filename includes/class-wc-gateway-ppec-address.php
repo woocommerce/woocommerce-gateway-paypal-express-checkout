@@ -357,7 +357,7 @@ class PayPal_Address {
 
 		$translation_table = array();
 
-		if ( 'US' == $this->_countryCode ) {
+		if ( 'US' == $this->_country ) {
 			$translation_table = array(
 				'alabama'                                 => 'AL',
 				'alaska'                                  => 'AK',
