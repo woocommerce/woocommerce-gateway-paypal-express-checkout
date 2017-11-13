@@ -548,6 +548,8 @@ class WC_Gateway_PPEC_Client {
 		// if they do not match, check to see what the merchant would like to do.
 		// Options are to remove line items or add a line item to adjust for
 		// the difference.
+		$diff = 0;
+
 		if ( $details['total_item_amount'] != $rounded_total ) {
 			if ( 'add' === $settings->get_subtotal_mismatch_behavior() ) {
 				// Add line item to make up different between WooCommerce
