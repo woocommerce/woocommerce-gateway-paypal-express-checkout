@@ -85,6 +85,9 @@ https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 
 == Changelog ==
 
+= 1.4.6 =
+* Fix   - Title/Description fields in the settings should appear based on Enable PayPal Express Checkout.
+
 = 1.4.5 =
 * Add   - Invoice Prefix now has the ability to be empty.
 * Fix   - Additional compatibility fixes for line items.
