@@ -115,12 +115,17 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 */
 	public function filter_default_address_fields( $fields ) {
 		if ( method_exists( WC()->cart, 'needs_shipping' ) && ! WC()->cart->needs_shipping() ) {
-			$not_required_fields = array( 'address_1', 'city', 'state', 'postcode', 'country' );
+			$not_required_fields = array( 'address_1', 'city', 'postcode', 'country' );
 			foreach ( $not_required_fields as $not_required_field ) {
 				if ( array_key_exists( $not_required_field, $fields ) ) {
 					$fields[ $not_required_field ]['required'] = false;
 				}
 			}
+		}
+
+		// Regardless of shipping, PP doesn't have the county required (e.g. using Ireland without a county is acceptable)
+		if ( array_key_exists( 'state', $fields ) ) {
+			$fields['state']['required'] = false;
 		}
 
 		return $fields;
@@ -146,7 +151,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 
 		if ( array_key_exists( 'billing_phone', $billing_fields ) ) {
 			$billing_fields['billing_phone']['required'] = 'yes' === $require_phone_number;
-		};
+		}
 
 		return $billing_fields;
 	}
