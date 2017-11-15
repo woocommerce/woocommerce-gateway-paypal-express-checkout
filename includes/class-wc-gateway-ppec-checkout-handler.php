@@ -763,7 +763,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		$billing_agreement_id = $old_wc ? get_post_meta( $order_id, '_ppec_billing_agreement_id', true ) : $order->get_meta( '_ppec_billing_agreement_id', true );
 
 		foreach ( $subscriptions as $subscription ) {
-			update_post_meta( $subscription->id, '_ppec_billing_agreement_id', $billing_agreement_id );
+			update_post_meta( is_callable( array( $subscription, 'get_id' ) ) ? $subscription->get_id() : $subscription->id, '_ppec_billing_agreement_id', $billing_agreement_id );
 		}
 	}
 

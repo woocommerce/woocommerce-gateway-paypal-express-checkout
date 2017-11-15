@@ -98,7 +98,7 @@ class WC_Gateway_PPEC_With_PayPal_Addons extends WC_Gateway_PPEC_With_PayPal {
 		// because it's not available during subscription creation.
 		foreach ( $subscriptions as $subscription ) {
 			wcs_copy_order_address( $order, $subscription );
-			update_post_meta( $subscription->id, '_ppec_billing_agreement_id', $billing_agreement_id );
+			update_post_meta( is_callable( array( $subscription, 'get_id' ) ) ? $subscription->get_id() : $subscription->id, '_ppec_billing_agreement_id', $billing_agreement_id );
 		}
 
 		return $resp;
@@ -199,6 +199,6 @@ class WC_Gateway_PPEC_With_PayPal_Addons extends WC_Gateway_PPEC_With_PayPal {
 	 *                                       automatic payment)
 	 */
 	public function update_failing_payment_method( $subscription, $renewal_order ) {
-		update_post_meta( $subscription->id, '_ppec_billing_agreement_id', $renewal_order->ppec_billing_agreement_id );
+		update_post_meta( is_callable( array( $subscription, 'get_id' ) ) ? $subscription->get_id() : $subscription->id, '_ppec_billing_agreement_id', $renewal_order->ppec_billing_agreement_id );
 	}
 }

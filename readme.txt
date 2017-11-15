@@ -89,6 +89,7 @@ https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 * Fix   - Title/Description fields in the settings should appear based on Enable PayPal Express Checkout.
 * Add   - Invoice Prefix now has the ability to be empty.
 * Fix   - Additional compatibility fixes for line items.
+* Fix   - PHP notice for Subscription id.
 
 = 1.4.4 =
 * Fix   - PayPal error (10431).
