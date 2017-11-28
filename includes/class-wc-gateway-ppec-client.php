@@ -480,7 +480,7 @@ class WC_Gateway_PPEC_Client {
 
 		$items = array();
 		foreach ( WC()->cart->cart_contents as $cart_item_key => $values ) {
-			$amount = round( $values['line_subtotal'] / $values['quantity'] , $decimals );
+			$amount = round( $values['line_total'] / $values['quantity'] , $decimals );
 
 			if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
 				$name = $values['data']->post->post_title;
