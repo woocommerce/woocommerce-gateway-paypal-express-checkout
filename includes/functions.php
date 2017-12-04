@@ -10,7 +10,7 @@ function woo_pp_start_checkout() {
 	} catch( PayPal_API_Exception $e ) {
 		wc_add_notice( $e->getMessage(), 'error' );
 
-		$redirect_url = WC()->cart->get_cart_url();
+		$redirect_url = wc_get_cart_url();
 		$settings     = wc_gateway_ppec()->settings;
 		$client       = wc_gateway_ppec()->client;
 
