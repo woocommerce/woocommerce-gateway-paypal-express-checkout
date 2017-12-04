@@ -434,7 +434,6 @@ class WC_Gateway_PPEC_Client {
 
 		return  array(
 			'name'        => 'Discount',
-			'description' => 'Discount Amount',
 			'quantity'    => 1,
 			'amount'      => '-' . round( $amount, $decimals ),
 		);
