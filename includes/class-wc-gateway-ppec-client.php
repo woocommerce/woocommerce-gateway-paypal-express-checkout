@@ -649,7 +649,7 @@ class WC_Gateway_PPEC_Client {
 			'items'             => $this->_get_paypal_line_items_from_order( $order ),
 		);
 
-		$details = $this->get_details( $details, $order->get_total_discount(), $rounded_total, $order->get_total() );
+		$details = $this->get_details( $details, $discounts, $rounded_total, $order->get_total() );
 
 		// PayPal shipping address from order.
 		$shipping_address = new PayPal_Address;
