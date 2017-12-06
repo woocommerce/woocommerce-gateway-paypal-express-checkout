@@ -965,6 +965,8 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 * correct destination based on PP account info for re-usage in any
 	 * AJAX calls where we don't have PP token context.
 	 *
+	 * Related core commits: 75cc4f9, 2ff1ee1
+	 *
 	 * @since 1.4.7
 	 *
 	 * @param array $params
