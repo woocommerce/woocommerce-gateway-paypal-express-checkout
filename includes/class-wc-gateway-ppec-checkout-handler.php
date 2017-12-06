@@ -845,6 +845,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 
 		update_post_meta( $old_wc ? $order->id : $order->get_id(), '_paypal_status', strtolower( $payment->payment_status ) );
 		update_post_meta( $old_wc ? $order->id : $order->get_id(), '_transaction_id', $payment->transaction_id );
+		unset( WC()->session->ppec_shipping_info );
 
 		// Handle $payment response
 		if ( 'completed' === strtolower( $payment->payment_status ) ) {
@@ -875,17 +876,52 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 * @return mixed
 	 */
 	public function maybe_add_shipping_information( $packages ) {
-		if ( empty( $_GET['woo-paypal-return'] ) || empty( $_GET['token'] ) || empty( $_GET['PayerID'] ) ) {
+		$package_hash    = md5( wp_json_encode( $packages ) );
+		$session_package = WC()->session->get( 'ppec_shipping_info' );
+
+		/**
+		 * To explain the reason why we need to store this in the session, we
+		 * first need to take a look at how things flow:
+		 *
+		 * For guest checkout with Geolocation enabled:
+		 *
+		 * 1. On the checkout screen, WooCommerce gets shipping information and
+		 * this hook is called. We have `$_GET` context, so we will replace
+		 * `$packages[0]['destination']` using the PP account (Country 1).
+		 *
+		 * 2. Package hash gets stored by `WC_Shipping::calculate_shipping_for_package`
+		 * for destination "Country 1".
+		 *
+		 * 3. The AJAX `update_order_review` will be called from core. At this
+		 * point, we do not have `$_GET` context, so this method will return
+		 * the original packages. Note that the original packages will now
+		 * contain shipping information based on Geolocation (Country 2, may be
+		 * distinct from Country 1).
+		 *
+		 * 4. At this point, the package hash will be different, and thus the
+		 * call to `get_rates_for_package` within `WC_Shipping::calculate_shipping_for_package`
+		 * will re-trigger shipping extensions, such as FedEx, USPS, etc.
+		 *
+		 * To avoid this behaviour, make sure we store the packages and their
+		 * correct destination based on PP account info for re-usage in any
+		 * AJAX calls where we don't have PP token context.
+		 */
+		if ( isset( $session_package['package_hash'] )
+			&& $session_package['package_hash'] === $package_hash ) {
+			return $session_package['packages'];
+		}
+
+		if ( empty( $_GET['woo-paypal-return'] ) || empty( $_GET['token'] )
+			|| empty( $_GET['PayerID'] ) ) {
 			return $packages;
 		}
-		// Shipping details from PayPal
 
+		// Shipping details from PayPal
 		try {
 			$checkout_details = $this->get_checkout_details( wc_clean( $_GET['token'] ) );
 		} catch ( PayPal_API_Exception $e ) {
 			return $packages;
 		}
-
 
 		$destination = $this->get_mapped_shipping_address( $checkout_details );
 
@@ -895,6 +931,11 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		$packages[0]['destination']['city']      = $destination['city'];
 		$packages[0]['destination']['address']   = $destination['address_1'];
 		$packages[0]['destination']['address_2'] = $destination['address_2'];
+
+		WC()->session->set( 'ppec_shipping_info', array(
+			'package_hash' => $package_hash,
+			'packages'     => $packages,
+		) );
 
 		return $packages;
 	}
