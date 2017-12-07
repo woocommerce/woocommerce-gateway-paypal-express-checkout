@@ -86,6 +86,7 @@ https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 == Changelog ==
 
 = 1.4.7 =
+* Fix   - Issue with missing paypal session information.
 * Fix   - Dependency error when using LibreSSL.
 * Fix   - Additional compatibility with shipping plugins
 
