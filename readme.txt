@@ -90,6 +90,7 @@ https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 * Fix   - Dependency error when using LibreSSL.
 * Fix   - Additional compatibility with shipping plugins
 * Fix   - Issue where deprecated `WC_Cart::get_cart_url` is being used.
+* Tweak - Makes admin notification dismissible.
 
 = 1.4.6 =
 * Fix   - Coupon related PayPal error 10413.
