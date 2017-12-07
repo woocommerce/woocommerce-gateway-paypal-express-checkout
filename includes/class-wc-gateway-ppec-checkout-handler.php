@@ -49,6 +49,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		add_action( 'woocommerce_review_order_after_submit', array( $this, 'maybe_render_cancel_link' ) );
 
 		add_action( 'woocommerce_cart_shipping_packages', array( $this, 'maybe_add_shipping_information' ) );
+		add_filter( 'wc_checkout_params', array( $this, 'filter_wc_checkout_params' ), 10, 1 );
 	}
 
 	/**
@@ -934,5 +935,59 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		}
 
 		return $needs_billing_agreement;
+	}
+
+	/**
+	 * Filter checkout AJAX endpoint so it carries the query string after buyer is
+	 * redirected from PayPal.
+	 *
+	 * To explain the reason why we need to store this in the session, we
+	 * first need to take a look at how things flow:
+	 *
+	 * For guest checkout with Geolocation enabled:
+	 *
+	 * 1. On the checkout screen, WooCommerce gets shipping information and
+	 * this hook is called. We have `$_GET` context, so we will replace
+	 * `$packages[0]['destination']` using the PP account (Country 1).
+	 *
+	 * 2. Package hash gets stored by `WC_Shipping::calculate_shipping_for_package`
+	 * for destination "Country 1".
+	 *
+	 * 3. The AJAX `update_order_review` will be called from core. At this
+	 * point, we do not have `$_GET` context, so this method will return
+	 * the original packages. Note that the original packages will now
+	 * contain shipping information based on Geolocation (Country 2, may be
+	 * distinct from Country 1).
+	 *
+	 * 4. At this point, the package hash will be different, and thus the
+	 * call to `get_rates_for_package` within `WC_Shipping::calculate_shipping_for_package`
+	 * will re-trigger shipping extensions, such as FedEx, USPS, etc.
+	 *
+	 * To avoid this behaviour, make sure we store the packages and their
+	 * correct destination based on PP account info for re-usage in any
+	 * AJAX calls where we don't have PP token context.
+	 *
+	 * Related core commits: 75cc4f9, 2ff1ee1
+	 *
+	 * @since 1.4.7
+	 *
+	 * @param array $params
+	 *
+	 * @return string URL.
+	 */
+	public function filter_wc_checkout_params( $params ) {
+		$fields = array( 'woo-paypal-return', 'token', 'PayerID' );
+
+		$params['wc_ajax_url'] = remove_query_arg( 'wc-ajax', $params['wc_ajax_url'] );
+
+		foreach ( $fields as $field ) {
+			if ( ! empty( $_GET[ $field ] ) ) {
+				$params['wc_ajax_url'] = add_query_arg( $field, $_GET[ $field ], $params['wc_ajax_url'] );
+			}
+		}
+
+		$params['wc_ajax_url'] = add_query_arg( 'wc-ajax', '%%endpoint%%', $params['wc_ajax_url'] );
+
+		return $params;
 	}
 }

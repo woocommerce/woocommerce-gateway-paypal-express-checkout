@@ -87,6 +87,8 @@ https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 
 = 1.4.7 =
 * Fix   - Issue with missing paypal session information.
+* Fix   - Dependency error when using LibreSSL.
+* Fix   - Additional compatibility with shipping plugins
 
 = 1.4.6 =
 * Fix   - Coupon related PayPal error 10413.
