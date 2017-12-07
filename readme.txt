@@ -85,6 +85,9 @@ https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 
 == Changelog ==
 
+= 1.4.7 =
+* Fix   - Issue with missing paypal session information.
+
 = 1.4.6 =
 * Fix   - Coupon related PayPal error 10413.
 

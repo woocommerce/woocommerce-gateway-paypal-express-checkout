@@ -401,6 +401,8 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		// Store values in session.
 		$session->checkout_completed = true;
 		$session->payer_id           = $payer_id;
+		$session->token              = $token;
+
 		WC()->session->set( 'paypal', $session );
 
 		try {
