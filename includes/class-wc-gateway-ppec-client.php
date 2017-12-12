@@ -817,7 +817,7 @@ class WC_Gateway_PPEC_Client {
 			'PAYMENTREQUEST_0_PAYMENTACTION' => $settings->get_paymentaction(),
 			'PAYMENTREQUEST_0_INVNUM'        => $settings->invoice_prefix . $order->get_order_number(),
 			'PAYMENTREQUEST_0_CUSTOM'        => json_encode( array(
-				'order_id'  => $order_id,
+				'order_id'  => apply_filters( 'woocommerce_order_number', $order_id ),
 				'order_key' => $order_key,
 			) ),
 			'NOSHIPPING'                     => WC_Gateway_PPEC_Plugin::needs_shipping() ? 0 : 1,
