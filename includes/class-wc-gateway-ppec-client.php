@@ -799,7 +799,7 @@ class WC_Gateway_PPEC_Client {
 
 		$old_wc       = version_compare( WC_VERSION, '3.0', '<' );
 		$order_id     = $old_wc ? $order->id : $order->get_id();
-		$order_number = $old_wc ? (string) apply_filters( 'woocommerce_order_number', $order->get_id(), $order ) : $order->get_order_number();
+		$order_number = $order->get_order_number();
 		$details      = $this->_get_details_from_order( $order_id );
 		$order_key    = $old_wc ? $order->order_key : $order->get_order_key();
 
