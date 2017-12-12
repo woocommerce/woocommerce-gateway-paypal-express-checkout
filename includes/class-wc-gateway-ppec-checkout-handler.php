@@ -649,11 +649,12 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	/**
 	 * Handler when buyer is checking out from checkout page.
 	 *
-	 * @param int $order_id Order ID
+	 * @param int  $order_id Order ID.
+	 * @param bool $use_ppc  Whether to use PayPal credit.
 	 *
 	 * @return string Redirect URL.
 	 */
-	public function start_checkout_from_checkout( $order_id ) {
+	public function start_checkout_from_checkout( $order_id, $use_ppc ) {
 		$settings     = wc_gateway_ppec()->settings;
 
 		$context_args = array(
@@ -665,6 +666,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			'source'            => 'order',
 			'order_id'          => $order_id,
 			'expires_in'        => $settings->get_token_session_length(),
+			'use_paypal_credit' => $use_ppc,
 		);
 
 		return $this->start_checkout( $context_args, $session_data_args );
