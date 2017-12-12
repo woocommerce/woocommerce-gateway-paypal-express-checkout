@@ -466,17 +466,4 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 	public function is_available() {
 		return 'yes' === $this->enabled;
 	}
-
-	/**
-	 * Whether PayPal credit is supported.
-	 *
-	 * @since 1.2.0
-	 *
-	 * @return bool Returns true if PayPal credit is supported
-	 */
-	public function is_credit_supported() {
-		$base = wc_get_base_location();
-
-		return 'US' === $base['country'];
-	}
 }

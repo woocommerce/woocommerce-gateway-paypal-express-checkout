@@ -345,12 +345,7 @@ class WC_Gateway_PPEC_Settings {
 	 * @return bool Returns true if PayPal Credit is enabled and supported
 	 */
 	public function is_credit_enabled() {
-		$gateways = WC()->payment_gateways->get_available_payment_gateways();
-		if ( ! isset( $gateways['ppec_paypal'] ) ) {
-			return false;
-		}
-
-		return 'yes' === $this->credit_enabled && $gateways['ppec_paypal']->is_credit_supported();
+		return 'yes' === $this->credit_enabled && wc_gateway_ppec_is_credit_supported();
 	}
 
 	/**

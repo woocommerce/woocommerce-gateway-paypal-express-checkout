@@ -41,8 +41,7 @@ class WC_Gateway_PPEC_Gateway_Loader {
 			$methods[] = 'WC_Gateway_PPEC_With_PayPal';
 		}
 
-		$base = wc_get_base_location();
-		if ( 'yes' === $settings->credit_enabled && 'US' === $base['country'] ) {
+		if ( $settings->is_credit_enabled() ) {
 			$methods[] = 'WC_Gateway_PPEC_With_PayPal_Credit';
 		}
 
