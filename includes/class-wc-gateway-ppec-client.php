@@ -794,13 +794,14 @@ class WC_Gateway_PPEC_Client {
 	 * @return array Params for DoExpressCheckoutPayment call
 	 */
 	public function get_do_express_checkout_params( array $args ) {
-		$settings  = wc_gateway_ppec()->settings;
-		$order     = wc_get_order( $args['order_id'] );
+		$settings     = wc_gateway_ppec()->settings;
+		$order        = wc_get_order( $args['order_id'] );
 
-		$old_wc    = version_compare( WC_VERSION, '3.0', '<' );
-		$order_id  = $old_wc ? $order->id : $order->get_id();
-		$details   = $this->_get_details_from_order( $order_id );
-		$order_key = $old_wc ? $order->order_key : $order->get_order_key();
+		$old_wc       = version_compare( WC_VERSION, '3.0', '<' );
+		$order_id     = $old_wc ? $order->id : $order->get_id();
+		$order_number = $old_wc ? (string) apply_filters( 'woocommerce_order_number', $order->get_id(), $order ) : $order->get_order_number();
+		$details      = $this->_get_details_from_order( $order_id );
+		$order_key    = $old_wc ? $order->order_key : $order->get_order_key();
 
 		$params = array(
 			'TOKEN'                          => $args['token'],
@@ -817,8 +818,9 @@ class WC_Gateway_PPEC_Client {
 			'PAYMENTREQUEST_0_PAYMENTACTION' => $settings->get_paymentaction(),
 			'PAYMENTREQUEST_0_INVNUM'        => $settings->invoice_prefix . $order->get_order_number(),
 			'PAYMENTREQUEST_0_CUSTOM'        => json_encode( array(
-				'order_id'  => apply_filters( 'woocommerce_order_number', $order_id ),
-				'order_key' => $order_key,
+				'order_id'     => $order_id,
+				'order_number' => $order_number,
+				'order_key'    => $order_key,
 			) ),
 			'NOSHIPPING'                     => WC_Gateway_PPEC_Plugin::needs_shipping() ? 0 : 1,
 		);
