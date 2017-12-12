@@ -157,10 +157,11 @@ class WC_Gateway_PPEC_Settings {
 	 *                       to 'commit' which makes PayPal sets the button text
 	 *                       to **Pay Now** ont the PayPal _Review your information_
 	 *                       page.
+	 * @param bool   $ppc    Whether to use PayPal credit.
 	 *
 	 * @return string PayPal redirect URL
 	 */
-	public function get_paypal_redirect_url( $token, $commit = false ) {
+	public function get_paypal_redirect_url( $token, $commit = false, $ppc = false ) {
 		$url = 'https://www.';
 
 		if ( 'live' !== $this->environment ) {
@@ -171,6 +172,10 @@ class WC_Gateway_PPEC_Settings {
 
 		if ( $commit ) {
 			$url .= '&useraction=commit';
+		}
+
+		if ( $ppc ) {
+			$url .= '#/checkout/chooseCreditOffer';
 		}
 
 		return $url;
