@@ -19,6 +19,7 @@ class WC_Gateway_PPEC_Gateway_Loader {
 		require_once( $includes_path . 'abstracts/abstract-wc-gateway-ppec.php' );
 
 		require_once( $includes_path . 'class-wc-gateway-ppec-with-paypal.php' );
+		require_once( $includes_path . 'class-wc-gateway-ppec-with-paypal-credit.php' );
 		require_once( $includes_path . 'class-wc-gateway-ppec-with-paypal-addons.php' );
 
 		add_filter( 'woocommerce_payment_gateways', array( $this, 'payment_gateways' ) );
@@ -32,10 +33,17 @@ class WC_Gateway_PPEC_Gateway_Loader {
 	 * @return array Payment methods
 	 */
 	public function payment_gateways( $methods ) {
+		$settings = wc_gateway_ppec()->settings;
+
 		if ( $this->can_use_addons() ) {
 			$methods[] = 'WC_Gateway_PPEC_With_PayPal_Addons';
 		} else {
 			$methods[] = 'WC_Gateway_PPEC_With_PayPal';
+		}
+
+		$base = wc_get_base_location();
+		if ( 'yes' === $settings->credit_enabled && 'US' === $base['country'] ) {
+			$methods[] = 'WC_Gateway_PPEC_With_PayPal_Credit';
 		}
 
 		return $methods;
