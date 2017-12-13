@@ -49,7 +49,6 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		add_action( 'woocommerce_review_order_after_submit', array( $this, 'maybe_render_cancel_link' ) );
 
 		add_action( 'woocommerce_cart_shipping_packages', array( $this, 'maybe_add_shipping_information' ) );
-		add_filter( 'wc_checkout_params', array( $this, 'filter_wc_checkout_params' ), 10, 1 );
 	}
 
 	/**
@@ -60,6 +59,11 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 * sending anything back to the browser.
 	 */
 	public function init() {
+		if ( version_compare( WC_VERSION, '3.3', '<' ) ) {
+			add_filter( 'wc_checkout_params', array( $this, 'filter_wc_checkout_params' ), 10, 1 );
+		} else {
+			add_filter( 'woocommerce_get_script_data', array( $this, 'filter_wc_checkout_params_post33' ), 10, 2 );
+		}
 		if ( isset( $_GET['startcheckout'] ) && 'true' === $_GET['startcheckout'] ) {
 			ob_start();
 		}
@@ -993,5 +997,21 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		$params['wc_ajax_url'] = add_query_arg( 'wc-ajax', '%%endpoint%%', $params['wc_ajax_url'] );
 
 		return $params;
+	}
+
+	/**
+	 * Compatibility method for WC >= 3.3.
+	 *
+	 * @param array  $params
+	 * @param string $handle
+	 *
+	 * @return string URL
+	 */
+	public function filter_wc_checkout_params_post33( $params, $handle ) {
+		if ( 'wc-checkout' !== $handle ) {
+			return $params;
+		}
+
+		return $this->filter_wc_checkout_params( $params );
 	}
 }
