@@ -467,4 +467,87 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 	public function is_available() {
 		return 'yes' === $this->enabled;
 	}
+
+	/**
+	 * Generate Image HTML.
+	 *
+	 * @param  mixed $key
+	 * @param  mixed $data
+	 * @since  1.5.0
+	 * @return string
+	 */
+	public function generate_image_html( $key, $data ) {
+		$field_key = $this->get_field_key( $key );
+		$defaults  = array(
+			'title'             => '',
+			'disabled'          => false,
+			'class'             => '',
+			'css'               => '',
+			'placeholder'       => '',
+			'type'              => 'text',
+			'desc_tip'          => false,
+			'description'       => '',
+			'custom_attributes' => array(),
+		);
+
+		$data  = wp_parse_args( $data, $defaults );
+		$value = $this->get_option( $key );
+
+		// Hide show add remove buttons.
+		$maybe_hide_add_style    = '';
+		$maybe_hide_remove_style = '';
+
+		if ( empty( $value ) || ! is_int( $value ) ) {
+			$maybe_hide_remove_style = 'display: none;';
+		} else {
+			$maybe_hide_add_style = 'display: none;';
+		}
+
+		ob_start();
+		?>
+		<tr valign="top">
+			<th scope="row" class="titledesc">
+				<?php echo $this->get_tooltip_html( $data ); ?>
+				<label for="<?php echo esc_attr( $field_key ); ?>"><?php echo wp_kses_post( $data['title'] ); ?></label>
+			</th>
+
+			<td class="image-component-wrapper">
+				<div class="image-preview-wrapper">
+					<?php
+					if ( is_int( $value ) ) {
+						echo wp_get_attachment_image( $value, 'thumbnail' );
+					}
+					?>
+				</div>
+
+				<button
+					class="button product_submission_image_single_upload"
+					data-field-id="<?php echo esc_attr( $field_key ); ?>"
+					data-media-frame-title="<?php echo esc_attr( __( 'Select a image to upload', 'woocommerce-gateway-paypal-express-checkout' ) ); ?>"
+					data-media-frame-button="<?php echo esc_attr( __( 'Use this image', 'woocommerce-gateway-paypal-express-checkout' ) ); ?>"
+					data-add-image-text="<?php echo esc_attr( __( 'Add product image', 'woocommerce-gateway-paypal-express-checkout' ) ); ?>"
+					style="<?php echo esc_attr( $maybe_hide_add_style ); ?>"
+				>
+					<?php echo esc_attr( __( 'Add product image', 'woocommerce-gateway-paypal-express-checkout' ) ); ?>
+				</button>
+
+				<button
+					class="button product_submission_image_single_remove"
+					data-field-id="<?php echo esc_attr( $field_key ); ?>"
+					style="<?php echo esc_attr( $maybe_hide_remove_style ); ?>"
+				>
+					<?php echo esc_attr( __( 'Remove product image', 'woocommerce-gateway-paypal-express-checkout' ) ); ?>
+				</button>
+
+				<input type="hidden"
+					name="<?php echo esc_attr( $field_key ); ?>"
+					id="<?php echo esc_attr( $field_key ); ?>"
+					value="<?php echo esc_attr( $value ); ?>"
+				/>
+			</td>
+		</tr>
+		<?php
+
+		return ob_get_clean();
+	}
 }
