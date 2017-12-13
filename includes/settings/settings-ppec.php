@@ -281,7 +281,7 @@ return array(
 	),
 	'logo_image_url' => array(
 		'title'       => __( 'Logo Image (190×60)', 'woocommerce-gateway-paypal-express-checkout' ),
-		'type'        => 'text',
+		'type'        => 'image',
 		'description' => __( 'If you want PayPal to co-brand the checkout page with your logo, enter the URL of your logo image here.<br/>The image must be no larger than 190x60, GIF, PNG, or JPG format, and should be served over HTTPS.', 'woocommerce-gateway-paypal-express-checkout' ),
 		'default'     => '',
 		'desc_tip'    => true,
@@ -289,7 +289,7 @@ return array(
 	),
 	'header_image_url' => array(
 		'title'       => __( 'Header Image (750×90)', 'woocommerce-gateway-paypal-express-checkout' ),
-		'type'        => 'text',
+		'type'        => 'image',
 		'description' => __( 'If you want PayPal to co-brand the checkout page with your header, enter the URL of your header image here.<br/>The image must be no larger than 750x90, GIF, PNG, or JPG format, and should be served over HTTPS.', 'woocommerce-gateway-paypal-express-checkout' ),
 		'default'     => '',
 		'desc_tip'    => true,
