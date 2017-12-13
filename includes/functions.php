@@ -69,6 +69,19 @@ function wc_gateway_ppec_log( $message ) {
 }
 
 /**
+ * Whether PayPal credit is supported.
+ *
+ * @since 1.5.0
+ *
+ * @return bool Returns true if PayPal credit is supported
+ */
+function wc_gateway_ppec_is_credit_supported() {
+	$base = wc_get_base_location();
+
+	return 'US' === $base['country'];
+}
+
+/**
  * Checks whether buyer is checking out with PayPal Credit.
  *
  * @since 1.2.0

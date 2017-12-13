@@ -14,7 +14,6 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 	 */
 	public function __construct() {
 		$this->has_fields         = false;
-		$this->icon               = 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/pp-acceptance-small.png';
 		$this->supports[]         = 'refunds';
 		$this->method_title       = __( 'PayPal Express Checkout', 'woocommerce-gateway-paypal-express-checkout' );
 		$this->method_description = __( 'Allow customers to conveniently checkout directly with PayPal.', 'woocommerce-gateway-paypal-express-checkout' );
@@ -56,6 +55,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		$this->paymentaction              = $this->get_option( 'paymentaction', 'sale' );
 		$this->logo_image_url             = $this->get_option( 'logo_image_url' );
 		$this->subtotal_mismatch_behavior = $this->get_option( 'subtotal_mismatch_behavior', 'add' );
+		$this->use_ppc                    = false;
 
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
 
@@ -93,7 +93,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 			try {
 				return array(
 					'result'   => 'success',
-					'redirect' => $checkout->start_checkout_from_checkout( $order_id ),
+					'redirect' => $checkout->start_checkout_from_checkout( $order_id, $this->use_ppc ),
 				);
 			} catch ( PayPal_API_Exception $e ) {
 				wc_add_notice( $e->getMessage(), 'error' );
@@ -466,18 +466,5 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 	 */
 	public function is_available() {
 		return 'yes' === $this->enabled;
-	}
-
-	/**
-	 * Whether PayPal credit is supported.
-	 *
-	 * @since 1.2.0
-	 *
-	 * @return bool Returns true if PayPal credit is supported
-	 */
-	public function is_credit_supported() {
-		$base = wc_get_base_location();
-
-		return 'US' === $base['country'];
 	}
 }

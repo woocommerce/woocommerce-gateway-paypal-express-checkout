@@ -598,74 +598,78 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	}
 
 	/**
-	 * Handler when buyer is checking out from cart page.
+	 * Generic checkout handler.
 	 *
-	 * @todo This methods looks similar to start_checkout_from_checkout. Please
-	 *       refactor by merging them.
+	 * @param array $context_args Context parameters for checkout.
+	 * @param array $session_data_args Session parameters (token pre-populated).
 	 *
 	 * @throws PayPal_API_Exception
+	 * @return string Redirect URL.
 	 */
-	public function start_checkout_from_cart() {
+	protected function start_checkout( $context_args, $session_data_args ) {
 		$settings     = wc_gateway_ppec()->settings;
 		$client       = wc_gateway_ppec()->client;
-		$context_args = array(
-			'start_from' => 'cart',
-		);
 		$context_args['create_billing_agreement'] = $this->needs_billing_agreement_creation( $context_args );
 
 		$params   = $client->get_set_express_checkout_params( $context_args );
 		$response = $client->set_express_checkout( $params );
-		if ( $client->response_has_success_status( $response ) ) {
-			WC()->session->paypal = new WC_Gateway_PPEC_Session_Data(
-				array(
-					'token'             => $response['TOKEN'],
-					'source'            => 'cart',
-					'expires_in'        => $settings->get_token_session_length(),
-					'use_paypal_credit' => wc_gateway_ppec_is_using_credit(),
-				)
-			);
 
-			return $settings->get_paypal_redirect_url( $response['TOKEN'], false );
+		if ( $client->response_has_success_status( $response ) ) {
+			$session_data_args['token'] = $response['TOKEN'];
+
+			WC()->session->paypal = new WC_Gateway_PPEC_Session_Data( $session_data_args );
+
+			return $settings->get_paypal_redirect_url( $response['TOKEN'], false, $session_data_args['use_paypal_credit'] );
 		} else {
 			throw new PayPal_API_Exception( $response );
 		}
 	}
 
 	/**
+	 * Handler when buyer is checking out from cart page.
+	 *
+	 * @return string Redirect URL.
+	 */
+	public function start_checkout_from_cart() {
+		$settings     = wc_gateway_ppec()->settings;
+
+		$context_args = array(
+			'start_from' => 'cart',
+		);
+
+		$session_data_args = array(
+			'source'            => 'cart',
+			'expires_in'        => $settings->get_token_session_length(),
+			'use_paypal_credit' => wc_gateway_ppec_is_using_credit(),
+		);
+
+		return $this->start_checkout( $context_args, $session_data_args );
+	}
+
+	/**
 	 * Handler when buyer is checking out from checkout page.
 	 *
-	 * @todo This methods looks similar to start_checkout_from_cart. Please
-	 *       refactor by merging them.
+	 * @param int  $order_id Order ID.
+	 * @param bool $use_ppc  Whether to use PayPal credit.
 	 *
-	 * @throws PayPal_API_Exception
-	 *
-	 * @param int $order_id Order ID
+	 * @return string Redirect URL.
 	 */
-	public function start_checkout_from_checkout( $order_id ) {
+	public function start_checkout_from_checkout( $order_id, $use_ppc ) {
 		$settings     = wc_gateway_ppec()->settings;
-		$client       = wc_gateway_ppec()->client;
+
 		$context_args = array(
 			'start_from' => 'checkout',
 			'order_id'   => $order_id,
 		);
-		$context_args['create_billing_agreement'] = $this->needs_billing_agreement_creation( $context_args );
 
-		$params   = $client->get_set_express_checkout_params( $context_args );
-		$response = $client->set_express_checkout( $params );
-		if ( $client->response_has_success_status( $response ) ) {
-			WC()->session->paypal = new WC_Gateway_PPEC_Session_Data(
-				array(
-					'token'      => $response['TOKEN'],
-					'source'     => 'order',
-					'order_id'   => $order_id,
-					'expires_in' => $settings->get_token_session_length()
-				)
-			);
+		$session_data_args = array(
+			'source'            => 'order',
+			'order_id'          => $order_id,
+			'expires_in'        => $settings->get_token_session_length(),
+			'use_paypal_credit' => $use_ppc,
+		);
 
-			return $settings->get_paypal_redirect_url( $response['TOKEN'], true );
-		} else {
-			throw new PayPal_API_Exception( $response );
-		}
+		return $this->start_checkout( $context_args, $session_data_args );
 	}
 
 	/**
