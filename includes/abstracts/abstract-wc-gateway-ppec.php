@@ -53,7 +53,6 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		$this->instant_payments           = 'yes' === $this->get_option( 'instant_payments', 'no' );
 		$this->require_billing            = 'yes' === $this->get_option( 'require_billing', 'no' );
 		$this->paymentaction              = $this->get_option( 'paymentaction', 'sale' );
-		$this->logo_image_url             = $this->get_option( 'logo_image_url' );
 		$this->subtotal_mismatch_behavior = $this->get_option( 'subtotal_mismatch_behavior', 'add' );
 		$this->use_ppc                    = false;
 
@@ -192,14 +191,6 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 	 * Do some additonal validation before saving options via the API.
 	 */
 	public function process_admin_options() {
-		// Validate logo.
-		$logo_image_url = wc_clean( $_POST['woocommerce_ppec_paypal_logo_image_url'] );
-
-		if ( ! empty( $logo_image_url ) && ! preg_match( '/https?:\/\/[a-zA-Z0-9][a-zA-Z0-9.-]+[a-zA-Z0-9](\/[a-zA-Z0-9.\/?&%#]*)?/', $logo_image_url ) ) {
-			WC_Admin_Settings::add_error( __( 'Error: The logo image URL you provided is not valid and cannot be used.', 'woocommerce-gateway-paypal-express-checkout' ) );
-			unset( $_POST['woocommerce_ppec_paypal_logo_image_url'] );
-		}
-
 		// If a certificate has been uploaded, read the contents and save that string instead.
 		if ( array_key_exists( 'woocommerce_ppec_paypal_api_certificate', $_FILES )
 			&& array_key_exists( 'tmp_name', $_FILES['woocommerce_ppec_paypal_api_certificate'] )
