@@ -529,7 +529,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 					data-add-image-text="<?php echo esc_attr( __( 'Add image', 'woocommerce-gateway-paypal-express-checkout' ) ); ?>"
 					style="<?php echo esc_attr( $maybe_hide_add_style ); ?>"
 				>
-					<?php echo esc_attr( __( 'Add image', 'woocommerce-gateway-paypal-express-checkout' ) ); ?>
+					<?php echo esc_html__( 'Add image', 'woocommerce-gateway-paypal-express-checkout' ); ?>
 				</button>
 
 				<button
@@ -537,7 +537,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 					data-field-id="<?php echo esc_attr( $field_key ); ?>"
 					style="<?php echo esc_attr( $maybe_hide_remove_style ); ?>"
 				>
-					<?php echo esc_attr( __( 'Remove image', 'woocommerce-gateway-paypal-express-checkout' ) ); ?>
+					<?php echo esc_html__( 'Remove image', 'woocommerce-gateway-paypal-express-checkout' ); ?>
 				</button>
 
 				<input type="hidden"
