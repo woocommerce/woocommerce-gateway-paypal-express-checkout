@@ -62,7 +62,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		if ( version_compare( WC_VERSION, '3.3', '<' ) ) {
 			add_filter( 'wc_checkout_params', array( $this, 'filter_wc_checkout_params' ), 10, 2 );
 		} else {
-			add_filter( 'woocommerce_get_script_data', array( $this, 'filter_wc_checkout_params_post33' ), 10, 2 );
+			add_filter( 'woocommerce_get_script_data', array( $this, 'filter_wc_checkout_params' ), 10, 2 );
 		}
 		if ( isset( $_GET['startcheckout'] ) && 'true' === $_GET['startcheckout'] ) {
 			ob_start();
