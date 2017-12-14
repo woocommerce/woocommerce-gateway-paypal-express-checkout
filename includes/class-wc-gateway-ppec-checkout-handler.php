@@ -60,7 +60,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 */
 	public function init() {
 		if ( version_compare( WC_VERSION, '3.3', '<' ) ) {
-			add_filter( 'wc_checkout_params', array( $this, 'filter_wc_checkout_params' ), 10, 2 );
+			add_filter( 'wc_checkout_params', array( $this, 'filter_wc_checkout_params' ), 10, 1 );
 		} else {
 			add_filter( 'woocommerce_get_script_data', array( $this, 'filter_wc_checkout_params' ), 10, 2 );
 		}
