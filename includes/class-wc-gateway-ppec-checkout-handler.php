@@ -190,22 +190,30 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		}
 
 		$shipping_details = $this->get_mapped_shipping_address( $checkout_details );
-		foreach( $shipping_details as $key => $value ) {
-			$_POST['shipping_' . $key] = $value;
-		}
+		$billing_details  = $this->get_mapped_billing_address( $checkout_details );
 
-		$billing_details = $this->get_mapped_billing_address( $checkout_details );
 		// If the billing address is empty, copy address from shipping
 		if ( empty( $billing_details['address_1'] ) ) {
+			// Set flag so that WC copies billing to shipping
+			$_POST['ship_to_different_address'] = 0;
+
 			$copyable_keys = array( 'address_1', 'address_2', 'city', 'state', 'postcode', 'country' );
 			foreach ( $copyable_keys as $copyable_key ) {
 				if ( array_key_exists( $copyable_key, $shipping_details ) ) {
 					$billing_details[ $copyable_key ] = $shipping_details[ $copyable_key ];
 				}
 			}
+		} else {
+			// Shipping may be different from billing, so set flag to not copy address from billing
+			$_POST['ship_to_different_address'] = 1;
 		}
-		foreach( $billing_details as $key => $value ) {
-			$_POST['billing_' . $key] = $value;
+
+		foreach ( $shipping_details as $key => $value ) {
+			$_POST[ 'shipping_' . $key ] = $value;
+		}
+
+		foreach ( $billing_details as $key => $value ) {
+			$_POST[ 'billing_' . $key ] = $value;
 		}
 	}
 
@@ -241,7 +249,16 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			<?php if ( ! empty( $checkout_details->payer_details->phone_number ) ) : ?>
 				<li><strong><?php _e( 'Phone:', 'woocommerce-gateway-paypal-express-checkout' ) ?></strong> <?php echo esc_html( $checkout_details->payer_details->phone_number ); ?></li>
 			<?php elseif ( 'yes' === wc_gateway_ppec()->settings->require_phone_number ) : ?>
-				<li><?php $fields = WC()->checkout->get_checkout_fields( 'billing' ); woocommerce_form_field( 'billing_phone', $fields['billing_phone'], WC()->checkout->get_value( 'billing_phone' ) ); ?></li>
+				<li>
+				<?php
+				if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
+					$fields = WC()->checkout->checkout_fields['billing'];
+				} else {
+					$fields = WC()->checkout->get_checkout_fields( 'billing' );
+				}
+				woocommerce_form_field( 'billing_phone', $fields['billing_phone'], WC()->checkout->get_value( 'billing_phone' ) );
+				?>
+				</li>
 			<?php endif; ?>
 		</ul>
 		<?php
@@ -889,14 +906,13 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		if ( empty( $_GET['woo-paypal-return'] ) || empty( $_GET['token'] ) || empty( $_GET['PayerID'] ) ) {
 			return $packages;
 		}
-		// Shipping details from PayPal
 
+		// Shipping details from PayPal
 		try {
 			$checkout_details = $this->get_checkout_details( wc_clean( $_GET['token'] ) );
 		} catch ( PayPal_API_Exception $e ) {
 			return $packages;
 		}
-
 
 		$destination = $this->get_mapped_shipping_address( $checkout_details );
 
