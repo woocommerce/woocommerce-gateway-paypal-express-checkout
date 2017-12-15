@@ -89,6 +89,7 @@ https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 * Add   - PayPal credit is now available on checkout.
 * Fix   - WC 3.3 compatibility.
 * Add   - Ability to select existing / upload new image(s) for logo / header fields.
+* Fix   - Shipping address overriden when PayPal returns billing address.
 
 = 1.4.7 =
 * Fix   - Issue with missing paypal session information.

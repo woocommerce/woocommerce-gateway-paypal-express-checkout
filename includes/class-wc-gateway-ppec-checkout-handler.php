@@ -190,22 +190,30 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		}
 
 		$shipping_details = $this->get_mapped_shipping_address( $checkout_details );
-		foreach( $shipping_details as $key => $value ) {
-			$_POST['shipping_' . $key] = $value;
-		}
+		$billing_details  = $this->get_mapped_billing_address( $checkout_details );
 
-		$billing_details = $this->get_mapped_billing_address( $checkout_details );
 		// If the billing address is empty, copy address from shipping
 		if ( empty( $billing_details['address_1'] ) ) {
+			// Set flag so that WC copies billing to shipping
+			$_POST['ship_to_different_address'] = 0;
+
 			$copyable_keys = array( 'address_1', 'address_2', 'city', 'state', 'postcode', 'country' );
 			foreach ( $copyable_keys as $copyable_key ) {
 				if ( array_key_exists( $copyable_key, $shipping_details ) ) {
 					$billing_details[ $copyable_key ] = $shipping_details[ $copyable_key ];
 				}
 			}
+		} else {
+			// Shipping may be different from billing, so set flag to not copy address from billing
+			$_POST['ship_to_different_address'] = 1;
 		}
-		foreach( $billing_details as $key => $value ) {
-			$_POST['billing_' . $key] = $value;
+
+		foreach ( $shipping_details as $key => $value ) {
+			$_POST[ 'shipping_' . $key ] = $value;
+		}
+
+		foreach ( $billing_details as $key => $value ) {
+			$_POST[ 'billing_' . $key ] = $value;
 		}
 	}
 
