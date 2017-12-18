@@ -111,7 +111,7 @@ wc_enqueue_js( "
 /**
  * Settings for PayPal Gateway.
  */
-return array(
+return apply_filters( 'woocommerce_paypal_express_checkout_settings', array(
 	'enabled' => array(
 		'title'   => __( 'Enable/Disable', 'woocommerce-gateway-paypal-express-checkout' ),
 		'type'    => 'checkbox',
@@ -398,4 +398,4 @@ return array(
 			'drop' => __( 'Do not send line items to PayPal', 'woocommerce-gateway-paypal-express-checkout' ),
 		),
 	),
-);
+) );

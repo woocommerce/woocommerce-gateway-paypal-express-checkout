@@ -96,11 +96,11 @@ class WC_Gateway_PPEC_Client {
 	 * @return string
 	 */
 	public function get_endpoint() {
-		return sprintf(
+		return apply_filters( 'woocommerce_paypal_express_checkout_request_endpoint', sprintf(
 			'https://%s%s.paypal.com/nvp',
 			$this->_credential->get_endpoint_subdomain(),
 			'sandbox' === $this->_environment ? '.sandbox' : ''
-		);
+		), $this->_environment );
 	}
 
 	/**

@@ -68,7 +68,7 @@ class WC_Gateway_PPEC_Settings {
 		return null;
 	}
 
-	public function __isset( $name ) {
+	public function __isset( $key ) {
 		return array_key_exists( $key, $this->_settings );
 	}
 
