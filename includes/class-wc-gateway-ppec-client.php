@@ -100,7 +100,7 @@ class WC_Gateway_PPEC_Client {
 			'https://%s%s.paypal.com/nvp',
 			$this->_credential->get_endpoint_subdomain(),
 			'sandbox' === $this->_environment ? '.sandbox' : ''
-		) );
+		), $this->_environment );
 	}
 
 	/**
