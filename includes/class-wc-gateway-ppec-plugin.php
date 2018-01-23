@@ -408,7 +408,7 @@ class WC_Gateway_PPEC_Plugin {
 	public function plugin_action_links( $links ) {
 		$plugin_links = array();
 
-		if ( $this->_bootstrapped ) {
+		if ( function_exists( 'WC' ) ) {
 			$setting_url = $this->get_admin_setting_link();
 			$plugin_links[] = '<a href="' . esc_url( $setting_url ) . '">' . esc_html__( 'Settings', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>';
 		}
