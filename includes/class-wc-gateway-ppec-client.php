@@ -250,8 +250,8 @@ class WC_Gateway_PPEC_Client {
 		$params              = array();
 		$logo_url_or_id      = $settings->logo_image_url;
 		$header_url_or_id    = $settings->header_image_url;
-		$params['LOGOIMG']   = filter_var( $logo_url_or_id, FILTER_VALIDATE_URL )   ? $logo_url_or_id   : wp_get_attachment_image( $logo_url_or_id, 'thumbnail' );
-		$params['HDRIMG']    = filter_var( $header_url_or_id, FILTER_VALIDATE_URL ) ? $header_url_or_id : wp_get_attachment_image( $header_url_or_id, 'thumbnail' );
+		$params['LOGOIMG']   = filter_var( $logo_url_or_id, FILTER_VALIDATE_URL )   ? $logo_url_or_id   : wp_get_attachment_image_url( $logo_url_or_id, 'thumbnail' );
+		$params['HDRIMG']    = filter_var( $header_url_or_id, FILTER_VALIDATE_URL ) ? $header_url_or_id : wp_get_attachment_image_url( $header_url_or_id, 'thumbnail' );
 		$params['PAGESTYLE'] = $settings->page_style;
 		$params['BRANDNAME'] = $settings->get_brand_name();
 		$params['RETURNURL'] = $this->_get_return_url( $args );
