@@ -3,7 +3,7 @@ Contributors: automattic, woothemes, akeda, dwainm, royho, allendav, slash1andy,
 Tags: ecommerce, e-commerce, commerce, woothemes, wordpress ecommerce, store, sales, sell, shop, shopping, cart, checkout, configurable, paypal
 Requires at least: 4.4
 Tested up to: 4.9.0
-Stable tag: 1.5.0
+Stable tag: 1.5.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -84,6 +84,12 @@ https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 3. Checkout with PayPal directly from the Cart.
 
 == Changelog ==
+
+= 1.5.1 =
+* Add   - Hooks for Settings.
+* Fix   - Missing Settings link on Plugins page.
+* Fix   - Use correct image URL for PayPal image logo.
+* Tweak - Default to signature method if certificate missing, rather than other way around.
 
 = 1.5.0 =
 * Add   - PayPal credit is now available on checkout.
