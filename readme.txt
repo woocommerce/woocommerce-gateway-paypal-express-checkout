@@ -86,7 +86,7 @@ https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 == Changelog ==
 
 = 1.5.2 =
-* Tweak - Express checkout shouldn't display "Review your oder before the payment".
+* Tweak - Express checkout shouldn't display "Review your order before the payment".
 
 = 1.5.1 =
 * Add   - Hooks for Settings.
