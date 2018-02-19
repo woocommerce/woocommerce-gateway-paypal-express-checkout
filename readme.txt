@@ -31,7 +31,7 @@ In the search field type "WooCommerce PayPal Express Checkout" and click Search 
 
 = Manual installation =
 
-The manual installation method involves downloading our plugin and uploading it to your webserver via your favourite FTP application. The
+The manual installation method involves downloading our plugin and uploading it to your webserver via your favorite FTP application. The
 WordPress codex contains [instructions on how to do this here](http://codex.wordpress.org/Managing_Plugins#Manual_Plugin_Installation).
 
 = Updating =
@@ -77,6 +77,14 @@ If PayPal Express Checkout is the only enabled payment gateway and you want to r
 
 https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 
+= Where can I contribute? =
+
+The GitHub repository for PayPal Express Checkout is here:
+
+https://github.com/woothemes/woocommerce-gateway-paypal-express-checkout
+
+Please use this to inform us about bugs, or make contributions via PRs.
+
 == Screenshots ==
 
 1. Click the "Click Here to Set Up Your PayPal Account" button. If you want to test before goes live, you can switch the Environment, above the button, to Sandbox.
@@ -98,10 +106,10 @@ https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 * Add   - PayPal credit is now available on checkout.
 * Fix   - WC 3.3 compatibility.
 * Add   - Ability to select existing / upload new image(s) for logo / header fields.
-* Fix   - Shipping address overriden when PayPal returns billing address.
+* Fix   - Shipping address overridden when PayPal returns billing address.
 
 = 1.4.7 =
-* Fix   - Issue with missing paypal session information.
+* Fix   - Issue with missing PayPal session information.
 * Fix   - Dependency error when using LibreSSL.
 * Fix   - Additional compatibility with shipping plugins
 * Fix   - Issue where deprecated `WC_Cart::get_cart_url` is being used.
@@ -203,7 +211,7 @@ https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 * Tweak - Add admin notice to setup / connect after plugin is activated.
 
 = 1.0.1 =
-* Fix - Make sure OpenSSL is installed with 1.0.1 as the minium required version, otherwise display warning
+* Fix - Make sure OpenSSL is installed with 1.0.1 as the minimum required version, otherwise display warning
 * Fix - Make sure cURL transport is available for WP HTTP API, otherwise display warning
 * Fix - Unhandled certificate-style API credential
 * Fix - Fixed calculated tax and coupons data that sent over to PayPal
