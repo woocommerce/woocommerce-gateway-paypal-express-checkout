@@ -61,14 +61,18 @@ class WC_Gateway_PPEC_Cart_Handler {
 		}
 
 		WC()->shipping->reset_shipping();
+		$product = wc_get_product( $post->ID );
+
+		if ( ! empty( $_POST['add-to-cart'] ) ) {
+			$product = wc_get_product( absint( $_POST['add-to-cart'] ) );
+		}
 
 		/**
 		 * If this page is single product page, we need to simulate
 		 * adding the product to the cart taken account if it is a
 		 * simple or variable product.
 		 */
-		if ( is_product() ) {
-			$product = wc_get_product( $post->ID );
+		if ( $product ) {
 			$qty     = ! isset( $_POST['qty'] ) ? 1 : absint( $_POST['qty'] );
 
 			if ( $product->is_type( 'variable' ) ) {
@@ -82,7 +86,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 				}
 
 				WC()->cart->add_to_cart( $product->get_id(), $qty, $variation_id, $attributes );
-			} elseif ( $product->is_type( 'simple' ) ) {
+			} else {
 				WC()->cart->add_to_cart( $product->get_id(), $qty );
 			}
 

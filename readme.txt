@@ -87,6 +87,7 @@ https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 
 = 1.5.2 =
 * Tweak - Express checkout shouldn't display "Review your order before the payment".
+* Fix   - Compatibility with Subscriptions and Checkout from Single Product page.
 
 = 1.5.1 =
 * Add   - Hooks for Settings.

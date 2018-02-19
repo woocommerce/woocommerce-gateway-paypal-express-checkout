@@ -70,9 +70,10 @@
 		toggle_button_availability( false );
 
 		var data = {
-			'nonce':      wc_ppec_context.generate_cart_nonce,
-			'qty':        $( '.quantity .qty' ).val(),
-			'attributes': $( '.variations_form' ).length ? get_attributes().data : []
+			'nonce':       wc_ppec_context.generate_cart_nonce,
+			'qty':         $( '.quantity .qty' ).val(),
+			'attributes':  $( '.variations_form' ).length ? get_attributes().data : [],
+			'add-to-cart': $( '[name=add-to-cart]' ).val(),
 		};
 
 		var href = $(this).attr( 'href' );
