@@ -701,6 +701,10 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 * @return bool Returns true if buyer checkout from checkout page
 	 */
 	public function is_started_from_checkout_page() {
+		if ( ! is_object( WC()->session ) ) {
+			return false;
+		}
+
 		$session = WC()->session->get( 'paypal' );
 
 		return (
