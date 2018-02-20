@@ -95,6 +95,7 @@ Please use this to inform us about bugs, or make contributions via PRs.
 
 = 1.5.2 =
 * Tweak - Express checkout shouldn't display "Review your order before the payment".
+* Fix   - Compatibility with Subscriptions and Checkout from Single Product page.
 
 = 1.5.1 =
 * Add   - Hooks for Settings.
