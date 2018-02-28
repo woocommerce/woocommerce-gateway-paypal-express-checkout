@@ -65,11 +65,20 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 				$this->description  = $this->get_option( 'description' );
 			}
 		} else {
-			// Image upload.
-			wp_enqueue_media();
-
-			wp_enqueue_script( 'wc-gateway-ppec-settings', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-settings.js', array( 'jquery' ), wc_gateway_ppec()->version, true );
+			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		}
+	}
+
+	/**
+	 * Enqueues admin scripts.
+	 *
+	 * @since 1.5.2
+	 */
+	public function enqueue_scripts() {
+		// Image upload.
+		wp_enqueue_media();
+
+		wp_enqueue_script( 'wc-gateway-ppec-settings', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-settings.js', array( 'jquery' ), wc_gateway_ppec()->version, true );
 	}
 
 	/**
