@@ -306,7 +306,7 @@ class WC_Gateway_PPEC_Plugin {
 	 * Callback for activation hook.
 	 */
 	public function activate() {
-		if ( ! isset( $this->setings ) ) {
+		if ( ! isset( $this->settings ) ) {
 			require_once( $this->includes_path . 'class-wc-gateway-ppec-settings.php' );
 			$settings = new WC_Gateway_PPEC_Settings();
 		} else {
