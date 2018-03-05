@@ -95,6 +95,7 @@ Please use this to inform us about bugs, or make contributions via PRs.
 
 = 1.5.3 - 2018-xx-xx =
 * Fix - wp_enqueue_media was not correctly loaded causing weird behavior with other parts of system wanting to use it.
+* Fix - Typo in activation hook.
 
 = 1.5.2 - 2018-02-20 =
 * Tweak - Express checkout shouldn't display "Review your order before the payment".
