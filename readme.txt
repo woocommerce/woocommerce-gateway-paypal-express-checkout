@@ -93,7 +93,7 @@ Please use this to inform us about bugs, or make contributions via PRs.
 
 == Changelog ==
 
-= 1.5.3 - 2018-xx-xx =
+= 1.5.3 - 2018-03-28 =
 * Fix - wp_enqueue_media was not correctly loaded causing weird behavior with other parts of system wanting to use it.
 * Fix - Typo in activation hook.
 
