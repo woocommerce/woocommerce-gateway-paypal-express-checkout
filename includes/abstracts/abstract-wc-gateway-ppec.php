@@ -67,6 +67,23 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		} else {
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		}
+
+		add_filter( 'woocommerce_ajax_get_endpoint', array( $this, 'pass_return_args_to_ajax' ), 10, 2 );
+	}
+
+	/**
+	 * Pass woo return args to AJAX endpoint when the checkout updates from the frontend
+	 * so that the order button gets set correctly.
+	 *
+	 * @param  string $request Optional.
+	 * @return string
+	 */
+	public function pass_return_args_to_ajax( $request ) {
+		if ( isset( $_GET['woo-paypal-return'] ) ) {
+			$request .= '&woo-paypal-return=1';
+		}
+
+		return $request;
 	}
 
 	/**
