@@ -94,12 +94,14 @@ wc_enqueue_js( "
 		}).change();
 
 		if ( enable_toggle ) {
+			$( document ).off( 'click', '.ppec-toggle-settings' );
 			$( document ).on( 'click', '.ppec-toggle-settings', function( e ) {
 				$( ppec_live_fields ).closest( 'tr' ).toggle( 'fast' );
 				e.preventDefault();
 			} );
 		}
 		if ( enable_sandbox_toggle ) {
+			$( document ).off( 'click', '.ppec-toggle-sandbox-settings' );
 			$( document ).on( 'click', '.ppec-toggle-sandbox-settings', function( e ) {
 				$( ppec_sandbox_fields ).closest( 'tr' ).toggle( 'fast' );
 				e.preventDefault();
