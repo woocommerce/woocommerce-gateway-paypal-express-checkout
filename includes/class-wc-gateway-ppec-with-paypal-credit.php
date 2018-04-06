@@ -16,11 +16,6 @@ class WC_Gateway_PPEC_With_PayPal_Credit extends WC_Gateway_PPEC_With_PayPal {
 			}
 		}
 
-		if ( $this->is_available() ) {
-			$ipn_handler = new WC_Gateway_PPEC_IPN_Handler( $this );
-			$ipn_handler->handle();
-		}
-
 		$this->use_ppc = true;
 	}
 }
