@@ -96,6 +96,9 @@ Please use this to inform us about bugs, or make contributions via PRs.
 = 1.5.4 - 2018-xx-xx =
 * Fix - When returning from PayPal, place order buttons says "proceed to payment".
 * Fix - Impossible to open API credentials after saving Settings.
+* Fix - Prevent filtering if PPEC is not enabled.
+* Tweak - Default billing address to be required.
+* Add - Hook to make billing address not required `woocommerce_paypal_express_checkout_address_not_required` (bool).
 
 = 1.5.3 - 2018-03-28 =
 * Fix - wp_enqueue_media was not correctly loaded causing weird behavior with other parts of system wanting to use it.
