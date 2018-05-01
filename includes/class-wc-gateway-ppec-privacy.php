@@ -12,7 +12,9 @@ class WC_Gateway_PPEC_Privacy extends WC_Abstract_Privacy {
 		parent::__construct( 'PayPal Express Checkout' );
 
 		$this->add_exporter( __( 'WooCommerce PPEC Order Data', 'woocommerce-gateway-paypal-express-checkout' ), array( $this, 'order_data_exporter' ) );
-		$this->add_exporter( __( 'WooCommerce PPEC Subscriptions Data', 'woocommerce-gateway-paypal-express-checkout' ), array( $this, 'subscriptions_data_exporter' ) );
+		if ( class_exists( 'WC_Subscriptions' ) ) {
+			$this->add_exporter( __( 'WooCommerce PPEC Subscriptions Data', 'woocommerce-gateway-paypal-express-checkout' ), array( $this, 'subscriptions_data_exporter' ) );
+		}
 		$this->add_eraser( __( 'WooCommerce PPEC Data', 'woocommerce-gateway-paypal-express-checkout' ), array( $this, 'order_data_eraser' ) );
 	}
 
@@ -206,6 +208,10 @@ class WC_Gateway_PPEC_Privacy extends WC_Abstract_Privacy {
 	 * @return array
 	 */
 	protected function maybe_handle_subscription( $order ) {
+		if ( ! class_exists( 'WC_Subscriptions' ) ) {
+			return array( 0, 0, array() );
+		}
+
 		if ( ! wcs_order_contains_subscription( $order ) ) {
 			return array( 0, 0, array() );
 		}
