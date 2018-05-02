@@ -172,32 +172,32 @@ class WC_Gateway_PPEC_Privacy extends WC_Abstract_Privacy {
 	public function order_data_eraser( $email_address, $page ) {
 		$orders = $this->get_ppec_orders( $email_address, (int) $page );
 
-		$num_items_removed  = 0;
-		$num_items_retained = 0;
-		$messages           = array();
+		$items_removed  = false;
+		$items_retained = false;
+		$messages       = array();
 
 		foreach ( (array) $orders as $order ) {
 			$order = wc_get_order( $order->get_id() );
 
 			list( $removed, $retained, $msgs ) = $this->maybe_handle_order( $order );
-			$num_items_removed  += $removed;
-			$num_items_retained += $retained;
-			$messages            = array_merge( $messages, $msgs );
+			$items_removed  |= $removed;
+			$items_retained |= $retained;
+			$messages        = array_merge( $messages, $msgs );
 
 			list( $removed, $retained, $msgs ) = $this->maybe_handle_subscription( $order );
-			$num_items_removed  += $removed;
-			$num_items_retained += $retained;
-			$messages            = array_merge( $messages, $msgs );
+			$items_removed  |= $removed;
+			$items_retained |= $retained;
+			$messages        = array_merge( $messages, $msgs );
 		}
 
 		// Tell core if we have more orders to work on still
 		$done = count( $orders ) < 10;
 
 		return array(
-			'num_items_removed'  => $num_items_removed,
-			'num_items_retained' => $num_items_retained,
-			'messages'           => $messages,
-			'done'               => $done,
+			'items_removed'  => $items_removed,
+			'items_retained' => $items_retained,
+			'messages'       => $messages,
+			'done'           => $done,
 		);
 	}
 
@@ -209,11 +209,11 @@ class WC_Gateway_PPEC_Privacy extends WC_Abstract_Privacy {
 	 */
 	protected function maybe_handle_subscription( $order ) {
 		if ( ! class_exists( 'WC_Subscriptions' ) ) {
-			return array( 0, 0, array() );
+			return array( false, false, array() );
 		}
 
 		if ( ! wcs_order_contains_subscription( $order ) ) {
-			return array( 0, 0, array() );
+			return array( false, false, array() );
 		}
 
 		$subscription    = current( wcs_get_subscriptions_for_order( $order->get_id() ) );
@@ -222,11 +222,11 @@ class WC_Gateway_PPEC_Privacy extends WC_Abstract_Privacy {
 		$ppec_billing    = get_post_meta( $subscription_id, '_ppec_billing_agreement_id', true );
 
 		if ( empty( $ppec_billing ) ) {
-			return array( 0, 0, array() );
+			return array( false, false, array() );
 		}
 
 		if ( $subscription->has_status( apply_filters( 'woocommerce_paypal_express_checkout_privacy_eraser_subs_statuses', array( 'on-hold', 'active' ) ) ) ) {
-			return array( 0, 1, array( sprintf( __( 'Order ID %d contains an active Subscription' ), $order->get_id() ) ) );
+			return array( false, true, array( sprintf( __( 'Order ID %d contains an active Subscription' ), $order->get_id() ) ) );
 		}
 
 		$renewal_orders = WC_Subscriptions_Renewal_Order::get_renewal_orders( $order->get_id() );
@@ -241,7 +241,7 @@ class WC_Gateway_PPEC_Privacy extends WC_Abstract_Privacy {
 		delete_post_meta( $subscription_id, '_ppec_billing_agreement_id' );
 		delete_post_meta( $subscription_id, '_paypal_status' );
 
-		return array( 1, 0, array() );
+		return array( true, false, array() );
 	}
 
 	/**
@@ -257,14 +257,14 @@ class WC_Gateway_PPEC_Privacy extends WC_Abstract_Privacy {
 		$ppec_status   = get_post_meta( $order_id, '_paypal_status', true );
 
 		if ( empty( $ppec_txn_data ) && empty( $ppec_billing ) && empty( $ppec_status ) ) {
-			return array( 0, 0, array() );
+			return array( false, false, array() );
 		}
 
 		delete_post_meta( $order_id, '_woo_pp_txnData' );
 		delete_post_meta( $order_id, '_ppec_billing_agreement_id' );
 		delete_post_meta( $order_id, '_paypal_status' );
 
-		return array( 1, 0, array() );
+		return array( true, false, array() );
 	}
 }
 
