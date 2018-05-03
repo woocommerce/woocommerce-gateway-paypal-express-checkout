@@ -9,13 +9,14 @@ class WC_Gateway_PPEC_Privacy extends WC_Abstract_Privacy {
 	 *
 	 */
 	public function __construct() {
-		parent::__construct( 'PayPal Express Checkout' );
+		parent::__construct( __( 'PayPal Express Checkout', 'woocommerce-gateway-paypal-express-checkout' ) );
 
-		$this->add_exporter( __( 'WooCommerce PPEC Order Data', 'woocommerce-gateway-paypal-express-checkout' ), array( $this, 'order_data_exporter' ) );
+		$this->add_exporter( 'woocommerce-gateway-paypal-express-checkout-order-data', __( 'WooCommerce PPEC Order Data', 'woocommerce-gateway-paypal-express-checkout' ), array( $this, 'order_data_exporter' ) );
 		if ( class_exists( 'WC_Subscriptions' ) ) {
-			$this->add_exporter( __( 'WooCommerce PPEC Subscriptions Data', 'woocommerce-gateway-paypal-express-checkout' ), array( $this, 'subscriptions_data_exporter' ) );
+			$this->add_exporter( 'woocommerce-gateway-paypal-express-checkout-subscriptions-data', __( 'WooCommerce PPEC Subscriptions Data', 'woocommerce-gateway-paypal-express-checkout' ), array( $this, 'subscriptions_data_exporter' ) );
 		}
-		$this->add_eraser( __( 'WooCommerce PPEC Data', 'woocommerce-gateway-paypal-express-checkout' ), array( $this, 'order_data_eraser' ) );
+
+		$this->add_eraser( 'woocommerce-gateway-paypal-express-checkout-order-data', __( 'WooCommerce PPEC Data', 'woocommerce-gateway-paypal-express-checkout' ), array( $this, 'order_data_eraser' ) );
 	}
 
 	/**
