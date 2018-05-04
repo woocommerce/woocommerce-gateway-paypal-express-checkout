@@ -69,9 +69,23 @@
 
 		toggle_button_availability( false );
 
+		var data = {
+			'nonce':       wc_ppec_context.generate_cart_nonce,
+			'qty':         $( '.quantity .qty' ).val(),
+			'attributes':  $( '.variations_form' ).length ? get_attributes().data : [],
+			'add-to-cart': $( '[name=add-to-cart]' ).val(),
+		};
+
 		var href = $(this).attr( 'href' );
 
-		window.location.href = href;
+		$.ajax( {
+			type:    'POST',
+			data:    data,
+			url:     wc_ppec_context.ajaxurl,
+			success: function( response ) {
+				window.location.href = href;
+			}
+		} );
 	} );
 
 })( jQuery, window, document );
