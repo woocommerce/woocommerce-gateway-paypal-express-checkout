@@ -3,7 +3,7 @@ Contributors: automattic, woothemes, akeda, dwainm, royho, allendav, slash1andy,
 Tags: ecommerce, e-commerce, commerce, woothemes, wordpress ecommerce, store, sales, sell, shop, shopping, cart, checkout, configurable, paypal
 Requires at least: 4.4
 Tested up to: 4.9.0
-Stable tag: 1.5.3
+Stable tag: 1.5.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -93,13 +93,14 @@ Please use this to inform us about bugs, or make contributions via PRs.
 
 == Changelog ==
 
-= 1.5.4 - 2018-xx-xx =
-* Fix - When returning from PayPal, place order buttons says "proceed to payment".
+= 1.5.4 - 2018-05-08 =
+* Add - Hook to make billing address not required `woocommerce_paypal_express_checkout_address_not_required` (bool).
+* Fix - Duplicate checkout settings when PP Credit option is enabled.
 * Fix - Impossible to open API credentials after saving Settings.
 * Fix - Prevent filtering if PPEC is not enabled.
-* Tweak - Default billing address to be required.
-* Add - Hook to make billing address not required `woocommerce_paypal_express_checkout_address_not_required` (bool).
 * Fix - Single Product checkout: Quantity being duplicated due to multiple AJAX calls.
+* Fix - When returning from PayPal, place order buttons says "proceed to payment".
+* Tweak - Default billing address to be required.
 
 = 1.5.3 - 2018-03-28 =
 * Fix - wp_enqueue_media was not correctly loaded causing weird behavior with other parts of system wanting to use it.
