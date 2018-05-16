@@ -74,6 +74,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 		 */
 		if ( $product ) {
 			$qty     = ! isset( $_POST['qty'] ) ? 1 : absint( $_POST['qty'] );
+			wc_empty_cart();
 
 			if ( $product->is_type( 'variable' ) ) {
 				$attributes = array_map( 'wc_clean', $_POST['attributes'] );
