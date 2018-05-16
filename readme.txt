@@ -93,6 +93,11 @@ Please use this to inform us about bugs, or make contributions via PRs.
 
 == Changelog ==
 
+= 1.5.5 - 2018-XX-XX =
+* Update - WC 3.4 compatibility
+* Update - Privacy policy notification.
+* Update - Export/erasure hooks added.
+
 = 1.5.4 - 2018-05-08 =
 * Add - Hook to make billing address not required `woocommerce_paypal_express_checkout_address_not_required` (bool).
 * Fix - Duplicate checkout settings when PP Credit option is enabled.

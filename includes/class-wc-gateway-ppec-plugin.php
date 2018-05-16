@@ -328,6 +328,7 @@ class WC_Gateway_PPEC_Plugin {
 		$this->_load_client();
 
 		// Load handlers.
+		require_once( $this->includes_path . 'class-wc-gateway-ppec-privacy.php' );
 		require_once( $this->includes_path . 'class-wc-gateway-ppec-settings.php' );
 		require_once( $this->includes_path . 'class-wc-gateway-ppec-gateway-loader.php' );
 		require_once( $this->includes_path . 'class-wc-gateway-ppec-admin-handler.php' );
