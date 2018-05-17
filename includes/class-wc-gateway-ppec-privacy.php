@@ -242,7 +242,7 @@ class WC_Gateway_PPEC_Privacy extends WC_Abstract_Privacy {
 		delete_post_meta( $subscription_id, '_ppec_billing_agreement_id' );
 		delete_post_meta( $subscription_id, '_paypal_status' );
 
-		return array( true, false, array() );
+		return array( true, false, array( __( 'PayPal Express Checkout Subscriptions Data Erased.', 'woocommerce-gateway-paypal-express-checkout' ) ) );
 	}
 
 	/**
@@ -265,7 +265,7 @@ class WC_Gateway_PPEC_Privacy extends WC_Abstract_Privacy {
 		delete_post_meta( $order_id, '_ppec_billing_agreement_id' );
 		delete_post_meta( $order_id, '_paypal_status' );
 
-		return array( true, false, array() );
+		return array( true, false, array( __( 'PayPal Express Checkout Order Data Erased.', 'woocommerce-gateway-paypal-express-checkout' ) ) );
 	}
 }
 
