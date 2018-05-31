@@ -30,6 +30,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 		}
 
 		add_action( 'wc_ajax_wc_ppec_update_shipping_costs', array( $this, 'wc_ajax_update_shipping_costs' ) );
+		add_action( 'wc_ajax_wc_ppec_start_checkout', array( $this, 'wc_ajax_start_checkout' ) );
 	}
 
 	/**
@@ -116,6 +117,20 @@ class WC_Gateway_PPEC_Cart_Handler {
 		WC()->cart->calculate_totals();
 
 		wp_send_json( new stdClass() );
+	}
+
+	/**
+	 * Set Express Checkout and return token in response.
+	 *
+	 * @since 1.6.0
+	 */
+	public function wc_ajax_start_checkout() {
+		if ( ! wp_verify_nonce( $_POST['nonce'], '_wc_ppec_start_checkout_nonce' ) ) {
+			wp_die( __( 'Cheatin&#8217; huh?', 'woocommerce-gateway-paypal-express-checkout' ) );
+		}
+
+		wc_gateway_ppec()->checkout->start_checkout_from_cart();
+		wp_send_json( array( 'token' => WC()->session->paypal->token ) );
 	}
 
 	/**
