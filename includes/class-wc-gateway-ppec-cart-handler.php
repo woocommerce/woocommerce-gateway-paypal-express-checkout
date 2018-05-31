@@ -252,6 +252,8 @@ class WC_Gateway_PPEC_Cart_Handler {
 			$data = array(
 				'environment'          => 'sandbox' === $settings->get_environment() ? 'sandbox' : 'production',
 				'locale'               => $settings->get_paypal_locale(),
+				'button_color'         => $settings->button_color,
+				'button_shape'         => $settings->button_shape,
 				'start_checkout_nonce' => wp_create_nonce( '_wc_ppec_start_checkout_nonce' ),
 				'start_checkout_url'   => WC_AJAX::get_endpoint( 'wc_ppec_start_checkout' ),
 			);

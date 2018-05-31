@@ -9,6 +9,8 @@
 			commit: false,
 
 			style: {
+				color: wc_ppec_context.button_color,
+				shape: wc_ppec_context.button_shape,
 				tagline: false,
 			},
 

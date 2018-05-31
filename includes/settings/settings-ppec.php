@@ -109,6 +109,11 @@ wc_enqueue_js( "
 				e.preventDefault();
 			} );
 		}
+
+		$( '#woocommerce_ppec_paypal_use_spb' ).change( function( event ) {
+			var checked = $( event.target ).is( ':checked' );
+			$( '.woocommerce_ppec_paypal_spb' ).closest( 'tr' ).toggle( checked );
+		} ).change();
 	});
 " );
 
@@ -368,6 +373,30 @@ return apply_filters( 'woocommerce_paypal_express_checkout_settings', array(
 		'type'        => 'checkbox',
 		'default'     => 'no',
 		'title'       => __( 'Use Smart Payment Buttons', 'woocommerce-gateway-paypal-express-checkout' ),
+	),
+	'button_color' => array(
+		'title'       => __( 'Button Color', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'        => 'select',
+		'class'       => 'wc-enhanced-select woocommerce_ppec_paypal_spb',
+		'default'     => 'gold',
+		'desc_tip'    => true,
+		'options'     => array(
+			'gold'   => __( 'Gold', 'woocommerce-gateway-paypal-express-checkout' ),
+			'blue'   => __( 'Blue', 'woocommerce-gateway-paypal-express-checkout' ),
+			'silver' => __( 'Silver', 'woocommerce-gateway-paypal-express-checkout' ),
+			'black'  => __( 'Black', 'woocommerce-gateway-paypal-express-checkout' ),
+		),
+	),
+	'button_shape' => array(
+		'title'       => __( 'Button Shape', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'        => 'select',
+		'class'       => 'wc-enhanced-select woocommerce_ppec_paypal_spb',
+		'default'     => 'rect',
+		'desc_tip'    => true,
+		'options'     => array(
+			'pill' => __( 'Pill', 'woocommerce-gateway-paypal-express-checkout' ),
+			'rect' => __( 'Rect', 'woocommerce-gateway-paypal-express-checkout' ),
+		),
 	),
 	'button_size' => array(
 		'title'       => __( 'Button Size', 'woocommerce-gateway-paypal-express-checkout' ),
