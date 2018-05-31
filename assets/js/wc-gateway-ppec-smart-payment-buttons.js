@@ -14,7 +14,7 @@
 		return paypal_funding_methods;
 	}
 
-	var render = function() {
+	var render = function( isMiniCart ) {
 		paypal.Button.render( {
 			env: wc_ppec_context.environment,
 			locale: wc_ppec_context.locale,
@@ -42,7 +42,7 @@
 
 			payment: function( data, actions ) {
 				return new paypal.Promise( function( resolve, reject ) {
-					if ( 'product' === wc_ppec_context.page ) {
+					if ( 'product' === wc_ppec_context.page && ! isMiniCart ) {
 						window.wc_ppec_generate_cart( resolve );
 					} else {
 						resolve();
@@ -72,10 +72,21 @@
 				}
 			},
 
-		}, '#woo_pp_ec_button' + ( 'product' === wc_ppec_context.page ? '_product' : '' ) );
+		}, '#woo_pp_ec_button' + ( 'product' === wc_ppec_context.page && ! isMiniCart ? '_product' : '' ) );
 	};
 
-	render();
-	$( document.body ).on( 'updated_cart_totals updated_checkout', render );
+	if ( wc_ppec_context.page ) {
+		render();
+		$( document.body ).on( 'updated_cart_totals updated_checkout', function() {
+			render();
+		} );
+	}
+	$( document.body ).on( 'wc_fragments_loaded wc_fragments_refreshed', function() {
+		var $button = $( '.widget_shopping_cart #woo_pp_ec_button' );
+		if ( $button.length ) {
+			$button.empty();
+			render( true );
+		}
+	} );
 
 } )( jQuery, window, document );

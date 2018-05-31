@@ -28,3 +28,6 @@
 	text-decoration: none !important;
 	border: 0 !important;
 }
+.site-header .widget_shopping_cart p.buttons.wcppec-cart-widget-spb {
+    padding: 0 1em 1em;
+}
