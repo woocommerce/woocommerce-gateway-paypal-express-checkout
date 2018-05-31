@@ -363,6 +363,12 @@ return apply_filters( 'woocommerce_paypal_express_checkout_settings', array(
 		'type'        => 'title',
 		'description' => __( 'Customize the appearance of Express Checkout on your site.', 'woocommerce-gateway-paypal-express-checkout' ),
 	),
+	'use_spb' => array(
+		'title'       => __( 'Smart Payment Buttons', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'        => 'checkbox',
+		'default'     => 'no',
+		'title'       => __( 'Use Smart Payment Buttons', 'woocommerce-gateway-paypal-express-checkout' ),
+	),
 	'button_size' => array(
 		'title'       => __( 'Button Size', 'woocommerce-gateway-paypal-express-checkout' ),
 		'type'        => 'select',
