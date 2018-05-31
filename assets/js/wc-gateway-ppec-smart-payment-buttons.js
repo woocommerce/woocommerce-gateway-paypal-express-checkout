@@ -18,7 +18,7 @@
 		paypal.Button.render( {
 			env: wc_ppec_context.environment,
 			locale: wc_ppec_context.locale,
-			commit: false,
+			commit: 'checkout' === wc_ppec_context.page,
 
 			funding: {
 				allowed: getFundingMethods( wc_ppec_context.allowed ),
@@ -53,6 +53,7 @@
 						url: wc_ppec_context.start_checkout_url,
 						data: {
 							'nonce': wc_ppec_context.start_checkout_nonce,
+							'from_checkout': 'checkout' === wc_ppec_context.page ? 'yes' : 'no',
 						},
 					} ).then( function( data ) {
 						return data.token;
@@ -61,13 +62,20 @@
 			},
 
 			onAuthorize: function( data, actions ) {
-				return actions.redirect();
+				if ( 'checkout' === wc_ppec_context.page ) {
+					$( 'form.checkout' )
+						.append( $( '<input type="hidden" name="paymentToken" /> ' ).attr( 'value', data.paymentToken ) )
+						.append( $( '<input type="hidden" name="payerID" /> ' ).attr( 'value', data.payerID ) )
+						.submit();
+				} else {
+					return actions.redirect();
+				}
 			},
 
 		}, '#woo_pp_ec_button' + ( 'product' === wc_ppec_context.page ? '_product' : '' ) );
 	};
 
 	render();
-	$( document.body ).on( 'updated_cart_totals', render );
+	$( document.body ).on( 'updated_cart_totals updated_checkout', render );
 
 } )( jQuery, window, document );

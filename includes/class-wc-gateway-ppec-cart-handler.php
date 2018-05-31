@@ -129,6 +129,10 @@ class WC_Gateway_PPEC_Cart_Handler {
 			wp_die( __( 'Cheatin&#8217; huh?', 'woocommerce-gateway-paypal-express-checkout' ) );
 		}
 
+		if ( 'yes' === $_POST['from_checkout'] ) {
+			add_filter( 'woocommerce_cart_needs_shipping', '__return_false' );
+		}
+
 		wc_gateway_ppec()->checkout->start_checkout_from_cart();
 		wp_send_json( array( 'token' => WC()->session->paypal->token ) );
 	}
@@ -263,7 +267,8 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 		$is_cart     = is_cart() && 'yes' === $settings->cart_checkout_enabled;
 		$is_product  = is_product() && 'yes' === $settings->checkout_on_single_product_enabled;
-		$page        = $is_cart ? 'cart' : ( $is_product ? 'product' : null );
+		$is_checkout = is_checkout() && 'yes' === $settings->mark_enabled && ! wc_gateway_ppec()->checkout->has_active_session();
+		$page        = $is_cart ? 'cart' : ( $is_product ? 'product' : ( $is_checkout ? 'checkout' : null ) );
 
 		if ( 'yes' !== $settings->use_spb && $is_cart ) {
 			wp_enqueue_script( 'paypal-checkout-js', 'https://www.paypalobjects.com/api/checkout.js', array(), null, true );
