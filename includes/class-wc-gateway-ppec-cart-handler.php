@@ -294,12 +294,23 @@ class WC_Gateway_PPEC_Cart_Handler {
 				'start_checkout_url'   => WC_AJAX::get_endpoint( 'wc_ppec_start_checkout' ),
 			);
 
-			$data = array_merge( $data, $this->convert_to_render_settings( array(
-				'button_layout'        => $settings->button_layout,
-				'button_size'          => $settings->button_size,
-				'hide_funding_methods' => $settings->hide_funding_methods,
-				'credit_enabled'       => $settings->credit_enabled,
-			) ) );
+			if ( 'product' === $page ) {
+				$page_data = array(
+					'button_layout'        => $settings->single_product_button_layout,
+					'button_size'          => $settings->single_product_button_size,
+					'hide_funding_methods' => $settings->single_product_hide_funding_methods,
+					'credit_enabled'       => $settings->single_product_credit_enabled,
+				);
+			} else {
+				$page_data = array(
+					'button_layout'        => $settings->button_layout,
+					'button_size'          => $settings->button_size,
+					'hide_funding_methods' => $settings->hide_funding_methods,
+					'credit_enabled'       => $settings->credit_enabled,
+				);
+			}
+
+			$data = array_merge( $data, $this->convert_to_render_settings( $page_data ) );
 
 			wp_localize_script( 'wc-gateway-ppec-smart-payment-buttons', 'wc_ppec_context', $data );
 		}
