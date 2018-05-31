@@ -125,6 +125,16 @@ wc_enqueue_js( "
 			}
 		} ).change();
 
+		// Hide default layout and size settings if they'll be overridden anyway.
+		function showHideDefaultButtonSettings() {
+			var display =
+				$( '#woocommerce_ppec_paypal_cart_checkout_enabled' ).is( ':checked' ) ||
+				( $( '#woocommerce_ppec_paypal_mark_enabled' ).is( ':checked' ) && ! $( '#woocommerce_ppec_paypal_mark_settings_toggle' ).is( ':checked' ) );
+
+			$( '#woocommerce_ppec_paypal_button_layout, #woocommerce_ppec_paypal_button_size, #woocommerce_ppec_paypal_hide_funding_methods, #woocommerce_ppec_paypal_credit_enabled' ).closest( 'tr' ).toggle( display );
+			display && $( '#woocommerce_ppec_paypal_button_layout' ).change();
+		}
+
 		$( '#woocommerce_ppec_paypal_cart_checkout_enabled' ).change( function( event ) {
 			if ( ! $( '#woocommerce_ppec_paypal_use_spb' ).is( ':checked' ) ) {
 				return;
@@ -138,12 +148,14 @@ wc_enqueue_js( "
 				.addBack()
 				.toggle( checked );
 			checked && $( '#woocommerce_ppec_paypal_mini_cart_settings_toggle' ).change();
+			showHideDefaultButtonSettings();
 		} ).change();
 
 		$( '#woocommerce_ppec_paypal_mini_cart_settings_toggle' ).change( function( event ) {
 			var checked = $( event.target ).is( ':checked' );
 			$( '.woocommerce_ppec_paypal_mini_cart' ).closest( 'tr' ).toggle( checked );
 			checked && $( '#woocommerce_ppec_paypal_mini_cart_button_layout' ).change();
+			showHideDefaultButtonSettings();
 		} ).change();
 
 		$( '#woocommerce_ppec_paypal_checkout_on_single_product_enabled' ).change( function( event ) {
@@ -170,6 +182,7 @@ wc_enqueue_js( "
 				$( '#woocommerce_ppec_paypal_mark_settings_toggle, .woocommerce_ppec_paypal_mark' ).closest( 'tr' ).show();
 				$( '#woocommerce_ppec_paypal_mark_button_layout' ).change();
 			}
+			showHideDefaultButtonSettings();
 		} ).change();
 
 		$( '#woocommerce_ppec_paypal_use_spb' ).change( function( event ) {
@@ -178,9 +191,9 @@ wc_enqueue_js( "
 			$( '.woocommerce_ppec_paypal_spb' ).filter( 'h3' ).next( 'p' ).addBack().toggle( checked );
 
 			if ( checked ) {
-				$( '#woocommerce_ppec_paypal_button_layout, .woocommerce_ppec_paypal_visibility_toggle' ).change();
+				$( '.woocommerce_ppec_paypal_visibility_toggle' ).change();
 			} else {
-				$( '#woocommerce_ppec_paypal_credit_enabled' ).closest( 'tr' ).show();
+				$( '#woocommerce_ppec_paypal_button_size, #woocommerce_ppec_paypal_credit_enabled' ).closest( 'tr' ).show();
 			}
 
 			var button_size = $( '#woocommerce_ppec_paypal_button_size' ).removeClass( 'enhanced' );
