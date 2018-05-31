@@ -306,6 +306,13 @@ class WC_Gateway_PPEC_Cart_Handler {
 					'hide_funding_methods' => $settings->single_product_hide_funding_methods,
 					'credit_enabled'       => $settings->single_product_credit_enabled,
 				);
+			} elseif ( 'checkout' === $page && 'yes' === $settings->mark_settings_toggle ) {
+				$page_data = array(
+					'button_layout'        => $settings->mark_button_layout,
+					'button_size'          => $settings->mark_button_size,
+					'hide_funding_methods' => $settings->mark_hide_funding_methods,
+					'credit_enabled'       => $settings->mark_credit_enabled,
+				);
 			} else {
 				$page_data = array(
 					'button_layout'        => $settings->button_layout,

@@ -135,6 +135,22 @@ wc_enqueue_js( "
 			checked && $( '#woocommerce_ppec_paypal_single_product_button_layout' ).change();
 		} ).change();
 
+		$( '#woocommerce_ppec_paypal_mark_enabled, #woocommerce_ppec_paypal_mark_settings_toggle' ).change( function() {
+			if ( ! $( '#woocommerce_ppec_paypal_use_spb' ).is( ':checked' ) ) {
+				return;
+			}
+
+			if ( ! $( '#woocommerce_ppec_paypal_mark_enabled' ).is( ':checked' ) ) {
+				$( '#woocommerce_ppec_paypal_mark_settings_toggle, .woocommerce_ppec_paypal_mark' ).closest( 'tr' ).hide();
+			} else if ( ! $( '#woocommerce_ppec_paypal_mark_settings_toggle' ).is( ':checked' ) ) {
+				$( '#woocommerce_ppec_paypal_mark_settings_toggle' ).closest( 'tr' ).show();
+				$( '.woocommerce_ppec_paypal_mark' ).closest( 'tr' ).hide();
+			} else {
+				$( '#woocommerce_ppec_paypal_mark_settings_toggle, .woocommerce_ppec_paypal_mark' ).closest( 'tr' ).show();
+				$( '#woocommerce_ppec_paypal_mark_button_layout' ).change();
+			}
+		} ).change();
+
 		$( '#woocommerce_ppec_paypal_use_spb' ).change( function( event ) {
 			var checked = $( event.target ).is( ':checked' );
 			$( '.woocommerce_ppec_paypal_spb' ).closest( 'tr' ).toggle( checked );
@@ -503,15 +519,6 @@ $settings['cart_checkout_enabled'] = array(
 	'default'     => 'yes',
 );
 
-$settings['mark_enabled'] = array(
-	'title'       => __( 'PayPal Mark', 'woocommerce-gateway-paypal-express-checkout' ),
-	'type'        => 'checkbox',
-	'label'       => __( 'Enable the PayPal Mark on regular checkout', 'woocommerce-gateway-paypal-express-checkout' ),
-	'description' => __( 'This enables the PayPal mark, which can be shown on regular WooCommerce checkout to use PayPal Express Checkout like a regular WooCommerce gateway.', 'woocommerce-gateway-paypal-express-checkout' ),
-	'desc_tip'    => true,
-	'default'     => 'yes',
-);
-
 $settings['single_product_button_settings'] = array(
 	'title'       => __( 'Single Product Button Settings', 'woocommerce-gateway-paypal-express-checkout' ),
 	'type'        => 'title',
@@ -531,5 +538,31 @@ foreach( $per_context_settings as $key => $value ) {
 	$settings[ 'single_product_' . $key ] = $value;
 }
 $settings['single_product_button_layout']['default'] = 'horizontal';
+
+$settings['mark_settings'] = array(
+	'title'       => __( 'Regular Checkout Button Settings', 'woocommerce-gateway-paypal-express-checkout' ),
+	'type'        => 'title',
+	'class'       => 'woocommerce_ppec_paypal_spb',
+	'description' => __( 'Button shape and color are configured globally above.', 'woocommerce-gateway-paypal-express-checkout' ),
+);
+$settings['mark_enabled'] = array(
+	'title'       => __( 'PayPal Mark', 'woocommerce-gateway-paypal-express-checkout' ),
+	'type'        => 'checkbox',
+	'class'       => 'woocommerce_ppec_paypal_visibility_toggle',
+	'label'       => __( 'Enable the PayPal Mark on regular checkout', 'woocommerce-gateway-paypal-express-checkout' ),
+	'description' => __( 'This enables the PayPal mark, which can be shown on regular WooCommerce checkout to use PayPal Express Checkout like a regular WooCommerce gateway.', 'woocommerce-gateway-paypal-express-checkout' ),
+	'desc_tip'    => true,
+	'default'     => 'yes',
+);
+$settings['mark_settings_toggle'] = array(
+	'title'   => __( 'Configure settings specific to regular checkout', 'woocommerce-gateway-paypal-express-checkout' ),
+	'type'    => 'checkbox',
+	'class'       => 'woocommerce_ppec_paypal_spb woocommerce_ppec_paypal_visibility_toggle',
+	'default' => 'no',
+);
+foreach( $per_context_settings as $key => $value ) {
+	$value['class'] .= ' woocommerce_ppec_paypal_mark';
+	$settings[ 'mark_' . $key ] = $value;
+}
 
 return apply_filters( 'woocommerce_paypal_express_checkout_settings', $settings );
