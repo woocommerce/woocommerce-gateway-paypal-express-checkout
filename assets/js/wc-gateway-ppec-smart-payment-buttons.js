@@ -2,11 +2,28 @@
 ;( function ( $, window, document ) {
 	'use strict';
 
+	var getFundingMethods = function( methods ) {
+		if ( ! methods ) {
+			return null;
+		}
+
+		var paypal_funding_methods = [];
+		for ( var i = 0; i < methods.length; i++ ) {
+			paypal_funding_methods.push( paypal.FUNDING[ methods[ i ] ] );
+		}
+		return paypal_funding_methods;
+	}
+
 	var render = function() {
 		paypal.Button.render( {
 			env: wc_ppec_context.environment,
 			locale: wc_ppec_context.locale,
 			commit: false,
+
+			funding: {
+				allowed: getFundingMethods( wc_ppec_context.allowed ),
+				disallowed: getFundingMethods( wc_ppec_context.disallowed ),
+			},
 
 			style: {
 				color: wc_ppec_context.button_color,

@@ -238,6 +238,13 @@ class WC_Gateway_PPEC_Cart_Handler {
 			? 'medium'
 			: $data['button_size'];
 
+		if ( 'vertical' === $button_layout ) {
+			$data['disallowed_methods'] = $data['hide_funding_methods'];
+		} else {
+			$data['allowed_methods'] = 'yes' === $data['credit_enabled'] ? array( 'CREDIT' ) : array();
+		}
+		unset( $data['hide_funding_methods'], $data['credit_enabled'] );
+
 		return $data;
 	}
 
@@ -279,8 +286,10 @@ class WC_Gateway_PPEC_Cart_Handler {
 			);
 
 			$data = array_merge( $data, $this->convert_to_render_settings( array(
-				'button_layout' => $settings->button_layout,
-				'button_size'   => $settings->button_size,
+				'button_layout'        => $settings->button_layout,
+				'button_size'          => $settings->button_size,
+				'hide_funding_methods' => $settings->hide_funding_methods,
+				'credit_enabled'       => $settings->credit_enabled,
 			) ) );
 
 			wp_localize_script( 'wc-gateway-ppec-smart-payment-buttons', 'wc_ppec_context', $data );

@@ -113,6 +113,8 @@ wc_enqueue_js( "
 		$( '.woocommerce_ppec_paypal_button_layout' ).change( function( event ) {
 			var isVertical = 'vertical' === $( event.target ).val();
 			var table      = $( event.target ).closest( 'table' );
+			table.find( '.woocommerce_ppec_paypal_vertical' ).closest( 'tr' ).toggle( isVertical );
+			table.find( '.woocommerce_ppec_paypal_horizontal' ).closest( 'tr' ).toggle( ! isVertical );
 
 			var button_size = table.find( '.woocommerce_ppec_paypal_button_size' ).removeClass( 'enhanced' );
 			button_size.find( 'option[value=\"small\"]' ).prop( 'disabled', isVertical )
@@ -129,6 +131,8 @@ wc_enqueue_js( "
 
 			if ( checked ) {
 				$( '.woocommerce_ppec_paypal_button_layout' ).change();
+			} else {
+				$( '#woocommerce_ppec_paypal_credit_enabled' ).closest( 'tr' ).show();
 			}
 
 			var button_size = $( '#woocommerce_ppec_paypal_button_size' ).removeClass( 'enhanced' );
@@ -450,14 +454,26 @@ return apply_filters( 'woocommerce_paypal_express_checkout_settings', array(
 			'large'      => __( 'Large', 'woocommerce-gateway-paypal-express-checkout' ),
 		),
 	),
+	'hide_funding_methods' => array(
+		'title'       => 'Hide Funding Method(s)',
+		'type'        => 'multiselect',
+		'class'       => 'wc-enhanced-select woocommerce_ppec_paypal_spb woocommerce_ppec_paypal_vertical',
+		'default'     => array( 'CARD' ),
+		'options'     => array(
+			'CREDIT' => __( 'PayPal Credit', 'woocommerce-gateway-paypal-express-checkout' ),
+			'ELV'    => __( 'ELV', 'woocommerce-gateway-paypal-express-checkout' ),
+			'CARD'   => __( 'Credit Card', 'woocommerce-gateway-paypal-express-checkout' ),
+		),
+	),
 	'credit_enabled' => array(
 		'title'       => __( 'Enable PayPal Credit', 'woocommerce-gateway-paypal-express-checkout' ),
 		'type'        => 'checkbox',
 		'label'       => $credit_enabled_label,
 		'disabled'    => ! wc_gateway_ppec_is_credit_supported(),
+		'class'       => 'woocommerce_ppec_paypal_horizontal',
 		'default'     => 'no',
 		'desc_tip'    => true,
-		'description' => __( 'This enables PayPal Credit, which displays a PayPal Credit button next to the Express Checkout button. PayPal Express Checkout lets you give customers access to financing through PayPal Credit® - at no additional cost to you. You get paid up front, even though customers have more time to pay. A pre-integrated payment button shows up next to the PayPal Button, and lets customers pay quickly with PayPal Credit®.', 'woocommerce-gateway-paypal-express-checkout' ),
+		'description' => __( 'This enables PayPal Credit, which displays a PayPal Credit button together with the PayPal Checkout button. PayPal Express Checkout lets you give customers access to financing through PayPal Credit® - at no additional cost to you. You get paid up front, even though customers have more time to pay. A pre-integrated payment button shows up next to the PayPal Button, and lets customers pay quickly with PayPal Credit®.', 'woocommerce-gateway-paypal-express-checkout' ),
 	),
 	'cart_checkout_enabled' => array(
 		'title'       => __( 'Checkout on cart page', 'woocommerce-gateway-paypal-express-checkout' ),
