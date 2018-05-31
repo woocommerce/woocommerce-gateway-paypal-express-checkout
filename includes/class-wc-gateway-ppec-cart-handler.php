@@ -332,6 +332,20 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 			$data = array_merge( $data, $this->convert_to_render_settings( $page_data ) );
 
+			$settings_toggle = 'yes' === $settings->mini_cart_settings_toggle;
+			$mini_cart_data  = array(
+				'button_layout'        => $settings_toggle ? $settings->mini_cart_button_layout        : $settings->button_layout,
+				'button_size'          => $settings_toggle ? $settings->mini_cart_button_size          : $settings->button_size,
+				'hide_funding_methods' => $settings_toggle ? $settings->mini_cart_hide_funding_methods : $settings->hide_funding_methods,
+				'credit_enabled'       => $settings_toggle ? $settings->mini_cart_credit_enabled       : $settings->credit_enabled,
+			);
+			$mini_cart_data = $this->convert_to_render_settings( $mini_cart_data );
+			foreach( $mini_cart_data as $key => $value ) {
+				unset( $mini_cart_data[ $key ] );
+				$mini_cart_data[ 'mini_cart_' . $key ] = $value;
+			}
+			$data = array_merge( $data, $mini_cart_data );
+
 			wp_localize_script( 'wc-gateway-ppec-smart-payment-buttons', 'wc_ppec_context', $data );
 		}
 

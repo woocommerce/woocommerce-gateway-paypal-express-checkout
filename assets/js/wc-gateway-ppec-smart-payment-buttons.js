@@ -15,22 +15,29 @@
 	}
 
 	var render = function( isMiniCart ) {
+		var prefix        = isMiniCart ? 'mini_cart_' : '';
+		var button_size   = wc_ppec_context[ prefix + 'button_size' ];
+		var button_layout = wc_ppec_context[ prefix + 'button_layout' ];
+		var button_label  = wc_ppec_context[ prefix + 'button_label' ];
+		var allowed       = wc_ppec_context[ prefix + 'allowed_methods' ];
+		var disallowed    = wc_ppec_context[ prefix + 'disallowed_methods' ];
+
 		paypal.Button.render( {
 			env: wc_ppec_context.environment,
 			locale: wc_ppec_context.locale,
 			commit: 'checkout' === wc_ppec_context.page,
 
 			funding: {
-				allowed: getFundingMethods( wc_ppec_context.allowed ),
-				disallowed: getFundingMethods( wc_ppec_context.disallowed ),
+				allowed: getFundingMethods( allowed ),
+				disallowed: getFundingMethods( disallowed ),
 			},
 
 			style: {
 				color: wc_ppec_context.button_color,
 				shape: wc_ppec_context.button_shape,
-				layout: wc_ppec_context.button_layout,
-				size: wc_ppec_context.button_size,				
-				label: wc_ppec_context.button_label,
+				layout: button_layout,
+				size: button_size,
+				label: button_label,
 				tagline: false,
 			},
 

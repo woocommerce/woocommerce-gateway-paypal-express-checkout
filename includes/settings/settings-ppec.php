@@ -125,6 +125,27 @@ wc_enqueue_js( "
 			}
 		} ).change();
 
+		$( '#woocommerce_ppec_paypal_cart_checkout_enabled' ).change( function( event ) {
+			if ( ! $( '#woocommerce_ppec_paypal_use_spb' ).is( ':checked' ) ) {
+				return;
+			}
+
+			var checked = $( event.target ).is( ':checked' );
+			$( '#woocommerce_ppec_paypal_mini_cart_settings_toggle, .woocommerce_ppec_paypal_mini_cart' )
+				.closest( 'tr' )
+				.add( '#woocommerce_ppec_paypal_mini_cart_settings' )
+					.next( 'p' )
+				.addBack()
+				.toggle( checked );
+			checked && $( '#woocommerce_ppec_paypal_mini_cart_settings_toggle' ).change();
+		} ).change();
+
+		$( '#woocommerce_ppec_paypal_mini_cart_settings_toggle' ).change( function( event ) {
+			var checked = $( event.target ).is( ':checked' );
+			$( '.woocommerce_ppec_paypal_mini_cart' ).closest( 'tr' ).toggle( checked );
+			checked && $( '#woocommerce_ppec_paypal_mini_cart_button_layout' ).change();
+		} ).change();
+
 		$( '#woocommerce_ppec_paypal_checkout_on_single_product_enabled' ).change( function( event ) {
 			if ( ! $( '#woocommerce_ppec_paypal_use_spb' ).is( ':checked' ) ) {
 				return;
@@ -514,11 +535,29 @@ $per_context_settings['credit_enabled']['class'] .= ' woocommerce_ppec_paypal_sp
 $settings['cart_checkout_enabled'] = array(
 	'title'       => __( 'Checkout on cart page', 'woocommerce-gateway-paypal-express-checkout' ),
 	'type'        => 'checkbox',
+	'class'   => 'woocommerce_ppec_paypal_visibility_toggle',
 	'label'       => __( 'Enable PayPal checkout on the cart page', 'woocommerce-gateway-paypal-express-checkout' ),
 	'description' => __( 'This shows or hides the PayPal checkout button on the cart page.', 'woocommerce-gateway-paypal-express-checkout' ),
 	'desc_tip'    => true,
 	'default'     => 'yes',
 );
+
+$settings['mini_cart_settings'] = array(
+	'title'       => __( 'Mini-cart Button Settings', 'woocommerce-gateway-paypal-express-checkout' ),
+	'type'        => 'title',
+	'class'       => 'woocommerce_ppec_paypal_spb',
+	'description' => __( 'Button shape and color are configured globally above.', 'woocommerce-gateway-paypal-express-checkout' ),
+);
+$settings['mini_cart_settings_toggle'] = array(
+	'title'   => __( 'Configure settings specific to mini-cart', 'woocommerce-gateway-paypal-express-checkout' ),
+	'type'    => 'checkbox',
+	'class'   => 'woocommerce_ppec_paypal_spb woocommerce_ppec_paypal_visibility_toggle',
+	'default' => 'no',
+);
+foreach( $per_context_settings as $key => $value ) {
+	$value['class'] .= ' woocommerce_ppec_paypal_mini_cart';
+	$settings[ 'mini_cart_' . $key ] = $value;
+}
 
 $settings['single_product_button_settings'] = array(
 	'title'       => __( 'Single Product Button Settings', 'woocommerce-gateway-paypal-express-checkout' ),
