@@ -34,15 +34,29 @@
 				tagline: false,
 			},
 
+			validate: function( actions ) {
+				$( '#woo_pp_ec_button_product' ).off( '.legacy' )
+					.on( 'enable', actions.enable )
+					.on( 'disable', actions.disable );
+			},
+
 			payment: function( data, actions ) {
-				return paypal.request( {
-					method: 'post',
-					url: wc_ppec_context.start_checkout_url,
-					data: {
-						'nonce': wc_ppec_context.start_checkout_nonce,
-					},
-				} ).then( function( data ) {
-					return data.token;
+				return new paypal.Promise( function( resolve, reject ) {
+					if ( 'product' === wc_ppec_context.page ) {
+						window.wc_ppec_generate_cart( resolve );
+					} else {
+						resolve();
+					}
+				} ).then( function() {
+					return paypal.request( {
+						method: 'post',
+						url: wc_ppec_context.start_checkout_url,
+						data: {
+							'nonce': wc_ppec_context.start_checkout_nonce,
+						},
+					} ).then( function( data ) {
+						return data.token;
+					} );
 				} );
 			},
 
@@ -50,7 +64,7 @@
 				return actions.redirect();
 			},
 
-		}, '#woo_pp_ec_button' );
+		}, '#woo_pp_ec_button' + ( 'product' === wc_ppec_context.page ? '_product' : '' ) );
 	};
 
 	render();
