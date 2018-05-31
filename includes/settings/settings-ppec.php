@@ -110,9 +110,36 @@ wc_enqueue_js( "
 			} );
 		}
 
+		$( '.woocommerce_ppec_paypal_button_layout' ).change( function( event ) {
+			var isVertical = 'vertical' === $( event.target ).val();
+			var table      = $( event.target ).closest( 'table' );
+
+			var button_size = table.find( '.woocommerce_ppec_paypal_button_size' ).removeClass( 'enhanced' );
+			button_size.find( 'option[value=\"small\"]' ).prop( 'disabled', isVertical )
+			$( document.body ).trigger( 'wc-enhanced-select-init' );
+
+			if ( ! button_size.val() ) {
+				button_size.val( 'medium' ).change();
+			}
+		} ).change();
+
 		$( '#woocommerce_ppec_paypal_use_spb' ).change( function( event ) {
 			var checked = $( event.target ).is( ':checked' );
 			$( '.woocommerce_ppec_paypal_spb' ).closest( 'tr' ).toggle( checked );
+
+			if ( checked ) {
+				$( '.woocommerce_ppec_paypal_button_layout' ).change();
+			}
+
+			var button_size = $( '#woocommerce_ppec_paypal_button_size' ).removeClass( 'enhanced' );
+			button_size.find( 'option[value=\"responsive\"]' ).prop( 'disabled', ! checked );
+			$( document.body ).trigger( 'wc-enhanced-select-init' );
+
+			if ( checked ) {
+				button_size.val( 'responsive' ).change();
+			} else if ( ! button_size.val() ) {
+				button_size.val( 'large' ).change();
+			}
 		} ).change();
 	});
 " );
@@ -401,7 +428,7 @@ return apply_filters( 'woocommerce_paypal_express_checkout_settings', array(
 	'button_layout' => array(
 		'title'       => __( 'Button Layout', 'woocommerce-gateway-paypal-express-checkout' ),
 		'type'        => 'select',
-		'class'       => 'wc-enhanced-select woocommerce_ppec_paypal_spb',
+		'class'       => 'wc-enhanced-select woocommerce_ppec_paypal_spb woocommerce_ppec_paypal_button_layout',
 		'default'     => 'vertical',
 		'desc_tip'    => true,
 		'options'     => array(
@@ -412,14 +439,15 @@ return apply_filters( 'woocommerce_paypal_express_checkout_settings', array(
 	'button_size' => array(
 		'title'       => __( 'Button Size', 'woocommerce-gateway-paypal-express-checkout' ),
 		'type'        => 'select',
-		'class'       => 'wc-enhanced-select',
+		'class'       => 'wc-enhanced-select woocommerce_ppec_paypal_button_size',
 		'description' => __( 'PayPal offers different sizes of the "PayPal Checkout" buttons, allowing you to select a size that best fits your site\'s theme. This setting will allow you to choose which size button(s) appear on your cart page.', 'woocommerce-gateway-paypal-express-checkout' ),
-		'default'     => 'large',
+		'default'     => 'yes' === $this->get_option( 'use_spb' ) ? 'responsive' : 'large',
 		'desc_tip'    => true,
 		'options'     => array(
-			'small'  => __( 'Small', 'woocommerce-gateway-paypal-express-checkout' ),
-			'medium' => __( 'Medium', 'woocommerce-gateway-paypal-express-checkout' ),
-			'large'  => __( 'Large', 'woocommerce-gateway-paypal-express-checkout' ),
+			'responsive' => __( 'Responsive', 'woocommerce-gateway-paypal-express-checkout' ),
+			'small'      => __( 'Small', 'woocommerce-gateway-paypal-express-checkout' ),
+			'medium'     => __( 'Medium', 'woocommerce-gateway-paypal-express-checkout' ),
+			'large'      => __( 'Large', 'woocommerce-gateway-paypal-express-checkout' ),
 		),
 	),
 	'credit_enabled' => array(

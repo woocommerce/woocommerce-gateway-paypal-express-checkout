@@ -226,7 +226,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 	 *
 	 * @param array Raw settings.
 	 *
-	 * @return array Same array adapted to include only data to render.
+	 * @return array Same array adapted to include data suitable for client-side rendering.
 	 *
 	 * @since 1.6.0
 	 *
@@ -234,6 +234,10 @@ class WC_Gateway_PPEC_Cart_Handler {
 	protected function convert_to_render_settings( $data ) {
 		$button_layout        = $data['button_layout'];
 		$data['button_label'] = 'horizontal' === $button_layout ? 'buynow' : null;
+		$data['button_size']  = 'vertical' === $button_layout && 'small' === $data['button_size']
+			? 'medium'
+			: $data['button_size'];
+
 		return $data;
 	}
 
@@ -276,6 +280,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 			$data = array_merge( $data, $this->convert_to_render_settings( array(
 				'button_layout' => $settings->button_layout,
+				'button_size'   => $settings->button_size,
 			) ) );
 
 			wp_localize_script( 'wc-gateway-ppec-smart-payment-buttons', 'wc_ppec_context', $data );

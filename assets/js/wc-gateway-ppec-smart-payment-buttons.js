@@ -12,6 +12,7 @@
 				color: wc_ppec_context.button_color,
 				shape: wc_ppec_context.button_shape,
 				layout: wc_ppec_context.button_layout,
+				size: wc_ppec_context.button_size,				
 				label: wc_ppec_context.button_label,
 				tagline: false,
 			},
