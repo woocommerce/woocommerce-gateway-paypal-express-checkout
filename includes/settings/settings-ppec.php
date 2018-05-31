@@ -242,10 +242,10 @@ return apply_filters( 'woocommerce_paypal_express_checkout_settings', array(
 		'placeholder' => __( 'Optional', 'woocommerce-gateway-paypal-express-checkout' ),
 	),
 
-	'display_settings' => array(
-		'title'       => __( 'Display Settings', 'woocommerce-gateway-paypal-express-checkout' ),
+	'paypal_hosted_settings' => array(
+		'title'       => __( 'PayPal-hosted Checkout Settings', 'woocommerce-gateway-paypal-express-checkout' ),
 		'type'        => 'title',
-		'description' => __( 'Customize the appearance of Express Checkout in your store.', 'woocommerce-gateway-paypal-express-checkout' ),
+		'description' => __( 'Customize the appearance of Express Checkout on the PayPal side.', 'woocommerce-gateway-paypal-express-checkout' ),
 	),
 	'brand_name' => array(
 		'title'       => __( 'Brand Name', 'woocommerce-gateway-paypal-express-checkout' ),
@@ -253,35 +253,6 @@ return apply_filters( 'woocommerce_paypal_express_checkout_settings', array(
 		'description' => __( 'A label that overrides the business name in the PayPal account on the PayPal hosted checkout pages.', 'woocommerce-gateway-paypal-express-checkout' ),
 		'default'     => get_bloginfo( 'name', 'display' ),
 		'desc_tip'    => true,
-	),
-	'button_size' => array(
-		'title'       => __( 'Button Size', 'woocommerce-gateway-paypal-express-checkout' ),
-		'type'        => 'select',
-		'class'       => 'wc-enhanced-select',
-		'description' => __( 'PayPal offers different sizes of the "PayPal Checkout" buttons, allowing you to select a size that best fits your site\'s theme. This setting will allow you to choose which size button(s) appear on your cart page.', 'woocommerce-gateway-paypal-express-checkout' ),
-		'default'     => 'large',
-		'desc_tip'    => true,
-		'options'     => array(
-			'small'  => __( 'Small', 'woocommerce-gateway-paypal-express-checkout' ),
-			'medium' => __( 'Medium', 'woocommerce-gateway-paypal-express-checkout' ),
-			'large'  => __( 'Large', 'woocommerce-gateway-paypal-express-checkout' ),
-		),
-	),
-	'cart_checkout_enabled' => array(
-		'title'       => __( 'Checkout on cart page', 'woocommerce-gateway-paypal-express-checkout' ),
-		'type'        => 'checkbox',
-		'label'       => __( 'Enable PayPal checkout on the cart page', 'woocommerce-gateway-paypal-express-checkout' ),
-		'description' => __( 'This shows or hides the PayPal checkout button on the cart page.', 'woocommerce-gateway-paypal-express-checkout' ),
-		'desc_tip'    => true,
-		'default'     => 'yes',
-	),
-	'mark_enabled' => array(
-		'title'       => __( 'PayPal Mark', 'woocommerce-gateway-paypal-express-checkout' ),
-		'type'        => 'checkbox',
-		'label'       => __( 'Enable the PayPal Mark on regular checkout', 'woocommerce-gateway-paypal-express-checkout' ),
-		'description' => __( 'This enables the PayPal mark, which can be shown on regular WooCommerce checkout to use PayPal Express Checkout like a regular WooCommerce gateway.', 'woocommerce-gateway-paypal-express-checkout' ),
-		'desc_tip'    => true,
-		'default'     => 'yes',
 	),
 	'logo_image_url' => array(
 		'title'       => __( 'Logo Image (190×60)', 'woocommerce-gateway-paypal-express-checkout' ),
@@ -318,22 +289,6 @@ return apply_filters( 'woocommerce_paypal_express_checkout_settings', array(
 			'Billing' => _x( 'Billing (Non-PayPal account)', 'Type of PayPal page', 'woocommerce-gateway-paypal-express-checkout' ),
 			'Login'   => _x( 'Login (PayPal account login)', 'Type of PayPal page', 'woocommerce-gateway-paypal-express-checkout' ),
 		),
-	),
-	'credit_enabled' => array(
-		'title'       => __( 'Enable PayPal Credit', 'woocommerce-gateway-paypal-express-checkout' ),
-		'type'        => 'checkbox',
-		'label'       => $credit_enabled_label,
-		'disabled'    => ! wc_gateway_ppec_is_credit_supported(),
-		'default'     => 'yes',
-		'desc_tip'    => true,
-		'description' => $credit_enabled_description,
-	),
-	'checkout_on_single_product_enabled' => array(
-		'title'       => __( 'Checkout on Single Product', 'woocommerce-gateway-paypal-express-checkout' ),
-		'type'        => 'checkbox',
-		'label'       => __( 'Checkout on Single Product', 'woocommerce-gateway-paypal-express-checkout' ),
-		'default'     => 'yes',
-		'description' => __( 'Enable Express checkout on Single Product view.', 'woocommerce-gateway-paypal-express-checkout' ),
 	),
 
 	'advanced' => array(
@@ -401,5 +356,56 @@ return apply_filters( 'woocommerce_paypal_express_checkout_settings', array(
 			'add'  => __( 'Add another line item', 'woocommerce-gateway-paypal-express-checkout' ),
 			'drop' => __( 'Do not send line items to PayPal', 'woocommerce-gateway-paypal-express-checkout' ),
 		),
+	),
+
+	'button_settings' => array(
+		'title'       => __( 'Button Settings', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'        => 'title',
+		'description' => __( 'Customize the appearance of Express Checkout on your site.', 'woocommerce-gateway-paypal-express-checkout' ),
+	),
+	'button_size' => array(
+		'title'       => __( 'Button Size', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'        => 'select',
+		'class'       => 'wc-enhanced-select',
+		'description' => __( 'PayPal offers different sizes of the "PayPal Checkout" buttons, allowing you to select a size that best fits your site\'s theme. This setting will allow you to choose which size button(s) appear on your cart page.', 'woocommerce-gateway-paypal-express-checkout' ),
+		'default'     => 'large',
+		'desc_tip'    => true,
+		'options'     => array(
+			'small'  => __( 'Small', 'woocommerce-gateway-paypal-express-checkout' ),
+			'medium' => __( 'Medium', 'woocommerce-gateway-paypal-express-checkout' ),
+			'large'  => __( 'Large', 'woocommerce-gateway-paypal-express-checkout' ),
+		),
+	),
+	'credit_enabled' => array(
+		'title'       => __( 'Enable PayPal Credit', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'        => 'checkbox',
+		'label'       => $credit_enabled_label,
+		'disabled'    => ! wc_gateway_ppec_is_credit_supported(),
+		'default'     => 'no',
+		'desc_tip'    => true,
+		'description' => __( 'This enables PayPal Credit, which displays a PayPal Credit button next to the Express Checkout button. PayPal Express Checkout lets you give customers access to financing through PayPal Credit® - at no additional cost to you. You get paid up front, even though customers have more time to pay. A pre-integrated payment button shows up next to the PayPal Button, and lets customers pay quickly with PayPal Credit®.', 'woocommerce-gateway-paypal-express-checkout' ),
+	),
+	'cart_checkout_enabled' => array(
+		'title'       => __( 'Checkout on cart page', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'        => 'checkbox',
+		'label'       => __( 'Enable PayPal checkout on the cart page', 'woocommerce-gateway-paypal-express-checkout' ),
+		'description' => __( 'This shows or hides the PayPal checkout button on the cart page.', 'woocommerce-gateway-paypal-express-checkout' ),
+		'desc_tip'    => true,
+		'default'     => 'yes',
+	),
+	'mark_enabled' => array(
+		'title'       => __( 'PayPal Mark', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'        => 'checkbox',
+		'label'       => __( 'Enable the PayPal Mark on regular checkout', 'woocommerce-gateway-paypal-express-checkout' ),
+		'description' => __( 'This enables the PayPal mark, which can be shown on regular WooCommerce checkout to use PayPal Express Checkout like a regular WooCommerce gateway.', 'woocommerce-gateway-paypal-express-checkout' ),
+		'desc_tip'    => true,
+		'default'     => 'yes',
+	),
+	'checkout_on_single_product_enabled' => array(
+		'title'       => __( 'Checkout on Single Product', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'        => 'checkbox',
+		'label'       => __( 'Checkout on Single Product', 'woocommerce-gateway-paypal-express-checkout' ),
+		'default'     => 'yes',
+		'description' => __( 'Enable Express checkout on Single Product view.', 'woocommerce-gateway-paypal-express-checkout' ),
 	),
 ) );
