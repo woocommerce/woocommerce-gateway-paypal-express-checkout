@@ -153,7 +153,8 @@ wc_enqueue_js( "
 
 		$( '#woocommerce_ppec_paypal_use_spb' ).change( function( event ) {
 			var checked = $( event.target ).is( ':checked' );
-			$( '.woocommerce_ppec_paypal_spb' ).closest( 'tr' ).toggle( checked );
+			$( '.woocommerce_ppec_paypal_spb' ).not( 'h3 ').closest( 'tr' ).toggle( checked );
+			$( '.woocommerce_ppec_paypal_spb' ).filter( 'h3' ).next( 'p' ).addBack().toggle( checked );
 
 			if ( checked ) {
 				$( '#woocommerce_ppec_paypal_button_layout, .woocommerce_ppec_paypal_visibility_toggle' ).change();
