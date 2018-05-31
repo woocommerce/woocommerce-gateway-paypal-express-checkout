@@ -398,6 +398,17 @@ return apply_filters( 'woocommerce_paypal_express_checkout_settings', array(
 			'rect' => __( 'Rect', 'woocommerce-gateway-paypal-express-checkout' ),
 		),
 	),
+	'button_layout' => array(
+		'title'       => __( 'Button Layout', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'        => 'select',
+		'class'       => 'wc-enhanced-select woocommerce_ppec_paypal_spb',
+		'default'     => 'vertical',
+		'desc_tip'    => true,
+		'options'     => array(
+			'vertical'   => __( 'Vertical', 'woocommerce-gateway-paypal-express-checkout' ),
+			'horizontal' => __( 'Horizontal', 'woocommerce-gateway-paypal-express-checkout' ),
+		),
+	),
 	'button_size' => array(
 		'title'       => __( 'Button Size', 'woocommerce-gateway-paypal-express-checkout' ),
 		'type'        => 'select',

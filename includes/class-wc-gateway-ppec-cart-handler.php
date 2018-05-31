@@ -222,6 +222,22 @@ class WC_Gateway_PPEC_Cart_Handler {
 	}
 
 	/**
+	 * Convert from settings to values expected by PayPal Button API.
+	 *
+	 * @param array Raw settings.
+	 *
+	 * @return array Same array adapted to include only data to render.
+	 *
+	 * @since 1.6.0
+	 *
+	 */
+	protected function convert_to_render_settings( $data ) {
+		$button_layout        = $data['button_layout'];
+		$data['button_label'] = 'horizontal' === $button_layout ? 'buynow' : null;
+		return $data;
+	}
+
+	/**
 	 * Frontend scripts
 	 */
 	public function enqueue_scripts() {
@@ -257,6 +273,10 @@ class WC_Gateway_PPEC_Cart_Handler {
 				'start_checkout_nonce' => wp_create_nonce( '_wc_ppec_start_checkout_nonce' ),
 				'start_checkout_url'   => WC_AJAX::get_endpoint( 'wc_ppec_start_checkout' ),
 			);
+
+			$data = array_merge( $data, $this->convert_to_render_settings( array(
+				'button_layout' => $settings->button_layout,
+			) ) );
 
 			wp_localize_script( 'wc-gateway-ppec-smart-payment-buttons', 'wc_ppec_context', $data );
 		}
