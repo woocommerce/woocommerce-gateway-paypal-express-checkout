@@ -279,7 +279,7 @@ return apply_filters( 'woocommerce_paypal_express_checkout_settings', array(
 		'label'       => __( 'Enable the PayPal Mark on regular checkout', 'woocommerce-gateway-paypal-express-checkout' ),
 		'description' => __( 'This enables the PayPal mark, which can be shown on regular WooCommerce checkout to use PayPal Express Checkout like a regular WooCommerce gateway.', 'woocommerce-gateway-paypal-express-checkout' ),
 		'desc_tip'    => true,
-		'default'     => 'no',
+		'default'     => 'yes',
 	),
 	'logo_image_url' => array(
 		'title'       => __( 'Logo Image (190×60)', 'woocommerce-gateway-paypal-express-checkout' ),
