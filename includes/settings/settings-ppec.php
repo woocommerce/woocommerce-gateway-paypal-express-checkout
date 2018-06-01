@@ -330,7 +330,7 @@ return apply_filters( 'woocommerce_paypal_express_checkout_settings', array(
 		'title'       => __( 'Checkout on Single Product', 'woocommerce-gateway-paypal-express-checkout' ),
 		'type'        => 'checkbox',
 		'label'       => __( 'Checkout on Single Product', 'woocommerce-gateway-paypal-express-checkout' ),
-		'default'     => 'no',
+		'default'     => 'yes',
 		'description' => __( 'Enable Express checkout on Single Product view.', 'woocommerce-gateway-paypal-express-checkout' ),
 	),
 
