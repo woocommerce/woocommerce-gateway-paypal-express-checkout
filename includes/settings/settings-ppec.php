@@ -117,7 +117,7 @@ wc_enqueue_js( "
 			table.find( '.woocommerce_ppec_paypal_horizontal' ).closest( 'tr' ).toggle( ! isVertical );
 
 			var button_size = table.find( '.woocommerce_ppec_paypal_button_size' ).removeClass( 'enhanced' );
-			button_size.find( 'option[value=\"small\"]' ).prop( 'disabled', isVertical )
+			button_size.find( 'option[value=\"small\"]' ).prop( 'disabled', isVertical );
 			$( document.body ).trigger( 'wc-enhanced-select-init' );
 
 			if ( ! button_size.val() ) {
@@ -198,6 +198,7 @@ wc_enqueue_js( "
 
 			var button_size = $( '#woocommerce_ppec_paypal_button_size' ).removeClass( 'enhanced' );
 			button_size.find( 'option[value=\"responsive\"]' ).prop( 'disabled', ! checked );
+			button_size.find( 'option[value=\"small\"]' ).prop( 'disabled', false );
 			$( document.body ).trigger( 'wc-enhanced-select-init' );
 
 			if ( checked ) {
