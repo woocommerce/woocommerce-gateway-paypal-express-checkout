@@ -124,7 +124,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			return $fields;
 		}
 
-		if ( ! apply_filters( 'woocommerce_paypal_express_checkout_address_not_required', false ) ) {
+		if ( ! apply_filters( 'woocommerce_paypal_express_checkout_address_not_required', ! WC_Gateway_PPEC_Plugin::needs_shipping() ) ) {
 			return $fields;
 		}
 
