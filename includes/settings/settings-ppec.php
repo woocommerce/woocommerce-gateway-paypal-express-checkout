@@ -202,7 +202,7 @@ wc_enqueue_js( "
 			$( document.body ).trigger( 'wc-enhanced-select-init' );
 
 			if ( checked ) {
-				button_size.val( 'responsive' ).change();
+				$( '.woocommerce_ppec_paypal_button_size' ).val( 'responsive' ).change();
 			} else if ( ! button_size.val() ) {
 				button_size.val( 'large' ).change();
 			}
