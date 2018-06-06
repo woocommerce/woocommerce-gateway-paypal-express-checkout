@@ -127,7 +127,7 @@ return apply_filters( 'woocommerce_paypal_express_checkout_settings', array(
 		'title'       => __( 'Title', 'woocommerce-gateway-paypal-express-checkout' ),
 		'type'        => 'text',
 		'description' => __( 'This controls the title which the user sees during checkout.', 'woocommerce-gateway-paypal-express-checkout' ),
-		'default'     => __( 'PayPal Express Checkout', 'woocommerce-gateway-paypal-express-checkout' ),
+		'default'     => __( 'PayPal', 'woocommerce-gateway-paypal-express-checkout' ),
 		'desc_tip'    => true,
 	),
 	'description' => array(
