@@ -93,6 +93,9 @@ Please use this to inform us about bugs, or make contributions via PRs.
 
 == Changelog ==
 
+= 1.5.6 - 2018-xx-xx =
+* Fix    - Virtual products cause issues with billing details validation.
+
 = 1.5.5 - 2018-05-23 =
 * Update - WC 3.4 compatibility
 * Update - Privacy policy notification.
