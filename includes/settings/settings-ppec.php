@@ -116,9 +116,13 @@ wc_enqueue_js( "
 			table.find( '.woocommerce_ppec_paypal_vertical' ).closest( 'tr' ).toggle( isVertical );
 			table.find( '.woocommerce_ppec_paypal_horizontal' ).closest( 'tr' ).toggle( ! isVertical );
 
-			var button_size = table.find( '.woocommerce_ppec_paypal_button_size' ).removeClass( 'enhanced' );
-			button_size.find( 'option[value=\"small\"]' ).prop( 'disabled', isVertical );
-			$( document.body ).trigger( 'wc-enhanced-select-init' );
+			var button_size        = table.find( '.woocommerce_ppec_paypal_button_size' );
+			var button_size_option = button_size.find( 'option[value=\"small\"]' );
+			if ( button_size_option.prop( 'disabled' ) !== isVertical ) {
+				button_size.removeClass( 'enhanced' )
+				button_size_option.prop( 'disabled', isVertical );
+				$( document.body ).trigger( 'wc-enhanced-select-init' );
+			}
 
 			if ( ! button_size.val() ) {
 				button_size.val( 'medium' ).change();
