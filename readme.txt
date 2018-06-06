@@ -93,7 +93,7 @@ Please use this to inform us about bugs, or make contributions via PRs.
 
 == Changelog ==
 
-= 1.5.6 - 2018-xx-xx =
+= 1.5.6 - 2018-06-06 =
 * Fix    - Virtual products cause issues with billing details validation.
 
 = 1.5.5 - 2018-05-23 =
