@@ -254,6 +254,13 @@ class WC_Gateway_PPEC_Cart_Handler {
 			? 'medium'
 			: $data['button_size'];
 
+		if ( ! wc_gateway_ppec_is_credit_supported() ) {
+			$data['credit_enabled'] = 'no';
+			if ( ! in_array( 'CREDIT', $data['hide_funding_methods'] ) ) {
+				$data['hide_funding_methods'][] = 'CREDIT';
+			}
+		}
+
 		if ( 'vertical' === $button_layout ) {
 			$data['disallowed_methods'] = $data['hide_funding_methods'];
 		} else {
