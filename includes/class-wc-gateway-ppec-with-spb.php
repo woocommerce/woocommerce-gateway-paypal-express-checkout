@@ -43,13 +43,15 @@ class WC_Gateway_PPEC_With_SPB extends WC_Gateway_PPEC {
 	 * @return array
 	 */
 	public function process_payment( $order_id ) {
-		$session = WC()->session->get( 'paypal' );
+		if ( isset( $_POST['payerID'] ) ) {
+			$session = WC()->session->get( 'paypal' );
 
-		$session->checkout_completed = true;
-		$session->payer_id           = $_POST['payerID'];
-		$session->token              = $_POST['paymentToken'];
-
-		WC()->session->set( 'paypal', $session );
+			$session->checkout_completed = true;
+			$session->payer_id           = $_POST['payerID'];
+			$session->token              = $_POST['paymentToken'];
+	
+			WC()->session->set( 'paypal', $session );
+		}
 
 		return parent::process_payment( $order_id );
 	}
