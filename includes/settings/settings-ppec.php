@@ -492,7 +492,7 @@ $settings = array(
 		'desc_tip'    => true,
 		'options'     => array(
 			'pill' => __( 'Pill', 'woocommerce-gateway-paypal-express-checkout' ),
-			'rect' => __( 'Rect', 'woocommerce-gateway-paypal-express-checkout' ),
+			'rect' => __( 'Rectangle', 'woocommerce-gateway-paypal-express-checkout' ),
 		),
 	),
 );
