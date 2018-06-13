@@ -22,6 +22,8 @@
 		var allowed       = wc_ppec_context[ prefix + 'allowed_methods' ];
 		var disallowed    = wc_ppec_context[ prefix + 'disallowed_methods' ];
 
+		var selector = 'product' === wc_ppec_context.page && ! isMiniCart ? '#woo_pp_ec_button_product' : '#woo_pp_ec_button';
+
 		paypal.Button.render( {
 			env: wc_ppec_context.environment,
 			locale: wc_ppec_context.locale,
@@ -47,7 +49,9 @@
 					.on( 'disable', actions.disable );
 			},
 
-			payment: function( data, actions ) {
+			payment: function() {
+				$( '.woocommerce-error', selector ).remove();
+
 				return new paypal.Promise( function( resolve, reject ) {
 					if ( 'product' === wc_ppec_context.page && ! isMiniCart ) {
 						window.wc_ppec_generate_cart( resolve );
@@ -63,6 +67,9 @@
 							'from_checkout': 'checkout' === wc_ppec_context.page ? 'yes' : 'no',
 						},
 					} ).then( function( data ) {
+						if ( 'failure' === data.result ) {
+							$( selector ).prepend( data.messages );
+						}
 						return data.token;
 					} );
 				} );
@@ -79,7 +86,7 @@
 				}
 			},
 
-		}, '#woo_pp_ec_button' + ( 'product' === wc_ppec_context.page && ! isMiniCart ? '_product' : '' ) );
+		}, selector );
 	};
 
 	if ( wc_ppec_context.page ) {

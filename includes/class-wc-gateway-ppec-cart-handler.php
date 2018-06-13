@@ -133,8 +133,22 @@ class WC_Gateway_PPEC_Cart_Handler {
 			add_filter( 'woocommerce_cart_needs_shipping', '__return_false' );
 		}
 
-		wc_gateway_ppec()->checkout->start_checkout_from_cart();
-		wp_send_json( array( 'token' => WC()->session->paypal->token ) );
+		try {
+			wc_gateway_ppec()->checkout->start_checkout_from_cart();
+			$response = array(
+				'result' => 'success',
+				'token'  => WC()->session->paypal->token,
+			);
+		} catch( PayPal_API_Exception $e ) {
+			ob_start();
+			wc_add_notice( $e->getMessage(), 'error' );
+			wc_print_notices();
+			$response = array(
+				'result'   => 'failure',
+				'messages' => ob_get_clean(),
+			);
+		}
+		wp_send_json( $response );
 	}
 
 	/**

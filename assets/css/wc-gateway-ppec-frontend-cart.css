@@ -3,6 +3,9 @@
 	margin: 1em 0;
 	overflow: hidden;
 }
+.wcppec-checkout-buttons .woocommerce-error {
+	text-align: left;
+}
 .wcppec-checkout-buttons__separator {
 	display: block;
 	opacity: .5;
