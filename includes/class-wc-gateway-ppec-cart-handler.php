@@ -247,7 +247,15 @@ class WC_Gateway_PPEC_Cart_Handler {
 	 * @since 1.6.0
 	 *
 	 */
-	protected function convert_to_render_settings( $data ) {
+	protected function get_button_settings( $settings, $context = '' ) {
+		$prefix = $context ? $context . '_' : $context;
+		$data = array(
+			'button_layout'        => $settings->{ $prefix . 'button_layout' },
+			'button_size'          => $settings->{ $prefix . 'button_size' },
+			'hide_funding_methods' => $settings->{ $prefix . 'hide_funding_methods' },
+			'credit_enabled'       => $settings->{ $prefix . 'credit_enabled' },
+		);
+
 		$button_layout        = $data['button_layout'];
 		$data['button_label'] = 'horizontal' === $button_layout ? 'buynow' : null;
 		$data['button_size']  = 'vertical' === $button_layout && 'small' === $data['button_size']
@@ -316,39 +324,18 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 			if ( ! is_null(  $page ) ) {
 				if ( 'product' === $page ) {
-					$page_data = array(
-						'button_layout'        => $settings->single_product_button_layout,
-						'button_size'          => $settings->single_product_button_size,
-						'hide_funding_methods' => $settings->single_product_hide_funding_methods,
-						'credit_enabled'       => $settings->single_product_credit_enabled,
-					);
+					$button_settings = $this->get_button_settings( $settings, 'single_product' );
 				} elseif ( 'checkout' === $page && 'yes' === $settings->mark_settings_toggle ) {
-					$page_data = array(
-						'button_layout'        => $settings->mark_button_layout,
-						'button_size'          => $settings->mark_button_size,
-						'hide_funding_methods' => $settings->mark_hide_funding_methods,
-						'credit_enabled'       => $settings->mark_credit_enabled,
-					);
+					$button_settings = $this->get_button_settings( $settings, 'mark' );
 				} else {
-					$page_data = array(
-						'button_layout'        => $settings->button_layout,
-						'button_size'          => $settings->button_size,
-						'hide_funding_methods' => $settings->hide_funding_methods,
-						'credit_enabled'       => $settings->credit_enabled,
-					);
+					$button_settings = $this->get_button_settings( $settings );
 				}
 
-				$data = array_merge( $data, $this->convert_to_render_settings( $page_data ) );
+				$data = array_merge( $data, $button_settings );
 			}
 
 			$settings_toggle = 'yes' === $settings->mini_cart_settings_toggle;
-			$mini_cart_data  = array(
-				'button_layout'        => $settings_toggle ? $settings->mini_cart_button_layout        : $settings->button_layout,
-				'button_size'          => $settings_toggle ? $settings->mini_cart_button_size          : $settings->button_size,
-				'hide_funding_methods' => $settings_toggle ? $settings->mini_cart_hide_funding_methods : $settings->hide_funding_methods,
-				'credit_enabled'       => $settings_toggle ? $settings->mini_cart_credit_enabled       : $settings->credit_enabled,
-			);
-			$mini_cart_data = $this->convert_to_render_settings( $mini_cart_data );
+			$mini_cart_data  = $this->get_button_settings( $settings, $settings_toggle ? 'mini_cart' : '' );
 			foreach( $mini_cart_data as $key => $value ) {
 				unset( $mini_cart_data[ $key ] );
 				$mini_cart_data[ 'mini_cart_' . $key ] = $value;
