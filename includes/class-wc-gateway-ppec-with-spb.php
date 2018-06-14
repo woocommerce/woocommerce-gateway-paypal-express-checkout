@@ -43,7 +43,7 @@ class WC_Gateway_PPEC_With_SPB extends WC_Gateway_PPEC {
 	 * @return array
 	 */
 	public function process_payment( $order_id ) {
-		if ( isset( $_POST['payerID'] ) ) {
+		if ( isset( $_POST['payerID'] ) && isset( $_POST['paymentToken'] ) ) {
 			$session = WC()->session->get( 'paypal' );
 
 			$session->checkout_completed = true;

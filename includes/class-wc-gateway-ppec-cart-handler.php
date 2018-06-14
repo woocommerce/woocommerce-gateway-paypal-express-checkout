@@ -134,7 +134,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 			wp_die( __( 'Cheatin&#8217; huh?', 'woocommerce-gateway-paypal-express-checkout' ) );
 		}
 
-		if ( 'yes' === $_POST['from_checkout'] ) {
+		if ( isset( $_POST['from_checkout'] ) && 'yes' === $_POST['from_checkout'] ) {
 			add_filter( 'woocommerce_cart_needs_shipping', '__return_false' );
 		}
 
