@@ -111,6 +111,10 @@ wc_enqueue_js( "
 		}
 
 		$( '.woocommerce_ppec_paypal_button_layout' ).change( function( event ) {
+			if ( ! $( '#woocommerce_ppec_paypal_use_spb' ).is( ':checked' ) ) {
+				return;
+			}
+
 			var isVertical = 'vertical' === $( event.target ).val();
 			var table      = $( event.target ).closest( 'table' );
 			table.find( '.woocommerce_ppec_paypal_vertical' ).closest( 'tr' ).toggle( isVertical );
@@ -202,7 +206,7 @@ wc_enqueue_js( "
 
 			var button_size = $( '#woocommerce_ppec_paypal_button_size' ).removeClass( 'enhanced' );
 			button_size.find( 'option[value=\"responsive\"]' ).prop( 'disabled', ! checked );
-			button_size.find( 'option[value=\"small\"]' ).prop( 'disabled', false );
+			button_size.find( 'option[value=\"small\"]' ).prop( 'disabled', checked );
 			$( document.body ).trigger( 'wc-enhanced-select-init' );
 
 			if ( checked ) {
