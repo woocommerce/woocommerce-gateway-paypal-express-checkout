@@ -20,9 +20,14 @@ class WC_Gateway_PPEC_Cart_Handler {
 		}
 
 		add_action( 'woocommerce_before_cart_totals', array( $this, 'before_cart_totals' ) );
-		add_action( 'yes' === wc_gateway_ppec()->settings->use_spb ? 'woocommerce_after_mini_cart' : 'woocommerce_widget_shopping_cart_buttons', array( $this, 'display_mini_paypal_button' ), 20 );
 		add_action( 'woocommerce_proceed_to_checkout', array( $this, 'display_paypal_button' ), 20 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+
+		if ( 'yes' === wc_gateway_ppec()->settings->use_spb ) {
+			add_action( 'woocommerce_after_mini_cart', array( $this, 'display_mini_paypal_button' ), 20 );
+		} else {
+			add_action( 'woocommerce_widget_shopping_cart_buttons', array( $this, 'display_mini_paypal_button' ), 20 );
+		}
 
 		if ( 'yes' === wc_gateway_ppec()->settings->checkout_on_single_product_enabled ) {
 			add_action( 'woocommerce_after_add_to_cart_form', array( $this, 'display_paypal_button_product' ), 1 );
@@ -359,7 +364,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 			wp_localize_script( 'wc-gateway-ppec-smart-payment-buttons', 'wc_ppec_context', $data );
 		}
 
-		if ( is_product() ) {
+		if ( $is_product ) {
 			wp_enqueue_script( 'wc-gateway-ppec-generate-cart', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-generate-cart.js', array( 'jquery' ), wc_gateway_ppec()->version, true );
 			wp_localize_script( 'wc-gateway-ppec-generate-cart', 'wc_ppec_generate_cart_context',
 				array(

@@ -94,9 +94,7 @@
 
 	if ( wc_ppec_context.page ) {
 		render();
-		$( document.body ).on( 'updated_cart_totals updated_checkout', function() {
-			render();
-		} );
+		$( document.body ).on( 'updated_cart_totals updated_checkout', render.bind( this, false ) );
 	}
 	$( document.body ).on( 'wc_fragments_loaded wc_fragments_refreshed', function() {
 		var $button = $( '.widget_shopping_cart #woo_pp_ec_button' );
