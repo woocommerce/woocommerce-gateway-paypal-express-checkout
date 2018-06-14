@@ -508,6 +508,9 @@ $settings = array(
 	),
 );
 
+/**
+ * Settings that are copied to context-specific sections.
+ */
 $per_context_settings = array(
 	'button_layout' => array(
 		'title'       => __( 'Button Layout', 'woocommerce-gateway-paypal-express-checkout' ),
@@ -557,6 +560,9 @@ $per_context_settings = array(
 	),
 );
 
+/**
+ * Cart / global button settings.
+ */
 $settings = array_merge( $settings, $per_context_settings );
 $per_context_settings['button_size']['class'] .= ' woocommerce_ppec_paypal_spb';
 $per_context_settings['credit_enabled']['class'] .= ' woocommerce_ppec_paypal_spb';
@@ -571,6 +577,9 @@ $settings['cart_checkout_enabled'] = array(
 	'default'     => 'yes',
 );
 
+/**
+ * Mini-cart button settings.
+ */
 $settings['mini_cart_settings'] = array(
 	'title'       => __( 'Mini-cart Button Settings', 'woocommerce-gateway-paypal-express-checkout' ),
 	'type'        => 'title',
@@ -588,6 +597,9 @@ foreach( $per_context_settings as $key => $value ) {
 	$settings[ 'mini_cart_' . $key ] = $value;
 }
 
+/**
+ * Single product button settings.
+ */
 $settings['single_product_button_settings'] = array(
 	'title'       => __( 'Single Product Button Settings', 'woocommerce-gateway-paypal-express-checkout' ),
 	'type'        => 'title',
@@ -608,6 +620,9 @@ foreach( $per_context_settings as $key => $value ) {
 }
 $settings['single_product_button_layout']['default'] = 'horizontal';
 
+/**
+ * Regular checkout button settings.
+ */
 $settings['mark_settings'] = array(
 	'title'       => __( 'Regular Checkout Button Settings', 'woocommerce-gateway-paypal-express-checkout' ),
 	'type'        => 'title',
