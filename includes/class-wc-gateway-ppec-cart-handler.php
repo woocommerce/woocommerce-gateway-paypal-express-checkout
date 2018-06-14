@@ -342,7 +342,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 			);
 
 			if ( ! is_null(  $page ) ) {
-				if ( 'product' === $page ) {
+				if ( 'product' === $page && 'yes' === $settings->single_product_settings_toggle ) {
 					$button_settings = $this->get_button_settings( $settings, 'single_product' );
 				} elseif ( 'checkout' === $page && 'yes' === $settings->mark_settings_toggle ) {
 					$button_settings = $this->get_button_settings( $settings, 'mark' );

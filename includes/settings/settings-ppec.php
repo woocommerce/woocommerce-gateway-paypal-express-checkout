@@ -137,6 +137,7 @@ wc_enqueue_js( "
 		function showHideDefaultButtonSettings() {
 			var display =
 				$( '#woocommerce_ppec_paypal_cart_checkout_enabled' ).is( ':checked' ) ||
+				( $( '#woocommerce_ppec_paypal_checkout_on_single_product_enabled' ).is( ':checked' ) && ! $( '#woocommerce_ppec_paypal_single_product_settings_toggle' ).is( ':checked' ) ) ||
 				( $( '#woocommerce_ppec_paypal_mark_enabled' ).is( ':checked' ) && ! $( '#woocommerce_ppec_paypal_mark_settings_toggle' ).is( ':checked' ) );
 
 			$( '#woocommerce_ppec_paypal_button_layout, #woocommerce_ppec_paypal_button_size, #woocommerce_ppec_paypal_hide_funding_methods, #woocommerce_ppec_paypal_credit_enabled' ).closest( 'tr' ).toggle( display );
@@ -166,14 +167,21 @@ wc_enqueue_js( "
 			showHideDefaultButtonSettings();
 		} ).change();
 
-		$( '#woocommerce_ppec_paypal_checkout_on_single_product_enabled' ).change( function( event ) {
+		$( '#woocommerce_ppec_paypal_checkout_on_single_product_enabled, #woocommerce_ppec_paypal_single_product_settings_toggle' ).change( function( event ) {
 			if ( ! $( '#woocommerce_ppec_paypal_use_spb' ).is( ':checked' ) ) {
 				return;
 			}
 
-			var checked = $( event.target ).is( ':checked' );
-			$( '.woocommerce_ppec_paypal_single_product' ).closest( 'tr' ).toggle( checked );
-			checked && $( '#woocommerce_ppec_paypal_single_product_button_layout' ).change();
+			if ( ! $( '#woocommerce_ppec_paypal_checkout_on_single_product_enabled' ).is( ':checked' ) ) {
+				$( '#woocommerce_ppec_paypal_single_product_settings_toggle, .woocommerce_ppec_paypal_single_product' ).closest( 'tr' ).hide();
+			} else if ( ! $( '#woocommerce_ppec_paypal_single_product_settings_toggle' ).is( ':checked' ) ) {
+				$( '#woocommerce_ppec_paypal_single_product_settings_toggle' ).closest( 'tr' ).show();
+				$( '.woocommerce_ppec_paypal_single_product' ).closest( 'tr' ).hide();
+			} else {
+				$( '#woocommerce_ppec_paypal_single_product_settings_toggle, .woocommerce_ppec_paypal_single_product' ).closest( 'tr' ).show();
+				$( '#woocommerce_ppec_paypal_single_product_button_layout' ).change();
+			}
+			showHideDefaultButtonSettings();
 		} ).change();
 
 		$( '#woocommerce_ppec_paypal_mark_enabled, #woocommerce_ppec_paypal_mark_settings_toggle' ).change( function() {
@@ -587,7 +595,8 @@ $settings['mini_cart_settings'] = array(
 	'description' => __( 'Button shape and color are configured globally above.', 'woocommerce-gateway-paypal-express-checkout' ),
 );
 $settings['mini_cart_settings_toggle'] = array(
-	'title'   => __( 'Configure settings specific to mini-cart', 'woocommerce-gateway-paypal-express-checkout' ),
+	'title'   => __( 'Configure Settings', 'woocommerce-gateway-paypal-express-checkout' ),
+	'label'   => __( 'Configure settings specific to mini-cart', 'woocommerce-gateway-paypal-express-checkout' ),
 	'type'    => 'checkbox',
 	'class'   => 'woocommerce_ppec_paypal_spb woocommerce_ppec_paypal_visibility_toggle',
 	'default' => 'no',
@@ -600,7 +609,7 @@ foreach( $per_context_settings as $key => $value ) {
 /**
  * Single product button settings.
  */
-$settings['single_product_button_settings'] = array(
+$settings['single_product_settings'] = array(
 	'title'       => __( 'Single Product Button Settings', 'woocommerce-gateway-paypal-express-checkout' ),
 	'type'        => 'title',
 	'class'       => 'woocommerce_ppec_paypal_spb',
@@ -613,6 +622,13 @@ $settings['checkout_on_single_product_enabled'] = array(
 	'label'       => __( 'Checkout on Single Product', 'woocommerce-gateway-paypal-express-checkout' ),
 	'default'     => 'yes',
 	'description' => __( 'Enable Express checkout on Single Product view.', 'woocommerce-gateway-paypal-express-checkout' ),
+);
+$settings['single_product_settings_toggle'] = array(
+	'title'   => __( 'Configure Settings', 'woocommerce-gateway-paypal-express-checkout' ),
+	'label'   => __( 'Configure settings specific to Single Product view', 'woocommerce-gateway-paypal-express-checkout' ),
+	'type'    => 'checkbox',
+	'class'       => 'woocommerce_ppec_paypal_spb woocommerce_ppec_paypal_visibility_toggle',
+	'default' => 'yes',
 );
 foreach( $per_context_settings as $key => $value ) {
 	$value['class'] .= ' woocommerce_ppec_paypal_single_product';
@@ -639,7 +655,8 @@ $settings['mark_enabled'] = array(
 	'default'     => 'yes',
 );
 $settings['mark_settings_toggle'] = array(
-	'title'   => __( 'Configure settings specific to regular checkout', 'woocommerce-gateway-paypal-express-checkout' ),
+	'title'   => __( 'Configure Settings', 'woocommerce-gateway-paypal-express-checkout' ),
+	'label'   => __( 'Configure settings specific to regular checkout', 'woocommerce-gateway-paypal-express-checkout' ),
 	'type'    => 'checkbox',
 	'class'       => 'woocommerce_ppec_paypal_spb woocommerce_ppec_paypal_visibility_toggle',
 	'default' => 'no',
