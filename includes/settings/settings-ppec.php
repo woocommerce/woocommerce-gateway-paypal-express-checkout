@@ -193,6 +193,9 @@ wc_enqueue_js( "
 			showHideDefaultButtonSettings();
 		} ).change();
 
+		// Make sure handlers are only attached once if script is loaded multiple times.
+		$( '#woocommerce_ppec_paypal_use_spb' ).off( 'change' );
+
 		$( '#woocommerce_ppec_paypal_use_spb' ).change( function( event ) {
 			var checked = $( event.target ).is( ':checked' );
 			$( '.woocommerce_ppec_paypal_spb' ).not( 'h3 ').closest( 'tr' ).toggle( checked );
@@ -208,13 +211,17 @@ wc_enqueue_js( "
 			button_size.find( 'option[value=\"responsive\"]' ).prop( 'disabled', ! checked );
 			button_size.find( 'option[value=\"small\"]' ).prop( 'disabled', checked );
 			$( document.body ).trigger( 'wc-enhanced-select-init' );
+		} ).change();
 
-			if ( checked ) {
+		// Reset button size values to default when switching modes.
+		$( '#woocommerce_ppec_paypal_use_spb' ).change( function( event ) {
+			if ( $( event.target ).is( ':checked' ) ) {
 				$( '.woocommerce_ppec_paypal_button_size' ).val( 'responsive' ).change();
 			} else if ( ! button_size.val() ) {
 				button_size.val( 'large' ).change();
 			}
-		} ).change();
+		} );
+
 	});
 " );
 
