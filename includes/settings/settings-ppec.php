@@ -480,7 +480,7 @@ $settings = array(
 		'title'       => __( 'Smart Payment Buttons', 'woocommerce-gateway-paypal-express-checkout' ),
 		'type'        => 'checkbox',
 		'default'     => 'no',
-		'title'       => __( 'Use Smart Payment Buttons', 'woocommerce-gateway-paypal-express-checkout' ),
+		'label'       => __( 'Use Smart Payment Buttons', 'woocommerce-gateway-paypal-express-checkout' ),
 	),
 	'button_color' => array(
 		'title'       => __( 'Button Color', 'woocommerce-gateway-paypal-express-checkout' ),
