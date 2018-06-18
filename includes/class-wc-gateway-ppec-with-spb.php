@@ -25,7 +25,7 @@ class WC_Gateway_PPEC_With_SPB extends WC_Gateway_PPEC {
 	}
 
 	/**
-	 * Outputs scripts used for PPEC payment.
+	 * Output script for conditionally showing Smart Payment Buttons on regular checkout.
 	 *
 	 * @since 1.6.0
 	 */
@@ -36,7 +36,8 @@ class WC_Gateway_PPEC_With_SPB extends WC_Gateway_PPEC {
 	}
 
 	/**
-	 * Process payments.
+	 * Save data necessary for authorizing payment to session, in order to
+	 * go ahead with processing payment and bypass redirecting to PayPal.
 	 *
 	 * @param int $order_id Order ID
 	 *

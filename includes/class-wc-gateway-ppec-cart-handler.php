@@ -257,14 +257,18 @@ class WC_Gateway_PPEC_Cart_Handler {
 	}
 
 	/**
-	 * Convert from settings to values expected by PayPal Button API.
+	 * Convert from settings to values expected by PayPal Button API:
+	 *   - 'small' button size only allowed if layout is 'vertical'.
+	 *   - 'label' only allowed if layout is 'vertical'.
+	 *   - 'disallowed' funding methods if layout is 'vertical'.
+	 *   - 'allowed' funding methods if layout is 'horizontal'.
+	 *   - Only allow PayPal Credit if supported.
 	 *
 	 * @param array Raw settings.
 	 *
 	 * @return array Same array adapted to include data suitable for client-side rendering.
 	 *
 	 * @since 1.6.0
-	 *
 	 */
 	protected function get_button_settings( $settings, $context = '' ) {
 		$prefix = $context ? $context . '_' : $context;

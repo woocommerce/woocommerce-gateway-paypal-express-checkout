@@ -2,6 +2,7 @@
 ;( function ( $, window, document ) {
 	'use strict';
 
+	// Map funding method settings to enumerated options provided by PayPal.
 	var getFundingMethods = function( methods ) {
 		if ( ! methods ) {
 			return null;
@@ -47,21 +48,25 @@
 			},
 
 			validate: function( actions ) {
+				// Only enable on variable product page if purchasable variation selected.
 				$( '#woo_pp_ec_button_product' ).off( '.legacy' )
 					.on( 'enable', actions.enable )
 					.on( 'disable', actions.disable );
 			},
 
 			payment: function() {
+				// Clear any errors from previous attempt.
 				$( '.woocommerce-error', selector ).remove();
 
 				return new paypal.Promise( function( resolve, reject ) {
+					// First, generate cart if triggered from single product.
 					if ( 'product' === wc_ppec_context.page && ! isMiniCart ) {
 						window.wc_ppec_generate_cart( resolve );
 					} else {
 						resolve();
 					}
 				} ).then( function() {
+					// Make Express Checkout initialization request.
 					return paypal.request( {
 						method: 'post',
 						url: wc_ppec_context.start_checkout_url,
@@ -71,6 +76,7 @@
 						},
 					} ).then( function( data ) {
 						if ( 'failure' === data.result ) {
+							// Render error notice inside button container.
 							$( selector ).prepend( data.messages );
 						}
 						return data.token;
@@ -80,11 +86,13 @@
 
 			onAuthorize: function( data, actions ) {
 				if ( 'checkout' === wc_ppec_context.page ) {
+					// Pass data necessary for authorizing payment to back-end.
 					$( 'form.checkout' )
 						.append( $( '<input type="hidden" name="paymentToken" /> ' ).attr( 'value', data.paymentToken ) )
 						.append( $( '<input type="hidden" name="payerID" /> ' ).attr( 'value', data.payerID ) )
 						.submit();
 				} else {
+					// Navigate to order confirmation URL specified in original request to PayPal from back-end.
 					return actions.redirect();
 				}
 			},
@@ -92,13 +100,17 @@
 		}, selector );
 	};
 
+	// Render cart, single product, or checkout buttons.
 	if ( wc_ppec_context.page ) {
 		render();
 		$( document.body ).on( 'updated_cart_totals updated_checkout', render.bind( this, false ) );
 	}
+
+	// Render buttons in mini-cart if present.
 	$( document.body ).on( 'wc_fragments_loaded wc_fragments_refreshed', function() {
 		var $button = $( '.widget_shopping_cart #woo_pp_ec_button' );
 		if ( $button.length ) {
+			// Clear any existing button in container, and render.
 			$button.empty();
 			render( true );
 		}
