@@ -126,10 +126,7 @@ wc_enqueue_js( "
 				button_size.removeClass( 'enhanced' )
 				button_size_option.prop( 'disabled', isVertical );
 				$( document.body ).trigger( 'wc-enhanced-select-init' );
-			}
-
-			if ( ! button_size.val() ) {
-				button_size.val( 'medium' ).change();
+				! button_size.val() && button_size.val( 'responsive' ).change();
 			}
 		} ).change();
 
@@ -217,16 +214,16 @@ wc_enqueue_js( "
 
 			var button_size = $( '#woocommerce_ppec_paypal_button_size' ).removeClass( 'enhanced' );
 			button_size.find( 'option[value=\"responsive\"]' ).prop( 'disabled', ! checked );
-			button_size.find( 'option[value=\"small\"]' ).prop( 'disabled', checked );
+			! checked && button_size.find( 'option[value=\"small\"]' ).prop( 'disabled', false );
 			$( document.body ).trigger( 'wc-enhanced-select-init' );
 		} ).change();
 
 		// Reset button size values to default when switching modes.
 		$( '#woocommerce_ppec_paypal_use_spb' ).change( function( event ) {
 			if ( $( event.target ).is( ':checked' ) ) {
-				$( '.woocommerce_ppec_paypal_button_size' ).val( 'responsive' ).change();
-			} else if ( ! button_size.val() ) {
-				button_size.val( 'large' ).change();
+				$( '#woocommerce_ppec_paypal_button_size' ).val( 'responsive' ).change();
+			} else if ( ! $( '#woocommerce_ppec_paypal_button_size' ).val() ) {
+				$( '#woocommerce_ppec_paypal_button_size' ).val( 'large' ).change();
 			}
 		} );
 
