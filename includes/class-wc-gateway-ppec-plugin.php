@@ -164,9 +164,7 @@ class WC_Gateway_PPEC_Plugin {
 			delete_option( 'wc_gateway_ppce_bootstrap_warning_message' );
 			delete_option( 'wc_gateway_ppce_prompt_to_connect' );
 
-			if ( $this->settings->enabled && 'yes' !== $this->settings->use_spb  ) {
-				add_action( 'admin_notices', array( $this, 'show_spb_notice' ) );
-			}
+			add_action( 'admin_notices', array( $this, 'show_spb_notice' ) );
 		} catch ( Exception $e ) {
 			if ( in_array( $e->getCode(), array( self::ALREADY_BOOTSTRAPED, self::DEPENDENCIES_UNSATISFIED ) ) ) {
 				update_option( 'wc_gateway_ppce_bootstrap_warning_message', $e->getMessage() );
@@ -227,9 +225,22 @@ class WC_Gateway_PPEC_Plugin {
 	}
 
 	public function show_spb_notice() {
+		$screen    = get_current_screen();
+		$screen_id = $screen ? $screen->id : '';
+
+		// Should only show on WooCommerce screens, the main dashboard, and on the plugins screen (as in WC_Admin_Notices).
+		if ( ! in_array( $screen_id, wc_get_screen_ids(), true ) && 'dashboard' !== $screen_id && 'plugins' !== $screen_id ) {
+			return;
+		}
+
+		// Should only show when PPEC is enabled but not in SPB mode.
+		if ( 'yes' !== $this->settings->enabled || 'yes' === $this->settings->use_spb ) {
+			return;
+		}
+
 		if ( 'yes' !== get_option( 'wc_gateway_ppec_spb_notice_dismissed', 'no' ) ) {
 			$setting_link = $this->get_admin_setting_link();
-			$message = sprintf( __( '<p>PayPal Checkout with new <strong>Smart Payment Buttons™</strong> give your customers the power to pay the way they want without leaving your site.</p><p>The <strong>existing buttons will be deprecated and removed</strong> in future releases. Upgrade to Smart Payment Buttons in the <a href="%s">settings</a>.</p>', 'woocommerce-gateway-paypal-express-checkout' ), esc_url( $setting_link ) );
+			$message = sprintf( __( '<p>PayPal&nbsp;Express&nbsp;Checkout with new <strong>Smart&nbsp;Payment&nbsp;Buttons™</strong> gives your customers the power to pay the way they want without leaving your site.</p><p>The <strong>existing buttons will be deprecated and removed</strong> in future releases. Upgrade to Smart&nbsp;Payment&nbsp;Buttons in the <a href="%s">PayPal&nbsp;Express&nbsp;Checkout settings</a>.</p>', 'woocommerce-gateway-paypal-express-checkout' ), esc_url( $setting_link ) );
 			?>
 			<div class="notice notice-warning is-dismissible ppec-dismiss-spb-notice">
 				<?php echo wp_kses( $message, array( 'a' => array( 'href' => array() ), 'strong' => array(), 'p' => array() ) ); ?>
