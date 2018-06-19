@@ -549,9 +549,9 @@ $per_context_settings = array(
 		'title'       => __( 'Button Size', 'woocommerce-gateway-paypal-express-checkout' ),
 		'type'        => 'select',
 		'class'       => 'wc-enhanced-select woocommerce_ppec_paypal_button_size',
-		'description' => __( 'PayPal offers different sizes of the "PayPal Checkout" buttons, allowing you to select a size that best fits your site\'s theme. This setting will allow you to choose which size button(s) appear on your cart page.', 'woocommerce-gateway-paypal-express-checkout' ),
 		'default'     => 'yes' === $this->get_option( 'use_spb' ) ? 'responsive' : 'large',
 		'desc_tip'    => true,
+		'description' => __( 'PayPal offers different sizes of the "PayPal Checkout" buttons, allowing you to select a size that best fits your site\'s theme. This setting will allow you to choose which size button(s) appear on your cart page. (The "Responsive" option is available and recommended for Smart Payment Buttons.)', 'woocommerce-gateway-paypal-express-checkout' ),
 		'options'     => array(
 			'responsive' => __( 'Responsive', 'woocommerce-gateway-paypal-express-checkout' ),
 			'small'      => __( 'Small', 'woocommerce-gateway-paypal-express-checkout' ),
