@@ -501,7 +501,7 @@ $settings = array(
 	'use_spb' => array(
 		'title'       => __( 'Smart Payment Buttons', 'woocommerce-gateway-paypal-express-checkout' ),
 		'type'        => 'checkbox',
-		'default'     => $this->get_option( 'button_size' ) ? 'no' : 'yes', // Hinge on whether settings have been initialized.
+		'default'     => $this->get_option( 'button_size' ) ? 'no' : 'yes', // A 'button_size' value having been set indicates that settings have been initialized before, requiring merchant opt-in to SPB.
 		'label'       => __( 'Use Smart Payment Buttons', 'woocommerce-gateway-paypal-express-checkout' ),
 	),
 	'button_color' => array(
