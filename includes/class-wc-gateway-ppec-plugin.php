@@ -225,16 +225,15 @@ class WC_Gateway_PPEC_Plugin {
 	}
 
 	public function show_spb_notice() {
-		$screen    = get_current_screen();
-		$screen_id = $screen ? $screen->id : '';
-
-		// Should only show on WooCommerce screens, the main dashboard, and on the plugins screen (as in WC_Admin_Notices).
-		if ( ! in_array( $screen_id, wc_get_screen_ids(), true ) && 'dashboard' !== $screen_id && 'plugins' !== $screen_id ) {
+		// Should only show when PPEC is enabled but not in SPB mode.
+		if ( 'yes' !== $this->settings->enabled || 'yes' === $this->settings->use_spb ) {
 			return;
 		}
 
-		// Should only show when PPEC is enabled but not in SPB mode.
-		if ( 'yes' !== $this->settings->enabled || 'yes' === $this->settings->use_spb ) {
+		// Should only show on WooCommerce screens, the main dashboard, and on the plugins screen (as in WC_Admin_Notices).
+		$screen    = get_current_screen();
+		$screen_id = $screen ? $screen->id : '';
+		if ( ! in_array( $screen_id, wc_get_screen_ids(), true ) && 'dashboard' !== $screen_id && 'plugins' !== $screen_id ) {
 			return;
 		}
 
