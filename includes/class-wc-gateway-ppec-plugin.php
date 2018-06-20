@@ -190,7 +190,7 @@ class WC_Gateway_PPEC_Plugin {
 			<script>
 			( function( $ ) {
 				$( '.ppec-dismiss-bootstrap-warning-message' ).on( 'click', '.notice-dismiss', function() {
-					jQuery.post( "<?php echo admin_url( 'admin-ajax.php' ); ?>", {
+					jQuery.post( "<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>", {
 						action: "ppec_dismiss_notice_message",
 						dismiss_action: "ppec_dismiss_bootstrap_warning_message",
 						nonce: "<?php echo esc_js( wp_create_nonce( 'ppec_dismiss_notice' ) ); ?>"
@@ -212,7 +212,7 @@ class WC_Gateway_PPEC_Plugin {
 			<script>
 			( function( $ ) {
 				$( '.ppec-dismiss-prompt-to-connect-message' ).on( 'click', '.notice-dismiss', function() {
-					jQuery.post( "<?php echo admin_url( 'admin-ajax.php' ); ?>", {
+					jQuery.post( "<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>", {
 						action: "ppec_dismiss_notice_message",
 						dismiss_action: "ppec_dismiss_prompt_to_connect",
 						nonce: "<?php echo esc_js( wp_create_nonce( 'ppec_dismiss_notice' ) ); ?>"
@@ -248,7 +248,7 @@ class WC_Gateway_PPEC_Plugin {
 			<script>
 			( function( $ ) {
 				$( '.ppec-dismiss-spb-notice' ).on( 'click', '.notice-dismiss', function() {
-					jQuery.post( "<?php echo admin_url( 'admin-ajax.php' ); ?>", {
+					jQuery.post( "<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>", {
 						action: "ppec_dismiss_notice_message",
 						dismiss_action: "ppec_dismiss_spb_notice",
 						nonce: "<?php echo esc_js( wp_create_nonce( 'ppec_dismiss_notice' ) ); ?>"
