@@ -74,12 +74,14 @@
 							'nonce': wc_ppec_context.start_checkout_nonce,
 							'from_checkout': 'checkout' === wc_ppec_context.page ? 'yes' : 'no',
 						},
-					} ).then( function( data ) {
-						if ( 'failure' === data.result ) {
+					} ).then( function( response ) {
+						if ( ! response.success ) {
 							// Render error notice inside button container.
-							$( selector ).prepend( data.messages );
+							var $message = $( '<ul class="woocommerce-error" role="alert">' )
+								.append( $( '<li>' ).text( response.data.message ) );
+							$( selector ).prepend( $message );
 						}
-						return data.token;
+						return response.data.token;
 					} );
 				} );
 			},

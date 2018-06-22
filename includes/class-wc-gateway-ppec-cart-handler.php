@@ -140,20 +140,10 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 		try {
 			wc_gateway_ppec()->checkout->start_checkout_from_cart();
-			$response = array(
-				'result' => 'success',
-				'token'  => WC()->session->paypal->token,
-			);
+			wp_send_json_success( array( 'token' => WC()->session->paypal->token ) );
 		} catch( PayPal_API_Exception $e ) {
-			ob_start();
-			wc_add_notice( $e->getMessage(), 'error' );
-			wc_print_notices();
-			$response = array(
-				'result'   => 'failure',
-				'messages' => ob_get_clean(),
-			);
+			wp_send_json_error( array( 'message' => $e->getMessage() ) );
 		}
-		wp_send_json( $response );
 	}
 
 	/**
