@@ -76,10 +76,8 @@ function wc_gateway_ppec_log( $message ) {
  * @return bool Returns true if PayPal credit is supported
  */
 function wc_gateway_ppec_is_credit_supported() {
-	$base     = wc_get_base_location();
-	$currency = get_option( 'woocommerce_currency', 'GBP' );
-
-	return 'US' === $base['country'] && 'USD' === $currency;
+	$base = wc_get_base_location();
+	return 'US' === $base['country'] && 'USD' === get_woocommerce_currency();
 }
 
 /**
