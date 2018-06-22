@@ -80,6 +80,7 @@
 							var $message = $( '<ul class="woocommerce-error" role="alert">' )
 								.append( $( '<li>' ).text( response.data.message ) );
 							$( selector ).prepend( $message );
+							return null;
 						}
 						return response.data.token;
 					} );
