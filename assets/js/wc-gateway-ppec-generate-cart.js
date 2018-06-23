@@ -2,8 +2,8 @@
 ;(function( $, window, document ) {
 	'use strict';
 
+	// This button state is only applicable to non-SPB click handler below.
 	var button_enabled = true;
-
 	$( '#woo_pp_ec_button_product' )
 		.on( 'enable.legacy', function() {
 			button_enabled = true;
@@ -86,6 +86,7 @@
 
 	window.wc_ppec_generate_cart = generate_cart;
 
+	// Non-SPB mode click handler, namespaced as 'legacy' as it's replaced by `payment` callback of Button API.
 	$( '#woo_pp_ec_button_product' ).on( 'click.legacy', function( event ) {
 		event.preventDefault();
 
