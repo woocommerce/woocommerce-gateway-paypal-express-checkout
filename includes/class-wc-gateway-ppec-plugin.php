@@ -163,8 +163,6 @@ class WC_Gateway_PPEC_Plugin {
 			$this->_bootstrapped = true;
 			delete_option( 'wc_gateway_ppce_bootstrap_warning_message' );
 			delete_option( 'wc_gateway_ppce_prompt_to_connect' );
-
-			add_action( 'admin_notices', array( $this, 'show_spb_notice' ) );
 		} catch ( Exception $e ) {
 			if ( in_array( $e->getCode(), array( self::ALREADY_BOOTSTRAPED, self::DEPENDENCIES_UNSATISFIED ) ) ) {
 				update_option( 'wc_gateway_ppce_bootstrap_warning_message', $e->getMessage() );
@@ -340,6 +338,7 @@ class WC_Gateway_PPEC_Plugin {
 	protected function _run() {
 		require_once( $this->includes_path . 'functions.php' );
 		$this->_load_handlers();
+		add_action( 'admin_notices', array( $this, 'show_spb_notice' ) );
 	}
 
 	/**
