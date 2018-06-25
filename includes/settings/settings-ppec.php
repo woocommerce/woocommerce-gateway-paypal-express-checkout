@@ -45,8 +45,10 @@ if ( $enable_ips && $needs_sandbox_creds ) {
 
 $credit_enabled_label = __( 'Enable PayPal Credit', 'woocommerce-gateway-paypal-express-checkout' );
 if ( ! wc_gateway_ppec_is_credit_supported() ) {
-	$credit_enabled_label .= '<p><em>' . __( 'This option is disabled. Currently PayPal Credit only available for U.S. merchants.', 'woocommerce-gateway-paypal-express-checkout' ) . '</em></p>';
+	$credit_enabled_label .= '<p><em>' . __( 'This option is disabled. Currently PayPal Credit only available for U.S. merchants using USD currency.', 'woocommerce-gateway-paypal-express-checkout' ) . '</em></p>';
 }
+
+$credit_enabled_description  = __( 'This enables PayPal Credit, which displays a PayPal Credit button next to the Express Checkout button. PayPal Express Checkout lets you give customers access to financing through PayPal Credit® - at no additional cost to you. You get paid up front, even though customers have more time to pay. A pre-integrated payment button shows up next to the PayPal Button, and lets customers pay quickly with PayPal Credit®. (Should be unchecked for stores involved in Real Money Gaming.)', 'woocommerce-gateway-paypal-express-checkout' );
 
 wc_enqueue_js( "
 	jQuery( function( $ ) {
@@ -322,9 +324,9 @@ return apply_filters( 'woocommerce_paypal_express_checkout_settings', array(
 		'type'        => 'checkbox',
 		'label'       => $credit_enabled_label,
 		'disabled'    => ! wc_gateway_ppec_is_credit_supported(),
-		'default'     => 'no',
+		'default'     => 'yes',
 		'desc_tip'    => true,
-		'description' => __( 'This enables PayPal Credit, which displays a PayPal Credit button next to the Express Checkout button. PayPal Express Checkout lets you give customers access to financing through PayPal Credit® - at no additional cost to you. You get paid up front, even though customers have more time to pay. A pre-integrated payment button shows up next to the PayPal Button, and lets customers pay quickly with PayPal Credit®.', 'woocommerce-gateway-paypal-express-checkout' ),
+		'description' => $credit_enabled_description,
 	),
 	'checkout_on_single_product_enabled' => array(
 		'title'       => __( 'Checkout on Single Product', 'woocommerce-gateway-paypal-express-checkout' ),
