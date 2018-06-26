@@ -201,7 +201,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 			<?php endif; ?>
 
 			<?php if ( 'yes' === $settings->use_spb ) : ?>
-			<div id="woo_pp_ec_button"></div>
+			<div id="woo_pp_ec_button_cart"></div>
 			<?php else : ?>
 
 			<a href="<?php echo esc_url( add_query_arg( array( 'startcheckout' => 'true' ), wc_get_page_permalink( 'cart' ) ) ); ?>" id="woo_pp_ec_button" class="wcppec-checkout-buttons__button">
@@ -235,7 +235,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 		<?php if ( 'yes' === $settings->use_spb ) : ?>
 		<p class="woocommerce-mini-cart__buttons buttons wcppec-cart-widget-spb">
-			<span id="woo_pp_ec_button"></span>
+			<span id="woo_pp_ec_button_mini_cart"></span>
 		</p>
 		<?php else : ?>
 

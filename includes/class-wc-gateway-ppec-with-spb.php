@@ -20,7 +20,7 @@ class WC_Gateway_PPEC_With_SPB extends WC_Gateway_PPEC {
 	 */
 	public function display_paypal_button() {
 		?>
-		<div id="woo_pp_ec_button"></div>
+		<div id="woo_pp_ec_button_checkout"></div>
 		<?php
 	}
 

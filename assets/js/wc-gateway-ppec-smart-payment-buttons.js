@@ -26,12 +26,12 @@
 		var allowed       = wc_ppec_context[ prefix + 'allowed_methods' ];
 		var disallowed    = wc_ppec_context[ prefix + 'disallowed_methods' ];
 
-		var selector = 'product' === wc_ppec_context.page && ! isMiniCart ? '#woo_pp_ec_button_product' : '#woo_pp_ec_button';
+		var selector = isMiniCart ? '#woo_pp_ec_button_mini_cart' : '#woo_pp_ec_button_' + wc_ppec_context.page;
 
 		paypal.Button.render( {
 			env: wc_ppec_context.environment,
 			locale: wc_ppec_context.locale,
-			commit: 'checkout' === wc_ppec_context.page,
+			commit: 'checkout' === wc_ppec_context.page && ! isMiniCart,
 
 			funding: {
 				allowed: getFundingMethods( allowed ),
@@ -72,7 +72,7 @@
 						url: wc_ppec_context.start_checkout_url,
 						data: {
 							'nonce': wc_ppec_context.start_checkout_nonce,
-							'from_checkout': 'checkout' === wc_ppec_context.page ? 'yes' : 'no',
+							'from_checkout': 'checkout' === wc_ppec_context.page && ! isMiniCart ? 'yes' : 'no',
 						},
 					} ).then( function( response ) {
 						if ( ! response.success ) {
@@ -88,7 +88,7 @@
 			},
 
 			onAuthorize: function( data, actions ) {
-				if ( 'checkout' === wc_ppec_context.page ) {
+				if ( 'checkout' === wc_ppec_context.page && ! isMiniCart ) {
 					// Pass data necessary for authorizing payment to back-end.
 					$( 'form.checkout' )
 						.append( $( '<input type="hidden" name="paymentToken" /> ' ).attr( 'value', data.paymentToken ) )
@@ -111,7 +111,7 @@
 
 	// Render buttons in mini-cart if present.
 	$( document.body ).on( 'wc_fragments_loaded wc_fragments_refreshed', function() {
-		var $button = $( '.widget_shopping_cart #woo_pp_ec_button' );
+		var $button = $( '.widget_shopping_cart #woo_pp_ec_button_mini_cart' );
 		if ( $button.length ) {
 			// Clear any existing button in container, and render.
 			$button.empty();
