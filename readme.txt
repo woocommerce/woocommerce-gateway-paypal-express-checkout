@@ -2,8 +2,8 @@
 Contributors: automattic, woothemes, akeda, dwainm, royho, allendav, slash1andy, woosteve, spraveenitpro, mikedmoore, fernashes, shellbeezy, danieldudzic, mikaey, fullysupportedphil, dsmithweb, corsonr, bor0, zandyring
 Tags: ecommerce, e-commerce, commerce, woothemes, wordpress ecommerce, store, sales, sell, shop, shopping, cart, checkout, configurable, paypal
 Requires at least: 4.4
-Tested up to: 4.9.0
-Stable tag: 1.5.6
+Tested up to: 4.9.6
+Stable tag: 1.6.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -87,11 +87,25 @@ Please use this to inform us about bugs, or make contributions via PRs.
 
 == Screenshots ==
 
-1. Click the "Click Here to Set Up Your PayPal Account" button. If you want to test before goes live, you can switch the Environment, above the button, to Sandbox.
-2. API credentials will be set after Easy Setup. Or, you can set that manually.
-3. Checkout with PayPal directly from the Cart.
+1. Click the "Setup or link an existing PayPal account" button. If you want to test before going live, you can switch the Environment, above the button, to Sandbox.
+2. API credentials will be set after linking, or you can set them manually.
+3. See PayPal button settings below.
+4. Checkout with PayPal directly from the Cart.
+5. And without leaving the store.
+6. Confirm details after clicking "Continue".
+7. Choose PayPal from regular checkout page.
+8. Choose PayPal from single product page.
+9. Initiate checkout from mini-cart.
 
 == Changelog ==
+
+= 1.6.0 - 2018-06-26 =
+* Add - Smart Payment Buttons mode as alternative to directly embedded image links for all instances of PayPal button.
+* Update - Enable PayPal Credit by default, and restrict its support by currency.
+* Fix - Help tip alignment for image settings.
+* Update - Omit 'Express Checkout' portion of default payment method title.
+* Update - Enable Express Checkout on regular checkout page by default.
+* Update - Enable Express Checkout on single product page by default.
 
 = 1.5.6 - 2018-06-06 =
 * Fix    - Virtual products cause issues with billing details validation.
