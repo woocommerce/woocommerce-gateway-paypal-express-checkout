@@ -87,9 +87,15 @@ Please use this to inform us about bugs, or make contributions via PRs.
 
 == Screenshots ==
 
-1. Click the "Click Here to Set Up Your PayPal Account" button. If you want to test before goes live, you can switch the Environment, above the button, to Sandbox.
-2. API credentials will be set after Easy Setup. Or, you can set that manually.
-3. Checkout with PayPal directly from the Cart.
+1. Click the "Setup or link an existing PayPal account" button. If you want to test before going live, you can switch the Environment, above the button, to Sandbox.
+2. API credentials will be set after linking, or you can set them manually.
+3. See PayPal button settings below.
+4. Checkout with PayPal directly from the Cart.
+5. And without leaving the store.
+6. Confirm details after clicking "Continue".
+7. Choose PayPal from regular checkout page.
+8. Choose PayPal from single product page.
+9. Initiate checkout from mini-cart.
 
 == Changelog ==
 
