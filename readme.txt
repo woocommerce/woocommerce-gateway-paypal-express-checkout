@@ -99,6 +99,14 @@ Please use this to inform us about bugs, or make contributions via PRs.
 
 == Changelog ==
 
+= 1.6.0 - 2018-06-26 =
+* Add - Smart Payment Buttons mode as alternative to directly embedded image links for all instances of PayPal button.
+* Update - Enable PayPal Credit by default, and restrict its support by currency.
+* Fix - Help tip alignment for image settings.
+* Update - Omit 'Express Checkout' portion of default payment method title.
+* Update - Enable Express Checkout on regular checkout page by default.
+* Update - Enable Express Checkout on single product page by default.
+
 = 1.5.6 - 2018-06-06 =
 * Fix    - Virtual products cause issues with billing details validation.
 
