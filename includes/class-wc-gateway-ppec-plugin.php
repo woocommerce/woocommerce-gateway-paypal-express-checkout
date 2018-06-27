@@ -188,7 +188,7 @@ class WC_Gateway_PPEC_Plugin {
 			<script>
 			( function( $ ) {
 				$( '.ppec-dismiss-bootstrap-warning-message' ).on( 'click', '.notice-dismiss', function() {
-					jQuery.post( "<?php echo admin_url( 'admin-ajax.php' ); ?>", {
+					jQuery.post( "<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>", {
 						action: "ppec_dismiss_notice_message",
 						dismiss_action: "ppec_dismiss_bootstrap_warning_message",
 						nonce: "<?php echo esc_js( wp_create_nonce( 'ppec_dismiss_notice' ) ); ?>"
@@ -210,9 +210,44 @@ class WC_Gateway_PPEC_Plugin {
 			<script>
 			( function( $ ) {
 				$( '.ppec-dismiss-prompt-to-connect-message' ).on( 'click', '.notice-dismiss', function() {
-					jQuery.post( "<?php echo admin_url( 'admin-ajax.php' ); ?>", {
+					jQuery.post( "<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>", {
 						action: "ppec_dismiss_notice_message",
 						dismiss_action: "ppec_dismiss_prompt_to_connect",
+						nonce: "<?php echo esc_js( wp_create_nonce( 'ppec_dismiss_notice' ) ); ?>"
+					} );
+				} );
+			} )( jQuery );
+			</script>
+			<?php
+		}
+	}
+
+	public function show_spb_notice() {
+		// Should only show when PPEC is enabled but not in SPB mode.
+		if ( 'yes' !== $this->settings->enabled || 'yes' === $this->settings->use_spb ) {
+			return;
+		}
+
+		// Should only show on WooCommerce screens, the main dashboard, and on the plugins screen (as in WC_Admin_Notices).
+		$screen    = get_current_screen();
+		$screen_id = $screen ? $screen->id : '';
+		if ( ! in_array( $screen_id, wc_get_screen_ids(), true ) && 'dashboard' !== $screen_id && 'plugins' !== $screen_id ) {
+			return;
+		}
+
+		if ( 'yes' !== get_option( 'wc_gateway_ppec_spb_notice_dismissed', 'no' ) ) {
+			$setting_link = $this->get_admin_setting_link();
+			$message = sprintf( __( '<p>PayPal&nbsp;Express&nbsp;Checkout with new <strong>Smart&nbsp;Payment&nbsp;Buttons™</strong> gives your customers the power to pay the way they want without leaving your site.</p><p>The <strong>existing buttons will be deprecated and removed</strong> in future releases. Upgrade to Smart&nbsp;Payment&nbsp;Buttons in the <a href="%s">PayPal&nbsp;Express&nbsp;Checkout settings</a>.</p>', 'woocommerce-gateway-paypal-express-checkout' ), esc_url( $setting_link ) );
+			?>
+			<div class="notice notice-warning is-dismissible ppec-dismiss-spb-notice">
+				<?php echo wp_kses( $message, array( 'a' => array( 'href' => array() ), 'strong' => array(), 'p' => array() ) ); ?>
+			</div>
+			<script>
+			( function( $ ) {
+				$( '.ppec-dismiss-spb-notice' ).on( 'click', '.notice-dismiss', function() {
+					jQuery.post( "<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>", {
+						action: "ppec_dismiss_notice_message",
+						dismiss_action: "ppec_dismiss_spb_notice",
 						nonce: "<?php echo esc_js( wp_create_nonce( 'ppec_dismiss_notice' ) ); ?>"
 					} );
 				} );
@@ -240,6 +275,9 @@ class WC_Gateway_PPEC_Plugin {
 				break;
 			case 'ppec_dismiss_prompt_to_connect':
 				update_option( 'wc_gateway_ppec_prompt_to_connect_message_dismissed', 'yes' );
+				break;
+			case 'ppec_dismiss_spb_notice':
+				update_option( 'wc_gateway_ppec_spb_notice_dismissed', 'yes' );
 				break;
 		}
 		wp_die();
@@ -300,6 +338,7 @@ class WC_Gateway_PPEC_Plugin {
 	protected function _run() {
 		require_once( $this->includes_path . 'functions.php' );
 		$this->_load_handlers();
+		add_action( 'admin_notices', array( $this, 'show_spb_notice' ) );
 	}
 
 	/**
