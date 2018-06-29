@@ -582,9 +582,9 @@ $per_context_settings = array(
 		'label'       => $credit_enabled_label,
 		'disabled'    => ! wc_gateway_ppec_is_credit_supported(),
 		'class'       => 'woocommerce_ppec_paypal_horizontal',
-		'default'     => 'no',
+		'default'     => 'yes',
 		'desc_tip'    => true,
-		'description' => __( 'This enables PayPal Credit, which displays a PayPal Credit button together with the PayPal Checkout button if the buyer is eligible. PayPal Express Checkout lets you give customers access to financing through PayPal Credit® - at no additional cost to you. You get paid up front, even though customers have more time to pay. A pre-integrated payment button shows up next to the PayPal Button, and lets customers pay quickly with PayPal Credit®.', 'woocommerce-gateway-paypal-express-checkout' ),
+		'description' => $credit_enabled_description,
 	),
 );
 
