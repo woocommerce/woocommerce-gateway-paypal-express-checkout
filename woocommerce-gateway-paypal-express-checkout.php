@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name: WooCommerce PayPal Express Checkout Gateway
+ * Plugin Name: WooCommerce PayPal Checkout Gateway
  * Plugin URI: https://woocommerce.com/products/woocommerce-gateway-paypal-express-checkout/
- * Description: A payment gateway for PayPal Express Checkout (https://www.paypal.com/us/webapps/mpp/express-checkout).
+ * Description: A payment gateway for PayPal Checkout (https://www.paypal.com/us/webapps/mpp/paypal-checkout).
  * Version: 1.6.0
  * Author: WooCommerce
  * Author URI: https://woocommerce.com

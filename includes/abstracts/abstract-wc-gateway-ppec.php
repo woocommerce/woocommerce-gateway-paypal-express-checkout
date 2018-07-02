@@ -15,7 +15,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 	public function __construct() {
 		$this->has_fields         = false;
 		$this->supports[]         = 'refunds';
-		$this->method_title       = __( 'PayPal Express Checkout', 'woocommerce-gateway-paypal-express-checkout' );
+		$this->method_title       = __( 'PayPal Checkout', 'woocommerce-gateway-paypal-express-checkout' );
 		$this->method_description = __( 'Allow customers to conveniently checkout directly with PayPal.', 'woocommerce-gateway-paypal-express-checkout' );
 
 		if ( empty( $_GET['woo-paypal-return'] ) ) {

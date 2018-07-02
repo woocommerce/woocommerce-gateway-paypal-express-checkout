@@ -66,7 +66,7 @@
 						resolve();
 					}
 				} ).then( function() {
-					// Make Express Checkout initialization request.
+					// Make PayPal Checkout initialization request.
 					return paypal.request( {
 						method: 'post',
 						url: wc_ppec_context.start_checkout_url,

@@ -51,7 +51,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 	}
 
 	/**
-	 * Generates the cart for express checkout on a product level.
+	 * Generates the cart for PayPal Checkout on a product level.
 	 *
 	 * @since 1.4.0
 	 */
