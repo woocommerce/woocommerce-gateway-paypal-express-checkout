@@ -5,9 +5,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Implementation is duplicated in WC_Gateway_PPEC_With_SPB.
+ * Duplicate of implementation in WC_Gateway_PPEC_With_SPB.
  */
-class WC_Gateway_PPEC_With_SPB extends WC_Gateway_PPEC_With_PayPal {
+class WC_Gateway_PPEC_With_SPB_Addons extends WC_Gateway_PPEC_With_PayPal_Addons {
 	public function __construct() {
 		parent::__construct();
 
