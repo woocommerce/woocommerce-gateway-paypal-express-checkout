@@ -416,7 +416,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	}
 
 	/**
-	 * Checks data is correctly set when returning from PayPal Express Checkout
+	 * Checks data is correctly set when returning from PayPal Checkout
 	 */
 	public function maybe_return_from_paypal() {
 		if ( empty( $_GET['woo-paypal-return'] ) || empty( $_GET['token'] ) || empty( $_GET['PayerID'] ) ) {

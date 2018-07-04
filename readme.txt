@@ -1,4 +1,4 @@
-=== WooCommerce PayPal Express Checkout Payment Gateway ===
+=== WooCommerce PayPal Checkout Payment Gateway ===
 Contributors: automattic, woothemes, akeda, dwainm, royho, allendav, slash1andy, woosteve, spraveenitpro, mikedmoore, fernashes, shellbeezy, danieldudzic, mikaey, fullysupportedphil, dsmithweb, corsonr, bor0, zandyring
 Tags: ecommerce, e-commerce, commerce, woothemes, wordpress ecommerce, store, sales, sell, shop, shopping, cart, checkout, configurable, paypal
 Requires at least: 4.4
@@ -11,9 +11,9 @@ Accept PayPal, Credit Cards and Debit Cards on your WooCommerce store.
 
 == Description ==
 
-This is a PayPal Express Payment Gateway for WooCommerce.
+This is a PayPal Checkout Payment Gateway for WooCommerce.
 
-PayPal Express allows you to securely sell your products and subscriptions online using In-Context Checkout to help you meet security requirements without causing your theme to suffer.  In-Context Checkout uses a modal iFrame, hosted on PayPal's servers, that overlays the checkout form and provides a secure means for your customers to enter their account information.
+PayPal Checkout allows you to securely sell your products and subscriptions online using In-Context Checkout to help you meet security requirements without causing your theme to suffer.  In-Context Checkout uses a modal window, hosted on PayPal's servers, that overlays the checkout form and provides a secure means for your customers to enter their account information.
 
 Also, with Integrated PayPal Setup (Easy Setup), connecting to PayPal is as simple as clicking a button - no complicated API keys to cut and paste.
 
@@ -27,7 +27,7 @@ Also, with Integrated PayPal Setup (Easy Setup), connecting to PayPal is as simp
 
 Automatic installation is the easiest option as WordPress handles the file transfers itself and you don’t need to leave your web browser. To do an automatic install of, log in to your WordPress dashboard, navigate to the Plugins menu and click Add New.
 
-In the search field type "WooCommerce PayPal Express Checkout" and click Search Plugins. Once you’ve found our plugin you can view details about it such as the point release, rating and description. Most importantly of course, you can install it by simply clicking “Install Now”.
+In the search field type "WooCommerce PayPal Checkout" and click Search Plugins. Once you’ve found our plugin you can view details about it such as the point release, rating and description. Most importantly of course, you can install it by simply clicking “Install Now”.
 
 = Manual installation =
 
@@ -44,7 +44,9 @@ If on the off-chance you do encounter issues with the shop/category pages after 
 
 = Does this plugin work with credit cards or just PayPal? =
 
-This plugin supports payments using both credit and debit cards as well as PayPal.
+This plugin supports payments using both credit and debit cards as well as PayPal. The new Smart Payment Buttons feature dynamically displays PayPal, Venmo (US Only), PayPal Credit, or other local payment options* in a single stack—without needing to leave the merchant's website.
+
+*PayPal Checkout features may not be available in all countries.
 
 = Does this support Checkout with PayPal from the cart view? =
 
@@ -73,15 +75,15 @@ New feature requests and bugs reports can be made in the plugin forum.
 
 = How to remove 'Proceed to Checkout' button from cart page? =
 
-If PayPal Express Checkout is the only enabled payment gateway and you want to remove the 'Proceed to Checkout' button from the cart, you can use this snippet:
+If PayPal Checkout is the only enabled payment gateway and you want to remove the 'Proceed to Checkout' button from the cart, you can use this snippet:
 
 https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 
 = Where can I contribute? =
 
-The GitHub repository for PayPal Express Checkout is here:
+The GitHub repository for PayPal Checkout is here:
 
-https://github.com/woothemes/woocommerce-gateway-paypal-express-checkout
+https://github.com/woocommerce/woocommerce-gateway-paypal-express-checkout
 
 Please use this to inform us about bugs, or make contributions via PRs.
 
@@ -102,6 +104,7 @@ Please use this to inform us about bugs, or make contributions via PRs.
 = 1.6.1 - 2018-xx-xx =
 * Fix - GDPR Fatal error exporting user data when they have PPEC subscriptions.
 * Fix - PayPal Credit still being disabled by default.
+* Update - Rename 'PayPal Express Checkout' to 'PayPal Checkout'.
 * Fix - Missing PayPal branding in "Buy Now" Smart Payment Button.
 * Fix - PHP warning when PayPal Credit not supported and no funding methods hidden.
 

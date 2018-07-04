@@ -86,7 +86,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 
 	/**
 	 * Prevent PPEC Credit showing up in the admin, because it shares its settings
-	 * with the PayPal Express Checkout class.
+	 * with the PayPal Checkout class.
 	 *
 	 * @param array $sections List of sections in checkout
 	 *
@@ -173,7 +173,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 						update_post_meta( $order_id, '_transaction_id', $result['TRANSACTIONID'] );
 					}
 
-					$order->add_order_note( sprintf( __( 'PayPal Express Checkout charge complete (Charge ID: %s)', 'woocommerce-gateway-paypal-express-checkout' ), $trans_id ) );
+					$order->add_order_note( sprintf( __( 'PayPal Checkout charge complete (Charge ID: %s)', 'woocommerce-gateway-paypal-express-checkout' ), $trans_id ) );
 				}
 			}
 		}
@@ -217,7 +217,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 				if ( is_wp_error( $result ) ) {
 					$order->add_order_note( __( 'Unable to void charge!', 'woocommerce-gateway-paypal-express-checkout' ) . ' ' . $result->get_error_message() );
 				} else {
-					$order->add_order_note( sprintf( __( 'PayPal Express Checkout charge voided (Charge ID: %s)', 'woocommerce-gateway-paypal-express-checkout' ), $trans_id ) );
+					$order->add_order_note( sprintf( __( 'PayPal Checkout charge voided (Charge ID: %s)', 'woocommerce-gateway-paypal-express-checkout' ), $trans_id ) );
 				}
 			}
 		}

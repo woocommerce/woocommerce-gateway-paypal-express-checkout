@@ -1,6 +1,6 @@
 <?php
 /**
- * PayPal Express Checkout Plugin.
+ * PayPal Checkout Plugin.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -153,7 +153,7 @@ class WC_Gateway_PPEC_Plugin {
 	public function bootstrap() {
 		try {
 			if ( $this->_bootstrapped ) {
-				throw new Exception( __( '%s in WooCommerce Gateway PayPal Express Checkout plugin can only be called once', 'woocommerce-gateway-paypal-express-checkout' ), self::ALREADY_BOOTSTRAPED );
+				throw new Exception( __( '%s in WooCommerce Gateway PayPal Checkout plugin can only be called once', 'woocommerce-gateway-paypal-express-checkout' ), self::ALREADY_BOOTSTRAPED );
 			}
 
 			$this->_check_dependencies();
@@ -237,7 +237,7 @@ class WC_Gateway_PPEC_Plugin {
 
 		if ( 'yes' !== get_option( 'wc_gateway_ppec_spb_notice_dismissed', 'no' ) ) {
 			$setting_link = $this->get_admin_setting_link();
-			$message = sprintf( __( '<p>PayPal&nbsp;Express&nbsp;Checkout with new <strong>Smart&nbsp;Payment&nbsp;Buttons™</strong> gives your customers the power to pay the way they want without leaving your site.</p><p>The <strong>existing buttons will be deprecated and removed</strong> in future releases. Upgrade to Smart&nbsp;Payment&nbsp;Buttons in the <a href="%s">PayPal&nbsp;Express&nbsp;Checkout settings</a>.</p>', 'woocommerce-gateway-paypal-express-checkout' ), esc_url( $setting_link ) );
+			$message = sprintf( __( '<p>PayPal&nbsp;Checkout with new <strong>Smart&nbsp;Payment&nbsp;Buttons™</strong> gives your customers the power to pay the way they want without leaving your site.</p><p>The <strong>existing buttons will be deprecated and removed</strong> in future releases. Upgrade to Smart&nbsp;Payment&nbsp;Buttons in the <a href="%s">PayPal&nbsp;Checkout settings</a>.</p>', 'woocommerce-gateway-paypal-express-checkout' ), esc_url( $setting_link ) );
 			?>
 			<div class="notice notice-warning is-dismissible ppec-dismiss-spb-notice">
 				<?php echo wp_kses( $message, array( 'a' => array( 'href' => array() ), 'strong' => array(), 'p' => array() ) ); ?>
@@ -290,18 +290,18 @@ class WC_Gateway_PPEC_Plugin {
 	 */
 	protected function _check_dependencies() {
 		if ( ! function_exists( 'WC' ) ) {
-			throw new Exception( __( 'WooCommerce Gateway PayPal Express Checkout requires WooCommerce to be activated', 'woocommerce-gateway-paypal-express-checkout' ), self::DEPENDENCIES_UNSATISFIED );
+			throw new Exception( __( 'WooCommerce Gateway PayPal Checkout requires WooCommerce to be activated', 'woocommerce-gateway-paypal-express-checkout' ), self::DEPENDENCIES_UNSATISFIED );
 		}
 
 		if ( version_compare( WC()->version, '2.5', '<' ) ) {
-			throw new Exception( __( 'WooCommerce Gateway PayPal Express Checkout requires WooCommerce version 2.5 or greater', 'woocommerce-gateway-paypal-express-checkout' ), self::DEPENDENCIES_UNSATISFIED );
+			throw new Exception( __( 'WooCommerce Gateway PayPal Checkout requires WooCommerce version 2.5 or greater', 'woocommerce-gateway-paypal-express-checkout' ), self::DEPENDENCIES_UNSATISFIED );
 		}
 
 		if ( ! function_exists( 'curl_init' ) ) {
-			throw new Exception( __( 'WooCommerce Gateway PayPal Express Checkout requires cURL to be installed on your server', 'woocommerce-gateway-paypal-express-checkout' ), self::DEPENDENCIES_UNSATISFIED );
+			throw new Exception( __( 'WooCommerce Gateway PayPal Checkout requires cURL to be installed on your server', 'woocommerce-gateway-paypal-express-checkout' ), self::DEPENDENCIES_UNSATISFIED );
 		}
 
-		$openssl_warning = __( 'WooCommerce Gateway PayPal Express Checkout requires OpenSSL >= 1.0.1 to be installed on your server', 'woocommerce-gateway-paypal-express-checkout' );
+		$openssl_warning = __( 'WooCommerce Gateway PayPal Checkout requires OpenSSL >= 1.0.1 to be installed on your server', 'woocommerce-gateway-paypal-express-checkout' );
 		if ( ! defined( 'OPENSSL_VERSION_TEXT' ) ) {
 			throw new Exception( $openssl_warning, self::DEPENDENCIES_UNSATISFIED );
 		}
@@ -328,7 +328,7 @@ class WC_Gateway_PPEC_Plugin {
 		$credential = $this->settings->get_active_api_credentials();
 		if ( ! is_a( $credential, 'WC_Gateway_PPEC_Client_Credential' ) || '' === $credential->get_username() ) {
 			$setting_link = $this->get_admin_setting_link();
-			throw new Exception( sprintf( __( 'PayPal Express Checkout is almost ready. To get started, <a href="%s">connect your PayPal account</a>.', 'woocommerce-gateway-paypal-express-checkout' ), esc_url( $setting_link ) ), self::NOT_CONNECTED );
+			throw new Exception( sprintf( __( 'PayPal Checkout is almost ready. To get started, <a href="%s">connect your PayPal account</a>.', 'woocommerce-gateway-paypal-express-checkout' ), esc_url( $setting_link ) ), self::NOT_CONNECTED );
 		}
 	}
 
