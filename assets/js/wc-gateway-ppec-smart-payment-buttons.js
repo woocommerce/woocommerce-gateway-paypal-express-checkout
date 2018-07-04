@@ -44,6 +44,7 @@
 				layout: button_layout,
 				size: button_size,
 				label: button_label,
+				branding: true,
 				tagline: false,
 			},
 
