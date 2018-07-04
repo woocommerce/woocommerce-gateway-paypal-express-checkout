@@ -301,7 +301,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 		wp_enqueue_style( 'wc-gateway-ppec-frontend-cart', wc_gateway_ppec()->plugin_url . 'assets/css/wc-gateway-ppec-frontend-cart.css' );
 
-		$is_cart     = is_cart() && 'yes' === $settings->cart_checkout_enabled;
+		$is_cart     = is_cart() && ! WC()->cart->is_empty() && 'yes' === $settings->cart_checkout_enabled;
 		$is_product  = is_product() && 'yes' === $settings->checkout_on_single_product_enabled;
 		$is_checkout = is_checkout() && 'yes' === $settings->mark_enabled && ! wc_gateway_ppec()->checkout->has_active_session();
 		$page        = $is_cart ? 'cart' : ( $is_product ? 'product' : ( $is_checkout ? 'checkout' : null ) );
