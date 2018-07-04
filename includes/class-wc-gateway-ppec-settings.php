@@ -306,7 +306,7 @@ class WC_Gateway_PPEC_Settings {
 		if ( ! in_array( $locale, $this->_supported_locales ) ) {
 			$locale = 'en_US';
 		}
-		return $locale;
+		return apply_filters( 'woocommerce_paypal_express_checkout_get_paypal_locale', $locale );
 	}
 
 	/**
