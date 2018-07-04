@@ -105,6 +105,8 @@ Please use this to inform us about bugs, or make contributions via PRs.
 * Fix - GDPR Fatal error exporting user data when they have PPEC subscriptions.
 * Fix - PayPal Credit still being disabled by default.
 * Update - Rename 'PayPal Express Checkout' to 'PayPal Checkout'.
+* Fix - Missing PayPal branding in "Buy Now" Smart Payment Button.
+* Fix - PHP warning when PayPal Credit not supported and no funding methods hidden.
 
 = 1.6.0 - 2018-06-27 =
 * Add - Smart Payment Buttons mode as alternative to directly embedded image links for all instances of PayPal button.
