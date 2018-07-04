@@ -34,3 +34,6 @@
 .site-header .widget_shopping_cart p.buttons.wcppec-cart-widget-spb {
     padding: 0 1em 1em;
 }
+.site-header .widget_shopping_cart .woocommerce-mini-cart__empty-message + p.buttons.wcppec-cart-widget-spb {
+	display: none;
+}
