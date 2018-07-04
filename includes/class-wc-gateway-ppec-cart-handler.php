@@ -277,7 +277,9 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 		if ( ! wc_gateway_ppec_is_credit_supported() ) {
 			$data['credit_enabled'] = 'no';
-			if ( ! in_array( 'CREDIT', $data['hide_funding_methods'] ) ) {
+			if ( ! is_array( $data['hide_funding_methods'] ) ) {
+				$data['hide_funding_methods'] = array( 'CREDIT' );
+			} elseif ( ! in_array( 'CREDIT', $data['hide_funding_methods'] ) ) {
 				$data['hide_funding_methods'][] = 'CREDIT';
 			}
 		}
