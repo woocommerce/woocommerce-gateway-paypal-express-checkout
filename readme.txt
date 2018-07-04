@@ -1,9 +1,9 @@
 === WooCommerce PayPal Checkout Payment Gateway ===
-Contributors: automattic, woothemes, akeda, dwainm, royho, allendav, slash1andy, woosteve, spraveenitpro, mikedmoore, fernashes, shellbeezy, danieldudzic, mikaey, fullysupportedphil, dsmithweb, corsonr, bor0, zandyring
+Contributors: automattic, woothemes, akeda, dwainm, royho, allendav, slash1andy, woosteve, spraveenitpro, mikedmoore, fernashes, shellbeezy, danieldudzic, mikaey, fullysupportedphil, dsmithweb, corsonr, bor0, zandyring, pauldechov
 Tags: ecommerce, e-commerce, commerce, woothemes, wordpress ecommerce, store, sales, sell, shop, shopping, cart, checkout, configurable, paypal
 Requires at least: 4.4
 Tested up to: 4.9.6
-Stable tag: 1.6.0
+Stable tag: 1.6.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -101,12 +101,16 @@ Please use this to inform us about bugs, or make contributions via PRs.
 
 == Changelog ==
 
-= 1.6.1 - 2018-xx-xx =
+= 1.6.1 - 2018-07-04 =
 * Fix - GDPR Fatal error exporting user data when they have PPEC subscriptions.
 * Fix - PayPal Credit still being disabled by default.
 * Update - Rename 'PayPal Express Checkout' to 'PayPal Checkout'.
 * Fix - Missing PayPal branding in "Buy Now" Smart Payment Button.
 * Fix - PHP warning when PayPal Credit not supported and no funding methods hidden.
+* Fix - Smart Payment Buttons gateway not inheriting IPN and subscription handling.
+* Fix - Single product Smart Payment Button failing without existing session.
+* Fix - When cart is empty, JS error on cart page and mini-cart payment buttons showing.
+* Add - Locale filter.
 
 = 1.6.0 - 2018-06-27 =
 * Add - Smart Payment Buttons mode as alternative to directly embedded image links for all instances of PayPal button.
