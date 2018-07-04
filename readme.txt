@@ -13,7 +13,7 @@ Accept PayPal, Credit Cards and Debit Cards on your WooCommerce store.
 
 This is a PayPal Checkout Payment Gateway for WooCommerce.
 
-PayPal Checkout allows you to securely sell your products and subscriptions online using In-Context Checkout to help you meet security requirements without causing your theme to suffer.  In-Context Checkout uses a modal iFrame, hosted on PayPal's servers, that overlays the checkout form and provides a secure means for your customers to enter their account information.
+PayPal Checkout allows you to securely sell your products and subscriptions online using In-Context Checkout to help you meet security requirements without causing your theme to suffer.  In-Context Checkout uses a modal window, hosted on PayPal's servers, that overlays the checkout form and provides a secure means for your customers to enter their account information.
 
 Also, with Integrated PayPal Setup (Easy Setup), connecting to PayPal is as simple as clicking a button - no complicated API keys to cut and paste.
 
@@ -44,7 +44,9 @@ If on the off-chance you do encounter issues with the shop/category pages after 
 
 = Does this plugin work with credit cards or just PayPal? =
 
-This plugin supports payments using both credit and debit cards as well as PayPal.
+This plugin supports payments using both credit and debit cards as well as PayPal. The new Smart Payment Buttons feature dynamically displays PayPal, Venmo (US Only), PayPal Credit, or other local payment options* in a single stack—without needing to leave the merchant's website.
+
+*PayPal Checkout features may not be available in all countries.
 
 = Does this support Checkout with PayPal from the cart view? =
 
