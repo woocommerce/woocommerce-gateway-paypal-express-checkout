@@ -619,7 +619,7 @@ class WC_Gateway_PPEC_Client {
 			$details['items'][] = $this->_get_extra_offset_line_item( $details['total_item_amount'] - $lisum );
 		}
 
-		return $details;
+		return apply_filters( 'woocommerce_paypal_express_checkout_get_details', $details );
 	}
 
 	/**
