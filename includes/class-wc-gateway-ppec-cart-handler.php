@@ -32,6 +32,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 		if ( 'yes' === wc_gateway_ppec()->settings->checkout_on_single_product_enabled ) {
 			add_action( 'woocommerce_after_add_to_cart_form', array( $this, 'display_paypal_button_product' ), 1 );
 			add_action( 'wc_ajax_wc_ppec_generate_cart', array( $this, 'wc_ajax_generate_cart' ) );
+			add_action( 'wp', array( $this, 'ensure_session' ) ); // Ensure there is a customer session so that nonce is not invalidated by new session created on AJAX POST request.
 		}
 
 		add_action( 'wc_ajax_wc_ppec_update_shipping_costs', array( $this, 'wc_ajax_update_shipping_costs' ) );
@@ -333,7 +334,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 				'page'                 => $page,
 				'button_color'         => $settings->button_color,
 				'button_shape'         => $settings->button_shape,
-				'start_checkout_nonce' => $this->create_nonce( '_wc_ppec_start_checkout_nonce' ),
+				'start_checkout_nonce' => wp_create_nonce( '_wc_ppec_start_checkout_nonce' ),
 				'start_checkout_url'   => WC_AJAX::get_endpoint( 'wc_ppec_start_checkout' ),
 			);
 
@@ -364,7 +365,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 			wp_enqueue_script( 'wc-gateway-ppec-generate-cart', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-generate-cart.js', array( 'jquery' ), wc_gateway_ppec()->version, true );
 			wp_localize_script( 'wc-gateway-ppec-generate-cart', 'wc_ppec_generate_cart_context',
 				array(
-					'generate_cart_nonce' => $this->create_nonce( '_wc_ppec_generate_cart_nonce' ),
+					'generate_cart_nonce' => wp_create_nonce( '_wc_ppec_generate_cart_nonce' ),
 					'ajaxurl'             => WC_AJAX::get_endpoint( 'wc_ppec_generate_cart' ),
 				)
 			);
@@ -372,14 +373,12 @@ class WC_Gateway_PPEC_Cart_Handler {
 	}
 
 	/**
-	 * Ensures a session is active, so that nonce is not invalidated by new session created on AJAX POST request.
+	 * Creates a customer session if one is not already active.
 	 */
-	protected function create_nonce( $action ) {
+	public function ensure_session() {
 		if ( ! WC()->session->has_session() ) {
 			WC()->session->set_customer_session_cookie( true );
 		}
-
-		return wp_create_nonce( $action );
 	}
 
 	/**
