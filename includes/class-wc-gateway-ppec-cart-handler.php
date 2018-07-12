@@ -134,6 +134,12 @@ class WC_Gateway_PPEC_Cart_Handler {
 			wp_die( __( 'Cheatin&#8217; huh?', 'woocommerce-gateway-paypal-express-checkout' ) );
 		}
 
+		if ( ! empty( $_POST['terms-field'] ) && empty( $_POST['terms'] ) ) {
+			$message = __( 'Please read and accept the terms and conditions to proceed with your order.', 'woocommerce-gateway-paypal-express-checkout' );
+			wp_send_json_error( array( 'message' => $message ) );
+			return;
+		}
+
 		if ( isset( $_POST['from_checkout'] ) && 'yes' === $_POST['from_checkout'] ) {
 			add_filter( 'woocommerce_cart_needs_shipping', '__return_false' );
 		}
