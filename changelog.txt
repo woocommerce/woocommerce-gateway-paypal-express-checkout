@@ -2,6 +2,7 @@
 
 = 1.6.2 - 2018-xx-xx =
 * Fix - Tax not applied on the (Confirm your PayPal order) page at the checkout.
+* Fix - Filters for Billing fields should only be applied if the currently selected gateway is PPEC.
 
 = 1.6.1 - 2018-07-04 =
 * Fix - GDPR Fatal error exporting user data when they have PPEC subscriptions.
