@@ -49,14 +49,6 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		add_action( 'woocommerce_review_order_after_submit', array( $this, 'maybe_render_cancel_link' ) );
 
 		add_action( 'woocommerce_cart_shipping_packages', array( $this, 'maybe_add_shipping_information' ) );
-		add_action( 'wp_enqueue_scripts', array( $this, 'checkout_scripts' ) );
-	}
-
-	/**
-	 * Add scripts to checkout process
-	 */
-	public function checkout_scripts() {
-		wp_enqueue_script( 'wc-gateway-ppec-checkout-handler', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-checkout-handler.js', array( 'jquery' ), wc_gateway_ppec()->version, true );
 	}
 
 	/**
