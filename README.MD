@@ -43,8 +43,7 @@ If on the off-chance you do encounter issues with the shop/category pages after 
 
 ## Frequently Asked Questions
 
-1. Does this plugin work with credit cards or just PayPal?
-    
+  # 1. Does this plugin work with credit cards or just PayPal?
     This plugin supports payments using both credit and debit cards as well as PayPal. The new Smart Payment Buttons feature dynamically    displays PayPal, Venmo (US Only), PayPal Credit, or other local payment options* in a single stack—without needing to leave the merchant's website.
 
     *PayPal Checkout features may not be available in all countries.
