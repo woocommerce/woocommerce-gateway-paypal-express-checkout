@@ -47,7 +47,7 @@ If on the off-chance you do encounter issues with the shop/category pages after 
     
     This plugin supports payments using both credit and debit cards as well as PayPal. The new Smart Payment Buttons feature dynamically    displays PayPal, Venmo (US Only), PayPal Credit, or other local payment options* in a single stack—without needing to leave the merchant's website.
 
-*PayPal Checkout features may not be available in all countries.
+    *PayPal Checkout features may not be available in all countries.
 
 2. Does this support Checkout with PayPal from the cart view?
     
@@ -55,18 +55,18 @@ If on the off-chance you do encounter issues with the shop/category pages after 
 
 3. Does this support both production mode and sandbox mode for testing? 
   
-  Yes it does - production and sandbox mode is driven by how you connect.  You may choose to connect in either mode, and disconnect and reconnect in the other mode whenever you want.
+    Yes it does - production and sandbox mode is driven by how you connect.  You may choose to connect in either mode, and disconnect and reconnect in the other mode whenever you want.
 
 4. Where can I find documentation? 
 
-  For help setting up and configuring, please refer to our [user guide](https://docs.woocommerce.com/document/paypal-express-checkout/)
+   For help setting up and configuring, please refer to our [user guide](https://docs.woocommerce.com/document/paypal-express-checkout/)
 
 5. Where can I get support or talk to other users? 
 
-  If you get stuck, you can ask for help in the Plugin Forum.
+   If you get stuck, you can ask for help in the Plugin Forum.
 
 6. Will this plugin work with my theme?
-  Yes, this plugin will work with any theme, but may require some styling to make it match nicely. If you're looking for a theme with built in WooCommerce integration we recommend [Storefront](http://www.woothemes.com/storefront/).
+   Yes, this plugin will work with any theme, but may require some styling to make it match nicely. If you're looking for a theme with built in WooCommerce integration we recommend [Storefront](http://www.woothemes.com/storefront/).
 
 7. Where can I request new features or report bugs? 
 
@@ -74,8 +74,8 @@ If on the off-chance you do encounter issues with the shop/category pages after 
 
 8. How to remove 'Proceed to Checkout' button from cart page? 
 
-  If PayPal Checkout is the only enabled payment gateway and you want to remove the 'Proceed to Checkout' button from the cart, you can use this snippet:
-  https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
+   If PayPal Checkout is the only enabled payment gateway and you want to remove the 'Proceed to Checkout' button from the cart, you can use this snippet:
+   https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 
 9. Where can I contribute? 
   The GitHub repository for PayPal Checkout is here:
@@ -143,4 +143,4 @@ If on the off-chance you do encounter issues with the shop/category pages after 
 * Fix - Compatibility with Subscriptions and Checkout from Single Product page.
 * Fix - Make sure session object exists before use to prevent fatal error.
 
-[See changelog for all versions](https://raw.githubusercontent.com/woocommerce/woocommerce-gateway-paypal-express-checkout/master/changelog.txt).
+    [See changelog for all versions](https://raw.githubusercontent.com/woocommerce/woocommerce-gateway-paypal-express-checkout/master/changelog.txt).
