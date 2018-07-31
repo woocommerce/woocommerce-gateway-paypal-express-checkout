@@ -45,7 +45,7 @@ If on the off-chance you do encounter issues with the shop/category pages after 
 
   ### 1. Does this plugin work with credit cards or just PayPal?
    This plugin supports payments using both credit and debit cards as well as PayPal. The new Smart Payment Buttons feature dynamically    displays PayPal, Venmo (US Only), PayPal Credit, or other local payment options* in a single stack—without needing to leave the merchant's website.
-   PayPal Checkout features may not be available in all countries.
+   *PayPal Checkout features may not be available in all countries.
 
   ### 2. Does this support Checkout with PayPal from the cart view?
    Yes!
@@ -69,7 +69,8 @@ If on the off-chance you do encounter issues with the shop/category pages after 
   If PayPal Checkout is the only enabled payment gateway and you want to remove the 'Proceed to Checkout' button from the cart, you can use this snippet: https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
 
   ### 9. Where can I contribute? 
-  The GitHub repository for PayPal Checkout is here: https://github.com/woocommerce/woocommerce-gateway-paypal-express-checkout
+  The GitHub repository for PayPal Checkout is here: 
+  https://github.com/woocommerce/woocommerce-gateway-paypal-express-checkout
   Please use this to inform us about bugs, or make contributions via PRs.
 
 ## Screenshots
