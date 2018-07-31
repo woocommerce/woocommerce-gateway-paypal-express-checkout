@@ -66,7 +66,7 @@ If on the off-chance you do encounter issues with the shop/category pages after 
    If you get stuck, you can ask for help in the Plugin Forum.
 
 6. Will this plugin work with my theme?
-   Yes, this plugin will work with any theme, but may require some styling to make it match nicely. If you're looking for a theme with built in WooCommerce integration we recommend [Storefront](http://www.woothemes.com/storefront/).
+    Yes, this plugin will work with any theme, but may require some styling to make it match nicely. If you're looking for a theme with built in WooCommerce integration we recommend [Storefront](http://www.woothemes.com/storefront/).
 
 7. Where can I request new features or report bugs? 
 
