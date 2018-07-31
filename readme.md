@@ -1,4 +1,4 @@
-##WooCommerce PayPal Checkout Payment Gateway
+## WooCommerce PayPal Checkout Payment Gateway
 Contributors: automattic, woothemes, akeda, dwainm, royho, allendav, slash1andy, woosteve, spraveenitpro, mikedmoore, fernashes, shellbeezy, danieldudzic, mikaey, fullysupportedphil, dsmithweb, corsonr, bor0, zandyring, pauldechov
 Tags: ecommerce, e-commerce, commerce, woothemes, wordpress ecommerce, store, sales, sell, shop, shopping, cart, checkout, configurable, paypal
 Requires at least: 4.4
@@ -9,7 +9,7 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
 Accept PayPal, Credit Cards and Debit Cards on your WooCommerce store.
 
-##Description
+## Description
 
 This is a PayPal Checkout Payment Gateway for WooCommerce.
 
@@ -17,7 +17,7 @@ PayPal Checkout allows you to securely sell your products and subscriptions onli
 
 Also, with Integrated PayPal Setup (Easy Setup), connecting to PayPal is as simple as clicking a button - no complicated API keys to cut and paste.
 
-##Installation
+## Installation
 
 = Minimum Requirements =
 
@@ -40,7 +40,7 @@ Automatic updates should work like a charm; as always though, ensure you backup 
 
 If on the off-chance you do encounter issues with the shop/category pages after an update you simply need to flush the permalinks by going to WordPress > Settings > Permalinks and hitting 'save'. That should return things to normal.
 
-##Frequently Asked Questions
+## Frequently Asked Questions
 
 = Does this plugin work with credit cards or just PayPal? =
 
@@ -87,7 +87,7 @@ https://github.com/woocommerce/woocommerce-gateway-paypal-express-checkout
 
 Please use this to inform us about bugs, or make contributions via PRs.
 
-##Screenshots
+## Screenshots
 
 1. Click the "Setup or link an existing PayPal account" button. If you want to test before going live, you can switch the Environment, above the button, to Sandbox.
 2. API credentials will be set after linking, or you can set them manually.
@@ -99,7 +99,7 @@ Please use this to inform us about bugs, or make contributions via PRs.
 8. Choose PayPal from single product page.
 9. Initiate checkout from mini-cart.
 
-##Changelog
+## Changelog
 
 = 1.6.1 - 2018-07-04 =
 * Fix - GDPR Fatal error exporting user data when they have PPEC subscriptions.
