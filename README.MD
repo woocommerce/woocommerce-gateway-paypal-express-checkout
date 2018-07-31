@@ -58,13 +58,13 @@ If on the off-chance you do encounter issues with the shop/category pages after 
    For help setting up and configuring, please refer to our [user guide](https://docs.woocommerce.com/document/paypal-express-checkout/)
 
   ### 5. Where can I get support or talk to other users? 
-   If you get stuck, you can ask for help in the Plugin Forum.
+   If you get stuck, you can ask for help in the [Plugin Forum](https://wordpress.org/support/plugin/woocommerce).
   
   ### 6. Will this plugin work with my theme?
    Yes, this plugin will work with any theme, but may require some styling to make it match nicely. If you're looking for a theme with built in WooCommerce integration we recommend [Storefront](http://www.woothemes.com/storefront/).
 
   ### 7. Where can I request new features or report bugs? 
-   New feature requests and bugs reports can be made in the plugin forum.
+   New feature requests and bugs reports can be made in the [Plugin Forum](https://wordpress.org/support/plugin/woocommerce).
 
   ### 8. How to remove 'Proceed to Checkout' button from cart page? 
    If PayPal Checkout is the only enabled payment gateway and you want to remove the 'Proceed to Checkout' button from the cart, you can use this snippet: https://gist.github.com/mikejolley/ad2ecc286c9ad6cefbb7065ba6dfef48
