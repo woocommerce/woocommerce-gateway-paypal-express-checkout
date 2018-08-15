@@ -376,6 +376,12 @@ class WC_Gateway_PPEC_Cart_Handler {
 	 * Creates a customer session if one is not already active.
 	 */
 	public function ensure_session() {
+		$frontend = ( ! is_admin() || defined( 'DOING_AJAX' ) ) && ! defined( 'DOING_CRON' ) && ! defined( 'REST_REQUEST' );
+
+		if ( ! $frontend ) {
+			return;
+		}
+
 		if ( ! WC()->session->has_session() ) {
 			WC()->session->set_customer_session_cookie( true );
 		}
