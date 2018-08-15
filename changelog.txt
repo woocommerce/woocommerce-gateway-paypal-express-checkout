@@ -1,5 +1,8 @@
 *** Changelog ***
 
+= 1.6.3 - 2018-08-15 =
+* Fix - Fatal error caused by a fix for Smart Payment Buttons.
+
 = 1.6.2 - 2018-08-15 =
 * Fix - Tax not applied on the (Confirm your PayPal order) page at the checkout.
 
