@@ -74,6 +74,8 @@
 						data: {
 							'nonce': wc_ppec_context.start_checkout_nonce,
 							'from_checkout': 'checkout' === wc_ppec_context.page && ! isMiniCart ? 'yes' : 'no',
+							'terms-field': $( 'form.checkout [name="terms-field"]' ).val() || 0,
+							'terms': $( 'form.checkout [name="terms"]' ).is( ':checked' ) || 0,
 						},
 					} ).then( function( response ) {
 						if ( ! response.success ) {
