@@ -2,6 +2,7 @@
 
 = 1.6.19 - 2020-xx-xx =
 * Fix - Check if order exists before adding order actions
+* Fix - Global attributes stripped before sent to PayPal if unicode characters
 
 = 1.6.18 - 2019-12-05 =
 * Fix - Send fees to PayPal as line items

@@ -86,7 +86,29 @@ class WC_Gateway_PPEC_Cart_Handler {
 			wc_empty_cart();
 
 			if ( $product->is_type( 'variable' ) ) {
-				$attributes = array_map( 'wc_clean', $_POST['attributes'] );
+				$attributes = array();
+				$slugs      = array();
+
+				/**
+				 * We need to make sure we're not passing bad data to a query later on, 
+				 * so we get the attributes for the product. 
+				 */
+				foreach ( $product->get_attributes() as $attribute ) {
+					foreach ( $attribute->get_terms() as $term ) {
+						$slugs[] = $term->slug;
+					}
+				}
+
+				/**
+				 * And then we clean anything that doesn't match a slug for the product. 
+				 */
+				foreach ( $_POST['attributes'] as $attribute => $term ) {
+					if ( in_array( $term, $slugs ) ) {
+						$attributes[ $attribute ] = $term;
+					} else {
+						$attributes[ $attribute ] = wc_clean( $term );
+					}
+				}
 
 
 				if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
