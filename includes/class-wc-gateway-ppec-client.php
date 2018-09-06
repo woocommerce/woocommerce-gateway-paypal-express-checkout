@@ -690,6 +690,10 @@ class WC_Gateway_PPEC_Client {
 		}
 		$shipping_address->setCountry( $shipping_country );
 
+		if ( ! $old_wc ) {
+			$shipping_address->setPhoneNumber( $old_wc ? '' : $order->get_billing_phone() );
+		}
+
 		$details['shipping_address'] = $shipping_address;
 
 		return $details;
