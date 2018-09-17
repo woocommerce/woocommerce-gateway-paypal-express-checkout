@@ -156,7 +156,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 		if ( empty( $error_messages ) ) {
 			$this->start_checkout();
 		} else {
-			wp_send_json_error( array( 'message' => implode( '<br>', $error_messages ) ) );
+			wp_send_json_error( array( 'messages' => $error_messages ) );
 		}
 		exit;
 	}
@@ -171,7 +171,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 			wc_gateway_ppec()->checkout->start_checkout_from_cart();
 			wp_send_json_success( array( 'token' => WC()->session->paypal->token ) );
 		} catch( PayPal_API_Exception $e ) {
-			wp_send_json_error( array( 'message' => $e->getMessage() ) );
+			wp_send_json_error( array( 'messages' => array( $e->getMessage() ) ) );
 		}
 	}
 
