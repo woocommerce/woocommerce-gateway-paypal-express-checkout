@@ -2,20 +2,26 @@
 ;( function ( $, window, document ) {
 	'use strict';
 
-	var showError = function( errorMessage ) {
+	// Show error notice at top of checkout form, or else within button container
+	var showError = function( errorMessage, selector ) {
 		var $checkout_form = $( 'form.checkout' );
+
+		if ( ! $checkout_form || ! $checkout_form.length ) {
+			$( selector ).prepend( errorMessage );
+			return;
+		}
 
 		// Adapted from https://github.com/woocommerce/woocommerce/blob/ea9aa8cd59c9fa735460abf0ebcb97fa18f80d03/assets/js/frontend/checkout.js#L514-L529
 		$( '.woocommerce-NoticeGroup-checkout, .woocommerce-error, .woocommerce-message' ).remove();
 		$checkout_form.prepend( '<div class="woocommerce-NoticeGroup woocommerce-NoticeGroup-checkout">' + errorMessage + '</div>' );
 		$checkout_form.find( '.input-text, select, input:checkbox' ).trigger( 'validate' ).blur();
-		
+
 		var scrollElement = $( '.woocommerce-NoticeGroup-checkout' );
 		if ( ! scrollElement.length ) {
 			scrollElement = $checkout_form;
 		}
 		$.scroll_to_notices( scrollElement );
-		
+
 		$( document.body ).trigger( 'checkout_error' );
 	}
 
@@ -104,7 +110,7 @@
 								return '<li>' + message + '</li>';
 							} ).join( '' );
 
-							showError( '<ul class="woocommerce-error" role="alert">' + messageItems + '</ul>' );
+							showError( '<ul class="woocommerce-error" role="alert">' + messageItems + '</ul>', selector );
 							return null;
 						}
 						return response.data.token;
