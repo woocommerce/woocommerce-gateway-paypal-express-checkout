@@ -739,14 +739,6 @@ class WC_Gateway_PPEC_Client {
 		$shipping_address->setCity( $shipping_city );
 		$shipping_address->setState( $shipping_state );
 		$shipping_address->setZip( $shipping_postcode );
-
-		// In case merchant only expects domestic shipping and hides shipping
-		// country, fallback to base country.
-		//
-		// @see https://github.com/woothemes/woocommerce-gateway-paypal-express-checkout/issues/139
-		if ( empty( $shipping_country ) ) {
-			$shipping_country = WC()->countries->get_base_country();
-		}
 		$shipping_address->setCountry( $shipping_country );
 
 		return $shipping_address;
