@@ -464,6 +464,7 @@ class WC_Gateway_PPEC_Client {
 			'order_tax'         => round( WC()->cart->tax_total + WC()->cart->shipping_tax_total, $decimals ),
 			'shipping'          => round( WC()->cart->shipping_total, $decimals ),
 			'items'             => $this->_get_paypal_line_items_from_cart(),
+			'shipping_address'  => $this->_get_address_from_customer(),
 		);
 
 		return $this->get_details( $details, $discounts, $rounded_total, WC()->cart->total );
@@ -696,6 +697,51 @@ class WC_Gateway_PPEC_Client {
 		$details['shipping_address'] = $shipping_address;
 
 		return $details;
+	}
+
+	/**
+	 * Get PayPal shipping address from customer.
+	 *
+	 * @return array Address
+	 */
+	protected function _get_address_from_customer() {
+		$customer = WC()->customer;
+
+		$shipping_address = new PayPal_Address;
+
+		$old_wc = version_compare( WC_VERSION, '3.0', '<' );
+
+		if ( $customer->get_shipping_address() || $customer->get_shipping_address_2() ) {
+			$shipping_first_name = $old_wc ? '' : $customer->get_shipping_first_name();
+			$shipping_last_name  = $old_wc ? '' : $customer->get_shipping_last_name();
+			$shipping_address_1  = $customer->get_shipping_address();
+			$shipping_address_2  = $customer->get_shipping_address_2();
+			$shipping_city       = $customer->get_shipping_city();
+			$shipping_state      = $customer->get_shipping_state();
+			$shipping_postcode   = $customer->get_shipping_postcode();
+			$shipping_country    = $customer->get_shipping_country();
+		} else {
+			// Fallback to billing in case no shipping methods are set. The address returned from PayPal
+			// will be stored in the order as billing.
+			$shipping_first_name = $old_wc ? ''                         : $customer->get_billing_first_name();
+			$shipping_last_name  = $old_wc ? ''                         : $customer->get_billing_last_name();
+			$shipping_address_1  = $old_wc ? $customer->get_address()   : $customer->get_billing_address_1();
+			$shipping_address_2  = $old_wc ? $customer->get_address_2() : $customer->get_billing_address_2();
+			$shipping_city       = $old_wc ? $customer->get_city()      : $customer->get_billing_city();
+			$shipping_state      = $old_wc ? $customer->get_state()     : $customer->get_billing_state();
+			$shipping_postcode   = $old_wc ? $customer->get_postcode()  : $customer->get_billing_postcode();
+			$shipping_country    = $old_wc ? $customer->get_country()   : $customer->get_billing_country();
+		}
+
+		$shipping_address->setName( $shipping_first_name . ' ' . $shipping_last_name );
+		$shipping_address->setStreet1( $shipping_address_1 );
+		$shipping_address->setStreet2( $shipping_address_2 );
+		$shipping_address->setCity( $shipping_city );
+		$shipping_address->setState( $shipping_state );
+		$shipping_address->setZip( $shipping_postcode );
+		$shipping_address->setCountry( $shipping_country );
+
+		return $shipping_address;
 	}
 
 	/**
