@@ -68,13 +68,19 @@
 					}
 				} ).then( function() {
 					// Make PayPal Checkout initialization request.
+					var data = $( selector ).closest( 'form' )
+						.add( $( '<input type="hidden" name="nonce" /> ' )
+							.attr( 'value', wc_ppec_context.start_checkout_nonce )
+						)
+						.add( $( '<input type="hidden" name="from_checkout" /> ' )
+							.attr( 'value', 'checkout' === wc_ppec_context.page && ! isMiniCart ? 'yes' : 'no' )
+						)
+						.serialize();
+
 					return paypal.request( {
 						method: 'post',
 						url: wc_ppec_context.start_checkout_url,
-						data: {
-							'nonce': wc_ppec_context.start_checkout_nonce,
-							'from_checkout': 'checkout' === wc_ppec_context.page && ! isMiniCart ? 'yes' : 'no',
-						},
+						body: data,
 					} ).then( function( response ) {
 						if ( ! response.success ) {
 							// Render error notice inside button container.
