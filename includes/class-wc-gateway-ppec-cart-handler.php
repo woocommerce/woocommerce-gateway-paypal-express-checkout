@@ -161,6 +161,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 		}
 
 		if ( empty( $error_messages ) ) {
+			$this->set_customer_data( $_POST );
 			$this->start_checkout();
 		} else {
 			wp_send_json_error( array( 'messages' => $error_messages ) );
@@ -179,6 +180,45 @@ class WC_Gateway_PPEC_Cart_Handler {
 			wp_send_json_success( array( 'token' => WC()->session->paypal->token ) );
 		} catch( PayPal_API_Exception $e ) {
 			wp_send_json_error( array( 'messages' => array( $e->getMessage() ) ) );
+		}
+	}
+
+	/**
+	 * Store checkout form data in customer session.
+	 *
+	 * @since 1.6.4
+	 */
+	protected function set_customer_data( $data ) {
+		$customer = WC()->customer;
+
+		$shipping_prefix = isset( $data['ship_to_different_address'] ) ? 'shipping' : 'billing';
+
+		$customer->set_shipping_address( $data[ $shipping_prefix . '_address_1' ] );
+		$customer->set_shipping_address_2( $data[ $shipping_prefix . '_address_2' ] );
+		$customer->set_shipping_city( $data[ $shipping_prefix . '_city' ] );
+		$customer->set_shipping_state( $data[ $shipping_prefix . '_state' ] );
+		$customer->set_shipping_postcode( $data[ $shipping_prefix . '_postcode' ] );
+		$customer->set_shipping_country( $data[ $shipping_prefix . '_country' ] );
+
+		if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
+			$customer->set_address( $data['billing_address_1'] );
+			$customer->set_address_2( $data['billing_address_2'] );
+			$customer->set_city( $data['billing_city'] );
+			$customer->set_state( $data['billing_state'] );
+			$customer->set_postcode( $data['billing_postcode'] );
+			$customer->set_country( $data['billing_country'] );
+		} else {
+			$customer->set_shipping_first_name( $data[ $shipping_prefix . '_first_name' ] );
+			$customer->set_shipping_last_name( $data[ $shipping_prefix . '_last_name' ] );
+			$customer->set_billing_first_name( $data['billing_first_name'] );
+			$customer->set_billing_last_name( $data['billing_last_name'] );
+
+			$customer->set_billing_address_1( $data['billing_address_1'] );
+			$customer->set_billing_address_2( $data['billing_address_2'] );
+			$customer->set_billing_city( $data['billing_city'] );
+			$customer->set_billing_state( $data['billing_state'] );
+			$customer->set_billing_postcode( $data['billing_postcode'] );
+			$customer->set_billing_country( $data['billing_country'] );
 		}
 	}
 
