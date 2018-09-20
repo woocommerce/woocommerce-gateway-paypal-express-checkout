@@ -85,7 +85,7 @@
 						if ( ! response.success ) {
 							// Render error notice inside button container.
 							var $message = $( '<ul class="woocommerce-error" role="alert">' )
-								.append( $( '<li>' ).text( response.data.message ) );
+								.append( $( '<li>' ).html( response.data.message ) );
 							$( selector ).prepend( $message );
 							return null;
 						}
