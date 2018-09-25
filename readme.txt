@@ -103,6 +103,7 @@ Please use this to inform us about bugs, or make contributions via PRs.
 
 = 1.6.4 - 2018-xx-xx =
 * Fix - Billing address from Checkout form not being passed to PayPal via Smart Payment Button.
+* Fix - Truncate the line item descriptions to avoid exceeding PayPal character limits.
 
 = 1.6.3 - 2018-08-15 =
 * Fix - Fatal error caused by a fix for Smart Payment Buttons.
