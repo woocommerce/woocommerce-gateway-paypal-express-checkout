@@ -22,7 +22,15 @@
 		if ( ! scrollElement.length ) {
 			scrollElement = $container;
 		}
-		$.scroll_to_notices( scrollElement );
+
+		if ( $.scroll_to_notices ) {
+			$.scroll_to_notices( scrollElement );
+		} else {
+			// Compatibility with WC <3.3
+			$( 'html, body' ).animate( {
+				scrollTop: ( $container.offset().top - 100 )
+			}, 1000 );
+		}
 
 		$( document.body ).trigger( 'checkout_error' );
 	}

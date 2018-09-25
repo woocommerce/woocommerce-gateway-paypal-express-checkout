@@ -151,8 +151,15 @@ class WC_Gateway_PPEC_Cart_Handler {
 	 *
 	 * @since 1.6.4
 	 */
-	public function maybe_start_checkout( $data, $errors ) {
-		$error_messages = $errors->get_error_messages();
+	public function maybe_start_checkout( $data, $errors = null ) {
+		if ( is_null( $errors ) ) {
+			// Compatibility with WC <3.0
+			$error_messages = wc_get_notices( 'error' );
+			wc_clear_notices();
+		} else {
+			$error_messages = $errors->get_error_messages();
+		}
+
 		if ( empty( $error_messages ) ) {
 			$this->start_checkout();
 		} else {
