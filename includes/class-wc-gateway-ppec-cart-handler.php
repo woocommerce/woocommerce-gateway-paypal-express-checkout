@@ -153,7 +153,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 	 */
 	public function maybe_start_checkout( $data, $errors = null ) {
 		if ( is_null( $errors ) ) {
-			// Compatibility with WC <3.0
+			// Compatibility with WC <3.0: get notices and clear them so they don't re-appear.
 			$error_messages = wc_get_notices( 'error' );
 			wc_clear_notices();
 		} else {
