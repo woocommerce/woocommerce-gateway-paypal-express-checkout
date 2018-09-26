@@ -126,7 +126,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 	}
 
 	/**
-	 * Set Express Checkout and return token in response.
+	 * Handle AJAX request to start checkout flow, first triggering form validation if necessary.
 	 *
 	 * @since 1.6.0
 	 */
@@ -137,13 +137,48 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 		if ( isset( $_POST['from_checkout'] ) && 'yes' === $_POST['from_checkout'] ) {
 			add_filter( 'woocommerce_cart_needs_shipping', '__return_false' );
+
+			// Intercept process_checkout call to exit after validation.
+			add_action( 'woocommerce_after_checkout_validation', array( $this, 'maybe_start_checkout' ), 10, 2 );
+			WC()->checkout->process_checkout();
+		} else {
+			$this->start_checkout();
+		}
+	}
+
+	/**
+	 * Report validation errors if any, or else proceed with checkout flow.
+	 *
+	 * @since 1.6.4
+	 */
+	public function maybe_start_checkout( $data, $errors = null ) {
+		if ( is_null( $errors ) ) {
+			// Compatibility with WC <3.0: get notices and clear them so they don't re-appear.
+			$error_messages = wc_get_notices( 'error' );
+			wc_clear_notices();
+		} else {
+			$error_messages = $errors->get_error_messages();
 		}
 
+		if ( empty( $error_messages ) ) {
+			$this->start_checkout();
+		} else {
+			wp_send_json_error( array( 'messages' => $error_messages ) );
+		}
+		exit;
+	}
+
+	/**
+	 * Set Express Checkout and return token in response.
+	 *
+	 * @since 1.6.4
+	 */
+	protected function start_checkout() {
 		try {
 			wc_gateway_ppec()->checkout->start_checkout_from_cart();
 			wp_send_json_success( array( 'token' => WC()->session->paypal->token ) );
 		} catch( PayPal_API_Exception $e ) {
-			wp_send_json_error( array( 'message' => $e->getMessage() ) );
+			wp_send_json_error( array( 'messages' => array( $e->getMessage() ) ) );
 		}
 	}
 
