@@ -147,7 +147,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 	}
 
 	/**
-	 * Report validation errors if any, or else proceed with checkout flow.
+	 * Report validation errors if any, or else save form data in session and proceed with checkout flow.
 	 *
 	 * @since 1.6.4
 	 */
