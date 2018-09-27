@@ -191,34 +191,61 @@ class WC_Gateway_PPEC_Cart_Handler {
 	protected function set_customer_data( $data ) {
 		$customer = WC()->customer;
 
-		$shipping_prefix = isset( $data['ship_to_different_address'] ) ? 'shipping' : 'billing';
+		$billing_first_name = empty( $data[ 'billing_first_name' ] ) ? '' : wc_clean( $data[ 'billing_first_name' ] );
+		$billing_last_name  = empty( $data[ 'billing_last_name' ] )  ? '' : wc_clean( $data[ 'billing_last_name' ] );
+		$billing_address_1  = empty( $data[ 'billing_address_1' ] )  ? '' : wc_clean( $data[ 'billing_address_1' ] );
+		$billing_address_2  = empty( $data[ 'billing_address_2' ] )  ? '' : wc_clean( $data[ 'billing_address_2' ] );
+		$billing_city       = empty( $data[ 'billing_city' ] )       ? '' : wc_clean( $data[ 'billing_city' ] );
+		$billing_state      = empty( $data[ 'billing_state' ] )      ? '' : wc_clean( $data[ 'billing_state' ] );
+		$billing_postcode   = empty( $data[ 'billing_postcode' ] )   ? '' : wc_clean( $data[ 'billing_postcode' ] );
+		$billing_country    = empty( $data[ 'billing_country' ] )    ? '' : wc_clean( $data[ 'billing_country' ] );
 
-		$customer->set_shipping_address( $data[ $shipping_prefix . '_address_1' ] );
-		$customer->set_shipping_address_2( $data[ $shipping_prefix . '_address_2' ] );
-		$customer->set_shipping_city( $data[ $shipping_prefix . '_city' ] );
-		$customer->set_shipping_state( $data[ $shipping_prefix . '_state' ] );
-		$customer->set_shipping_postcode( $data[ $shipping_prefix . '_postcode' ] );
-		$customer->set_shipping_country( $data[ $shipping_prefix . '_country' ] );
+		if ( isset( $data['ship_to_different_address'] ) ) {
+			$shipping_first_name = empty( $data[ 'shipping_first_name' ] ) ? '' : wc_clean( $data[ 'shipping_first_name' ] );
+			$shipping_last_name  = empty( $data[ 'shipping_last_name' ] )  ? '' : wc_clean( $data[ 'shipping_last_name' ] );
+			$shipping_address_1  = empty( $data[ 'shipping_address_1' ] )  ? '' : wc_clean( $data[ 'shipping_address_1' ] );
+			$shipping_address_2  = empty( $data[ 'shipping_address_2' ] )  ? '' : wc_clean( $data[ 'shipping_address_2' ] );
+			$shipping_city       = empty( $data[ 'shipping_city' ] )       ? '' : wc_clean( $data[ 'shipping_city' ] );
+			$shipping_state      = empty( $data[ 'shipping_state' ] )      ? '' : wc_clean( $data[ 'shipping_state' ] );
+			$shipping_postcode   = empty( $data[ 'shipping_postcode' ] )   ? '' : wc_clean( $data[ 'shipping_postcode' ] );
+			$shipping_country    = empty( $data[ 'shipping_country' ] )    ? '' : wc_clean( $data[ 'shipping_country' ] );
+		} else {
+			$shipping_first_name = $billing_first_name;
+			$shipping_last_name  = $billing_last_name;
+			$shipping_address_1  = $billing_address_1;
+			$shipping_address_2  = $billing_address_2;
+			$shipping_city       = $billing_city;
+			$shipping_state      = $billing_state;
+			$shipping_postcode   = $billing_postcode;
+			$shipping_country    = $billing_country;
+		}
+
+		$customer->set_shipping_address( $shipping_address_1 );
+		$customer->set_shipping_address_2( $shipping_address_2 );
+		$customer->set_shipping_city( $shipping_city );
+		$customer->set_shipping_state( $shipping_state );
+		$customer->set_shipping_postcode( $shipping_postcode );
+		$customer->set_shipping_country( $shipping_country );
 
 		if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
-			$customer->set_address( $data['billing_address_1'] );
-			$customer->set_address_2( $data['billing_address_2'] );
-			$customer->set_city( $data['billing_city'] );
-			$customer->set_state( $data['billing_state'] );
-			$customer->set_postcode( $data['billing_postcode'] );
-			$customer->set_country( $data['billing_country'] );
+			$customer->set_address( $billing_address_1 );
+			$customer->set_address_2( $billing_address_2 );
+			$customer->set_city( $billing_city );
+			$customer->set_state( $billing_state );
+			$customer->set_postcode( $billing_postcode );
+			$customer->set_country( $billing_country );
 		} else {
-			$customer->set_shipping_first_name( $data[ $shipping_prefix . '_first_name' ] );
-			$customer->set_shipping_last_name( $data[ $shipping_prefix . '_last_name' ] );
-			$customer->set_billing_first_name( $data['billing_first_name'] );
-			$customer->set_billing_last_name( $data['billing_last_name'] );
+			$customer->set_shipping_first_name( $shipping_first_name );
+			$customer->set_shipping_last_name( $shipping_last_name );
+			$customer->set_billing_first_name( $billing_first_name );
+			$customer->set_billing_last_name( $billing_last_name );
 
-			$customer->set_billing_address_1( $data['billing_address_1'] );
-			$customer->set_billing_address_2( $data['billing_address_2'] );
-			$customer->set_billing_city( $data['billing_city'] );
-			$customer->set_billing_state( $data['billing_state'] );
-			$customer->set_billing_postcode( $data['billing_postcode'] );
-			$customer->set_billing_country( $data['billing_country'] );
+			$customer->set_billing_address_1( $billing_address_1 );
+			$customer->set_billing_address_2( $billing_address_2 );
+			$customer->set_billing_city( $billing_city );
+			$customer->set_billing_state( $billing_state );
+			$customer->set_billing_postcode( $billing_postcode );
+			$customer->set_billing_country( $billing_country );
 		}
 	}
 
