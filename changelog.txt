@@ -1,6 +1,6 @@
 *** Changelog ***
 
-= 1.6.4 - 2018-xx-xx =
+= 1.6.4 - 2018-09-27 =
 * Fix - Billing address from Checkout form not being passed to PayPal via Smart Payment Button.
 * Fix - Checkout form not being validated until after Smart Payment Button payment flow.
 
