@@ -2,6 +2,39 @@
 ;( function ( $, window, document ) {
 	'use strict';
 
+	// Show error notice at top of checkout form, or else within button container
+	var showError = function( errorMessage, selector ) {
+		var $container = $( '.woocommerce-notices-wrapper, form.checkout' );
+
+		if ( ! $container || ! $container.length ) {
+			$( selector ).prepend( errorMessage );
+			return;
+		} else {
+			$container = $container.first();
+		}
+
+		// Adapted from https://github.com/woocommerce/woocommerce/blob/ea9aa8cd59c9fa735460abf0ebcb97fa18f80d03/assets/js/frontend/checkout.js#L514-L529
+		$( '.woocommerce-NoticeGroup-checkout, .woocommerce-error, .woocommerce-message' ).remove();
+		$container.prepend( '<div class="woocommerce-NoticeGroup woocommerce-NoticeGroup-checkout">' + errorMessage + '</div>' );
+		$container.find( '.input-text, select, input:checkbox' ).trigger( 'validate' ).blur();
+
+		var scrollElement = $( '.woocommerce-NoticeGroup-checkout' );
+		if ( ! scrollElement.length ) {
+			scrollElement = $container;
+		}
+
+		if ( $.scroll_to_notices ) {
+			$.scroll_to_notices( scrollElement );
+		} else {
+			// Compatibility with WC <3.3
+			$( 'html, body' ).animate( {
+				scrollTop: ( $container.offset().top - 100 )
+			}, 1000 );
+		}
+
+		$( document.body ).trigger( 'checkout_error' );
+	}
+
 	// Map funding method settings to enumerated options provided by PayPal.
 	var getFundingMethods = function( methods ) {
 		if ( ! methods ) {
@@ -68,19 +101,26 @@
 					}
 				} ).then( function() {
 					// Make PayPal Checkout initialization request.
+					var data = $( selector ).closest( 'form' )
+						.add( $( '<input type="hidden" name="nonce" /> ' )
+							.attr( 'value', wc_ppec_context.start_checkout_nonce )
+						)
+						.add( $( '<input type="hidden" name="from_checkout" /> ' )
+							.attr( 'value', 'checkout' === wc_ppec_context.page && ! isMiniCart ? 'yes' : 'no' )
+						)
+						.serialize();
+
 					return paypal.request( {
 						method: 'post',
 						url: wc_ppec_context.start_checkout_url,
-						data: {
-							'nonce': wc_ppec_context.start_checkout_nonce,
-							'from_checkout': 'checkout' === wc_ppec_context.page && ! isMiniCart ? 'yes' : 'no',
-						},
+						body: data,
 					} ).then( function( response ) {
 						if ( ! response.success ) {
-							// Render error notice inside button container.
-							var $message = $( '<ul class="woocommerce-error" role="alert">' )
-								.append( $( '<li>' ).text( response.data.message ) );
-							$( selector ).prepend( $message );
+							var messageItems = response.data.messages.map( function( message ) {
+								return '<li>' + message + '</li>';
+							} ).join( '' );
+
+							showError( '<ul class="woocommerce-error" role="alert">' + messageItems + '</ul>', selector );
 							return null;
 						}
 						return response.data.token;

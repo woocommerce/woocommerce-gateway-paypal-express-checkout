@@ -126,7 +126,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 	}
 
 	/**
-	 * Set Express Checkout and return token in response.
+	 * Handle AJAX request to start checkout flow, first triggering form validation if necessary.
 	 *
 	 * @since 1.6.0
 	 */
@@ -137,13 +137,115 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 		if ( isset( $_POST['from_checkout'] ) && 'yes' === $_POST['from_checkout'] ) {
 			add_filter( 'woocommerce_cart_needs_shipping', '__return_false' );
+
+			// Intercept process_checkout call to exit after validation.
+			add_action( 'woocommerce_after_checkout_validation', array( $this, 'maybe_start_checkout' ), 10, 2 );
+			WC()->checkout->process_checkout();
+		} else {
+			$this->start_checkout();
+		}
+	}
+
+	/**
+	 * Report validation errors if any, or else save form data in session and proceed with checkout flow.
+	 *
+	 * @since 1.6.4
+	 */
+	public function maybe_start_checkout( $data, $errors = null ) {
+		if ( is_null( $errors ) ) {
+			// Compatibility with WC <3.0: get notices and clear them so they don't re-appear.
+			$error_messages = wc_get_notices( 'error' );
+			wc_clear_notices();
+		} else {
+			$error_messages = $errors->get_error_messages();
 		}
 
+		if ( empty( $error_messages ) ) {
+			$this->set_customer_data( $_POST );
+			$this->start_checkout();
+		} else {
+			wp_send_json_error( array( 'messages' => $error_messages ) );
+		}
+		exit;
+	}
+
+	/**
+	 * Set Express Checkout and return token in response.
+	 *
+	 * @since 1.6.4
+	 */
+	protected function start_checkout() {
 		try {
 			wc_gateway_ppec()->checkout->start_checkout_from_cart();
 			wp_send_json_success( array( 'token' => WC()->session->paypal->token ) );
 		} catch( PayPal_API_Exception $e ) {
-			wp_send_json_error( array( 'message' => $e->getMessage() ) );
+			wp_send_json_error( array( 'messages' => array( $e->getMessage() ) ) );
+		}
+	}
+
+	/**
+	 * Store checkout form data in customer session.
+	 *
+	 * @since 1.6.4
+	 */
+	protected function set_customer_data( $data ) {
+		$customer = WC()->customer;
+
+		$billing_first_name = empty( $data[ 'billing_first_name' ] ) ? '' : wc_clean( $data[ 'billing_first_name' ] );
+		$billing_last_name  = empty( $data[ 'billing_last_name' ] )  ? '' : wc_clean( $data[ 'billing_last_name' ] );
+		$billing_address_1  = empty( $data[ 'billing_address_1' ] )  ? '' : wc_clean( $data[ 'billing_address_1' ] );
+		$billing_address_2  = empty( $data[ 'billing_address_2' ] )  ? '' : wc_clean( $data[ 'billing_address_2' ] );
+		$billing_city       = empty( $data[ 'billing_city' ] )       ? '' : wc_clean( $data[ 'billing_city' ] );
+		$billing_state      = empty( $data[ 'billing_state' ] )      ? '' : wc_clean( $data[ 'billing_state' ] );
+		$billing_postcode   = empty( $data[ 'billing_postcode' ] )   ? '' : wc_clean( $data[ 'billing_postcode' ] );
+		$billing_country    = empty( $data[ 'billing_country' ] )    ? '' : wc_clean( $data[ 'billing_country' ] );
+
+		if ( isset( $data['ship_to_different_address'] ) ) {
+			$shipping_first_name = empty( $data[ 'shipping_first_name' ] ) ? '' : wc_clean( $data[ 'shipping_first_name' ] );
+			$shipping_last_name  = empty( $data[ 'shipping_last_name' ] )  ? '' : wc_clean( $data[ 'shipping_last_name' ] );
+			$shipping_address_1  = empty( $data[ 'shipping_address_1' ] )  ? '' : wc_clean( $data[ 'shipping_address_1' ] );
+			$shipping_address_2  = empty( $data[ 'shipping_address_2' ] )  ? '' : wc_clean( $data[ 'shipping_address_2' ] );
+			$shipping_city       = empty( $data[ 'shipping_city' ] )       ? '' : wc_clean( $data[ 'shipping_city' ] );
+			$shipping_state      = empty( $data[ 'shipping_state' ] )      ? '' : wc_clean( $data[ 'shipping_state' ] );
+			$shipping_postcode   = empty( $data[ 'shipping_postcode' ] )   ? '' : wc_clean( $data[ 'shipping_postcode' ] );
+			$shipping_country    = empty( $data[ 'shipping_country' ] )    ? '' : wc_clean( $data[ 'shipping_country' ] );
+		} else {
+			$shipping_first_name = $billing_first_name;
+			$shipping_last_name  = $billing_last_name;
+			$shipping_address_1  = $billing_address_1;
+			$shipping_address_2  = $billing_address_2;
+			$shipping_city       = $billing_city;
+			$shipping_state      = $billing_state;
+			$shipping_postcode   = $billing_postcode;
+			$shipping_country    = $billing_country;
+		}
+
+		$customer->set_shipping_address( $shipping_address_1 );
+		$customer->set_shipping_address_2( $shipping_address_2 );
+		$customer->set_shipping_city( $shipping_city );
+		$customer->set_shipping_state( $shipping_state );
+		$customer->set_shipping_postcode( $shipping_postcode );
+		$customer->set_shipping_country( $shipping_country );
+
+		if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
+			$customer->set_address( $billing_address_1 );
+			$customer->set_address_2( $billing_address_2 );
+			$customer->set_city( $billing_city );
+			$customer->set_state( $billing_state );
+			$customer->set_postcode( $billing_postcode );
+			$customer->set_country( $billing_country );
+		} else {
+			$customer->set_shipping_first_name( $shipping_first_name );
+			$customer->set_shipping_last_name( $shipping_last_name );
+			$customer->set_billing_first_name( $billing_first_name );
+			$customer->set_billing_last_name( $billing_last_name );
+
+			$customer->set_billing_address_1( $billing_address_1 );
+			$customer->set_billing_address_2( $billing_address_2 );
+			$customer->set_billing_city( $billing_city );
+			$customer->set_billing_state( $billing_state );
+			$customer->set_billing_postcode( $billing_postcode );
+			$customer->set_billing_country( $billing_country );
 		}
 	}
 
