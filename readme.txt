@@ -103,6 +103,7 @@ Please use this to inform us about bugs, or make contributions via PRs.
 
 = 1.6.5 - 2018-xx-xx =
 * Fix - Truncate the line item descriptions to avoid exceeding PayPal character limits.
+* Update - WC 3.5 compatibility.
 
 = 1.6.4 - 2018-09-27 =
 * Fix - Billing address from Checkout form not being passed to PayPal via Smart Payment Button.
