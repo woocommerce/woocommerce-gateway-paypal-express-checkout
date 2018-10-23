@@ -288,13 +288,10 @@ class WC_Gateway_PPEC_Client {
 		$params['PAYMENTREQUEST_0_INVNUM']       = '';
 		$params['PAYMENTREQUEST_0_CURRENCYCODE'] = get_woocommerce_currency();
 
-		switch ( $args['start_from'] ) {
-			case 'checkout':
-				$details = $this->_get_details_from_order( $args['order_id'] );
-				break;
-			case 'cart':
-				$details = $this->_get_details_from_cart();
-				break;
+		if ( ! empty( $args['order_id'] ) ) {
+			$details = $this->_get_details_from_order( $args['order_id'] );
+		} else {
+			$details = $this->_get_details_from_cart();
 		}
 
 		$params = array_merge(
@@ -350,8 +347,6 @@ class WC_Gateway_PPEC_Client {
 	 * @param array $context_args {
 	 *     Context args to retrieve SetExpressCheckout parameters.
 	 *
-	 *     @type string $start_from               Start from 'cart' or 'checkout'.
-	 *     @type int    $order_id                 Order ID if $start_from is 'checkout'.
 	 *     @type bool   $create_billing_agreement Whether billing agreement creation
 	 *                                            is needed after returned from PayPal.
 	 * }

@@ -123,7 +123,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 			try {
 				return array(
 					'result'   => 'success',
-					'redirect' => $checkout->start_checkout_from_checkout( $order_id, $this->use_ppc ),
+					'redirect' => $checkout->start_checkout_from_order( $order_id, $this->use_ppc ),
 				);
 			} catch ( PayPal_API_Exception $e ) {
 				wc_add_notice( $e->getMessage(), 'error' );
@@ -134,7 +134,6 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 				$checkout_details = $checkout->get_checkout_details( $session->token );
 
 				$checkout_context = array(
-					'start_from' => 'checkout',
 					'order_id'   => $order_id,
 				);
 				if ( $checkout->needs_billing_agreement_creation( $checkout_context ) ) {
