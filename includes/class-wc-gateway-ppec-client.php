@@ -227,8 +227,8 @@ class WC_Gateway_PPEC_Client {
 	 * @param array $args {
 	 *     Context args to retrieve SetExpressCheckout parameters.
 	 *
-	 *     @type string $start_from               Start from 'cart' or 'checkout'.
-	 *     @type int    $order_id                 Order ID if $start_from is 'checkout'.
+	 *     @type string $skip_checkout            Whether checking out ahead of store checkout screen.
+	 *     @type int    $order_id                 Order ID if checking out after order is created.
 	 *     @type bool   $create_billing_agreement Whether billing agreement creation
 	 *                                            is needed after returned from PayPal.
 	 * }
@@ -239,7 +239,7 @@ class WC_Gateway_PPEC_Client {
 		$args = wp_parse_args(
 			$args,
 			array(
-				'start_from'               => 'cart',
+				'skip_checkout'            => true,
 				'order_id'                 => '',
 				'create_billing_agreement' => false,
 			)
@@ -261,7 +261,7 @@ class WC_Gateway_PPEC_Client {
 			$params['USERSELECTEDFUNDINGSOURCE'] = 'Finance';
 		}
 
-		if ( 'checkout' === $args['start_from'] ) {
+		if ( ! $args['skip_checkout'] ) {
 			$params['ADDROVERRIDE'] = '1';
 		}
 

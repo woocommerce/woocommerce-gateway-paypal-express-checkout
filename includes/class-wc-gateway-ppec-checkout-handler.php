@@ -709,11 +709,11 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 *
 	 * @return string Redirect URL.
 	 */
-	public function start_checkout_from_cart() {
+	public function start_checkout_from_cart( $skip_checkout = true ) {
 		$settings     = wc_gateway_ppec()->settings;
 
 		$context_args = array(
-			'start_from' => 'cart',
+			'skip_checkout' => $skip_checkout,
 		);
 
 		$session_data_args = array(
@@ -737,8 +737,8 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		$settings     = wc_gateway_ppec()->settings;
 
 		$context_args = array(
-			'start_from' => 'checkout',
-			'order_id'   => $order_id,
+			'skip_checkout' => false,
+			'order_id'      => $order_id,
 		);
 
 		$session_data_args = array(

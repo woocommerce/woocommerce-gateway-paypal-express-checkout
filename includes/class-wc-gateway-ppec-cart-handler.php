@@ -140,7 +140,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 			add_action( 'woocommerce_after_checkout_validation', array( $this, 'maybe_start_checkout' ), 10, 2 );
 			WC()->checkout->process_checkout();
 		} else {
-			$this->start_checkout();
+			$this->start_checkout( true );
 		}
 	}
 
@@ -160,7 +160,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 		if ( empty( $error_messages ) ) {
 			$this->set_customer_data( $_POST );
-			$this->start_checkout();
+			$this->start_checkout( false );
 		} else {
 			wp_send_json_error( array( 'messages' => $error_messages ) );
 		}
@@ -170,11 +170,13 @@ class WC_Gateway_PPEC_Cart_Handler {
 	/**
 	 * Set Express Checkout and return token in response.
 	 *
+	 * @param bool $skip_checkout  Whether checkout screen is being bypassed.
+	 *
 	 * @since 1.6.4
 	 */
-	protected function start_checkout() {
+	protected function start_checkout( $skip_checkout ) {
 		try {
-			wc_gateway_ppec()->checkout->start_checkout_from_cart();
+			wc_gateway_ppec()->checkout->start_checkout_from_cart( $skip_checkout );
 			wp_send_json_success( array( 'token' => WC()->session->paypal->token ) );
 		} catch( PayPal_API_Exception $e ) {
 			wp_send_json_error( array( 'messages' => array( $e->getMessage() ) ) );
