@@ -136,8 +136,6 @@ class WC_Gateway_PPEC_Cart_Handler {
 		}
 
 		if ( isset( $_POST['from_checkout'] ) && 'yes' === $_POST['from_checkout'] ) {
-			add_filter( 'woocommerce_cart_needs_shipping', '__return_false' );
-
 			// Intercept process_checkout call to exit after validation.
 			add_action( 'woocommerce_after_checkout_validation', array( $this, 'maybe_start_checkout' ), 10, 2 );
 			WC()->checkout->process_checkout();
