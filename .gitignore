@@ -2,3 +2,5 @@ deploy-to-wp-org.sh
 node_modules
 Gruntfile.js
 package.json
+.idea
+*.iml
