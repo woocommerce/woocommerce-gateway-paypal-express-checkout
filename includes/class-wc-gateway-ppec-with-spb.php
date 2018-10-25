@@ -19,6 +19,7 @@ class WC_Gateway_PPEC_With_SPB extends WC_Gateway_PPEC_With_PayPal {
 	 * Display PayPal button on the checkout page order review.
 	 */
 	public function display_paypal_button() {
+		wp_enqueue_script( 'wc-gateway-ppec-smart-payment-buttons' );
 		?>
 		<div id="woo_pp_ec_button_checkout"></div>
 		<?php
