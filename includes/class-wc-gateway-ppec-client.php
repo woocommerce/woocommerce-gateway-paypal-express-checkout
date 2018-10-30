@@ -262,6 +262,7 @@ class WC_Gateway_PPEC_Client {
 		}
 
 		if ( ! $args['skip_checkout'] ) {
+			// Display shipping address sent from checkout page, rather than selecting from addresses on file with PayPal.
 			$params['ADDROVERRIDE'] = '1';
 		}
 
