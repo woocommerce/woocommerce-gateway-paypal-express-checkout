@@ -183,7 +183,7 @@ class WC_Gateway_PPEC_Settings {
 	public function get_set_express_checkout_shortcut_params( $buckets = 1 ) {
 		_deprecated_function( __METHOD__, '1.2.0', 'WC_Gateway_PPEC_Client::get_set_express_checkout_params' );
 
-		return wc_gateway_ppec()->client->get_set_express_checkout_params( array( 'start_from' => 'cart' ) );
+		return wc_gateway_ppec()->client->get_set_express_checkout_params( array( 'skip_checkout' => true ) );
 	}
 
 	public function get_set_express_checkout_mark_params( $buckets = 1 ) {
@@ -191,7 +191,7 @@ class WC_Gateway_PPEC_Settings {
 
 		// Still missing order_id in args.
 		return wc_gateway_ppec()->client->get_set_express_checkout_params( array(
-			'start_from' => 'checkout',
+			'skip_checkout' => false,
 		) );
 	}
 

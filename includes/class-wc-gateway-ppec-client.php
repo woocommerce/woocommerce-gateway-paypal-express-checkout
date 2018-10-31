@@ -227,8 +227,8 @@ class WC_Gateway_PPEC_Client {
 	 * @param array $args {
 	 *     Context args to retrieve SetExpressCheckout parameters.
 	 *
-	 *     @type string $start_from               Start from 'cart' or 'checkout'.
-	 *     @type int    $order_id                 Order ID if $start_from is 'checkout'.
+	 *     @type string $skip_checkout            Whether checking out ahead of store checkout screen.
+	 *     @type int    $order_id                 Order ID if checking out after order is created.
 	 *     @type bool   $create_billing_agreement Whether billing agreement creation
 	 *                                            is needed after returned from PayPal.
 	 * }
@@ -239,7 +239,7 @@ class WC_Gateway_PPEC_Client {
 		$args = wp_parse_args(
 			$args,
 			array(
-				'start_from'               => 'cart',
+				'skip_checkout'            => true,
 				'order_id'                 => '',
 				'create_billing_agreement' => false,
 			)
@@ -261,7 +261,8 @@ class WC_Gateway_PPEC_Client {
 			$params['USERSELECTEDFUNDINGSOURCE'] = 'Finance';
 		}
 
-		if ( 'checkout' === $args['start_from'] ) {
+		if ( ! $args['skip_checkout'] ) {
+			// Display shipping address sent from checkout page, rather than selecting from addresses on file with PayPal.
 			$params['ADDROVERRIDE'] = '1';
 		}
 
@@ -288,13 +289,10 @@ class WC_Gateway_PPEC_Client {
 		$params['PAYMENTREQUEST_0_INVNUM']       = '';
 		$params['PAYMENTREQUEST_0_CURRENCYCODE'] = get_woocommerce_currency();
 
-		switch ( $args['start_from'] ) {
-			case 'checkout':
-				$details = $this->_get_details_from_order( $args['order_id'] );
-				break;
-			case 'cart':
-				$details = $this->_get_details_from_cart();
-				break;
+		if ( ! empty( $args['order_id'] ) ) {
+			$details = $this->_get_details_from_order( $args['order_id'] );
+		} else {
+			$details = $this->_get_details_from_cart();
 		}
 
 		$params = array_merge(
@@ -350,8 +348,6 @@ class WC_Gateway_PPEC_Client {
 	 * @param array $context_args {
 	 *     Context args to retrieve SetExpressCheckout parameters.
 	 *
-	 *     @type string $start_from               Start from 'cart' or 'checkout'.
-	 *     @type int    $order_id                 Order ID if $start_from is 'checkout'.
 	 *     @type bool   $create_billing_agreement Whether billing agreement creation
 	 *                                            is needed after returned from PayPal.
 	 * }
