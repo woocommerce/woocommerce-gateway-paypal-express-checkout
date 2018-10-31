@@ -2,8 +2,8 @@
 Contributors: automattic, woothemes, akeda, dwainm, royho, allendav, slash1andy, woosteve, spraveenitpro, mikedmoore, fernashes, shellbeezy, danieldudzic, mikaey, fullysupportedphil, dsmithweb, corsonr, bor0, zandyring, pauldechov
 Tags: ecommerce, e-commerce, commerce, woothemes, wordpress ecommerce, store, sales, sell, shop, shopping, cart, checkout, configurable, paypal
 Requires at least: 4.4
-Tested up to: 4.9.6
-Stable tag: 1.6.4
+Tested up to: 4.9.8
+Stable tag: 1.6.5
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -101,9 +101,11 @@ Please use this to inform us about bugs, or make contributions via PRs.
 
 == Changelog ==
 
-= 1.6.5 - 2018-xx-xx =
+= 1.6.5 - 2018-10-31 =
 * Fix - Truncate the line item descriptions to avoid exceeding PayPal character limits.
 * Update - WC 3.5 compatibility.
+* Fix - checkout.js script loading when not needed.
+* Fix - Missing shipping total and address when starting from checkout page.
 
 = 1.6.4 - 2018-09-27 =
 * Fix - Billing address from Checkout form not being passed to PayPal via Smart Payment Button.
