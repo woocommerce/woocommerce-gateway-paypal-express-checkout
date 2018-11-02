@@ -25,6 +25,7 @@ class WC_Gateway_PPEC_Settings {
 		'da_DK',
 		'de_DE',
 		'en_AU',
+		'en_CA',
 		'en_GB',
 		'en_US',
 		'es_ES',
