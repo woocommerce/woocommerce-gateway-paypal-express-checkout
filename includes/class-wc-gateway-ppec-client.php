@@ -749,6 +749,10 @@ class WC_Gateway_PPEC_Client {
 		$shipping_address->setZip( $shipping_postcode );
 		$shipping_address->setCountry( $shipping_country );
 
+		if ( ! $old_wc ) {
+			$shipping_address->setPhoneNumber( $old_wc ? '' : $customer->get_billing_phone() );
+		}
+
 		return $shipping_address;
 	}
 
