@@ -619,6 +619,17 @@ class WC_Gateway_PPEC_Client {
 			$details['items'][] = $this->_get_extra_offset_line_item( $details['total_item_amount'] - $lisum );
 		}
 
+		/**
+		 * Filter PayPal order details.
+		 * 
+		 * Provide opportunity for developers to modify details passed to PayPal.
+		 * This was originally introduced to add a mechanism to allow for
+		 * decimal product quantity support.
+		 * 
+		 * @since 1.6.6
+		 * 
+		 * @param array $details Current PayPal order details
+		 */
 		return apply_filters( 'woocommerce_paypal_express_checkout_get_details', $details );
 	}
 
