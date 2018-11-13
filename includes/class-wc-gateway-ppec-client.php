@@ -432,7 +432,6 @@ class WC_Gateway_PPEC_Client {
 
 		return  array(
 			'name'        => 'Discount',
-			'description' => 'Discount Amount',
 			'quantity'    => 1,
 			'amount'      => '-' . round( $amount, $decimals ),
 		);
@@ -479,7 +478,7 @@ class WC_Gateway_PPEC_Client {
 
 		$items = array();
 		foreach ( WC()->cart->cart_contents as $cart_item_key => $values ) {
-			$amount = round( $values['line_total'] / $values['quantity'] , $decimals );
+			$amount = round( $values['line_subtotal'] / $values['quantity'] , $decimals );
 
 			if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
 				$name = $values['data']->post->post_title;
@@ -572,6 +571,9 @@ class WC_Gateway_PPEC_Client {
 		if ( $details['total_item_amount'] == $discounts ) {
 			// Omit line items altogether.
 			unset( $details['items'] );
+		} else if ( $discounts > 0 && $discounts < $details['total_item_amount'] ) {
+			// Else if there is discount, add them to the line-items
+			$details['items'][] = $this->_get_extra_discount_line_item($discounts);
 		}
 
 		$details['ship_discount_amount'] = 0;
