@@ -73,7 +73,7 @@
 			'nonce':       wc_ppec_generate_cart_context.generate_cart_nonce,
 			'qty':         $( '.quantity .qty' ).val(),
 			'attributes':  $( '.variations_form' ).length ? get_attributes().data : [],
-			'add-to-cart': $( '[name=add-to-cart]' ).val(),
+			'product_id': $( '[name=add-to-cart]' ).val(),
 		};
 
 		$.ajax( {
