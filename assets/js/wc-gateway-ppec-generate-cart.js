@@ -45,34 +45,21 @@
 
 	var get_attributes = function() {
 		var select = $( '.variations_form' ).find( '.variations select' ),
-			data   = {},
-			count  = 0,
-			chosen = 0;
+			data   = {};
 
 		select.each( function() {
 			var attribute_name = $( this ).data( 'attribute_name' ) || $( this ).attr( 'name' );
-			var value	  = $( this ).val() || '';
-
-			if ( value.length > 0 ) {
-				chosen++;
-			}
-
-			count++;
-			data[ attribute_name ] = value;
+            data[ attribute_name ] = $( this ).val() || '';
 		} );
 
-		return {
-			'count'      : count,
-			'chosenCount': chosen,
-			'data'       : data
-		};
+		return data;
 	};
 
 	var generate_cart = function( callback ) {
 		var data = {
 			'nonce':       wc_ppec_generate_cart_context.generate_cart_nonce,
 			'qty':         $( '.quantity .qty' ).val(),
-			'attributes':  $( '.variations_form' ).length ? get_attributes().data : [],
+			'attributes':  $( '.variations_form' ).length ? get_attributes() : [],
 			'add-to-cart': $( '[name=add-to-cart]' ).val(),
 		};
 
