@@ -88,6 +88,11 @@
 			'add-to-cart': $( '[name=add-to-cart]' ).val(),
 		};
 
+		// Integrate with Product Addons
+		$( form ).find( '[name^=addon-]:enabled' ).each( function () {
+			data[ $( this ).attr( 'name' ) ] = $( this ).val();
+		} );
+
 		$.ajax( {
 			type:    'POST',
 			data:    data,
