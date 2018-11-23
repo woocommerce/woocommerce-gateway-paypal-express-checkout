@@ -30,20 +30,34 @@
 			$( '#woo_pp_ec_button_product > *' ).css( 'pointer-events', 'none' );
 		} );
 
+    var variation_valid = true;
+    var fields_valid = true;
+    var update_button = function() {
+        $( '#woo_pp_ec_button_product' ).trigger( ( variation_valid && fields_valid ) ? 'enable' : 'disable' );
+	};
+
+    var validate_form = function() {
+        silent_validation = true;
+        fields_valid = true;
+        form.find( 'select:enabled, input:enabled, textarea:enabled' ).each( function() {
+            fields_valid = fields_valid && this.checkValidity();
+        } );
+        silent_validation = false;
+        update_button();
+    };
+
 	// It's a variations form, button availability should depend on its events
-	var variation_valid = true;
 	if ( $( '.variations_form' ).length ) {
-		$( '#woo_pp_ec_button_product' ).trigger( 'disable' );
 		variation_valid = false;
 
 		$( '.variations_form' )
 		.on( 'show_variation', function( event, form, purchasable ) {
-			$( '#woo_pp_ec_button_product' ).trigger( purchasable ? 'enable' : 'disable' );
 			variation_valid = purchasable;
+            update_button();
 		} )
 		.on( 'hide_variation', function() {
-			$( '#woo_pp_ec_button_product' ).trigger( 'disable' );
 			variation_valid = false;
+            update_button();
 		} );
 	}
 
@@ -55,18 +69,8 @@
 			e.preventDefault();
 		}
 	}, true );
-	form.on( 'change', 'select, input, textarea', function() {
-		if ( ! variation_valid ) {
-			return;
-		}
-		silent_validation = true;
-		var valid = true;
-		form.find( 'select:enabled, input:enabled, textarea:enabled' ).each( function() {
-			valid = valid && this.checkValidity();
-		} );
-		$( '#woo_pp_ec_button_product' ).trigger( valid ? 'enable' : 'disable' );
-		silent_validation = false;
-	} );
+	form.on( 'change', 'select, input, textarea', validate_form );
+	validate_form();
 
 	var get_attributes = function() {
 		var select = $( '.variations_form' ).find( '.variations select' ),
