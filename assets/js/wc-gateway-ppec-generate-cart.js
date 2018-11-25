@@ -72,30 +72,19 @@
 	form.on( 'change', 'select, input, textarea', validate_form );
 	validate_form();
 
-	var get_attributes = function() {
-		var select = $( '.variations_form' ).find( '.variations select' ),
-			data   = {};
-
-		select.each( function() {
-			var attribute_name = $( this ).data( 'attribute_name' ) || $( this ).attr( 'name' );
-            data[ attribute_name ] = $( this ).val() || '';
-		} );
-
-		return data;
-	};
-
 	var generate_cart = function( callback ) {
 		var data = {
-			'nonce':       wc_ppec_generate_cart_context.generate_cart_nonce,
-			'qty':         $( '.quantity .qty' ).val(),
-			'attributes':  $( '.variations_form' ).length ? get_attributes() : [],
-			'add-to-cart': $( '[name=add-to-cart]' ).val(),
+			'nonce': wc_ppec_generate_cart_context.generate_cart_nonce,
 		};
 
-		// Integrate with Product Addons
-		$( form ).find( '[name^=addon-]:enabled' ).each( function () {
-			data[ $( this ).attr( 'name' ) ] = $( this ).val();
-		} );
+        var field_pairs = $( form ).serializeArray();
+        for ( var i = 0; i < field_pairs.length; i++ ) {
+        	// Prevent the default WooCommerce PHP form handler to recognize this as an "add to cart" call
+            if ( 'add-to-cart' === field_pairs[ i ].name ) {
+                field_pairs[ i ].name = 'ppec-add-to-cart';
+			}
+			data[ field_pairs[ i ].name ] = field_pairs[ i ].value;
+        }
 
 		$.ajax( {
 			type:    'POST',
