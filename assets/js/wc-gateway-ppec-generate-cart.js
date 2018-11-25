@@ -77,9 +77,9 @@
 			'nonce': wc_ppec_generate_cart_context.generate_cart_nonce,
 		};
 
-        var field_pairs = $( form ).serializeArray();
+        var field_pairs = form.serializeArray();
         for ( var i = 0; i < field_pairs.length; i++ ) {
-        	// Prevent the default WooCommerce PHP form handler to recognize this as an "add to cart" call
+        	// Prevent the default WooCommerce PHP form handler from recognizing this as an "add to cart" call
             if ( 'add-to-cart' === field_pairs[ i ].name ) {
                 field_pairs[ i ].name = 'ppec-add-to-cart';
 			}
