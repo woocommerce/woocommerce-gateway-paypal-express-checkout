@@ -30,21 +30,21 @@
 			$( '#woo_pp_ec_button_product > *' ).css( 'pointer-events', 'none' );
 		} );
 
-    var variation_valid = true;
-    var fields_valid = true;
-    var update_button = function() {
-        $( '#woo_pp_ec_button_product' ).trigger( ( variation_valid && fields_valid ) ? 'enable' : 'disable' );
+	var variation_valid = true;
+	var fields_valid = true;
+	var update_button = function() {
+		$( '#woo_pp_ec_button_product' ).trigger( ( variation_valid && fields_valid ) ? 'enable' : 'disable' );
 	};
 
-    var validate_form = function() {
-        silent_validation = true;
-        fields_valid = true;
-        form.find( 'select:enabled, input:enabled, textarea:enabled' ).each( function() {
-            fields_valid = fields_valid && this.checkValidity();
-        } );
-        silent_validation = false;
-        update_button();
-    };
+	var validate_form = function() {
+		silent_validation = true;
+		fields_valid = true;
+		form.find( 'select:enabled, input:enabled, textarea:enabled' ).each( function() {
+			fields_valid = fields_valid && this.checkValidity();
+		} );
+		silent_validation = false;
+		update_button();
+	};
 
 	// It's a variations form, button availability should depend on its events
 	if ( $( '.variations_form' ).length ) {
@@ -53,11 +53,11 @@
 		$( '.variations_form' )
 		.on( 'show_variation', function( event, form, purchasable ) {
 			variation_valid = purchasable;
-            update_button();
+			update_button();
 		} )
 		.on( 'hide_variation', function() {
 			variation_valid = false;
-            update_button();
+			update_button();
 		} );
 	}
 
@@ -77,14 +77,14 @@
 			'nonce': wc_ppec_generate_cart_context.generate_cart_nonce,
 		};
 
-        var field_pairs = form.serializeArray();
-        for ( var i = 0; i < field_pairs.length; i++ ) {
-        	// Prevent the default WooCommerce PHP form handler from recognizing this as an "add to cart" call
-            if ( 'add-to-cart' === field_pairs[ i ].name ) {
-                field_pairs[ i ].name = 'ppec-add-to-cart';
+		var field_pairs = form.serializeArray();
+		for ( var i = 0; i < field_pairs.length; i++ ) {
+			// Prevent the default WooCommerce PHP form handler from recognizing this as an "add to cart" call
+			if ( 'add-to-cart' === field_pairs[ i ].name ) {
+				field_pairs[ i ].name = 'ppec-add-to-cart';
 			}
 			data[ field_pairs[ i ].name ] = field_pairs[ i ].value;
-        }
+		}
 
 		$.ajax( {
 			type:    'POST',
