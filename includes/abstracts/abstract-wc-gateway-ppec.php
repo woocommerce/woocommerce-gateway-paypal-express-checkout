@@ -367,6 +367,26 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		$txn_data = $old_wc ? get_post_meta( $order_id, '_woo_pp_txnData', true ) : $order->get_meta( '_woo_pp_txnData', true );
 		$order_currency = $old_wc ? $order->order_currency : $order->get_currency();
 
+		
+		// Process a void instead of refund if transaction is authorized only	
+		$trans_id = get_post_meta( $order_id, '_transaction_id', true );
+		$trans_details = wc_gateway_ppec()->client->get_transaction_details( array( 'TRANSACTIONID' => $trans_id ) );
+
+		if ( $trans_id && wc_gateway_ppec()->admin->is_authorized_only( $trans_details ) ) {
+
+			$params['AUTHORIZATIONID'] = $trans_id;
+
+			$result = wc_gateway_ppec()->client->do_express_checkout_void( $params );
+
+			if ( is_wp_error( $result ) ) {
+				$order->add_order_note( __( 'Unable to void charge!', 'woocommerce-gateway-paypal-express-checkout' ) . ' ' . $result->get_error_message() );
+				return new WP_Error( 'paypal_refund_error', "This order cannot be voided, please process this order manually via PayPal." );
+			} else {
+				$order->add_order_note( sprintf( __( 'PayPal Checkout charge voided (Charge ID: %s)', 'woocommerce-gateway-paypal-express-checkout' ), $trans_id ) );
+				return true;
+			}
+		}
+		
 		foreach ( $txn_data['refundable_txns'] as $key => $value ) {
 			$refundable_amount = $value['amount'] - $value['refunded_amount'];
 
