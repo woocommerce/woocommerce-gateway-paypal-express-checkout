@@ -313,7 +313,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 		$old_wc         = version_compare( WC_VERSION, '3.0', '<' );
 		$order_id       = $old_wc ? $order->id : $order->get_id();
 		$payment_method = $old_wc ? $order->payment_method : $order->get_payment_method();
-		$paypal_fee     = get_post_meta( $order_id, 'PayPal Transaction Fee', true );
+		$paypal_fee     = $old_wc ? get_post_meta( $order_id, 'PayPal Transaction Fee', true ) : $order->get_meta( 'PayPal Transaction Fee', true );
 		$order_currency = $old_wc ? $order->order_currency : $order->get_currency();
 		$order_total    = $old_wc ? $order->order_total : $order->get_total();
 

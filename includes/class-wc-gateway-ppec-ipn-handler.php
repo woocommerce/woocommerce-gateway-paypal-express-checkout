@@ -166,9 +166,10 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 	 * @param array $posted_data Posted data
 	 */
 	protected function payment_status_completed( $order, $posted_data ) {
-		$order_id = version_compare( WC_VERSION, '3.0', '<' ) ? $order->id : $order->get_id();
+		$old_wc   = version_compare( WC_VERSION, '3.0', '<' );
+		$order_id = $old_wc ? $order->id : $order->get_id();
 
-		if ( $order->has_status( array( 'processing', 'completed' ) ) ) {
+		if ( $order->has_status( array( 'completed' ) ) ) {
 			wc_gateway_ppec_log( 'Aborting, Order #' . $order_id . ' is already complete.' );
 			exit;
 		}
@@ -183,7 +184,12 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 			if ( ! empty( $posted_data['mc_fee'] ) ) {
 				// Log paypal transaction fee.
 				$transaction_fee = wc_clean( $posted_data['mc_fee'] );
-				update_post_meta( $order_id, 'PayPal Transaction Fee', $transaction_fee );
+				if ( $old_wc ) {
+					update_post_meta( $order_id, 'PayPal Transaction Fee', $transaction_fee );
+				} else {
+					$order->update_meta_data( 'PayPal Transaction Fee', $transaction_fee );
+					$order->save_meta_data();
+				}
 			}
 		} else {
 			if ( 'authorization' === $posted_data['pending_reason'] ) {
@@ -319,6 +325,10 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 					$order->update_meta_data( $meta_key, $value );
 				}
 			}
+		}
+
+		if ( ! $old_wc ) {
+			$order->save_meta_data();
 		}
 
 		if ( ! empty( $posted_data['txn_id'] ) ) {
