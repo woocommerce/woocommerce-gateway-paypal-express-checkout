@@ -336,7 +336,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 		</tr>
 		<tr>
 			<td class="label ppec-payout">
-				<?php echo wc_help_tip( __( 'This represents the net total that will be credited to your PayPal account. This may be in the currency that is set in your PayPal account.', 'woocommerce-gateway-paypal-express-checkout' ) ); ?>
+				<?php echo wc_help_tip( __( 'This represents the net total that will be credited to your PayPal account. This may be in a different currency than is set in your PayPal account.', 'woocommerce-gateway-paypal-express-checkout' ) ); ?>
 				<?php esc_html_e( 'PayPal Payout:', 'woocommerce-gateway-paypal-express-checkout' ); ?>
 			</td>
 			<td width="1%"></td>
