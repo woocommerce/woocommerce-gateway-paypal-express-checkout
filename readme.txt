@@ -101,6 +101,10 @@ Please use this to inform us about bugs, or make contributions via PRs.
 
 == Changelog ==
 
+= 1.6.6 - 201x-xx-xx =
+* Fix - unable to buy variation from product page
+* Fix - can use PayPal from product page without inputting required fields
+
 = 1.6.5 - 2018-10-31 =
 * Fix - Truncate the line item descriptions to avoid exceeding PayPal character limits.
 * Update - WC 3.5 compatibility.
