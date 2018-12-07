@@ -86,6 +86,10 @@
 			data[ field_pairs[ i ].name ] = field_pairs[ i ].value;
 		}
 
+		if ( ! data[ 'ppec-add-to-cart' ] ) {
+			data[ 'ppec-add-to-cart' ] = $( '[name=add-to-cart]' ).val();
+		}
+
 		$.ajax( {
 			type:    'POST',
 			data:    data,
