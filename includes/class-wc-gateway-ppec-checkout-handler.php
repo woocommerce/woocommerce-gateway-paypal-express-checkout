@@ -939,6 +939,9 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		// Handle $payment response
 		if ( 'completed' === strtolower( $payment->payment_status ) ) {
 			$order->payment_complete( $payment->transaction_id );
+			if ( isset( $payment->fee_amount ) ){
+				wc_gateway_ppec_set_transaction_fee( $order, $payment->fee_amount );
+			}
 		} else {
 			if ( 'authorization' === $payment->pending_reason ) {
 				$order->update_status( 'on-hold', __( 'Payment authorized. Change payment status to processing or complete to capture funds.', 'woocommerce-gateway-paypal-express-checkout' ) );

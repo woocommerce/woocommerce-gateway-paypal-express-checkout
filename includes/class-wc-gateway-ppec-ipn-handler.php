@@ -183,13 +183,7 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 			$this->payment_complete( $order, ( ! empty( $posted_data['txn_id'] ) ? wc_clean( $posted_data['txn_id'] ) : '' ), __( 'IPN payment completed', 'woocommerce-gateway-paypal-express-checkout' ) );
 			if ( ! empty( $posted_data['mc_fee'] ) ) {
 				// Log paypal transaction fee.
-				$transaction_fee = wc_clean( $posted_data['mc_fee'] );
-				if ( $old_wc ) {
-					update_post_meta( $order_id, 'PayPal Transaction Fee', $transaction_fee );
-				} else {
-					$order->update_meta_data( 'PayPal Transaction Fee', $transaction_fee );
-					$order->save_meta_data();
-				}
+				wc_gateway_ppec_set_transaction_fee( $order, $posted_data['mc_fee'] );
 			}
 		} else {
 			if ( 'authorization' === $posted_data['pending_reason'] ) {

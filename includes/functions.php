@@ -90,3 +90,26 @@ function wc_gateway_ppec_is_credit_supported() {
 function wc_gateway_ppec_is_using_credit() {
 	return ! empty( $_GET['use-ppc'] ) && 'true' === $_GET['use-ppc'];
 }
+
+const PPEC_FEE_META_NAME  = 'PayPal Transaction Fee';
+
+function wc_gateway_ppec_set_transaction_fee( $order, $fee ) {
+	if ( empty( $fee ) ) {
+		return;
+	}
+	$fee = wc_clean( $fee );
+	if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
+		update_post_meta( $order->id, PPEC_FEE_META_NAME, $fee );
+	} else {
+		$order->update_meta_data( PPEC_FEE_META_NAME, $fee );
+		$order->save_meta_data();
+	}
+}
+
+function wc_gateway_ppec_get_transaction_fee( $order ) {
+	if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
+		return get_post_meta( $order->id, PPEC_FEE_META_NAME, true );
+	} else {
+		return $order->get_meta( PPEC_FEE_META_NAME, true );
+	}
+}
