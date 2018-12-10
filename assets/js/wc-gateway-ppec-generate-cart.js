@@ -87,6 +87,7 @@
 		}
 
 		if ( ! data[ 'ppec-add-to-cart' ] ) {
+			// If this is a simple product, the "Submit" button has the product ID as "value", we need to include it explicitly
 			data[ 'ppec-add-to-cart' ] = $( '[name=add-to-cart]' ).val();
 		}
 
