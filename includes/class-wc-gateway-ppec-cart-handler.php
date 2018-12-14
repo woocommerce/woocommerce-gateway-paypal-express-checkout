@@ -230,12 +230,19 @@ class WC_Gateway_PPEC_Cart_Handler {
 		$customer->set_shipping_postcode( $shipping_postcode );
 
 		if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
+			$customer->shipping_first_name = $shipping_first_name;
+			$customer->shipping_last_name = $shipping_last_name;
+			$customer->billing_first_name = $billing_first_name;
+			$customer->billing_last_name = $billing_last_name;
+
 			$customer->set_country( $billing_country );
 			$customer->set_address( $billing_address_1 );
 			$customer->set_address_2( $billing_address_2 );
 			$customer->set_city( $billing_city );
 			$customer->set_state( $billing_state );
 			$customer->set_postcode( $billing_postcode );
+			$customer->billing_phone = $billing_phone;
+			$customer->billing_email = $billing_email;
 		} else {
 			$customer->set_shipping_first_name( $shipping_first_name );
 			$customer->set_shipping_last_name( $shipping_last_name );
