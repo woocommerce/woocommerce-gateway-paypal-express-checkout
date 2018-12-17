@@ -38,10 +38,7 @@
 
 	var validate_form = function() {
 		silent_validation = true;
-		fields_valid = true;
-		form.find( 'select:enabled, input:enabled, textarea:enabled' ).each( function() {
-			fields_valid = fields_valid && this.checkValidity();
-		} );
+		fields_valid = form.get( 0 ).checkValidity();
 		silent_validation = false;
 		update_button();
 	};
