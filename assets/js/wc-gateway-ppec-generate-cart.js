@@ -30,8 +30,15 @@
 			$( '#woo_pp_ec_button_product > *' ).css( 'pointer-events', 'none' );
 		} );
 
+	// True if the product is simple or the user selected a valid variation. False on variable product without a valid variation selected
 	var variation_valid = true;
+
+	// True if all the fields of the product form are valid. False otherwise
 	var fields_valid = true;
+
+	// True if there's an automatic form validation being performed (not user-initiated), so the user must not be alerted. False otherwise
+	var silent_validation = false;
+
 	var update_button = function() {
 		$( '#woo_pp_ec_button_product' ).trigger( ( variation_valid && fields_valid ) ? 'enable' : 'disable' );
 	};
@@ -59,7 +66,6 @@
 	}
 
 	// Disable the button if there are invalid fields in the product page (like required fields from Product Addons)
-	var silent_validation;
 	var form = $( 'form.cart' );
 	form.get( 0 ).addEventListener( 'invalid', function( e ) {
 		if ( silent_validation ) {
