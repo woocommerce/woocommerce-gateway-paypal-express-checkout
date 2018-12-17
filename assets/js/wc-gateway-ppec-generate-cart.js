@@ -66,7 +66,10 @@
 			e.preventDefault();
 		}
 	}, true );
-	form.on( 'change', 'select, input, textarea', validate_form );
+	form.on( 'change', 'select, input, textarea', function() {
+		// Hack: IE11 uses the previous field value for the checkValidity() check if it's called in the onChange handler
+		setTimeout( validate_form, 0 );
+	} );
 	validate_form();
 
 	var generate_cart = function( callback ) {
