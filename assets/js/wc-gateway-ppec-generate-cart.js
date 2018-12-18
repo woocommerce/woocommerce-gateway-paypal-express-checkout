@@ -67,11 +67,6 @@
 
 	// Disable the button if there are invalid fields in the product page (like required fields from Product Addons)
 	var form = $( 'form.cart' );
-	form.get( 0 ).addEventListener( 'invalid', function( e ) {
-		if ( silent_validation ) {
-			e.preventDefault();
-		}
-	}, true );
 	form.on( 'change', 'select, input, textarea', function() {
 		// Hack: IE11 uses the previous field value for the checkValidity() check if it's called in the onChange handler
 		setTimeout( validate_form, 0 );
