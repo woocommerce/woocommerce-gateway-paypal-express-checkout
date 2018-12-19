@@ -33,8 +33,10 @@
 	// True if the product is simple or the user selected a valid variation. False on variable product without a valid variation selected
 	var variation_valid = true;
 
-	// True if all the fields of the product form are valid. False otherwise
+	// True if all the fields of the product form are valid (such as required fields configured by Product Add-Ons). False otherwise
 	var fields_valid = true;
+
+	var form = $( 'form.cart' );
 
 	var update_button = function() {
 		$( '#woo_pp_ec_button_product' ).trigger( ( variation_valid && fields_valid ) ? 'enable' : 'disable' );
@@ -61,7 +63,6 @@
 	}
 
 	// Disable the button if there are invalid fields in the product page (like required fields from Product Addons)
-	var form = $( 'form.cart' );
 	form.on( 'change', 'select, input, textarea', function() {
 		// Hack: IE11 uses the previous field value for the checkValidity() check if it's called in the onChange handler
 		setTimeout( validate_form, 0 );
