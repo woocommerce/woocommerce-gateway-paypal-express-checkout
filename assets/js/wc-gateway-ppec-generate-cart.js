@@ -36,17 +36,12 @@
 	// True if all the fields of the product form are valid. False otherwise
 	var fields_valid = true;
 
-	// True if there's an automatic form validation being performed (not user-initiated), so the user must not be alerted. False otherwise
-	var silent_validation = false;
-
 	var update_button = function() {
 		$( '#woo_pp_ec_button_product' ).trigger( ( variation_valid && fields_valid ) ? 'enable' : 'disable' );
 	};
 
 	var validate_form = function() {
-		silent_validation = true;
 		fields_valid = form.get( 0 ).checkValidity();
-		silent_validation = false;
 		update_button();
 	};
 
