@@ -53,6 +53,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 	/**
 	 * Generates the cart for PayPal Checkout on a product level.
+	 * TODO: Why not let the default "add-to-cart" PHP form handler insert the product into the cart? Investigate.
 	 *
 	 * @since 1.4.0
 	 */
@@ -70,8 +71,8 @@ class WC_Gateway_PPEC_Cart_Handler {
 		WC()->shipping->reset_shipping();
 		$product = wc_get_product( $post->ID );
 
-		if ( ! empty( $_POST['add-to-cart'] ) ) {
-			$product = wc_get_product( absint( $_POST['add-to-cart'] ) );
+		if ( ! empty( $_POST['ppec-add-to-cart'] ) ) {
+			$product = wc_get_product( absint( $_POST['ppec-add-to-cart'] ) );
 		}
 
 		/**
@@ -80,11 +81,11 @@ class WC_Gateway_PPEC_Cart_Handler {
 		 * simple or variable product.
 		 */
 		if ( $product ) {
-			$qty     = ! isset( $_POST['qty'] ) ? 1 : absint( $_POST['qty'] );
+			$qty     = ! isset( $_POST['quantity'] ) ? 1 : absint( $_POST['quantity'] );
 			wc_empty_cart();
 
 			if ( $product->is_type( 'variable' ) ) {
-				$attributes = array_map( 'wc_clean', $_POST['attributes'] );
+				$attributes = array_map( 'wc_clean', $_POST );
 
 				if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
 					$variation_id = $product->get_matching_variation( $attributes );
@@ -93,7 +94,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 					$variation_id = $data_store->find_matching_product_variation( $product, $attributes );
 				}
 
-				WC()->cart->add_to_cart( $product->get_id(), $qty, $variation_id, $attributes );
+				WC()->cart->add_to_cart( $product->get_id(), $qty, $variation_id );
 			} else {
 				WC()->cart->add_to_cart( $product->get_id(), $qty );
 			}

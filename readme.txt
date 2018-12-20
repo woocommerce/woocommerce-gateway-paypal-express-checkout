@@ -102,6 +102,8 @@ Please use this to inform us about bugs, or make contributions via PRs.
 == Changelog ==
 
 = 1.6.6 - 201x-xx-xx =
+* Fix - Unable to buy variation from product page
+* Fix - can use PayPal from product page without inputting required fields
 * Add - display PayPal fees under the totals on the order admin page
 
 = 1.6.5 - 2018-10-31 =
