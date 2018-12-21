@@ -654,7 +654,8 @@ class PayPal_Address {
 			$prefix . 'CITY' => $this->_city,
 			$prefix . 'STATE' => $this->_state,
 			$prefix . 'ZIP' => $this->_zip,
-			$prefix . 'COUNTRYCODE' => $this->_country
+			$prefix . 'COUNTRYCODE' => $this->_country,
+			$prefix . 'PHONENUM' => $this->_phoneNumber,
 		);
 
 		return $params;
