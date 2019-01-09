@@ -2,8 +2,8 @@
 Contributors: automattic, woothemes, akeda, dwainm, royho, allendav, slash1andy, woosteve, spraveenitpro, mikedmoore, fernashes, shellbeezy, danieldudzic, mikaey, fullysupportedphil, dsmithweb, corsonr, bor0, zandyring, pauldechov
 Tags: ecommerce, e-commerce, commerce, woothemes, wordpress ecommerce, store, sales, sell, shop, shopping, cart, checkout, configurable, paypal
 Requires at least: 4.4
-Tested up to: 4.9.8
-Stable tag: 1.6.5
+Tested up to: 5.0.2
+Stable tag: 1.6.6
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -101,10 +101,13 @@ Please use this to inform us about bugs, or make contributions via PRs.
 
 == Changelog ==
 
-= 1.6.6 - 201x-xx-xx =
+= 1.6.6 - 2019-01-09 =
+* Fix - Discount items were not being included
+* Add - Filter for order details to accept decimal quantities of products
 * Fix - Unable to buy variation from product page
-* Fix - can use PayPal from product page without inputting required fields
-* Add - display PayPal fees under the totals on the order admin page
+* Fix - Can use PayPal from product page without inputting required fields
+* Add - Display PayPal fees under the totals on the order admin page
+* Add - Prefill name, phone, and email info in PayPal Guest Checkout from checkout screen
 
 = 1.6.5 - 2018-10-31 =
 * Fix - Truncate the line item descriptions to avoid exceeding PayPal character limits.
