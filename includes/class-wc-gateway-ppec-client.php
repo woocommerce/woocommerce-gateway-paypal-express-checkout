@@ -577,7 +577,7 @@ class WC_Gateway_PPEC_Client {
 		if ( $details['total_item_amount'] == $discounts ) {
 			// Omit line items altogether.
 			unset( $details['items'] );
-		} else if ( $discounts > 0 && $discounts < $details['total_item_amount'] ) {
+		} else if ( $discounts > 0 && $discounts < $details['total_item_amount'] && ! empty( $details['items'] ) ) {
 			// Else if there is discount, add them to the line-items
 			$details['items'][] = $this->_get_extra_discount_line_item($discounts);
 		}
@@ -626,13 +626,13 @@ class WC_Gateway_PPEC_Client {
 
 		/**
 		 * Filter PayPal order details.
-		 * 
+		 *
 		 * Provide opportunity for developers to modify details passed to PayPal.
 		 * This was originally introduced to add a mechanism to allow for
 		 * decimal product quantity support.
-		 * 
+		 *
 		 * @since 1.6.6
-		 * 
+		 *
 		 * @param array $details Current PayPal order details
 		 */
 		return apply_filters( 'woocommerce_paypal_express_checkout_get_details', $details );
