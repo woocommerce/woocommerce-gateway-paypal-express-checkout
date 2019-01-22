@@ -144,10 +144,25 @@
 		}, selector );
 	};
 
+	var already_loading_script = false;
+	var renderWithLazyLoad = function( isMiniCart ) {
+		var onSuccess = render.bind( null, isMiniCart );
+		if ( already_loading_script ) {
+			onSuccess();
+		}
+		already_loading_script = true;
+		$.ajax( {
+			url: 'https://www.paypalobjects.com/api/checkout.js',
+			dataType: 'script',
+			cache: true,
+			success: onSuccess,
+		} );
+	};
+
 	// Render cart, single product, or checkout buttons.
 	if ( wc_ppec_context.page ) {
-		render();
-		$( document.body ).on( 'updated_cart_totals updated_checkout', render.bind( this, false ) );
+		renderWithLazyLoad();
+		$( document.body ).on( 'updated_cart_totals updated_checkout', renderWithLazyLoad.bind( this, false ) );
 	}
 
 	// Render buttons in mini-cart if present.
@@ -156,7 +171,7 @@
 		if ( $button.length ) {
 			// Clear any existing button in container, and render.
 			$button.empty();
-			render( true );
+			renderWithLazyLoad( true );
 		}
 	} );
 

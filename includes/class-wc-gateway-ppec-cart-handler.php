@@ -279,8 +279,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 		?>
 		<div class="wcppec-checkout-buttons woo_pp_cart_buttons_div">
-			<?php if ( 'yes' === $settings->use_spb ) :
-				wp_enqueue_script( 'wc-gateway-ppec-smart-payment-buttons' ); ?>
+			<?php if ( 'yes' === $settings->use_spb ) : ?>
 			<div id="woo_pp_ec_button_product"></div>
 			<?php else : ?>
 
@@ -316,8 +315,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 				</div>
 			<?php endif; ?>
 
-			<?php if ( 'yes' === $settings->use_spb ) :
-				wp_enqueue_script( 'wc-gateway-ppec-smart-payment-buttons' ); ?>
+			<?php if ( 'yes' === $settings->use_spb ) : ?>
 			<div id="woo_pp_ec_button_cart"></div>
 			<?php else : ?>
 
@@ -350,8 +348,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 		}
 		?>
 
-		<?php if ( 'yes' === $settings->use_spb ) :
-			wp_enqueue_script( 'wc-gateway-ppec-smart-payment-buttons' ); ?>
+		<?php if ( 'yes' === $settings->use_spb ) : ?>
 		<p class="woocommerce-mini-cart__buttons buttons wcppec-cart-widget-spb">
 			<span id="woo_pp_ec_button_mini_cart"></span>
 		</p>
@@ -427,8 +424,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 		$page        = $is_cart ? 'cart' : ( $is_product ? 'product' : ( $is_checkout ? 'checkout' : null ) );
 
 		if ( 'yes' !== $settings->use_spb && $is_cart ) {
-			wp_enqueue_script( 'paypal-checkout-js', 'https://www.paypalobjects.com/api/checkout.js', array(), null, true );
-			wp_enqueue_script( 'wc-gateway-ppec-frontend-in-context-checkout', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-frontend-in-context-checkout.js', array( 'jquery' ), wc_gateway_ppec()->version, true );
+		    wp_enqueue_script( 'wc-gateway-ppec-smart-payment-buttons', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-smart-payment-buttons.js', array( 'jquery' ), wc_gateway_ppec()->version, true );
 			wp_localize_script( 'wc-gateway-ppec-frontend-in-context-checkout', 'wc_ppec_context',
 				array(
 					'payer_id'    => $client->get_payer_id(),
@@ -442,8 +438,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 			);
 
 		} elseif ( 'yes' === $settings->use_spb ) {
-			wp_register_script( 'paypal-checkout-js', 'https://www.paypalobjects.com/api/checkout.js', array(), null, true );
-			wp_register_script( 'wc-gateway-ppec-smart-payment-buttons', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-smart-payment-buttons.js', array( 'jquery', 'paypal-checkout-js' ), wc_gateway_ppec()->version, true );
+			wp_enqueue_script( 'wc-gateway-ppec-smart-payment-buttons', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-smart-payment-buttons.js', array( 'jquery' ), wc_gateway_ppec()->version, true );
 
 			$data = array(
 				'environment'          => 'sandbox' === $settings->get_environment() ? 'sandbox' : 'production',
