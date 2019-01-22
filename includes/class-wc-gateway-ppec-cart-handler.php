@@ -28,6 +28,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 		} else {
 			add_action( 'woocommerce_widget_shopping_cart_buttons', array( $this, 'display_mini_paypal_button' ), 20 );
 		}
+		add_action( 'widget_title', array( $this, 'maybe_enqueue_checkout_js' ), 10, 3 );
 
 		if ( 'yes' === wc_gateway_ppec()->settings->checkout_on_single_product_enabled ) {
 			add_action( 'woocommerce_after_add_to_cart_form', array( $this, 'display_paypal_button_product' ), 1 );
@@ -350,8 +351,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 		}
 		?>
 
-		<?php if ( 'yes' === $settings->use_spb ) :
-			wp_enqueue_script( 'wc-gateway-ppec-smart-payment-buttons' ); ?>
+		<?php if ( 'yes' === $settings->use_spb ) : ?>
 		<p class="woocommerce-mini-cart__buttons buttons wcppec-cart-widget-spb">
 			<span id="woo_pp_ec_button_mini_cart"></span>
 		</p>
@@ -363,6 +363,17 @@ class WC_Gateway_PPEC_Cart_Handler {
 		<?php endif; ?>
 		<?php
 	}
+
+	public function maybe_enqueue_checkout_js( $widget_title, $widget_instance, $widget_id ) {
+		if ( 'woocommerce_widget_cart' === $widget_id ) {
+			$gateways = WC()->payment_gateways->get_available_payment_gateways();
+			$settings = wc_gateway_ppec()->settings;
+			if ( isset( $gateways['ppec_paypal'] ) && 'yes' === $settings->cart_checkout_enabled && 'yes' === $settings->use_spb ) {
+				wp_enqueue_script( 'wc-gateway-ppec-smart-payment-buttons' );
+			}
+        }
+		return $widget_title;
+    }
 
 	/**
 	 * Convert from settings to values expected by PayPal Button API:
