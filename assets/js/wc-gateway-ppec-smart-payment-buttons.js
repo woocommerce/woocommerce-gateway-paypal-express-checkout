@@ -144,19 +144,16 @@
 		}, selector );
 	};
 
-	var already_loading_script = false;
-	var renderWithLazyLoad = function( isMiniCart ) {
-		var onSuccess = render.bind( null, isMiniCart );
-		if ( already_loading_script ) {
-			onSuccess();
+	var load_script_task = null;
+	var renderWithLazyLoad = function ( isMiniCart ) {
+		if ( ! load_script_task ) {
+			load_script_task = $.ajax( {
+				url: 'https://www.paypalobjects.com/api/checkout.js',
+				dataType: 'script',
+				cache: true,
+			} );
 		}
-		already_loading_script = true;
-		$.ajax( {
-			url: 'https://www.paypalobjects.com/api/checkout.js',
-			dataType: 'script',
-			cache: true,
-			success: onSuccess,
-		} );
+		load_script_task.done( render.bind( null, isMiniCart ) );
 	};
 
 	// Render cart, single product, or checkout buttons.
