@@ -94,7 +94,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 					$variation_id = $data_store->find_matching_product_variation( $product, $attributes );
 				}
 
-				WC()->cart->add_to_cart( $product->get_id(), $qty, $variation_id );
+				WC()->cart->add_to_cart( $product->get_id(), $qty, $variation_id, $attributes );
 			} else {
 				WC()->cart->add_to_cart( $product->get_id(), $qty );
 			}
