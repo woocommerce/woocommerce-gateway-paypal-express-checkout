@@ -101,6 +101,9 @@ Please use this to inform us about bugs, or make contributions via PRs.
 
 == Changelog ==
 
+= 1.6.7 - 2019-xx-xx =
+* Fix - Error 10413 when using coupons
+
 = 1.6.6 - 2019-01-09 =
 * Fix - Discount items were not being included
 * Add - Filter for order details to accept decimal quantities of products
