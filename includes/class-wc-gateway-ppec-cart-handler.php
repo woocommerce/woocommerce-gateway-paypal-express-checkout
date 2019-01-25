@@ -364,7 +364,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 		<?php
 	}
 
-	public function maybe_enqueue_checkout_js( $widget_title, $widget_instance, $widget_id ) {
+	public function maybe_enqueue_checkout_js( $widget_title, $widget_instance = array(), $widget_id = null ) {
 		if ( 'woocommerce_widget_cart' === $widget_id ) {
 			$gateways = WC()->payment_gateways->get_available_payment_gateways();
 			$settings = wc_gateway_ppec()->settings;
