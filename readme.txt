@@ -2,8 +2,8 @@
 Contributors: automattic, woothemes, akeda, dwainm, royho, allendav, slash1andy, woosteve, spraveenitpro, mikedmoore, fernashes, shellbeezy, danieldudzic, mikaey, fullysupportedphil, dsmithweb, corsonr, bor0, zandyring, pauldechov
 Tags: ecommerce, e-commerce, commerce, woothemes, wordpress ecommerce, store, sales, sell, shop, shopping, cart, checkout, configurable, paypal
 Requires at least: 4.4
-Tested up to: 5.0.2
-Stable tag: 1.6.6
+Tested up to: 5.0.3
+Stable tag: 1.6.7
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -101,8 +101,10 @@ Please use this to inform us about bugs, or make contributions via PRs.
 
 == Changelog ==
 
-= 1.6.7 - 2019-xx-xx =
+= 1.6.7 - 2019-01-25 =
 * Fix - Error 10413 when using coupons
+* Fix: All variation details when using buttons on product pages are kept
+* Fix: Always render the PayPal buttons in the mini cart
 
 = 1.6.6 - 2019-01-09 =
 * Fix - Discount items were not being included
