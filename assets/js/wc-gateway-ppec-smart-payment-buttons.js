@@ -38,7 +38,7 @@
 	// Map funding method settings to enumerated options provided by PayPal.
 	var getFundingMethods = function( methods ) {
 		if ( ! methods ) {
-			return null;
+			return undefined;
 		}
 
 		var paypal_funding_methods = [];
