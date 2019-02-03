@@ -1,5 +1,8 @@
 *** Changelog ***
 
+= 1.6.9 - 2019-02-03 =
+* Fix - Avoid SPB render error by tweaking 'allowed' funding methods' empty value
+
 = 1.6.8 - 2019-01-25 =
 * Fix - Guard against themes applying filter with too few params
 
