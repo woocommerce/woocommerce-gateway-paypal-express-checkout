@@ -1,5 +1,8 @@
 *** Changelog ***
 
+= 1.6.10 - 2019-03-05 =
+* Fix - Use only product attributes when adding to cart
+
 = 1.6.9 - 2019-02-03 =
 * Fix - Avoid SPB render error by tweaking 'allowed' funding methods' empty value
 
