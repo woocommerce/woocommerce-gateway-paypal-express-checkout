@@ -72,14 +72,24 @@
 	var generate_cart = function( callback ) {
 		var data = {
 			'nonce': wc_ppec_generate_cart_context.generate_cart_nonce,
+			'attributes': {},
 		};
 
 		var field_pairs = form.serializeArray();
+
 		for ( var i = 0; i < field_pairs.length; i++ ) {
 			// Prevent the default WooCommerce PHP form handler from recognizing this as an "add to cart" call
 			if ( 'add-to-cart' === field_pairs[ i ].name ) {
 				field_pairs[ i ].name = 'ppec-add-to-cart';
 			}
+
+			// Save attributes as a separate prop in `data` object,
+			// so that `attributes` can be used later on when adding a variable product to cart
+			if ( -1 !== field_pairs[ i ].name.indexOf( 'attribute_' ) ) {
+				data.attributes[ field_pairs[ i ].name ] = field_pairs[ i ].value;
+				continue;
+			}
+
 			data[ field_pairs[ i ].name ] = field_pairs[ i ].value;
 		}
 

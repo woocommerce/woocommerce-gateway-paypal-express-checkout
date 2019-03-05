@@ -86,7 +86,8 @@ class WC_Gateway_PPEC_Cart_Handler {
 			wc_empty_cart();
 
 			if ( $product->is_type( 'variable' ) ) {
-				$attributes = array_map( 'wc_clean', $_POST );
+				$attributes = array_map( 'wc_clean', $_POST['attributes'] );
+
 
 				if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
 					$variation_id = $product->get_matching_variation( $attributes );
