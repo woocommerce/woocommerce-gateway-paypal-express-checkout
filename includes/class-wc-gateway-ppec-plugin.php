@@ -161,12 +161,15 @@ class WC_Gateway_PPEC_Plugin {
 			$this->_check_credentials();
 
 			$this->_bootstrapped = true;
-			if ( false !== get_option( 'wc_gateway_ppce_bootstrap_warning_message' ) ) {
-				delete_option( 'wc_gateway_ppce_bootstrap_warning_message' );
-			}
 
-			if ( false !== get_option( 'wc_gateway_ppce_prompt_to_connect' ) ) {
-				delete_option( 'wc_gateway_ppce_prompt_to_connect' );
+			if ( is_admin() ) {
+				if ( false !== get_option( 'wc_gateway_ppce_bootstrap_warning_message' ) ) {
+					delete_option( 'wc_gateway_ppce_bootstrap_warning_message');
+				}
+
+				if ( false !== get_option( 'wc_gateway_ppce_prompt_to_connect' ) ) {
+					delete_option( 'wc_gateway_ppce_prompt_to_connect' );
+				}
 			}
 		} catch ( Exception $e ) {
 			if ( in_array( $e->getCode(), array( self::ALREADY_BOOTSTRAPED, self::DEPENDENCIES_UNSATISFIED ) ) ) {
