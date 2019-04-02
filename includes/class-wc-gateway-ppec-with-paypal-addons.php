@@ -39,6 +39,73 @@ class WC_Gateway_PPEC_With_PayPal_Addons extends WC_Gateway_PPEC_With_PayPal {
 
 		add_action( 'woocommerce_scheduled_subscription_payment_' . $this->id, array( $this, 'scheduled_subscription_payment' ), 10, 2 );
 		add_action( 'woocommerce_subscription_failing_payment_method_' . $this->id, array( $this, 'update_failing_payment_method' ) );
+		add_filter( 'woocommerce_payment_gateways_renewal_support_status_html', array( $this, 'subscription_tooltip' ), 10, 2 );
+		add_filter( 'woocommerce_available_payment_gateways', array( $this, 'get_available_gataways_for_subscriptions' ), 20 );
+	}
+
+	/**
+	 * Filter for Subscriptions info tooltip html for this gateway
+	 *
+	 * @since 1.6.11
+	 *
+	 * @param string             $html HTML of the tooltip
+	 * @param WC_Payment_Gateway $gateway Payment gateway to filter for
+	 *
+	 * @return string Filtered HTML
+	 */
+	public function subscription_tooltip( $html, $gateway ) {
+		if ( $gateway->id !== $this->id ) {
+			return $html;
+		}
+		if ( 'no' === $gateway->get_option( 'require_billing', 'no' ) ) {
+			$tool_tip = esc_attr__( 'You must enable the "Require billing address" option to support this gateway\'s features for virtual subscriptions.', 'woocommerce-gateway-paypal-express-checkout' );
+			$status = esc_html__( 'Maybe', 'woocommerce-gateway-paypal-express-checkout' );
+			$html = sprintf( '<span class="payment-method-features-info tips" data-tip="%1$s">%2$s</span>',
+				$tool_tip,
+				$status );
+		}
+		return $html;
+	}
+
+	/**
+	 * Filter determining whether to show this gateway during checkout
+	 *
+	 * @since 1.6.11
+	 *
+	 * @param array $gateways Array of payment gateways
+	 *
+	 * @return array Filtered array of payment gateways
+	 */
+	public function get_available_gataways_for_subscriptions( $gateways ) {
+		if ( ! $this->should_display_buttons_at_checkout() ) {
+			unset( $gateways['ppec_paypal'] );
+		}
+		return $gateways;
+	}
+
+	/**
+	 * Checks if smart payment buttons can be displayed during the checkout
+	 *
+	 * @since 1.6.11
+	 *
+	 * @return bool True if buttons can be displayed
+	 */
+	public function should_display_buttons_at_checkout() {
+		if ( ! class_exists( 'WC_Subscriptions_Product' )
+			|| ! WC()->cart
+			|| 'yes' === $this->get_option( 'require_billing', 'no' ) ) {
+			return true;
+		}
+		$cart_contents = WC()->cart->cart_contents;
+		if ( empty( $cart_contents ) ) {
+			return true;
+		}
+		foreach ( WC()->cart->cart_contents as $cart_item ) {
+			if ( WC_Subscriptions_Product::is_subscription( $cart_item['data'] ) && ! $cart_item['data']->needs_shipping() ) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
