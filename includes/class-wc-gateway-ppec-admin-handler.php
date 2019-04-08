@@ -163,6 +163,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 				$params['AUTHORIZATIONID'] = $trans_id;
 				$params['AMT'] = floatval( $order_total );
 				$params['COMPLETETYPE'] = 'Complete';
+				$params['CURRENCYCODE'] = get_woocommerce_currency();
 
 				$result = wc_gateway_ppec()->client->do_express_checkout_capture( $params );
 
