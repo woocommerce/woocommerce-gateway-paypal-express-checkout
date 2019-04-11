@@ -271,7 +271,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 	public function display_paypal_button_product() {
 		$gateways = WC()->payment_gateways->get_available_payment_gateways();
 
-		if ( ! is_product() || ! isset( $gateways['ppec_paypal'] ) ) {
+		if ( ! is_product() || ! isset( $gateways['ppec_paypal'] ) || apply_filters( 'woocommerce_paypal_express_checkout_hide_button_on_product_page', false, $product ) ) {
 			return;
 		}
 
