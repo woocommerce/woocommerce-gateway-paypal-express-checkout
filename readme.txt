@@ -101,7 +101,7 @@ Please use this to inform us about bugs, or make contributions via PRs.
 
 == Changelog ==
 
-= 1.6.11 - 2019-03-17 =
+= 1.6.11 - 2019-04-17 =
 * Fix/Performance - Prevent db option updates during bootstrap on each page load
 * Tweak = WC 3.6 compatibiliy.
 
