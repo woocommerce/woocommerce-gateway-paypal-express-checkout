@@ -513,12 +513,14 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		$customer->set_billing_state( $billing_details['state'] );
 		$customer->set_billing_country( $billing_details['country'] );
 
-		$customer->set_shipping_address( $shipping_details['address_1'] );
-		$customer->set_shipping_address_2( $shipping_details['address_2'] );
-		$customer->set_shipping_city( $shipping_details['city'] );
-		$customer->set_shipping_postcode( $shipping_details['postcode'] );
-		$customer->set_shipping_state( $shipping_details['state'] );
-		$customer->set_shipping_country( $shipping_details['country'] );
+		if ( ! empty( $shipping_details ) ) {
+			$customer->set_shipping_address( $shipping_details['address_1'] );
+			$customer->set_shipping_address_2( $shipping_details['address_2'] );
+			$customer->set_shipping_city( $shipping_details['city'] );
+			$customer->set_shipping_postcode( $shipping_details['postcode'] );
+			$customer->set_shipping_state( $shipping_details['state'] );
+			$customer->set_shipping_country( $shipping_details['country'] );
+		}
 	}
 
 	/**
@@ -981,12 +983,14 @@ class WC_Gateway_PPEC_Checkout_Handler {
 
 		$destination = $this->get_mapped_shipping_address( $checkout_details );
 
-		$packages[0]['destination']['country']   = $destination['country'];
-		$packages[0]['destination']['state']     = $destination['state'];
-		$packages[0]['destination']['postcode']  = $destination['postcode'];
-		$packages[0]['destination']['city']      = $destination['city'];
-		$packages[0]['destination']['address']   = $destination['address_1'];
-		$packages[0]['destination']['address_2'] = $destination['address_2'];
+		if ( ! empty( $destination ) ) {
+			$packages[0]['destination']['country']   = $destination['country'];
+			$packages[0]['destination']['state']     = $destination['state'];
+			$packages[0]['destination']['postcode']  = $destination['postcode'];
+			$packages[0]['destination']['city']      = $destination['city'];
+			$packages[0]['destination']['address']   = $destination['address_1'];
+			$packages[0]['destination']['address_2'] = $destination['address_2'];
+		}
 
 		return $packages;
 	}
