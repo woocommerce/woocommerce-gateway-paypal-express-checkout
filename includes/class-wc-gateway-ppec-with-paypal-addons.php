@@ -46,7 +46,7 @@ class WC_Gateway_PPEC_With_PayPal_Addons extends WC_Gateway_PPEC_With_PayPal {
 	/**
 	 * Filter for Subscriptions info tooltip html for this gateway
 	 *
-	 * @since 1.6.11
+	 * @since 1.6.12
 	 *
 	 * @param string             $html HTML of the tooltip
 	 * @param WC_Payment_Gateway $gateway Payment gateway to filter for
@@ -70,7 +70,7 @@ class WC_Gateway_PPEC_With_PayPal_Addons extends WC_Gateway_PPEC_With_PayPal {
 	/**
 	 * Filter determining whether to show this gateway during checkout
 	 *
-	 * @since 1.6.11
+	 * @since 1.6.12
 	 *
 	 * @param array $gateways Array of payment gateways
 	 *
@@ -86,7 +86,7 @@ class WC_Gateway_PPEC_With_PayPal_Addons extends WC_Gateway_PPEC_With_PayPal {
 	/**
 	 * Checks if smart payment buttons can be displayed during the checkout
 	 *
-	 * @since 1.6.11
+	 * @since 1.6.12
 	 *
 	 * @return bool True if buttons can be displayed
 	 */
