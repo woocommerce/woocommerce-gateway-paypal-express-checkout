@@ -246,6 +246,9 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			wc_add_notice( $e->getMessage(), 'error' );
 			return;
 		}
+		if ( empty( $checkout_details->payer_details ) ) {
+			return;
+		}
 		?>
 		<h3><?php _e( 'Billing details', 'woocommerce-gateway-paypal-express-checkout' ); ?></h3>
 		<ul>
@@ -402,10 +405,9 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		$name       = explode( ' ', $checkout_details->payments[0]->shipping_address->getName() );
 		$first_name = array_shift( $name );
 		$last_name  = implode( ' ', $name );
-		return array(
+		$result = array(
 			'first_name'    => $first_name,
 			'last_name'     => $last_name,
-			'company'       => $checkout_details->payer_details->business_name,
 			'address_1'     => $checkout_details->payments[0]->shipping_address->getStreet1(),
 			'address_2'     => $checkout_details->payments[0]->shipping_address->getStreet2(),
 			'city'          => $checkout_details->payments[0]->shipping_address->getCity(),
@@ -413,6 +415,10 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			'postcode'      => $checkout_details->payments[0]->shipping_address->getZip(),
 			'country'       => $checkout_details->payments[0]->shipping_address->getCountry(),
 		);
+		if ( ! empty( $checkout_details->payer_details ) && property_exists( $checkout_details->payer_details, 'business_name' ) ) {
+			$result['company'] = $checkout_details->payer_details->business_name;
+		}
+		return $result;
 	}
 
 	/**
@@ -506,12 +512,14 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		$customer = WC()->customer;
 
 		// Update billing/shipping addresses.
-		$customer->set_billing_address( $billing_details['address_1'] );
-		$customer->set_billing_address_2( $billing_details['address_2'] );
-		$customer->set_billing_city( $billing_details['city'] );
-		$customer->set_billing_postcode( $billing_details['postcode'] );
-		$customer->set_billing_state( $billing_details['state'] );
-		$customer->set_billing_country( $billing_details['country'] );
+		if ( ! empty( $billing_details ) ) {
+			$customer->set_billing_address( $billing_details['address_1'] );
+			$customer->set_billing_address_2( $billing_details['address_2'] );
+			$customer->set_billing_city( $billing_details['city'] );
+			$customer->set_billing_postcode( $billing_details['postcode'] );
+			$customer->set_billing_state( $billing_details['state'] );
+			$customer->set_billing_country( $billing_details['country'] );
+		}
 
 		if ( ! empty( $shipping_details ) ) {
 			$customer->set_shipping_address( $shipping_details['address_1'] );
