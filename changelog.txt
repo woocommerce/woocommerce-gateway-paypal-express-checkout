@@ -1,5 +1,8 @@
 *** Changelog ***
 
+= 1.6.13 - 2019-05-08 =
+* Fix - Failing checkout when no addons are used
+
 = 1.6.12 - 2019-05-08 =
 * Fix - Better handling of virtual subscriptions when billing address is not required
 * Fix - Prevent errors showing when purchasing a virtual product with WP_DEBUG enabled
