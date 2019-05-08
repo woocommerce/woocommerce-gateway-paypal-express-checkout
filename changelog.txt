@@ -1,6 +1,6 @@
 *** Changelog ***
 
-= 1.6.13 - 2019-05-08 =
+= 1.6.14 - 2019-05-08 =
 * Fix - Failing checkout when no addons are used
 
 = 1.6.12 - 2019-05-08 =
