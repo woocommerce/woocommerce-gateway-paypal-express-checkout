@@ -246,6 +246,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			wc_add_notice( $e->getMessage(), 'error' );
 			return;
 		}
+		// check if the payer details have been set on the PP response before rendering them to prevent PHP errors
 		if ( empty( $checkout_details->payer_details ) ) {
 			return;
 		}
