@@ -50,6 +50,15 @@ if ( ! wc_gateway_ppec_is_credit_supported() ) {
 
 $credit_enabled_description  = __( 'This enables PayPal Credit, which displays a PayPal Credit button next to the primary PayPal Checkout button. PayPal Checkout lets you give customers access to financing through PayPal Credit® - at no additional cost to you. You get paid up front, even though customers have more time to pay. A pre-integrated payment button shows up next to the PayPal Button, and lets customers pay quickly with PayPal Credit®. (Should be unchecked for stores involved in Real Money Gaming.)', 'woocommerce-gateway-paypal-express-checkout' );
 
+// If set to Hidden or Required in the WooCommerce Customizer alter the settings.
+if ( 'hidden' === get_option( 'woocommerce_checkout_phone_field', 'required' ) || 'required' === get_option( 'woocommerce_checkout_phone_field', 'required' ) ) {
+	$require_phone_description = __( 'This setting is disabled and overwritten by the WooCommerce Customizer. Require buyer to enter their telephone number during checkout if none is provided by PayPal', 'woocommerce-gateway-paypal-express-checkout' );
+	$require_phone_disable = true;
+} else {
+	$require_phone_description = __( 'Require buyer to enter their telephone number during checkout if none is provided by PayPal', 'woocommerce-gateway-paypal-express-checkout' );
+	$require_phone_disable = false;
+}
+
 wc_enqueue_js( "
 	jQuery( function( $ ) {
 		var ppec_mark_fields      = '#woocommerce_ppec_paypal_title, #woocommerce_ppec_paypal_description';
@@ -458,7 +467,8 @@ $settings = array(
 		'type'        => 'checkbox',
 		'label'       => __( 'Require Phone Number', 'woocommerce-gateway-paypal-express-checkout' ),
 		'default'     => 'no',
-		'description' => __( 'Require buyer to enter their telephone number during checkout if none is provided by PayPal', 'woocommerce-gateway-paypal-express-checkout' ),
+		'description' => $require_phone_description,
+		'disabled'    => $require_phone_disable,
 	),
 	'paymentaction' => array(
 		'title'       => __( 'Payment Action', 'woocommerce-gateway-paypal-express-checkout' ),

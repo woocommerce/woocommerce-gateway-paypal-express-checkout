@@ -165,6 +165,11 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			return $billing_fields;
 		}
 
+		// Check the WooCommerce customizer settings first.
+		if ( 'hidden' === get_option( 'woocommerce_checkout_phone_field', 'required' ) || 'required' === get_option( 'woocommerce_checkout_phone_field', 'required' ) ) {
+			return $billing_fields;
+		}
+
 		$require_phone_number = wc_gateway_ppec()->settings->require_phone_number;
 
 		if ( array_key_exists( 'billing_phone', $billing_fields ) ) {
