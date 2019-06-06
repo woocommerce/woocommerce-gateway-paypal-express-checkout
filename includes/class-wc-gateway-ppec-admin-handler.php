@@ -19,10 +19,10 @@ class WC_Gateway_PPEC_Admin_Handler {
 		// defer this until for next release.
 		// add_filter( 'woocommerce_get_sections_checkout', array( $this, 'filter_checkout_sections' ) );
 
-		add_action( 'woocommerce_order_status_on-hold_to_processing', array( $this, 'capture_payment' ) );
-		add_action( 'woocommerce_order_status_on-hold_to_completed', array( $this, 'capture_payment' ) );
-		add_action( 'woocommerce_order_status_on-hold_to_cancelled', array( $this, 'cancel_payment' ) );
-		add_action( 'woocommerce_order_status_on-hold_to_refunded', array( $this, 'cancel_payment' ) );
+		add_action( 'woocommerce_order_status_processing', array( $this, 'capture_payment' ) );
+		add_action( 'woocommerce_order_status_completed', array( $this, 'capture_payment' ) );
+		add_action( 'woocommerce_order_status_cancelled', array( $this, 'cancel_payment' ) );
+		add_action( 'woocommerce_order_status_refunded', array( $this, 'cancel_payment' ) );
 
 		add_filter( 'woocommerce_order_actions', array( $this, 'add_capture_charge_order_action' ) );
 		add_action( 'woocommerce_order_action_ppec_capture_charge', array( $this, 'maybe_capture_charge' ) );
