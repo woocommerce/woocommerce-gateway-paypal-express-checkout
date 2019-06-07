@@ -173,6 +173,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 						'redirect' => wc_gateway_ppec()->settings->get_paypal_redirect_url( $session->token, true ),
 					);
 				} else {
+					do_action( 'wc_gateway_ppec_process_payment_error', $e, $order );
 					wc_add_notice( $e->getMessage(), 'error' );
 				}
 			}
