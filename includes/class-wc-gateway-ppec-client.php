@@ -638,6 +638,16 @@ class WC_Gateway_PPEC_Client {
 		return apply_filters( 'woocommerce_paypal_express_checkout_get_details', $details );
 	}
 
+	protected function _get_total_order_fees( $order ) {
+		$total = 0;
+		$fees = $order->get_fees();
+		foreach( $fees as $fee ) {
+			$total = $total + $fee->get_amount();
+		}
+
+		return $total;
+	}
+
 	/**
 	 * Get details from given order_id.
 	 *
@@ -656,15 +666,21 @@ class WC_Gateway_PPEC_Client {
 		$decimals      = $settings->is_currency_supports_zero_decimal() ? 0 : 2;
 		$rounded_total = $this->_get_rounded_total_in_order( $order );
 		$discounts     = $order->get_total_discount();
+		$fees          = round( $this->_get_total_order_fees( $order ), $decimals );
 
 		$details = array(
-			'total_item_amount' => round( $order->get_subtotal(), $decimals ) + $discounts,
+			'total_item_amount' => round( $order->get_subtotal(), $decimals ) + $discounts + $fees,
 			'order_tax'         => round( $order->get_total_tax(), $decimals ),
 			'shipping'          => round( ( version_compare( WC_VERSION, '3.0', '<' ) ? $order->get_total_shipping() : $order->get_shipping_total() ), $decimals ),
 			'items'             => $this->_get_paypal_line_items_from_order( $order ),
 		);
 
+		error_log(sprintf("Details before:\n%s\n", print_r($details, true)));
+		error_log(sprintf("Discount: %s\nRounded Total: %s\nTotal: %s\n", $order->get_total_discount(), $rounded_total, $order->get_total()));
+
 		$details = $this->get_details( $details, $order->get_total_discount(), $rounded_total, $order->get_total() );
+
+		error_log(sprintf("Details after:\n%s\n", print_r($details, true)));
 
 		// PayPal shipping address from order.
 		$shipping_address = new PayPal_Address;
@@ -779,13 +795,25 @@ class WC_Gateway_PPEC_Client {
 		$order    = wc_get_order( $order );
 
 		$items = array();
-		foreach ( $order->get_items() as $cart_item_key => $values ) {
-			$amount = round( $values['line_subtotal'] / $values['qty'] , $decimals );
-			$item   = array(
-				'name'     => $values['name'],
-				'quantity' => $values['qty'],
-				'amount'   => $amount,
-			);
+		foreach ( $order->get_items( array( 'line_item', 'fee' ) ) as $cart_item_key => $values ) {
+
+
+			if( 'fee' === $values['type']) {
+				$item   = array(
+					'name'     => $values['name'],
+					'quantity' => 1,
+					'amount'   => round( $values['line_total'], $decimals),
+				);
+			} else {
+				$amount = round( $values['line_subtotal'] / $values['qty'] , $decimals );
+				$item   = array(
+					'name'     => $values['name'],
+					'quantity' => $values['qty'],
+					'amount'   => $amount,
+				);
+
+			}
+			
 
 			$items[] = $item;
 		}
@@ -808,9 +836,16 @@ class WC_Gateway_PPEC_Client {
 		$order    = wc_get_order( $order );
 
 		$rounded_total = 0;
-		foreach ( $order->get_items() as $cart_item_key => $values ) {
-			$amount         = round( $values['line_subtotal'] / $values['qty'] , $decimals );
-			$rounded_total += round( $amount * $values['qty'], $decimals );
+		foreach ( $order->get_items( array( 'line_item', 'fee' ) ) as $cart_item_key => $values ) {
+			if( 'fee' === $values['type']) {
+				$amount = round( $values['line_total'], $decimals);
+				error_log('rounding fee of ' . $values['line_total'] . ' | ' . $amount);
+			} else {
+				$amount = round( $values['line_subtotal'] / $values['qty'] , $decimals );
+				$amount = round( $amount * $values['qty'], $decimals );
+				error_log('rounding line item of type ' . $values['type']);
+			}
+			$rounded_total += $amount;
 		}
 
 		return $rounded_total;
