@@ -4,3 +4,4 @@ Gruntfile.js
 package.json
 .idea
 *.iml
+.vscode
