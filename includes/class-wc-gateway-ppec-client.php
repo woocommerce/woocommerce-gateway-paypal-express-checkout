@@ -1012,7 +1012,14 @@ class WC_Gateway_PPEC_Client {
 			) ),
 		);
 
-		if ( ! empty( $details['shipping_address'] ) ) {
+		// We want to add the shipping parameters only if we have all of the required
+		// parameters for a DoReferenceTransaction call. Otherwise, we don't want to
+		// include any of the shipping parameters, even if we have some of them.
+		// The call will fail if not all of the required paramters are present.
+		if (
+			! empty( $details['shipping_address'] )
+			&& $details['shipping_address']->has_all_required_shipping_params()
+		) {
 			$params = array_merge(
 				$params,
 				$details['shipping_address']->getAddressParams( 'SHIPTO' )

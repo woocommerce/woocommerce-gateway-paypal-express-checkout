@@ -700,4 +700,73 @@ class PayPal_Address {
 
 		return $found_any;
 	}
+
+	/*
+	 * Checks to see if the PayPal_Address object has all the
+	 * required parameters when using a shipping address.
+	 *
+	 * The required parameters for a DoReferenceTransaction call are listed here:
+	 * https://developer.paypal.com/docs/classic/api/merchant/DoReferenceTransaction-API-Operation-NVP/#ship-to-address-fields
+	 *
+	 * Other API operations have the same shipping parameter requirements.
+	 * Here's a non-exhaustive list:
+	 *
+	 * DoExpressCheckoutPayment
+	 * https://developer.paypal.com/docs/classic/api/merchant/DoExpressCheckoutPayment-API-Operation-NVP/
+	 *
+	 * SetExpressCheckout
+	 * https://developer.paypal.com/docs/classic/api/merchant/SetExpressCheckout-API-Operation-NVP/
+	 *
+	 * GetExpressCheckoutDetails
+	 * https://developer.paypal.com/docs/classic/api/merchant/GetExpressCheckoutDetails-API-Operation-NVP/
+	 */
+	public function has_all_required_shipping_params() {
+		$has_name    = ! empty( $this->getName() );
+		$has_street1 = ! empty( $this->getStreet1() );
+		$has_city    = ! empty( $this->getCity() );
+		$has_country = ! empty( $this->getCountry() );
+		$has_zip     = ! empty( $this->getZip() );
+		$has_state   = ! empty( $this->getState() );
+
+		// If the country is the US, a zipcode is required
+		$has_zip_if_required = (
+			'US' === $this->getCountry()
+			? $has_zip
+			: true
+		);
+
+		// A state is required is the country is one of
+		// Argentina, Brazil, Canada, China, Indonesia,
+		// India, Japan, Mexico, Thailand or USA
+		$has_state_if_required = (
+			in_array(
+				$this->getCountry(),
+				array(
+					'AR', // Argentina
+					'BR', // Brazil
+					'CA', // Canada
+					'CN', // China
+					'ID', // Indonesia
+					'IN', // India
+					'JP', // Japan
+					'MX', // Mexico
+					'TH', // Thailand
+					'US', // USA
+				),
+				true
+			)
+			? $has_state
+			: true
+		);
+
+		return (
+			$has_name
+			&& $has_street1
+			&& $has_city
+			&& $has_country
+			&& $has_zip_if_required
+			&& $has_state_if_required
+		);
+
+	}
 }
