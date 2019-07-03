@@ -1021,8 +1021,13 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		$needs_billing_agreement = false;
 
 		if ( empty( $args['order_id'] ) ) {
-			if ( class_exists( 'WC_Subscriptions_Cart' ) ) {
-				$needs_billing_agreement = WC_Subscriptions_Cart::cart_contains_subscription();
+			if ( class_exists( 'WC_Subscriptions_Cart' ) && function_exists( 'wcs_cart_contains_renewal' ) ) {
+				// Needs a billing agreement if the cart contains a subscription
+				// or a renewal of a subscription
+				$needs_billing_agreement = (
+					WC_Subscriptions_Cart::cart_contains_subscription()
+					|| wcs_cart_contains_renewal()
+				);
 			}
 		} else {
 			if ( function_exists( 'wcs_order_contains_subscription' ) ) {
