@@ -246,6 +246,12 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			wc_add_notice( $e->getMessage(), 'error' );
 			return;
 		}
+
+		if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
+			$fields = WC()->checkout->checkout_fields['billing'];
+		} else {
+			$fields = WC()->checkout->get_checkout_fields( 'billing' );
+		}
 		?>
 		<h3><?php _e( 'Billing details', 'woocommerce-gateway-paypal-express-checkout' ); ?></h3>
 		<ul>
@@ -257,21 +263,14 @@ class WC_Gateway_PPEC_Checkout_Handler {
 
 			<?php if ( ! empty( $checkout_details->payer_details->email ) ) : ?>
 				<li><strong><?php _e( 'Email:', 'woocommerce-gateway-paypal-express-checkout' ) ?></strong> <?php echo esc_html( $checkout_details->payer_details->email ); ?></li>
+			<?php else : ?>
+				<li><?php woocommerce_form_field( 'billing_email', $fields['billing_email'], WC()->checkout->get_value( 'billing_email' ) ); ?></li>
 			<?php endif; ?>
 
 			<?php if ( ! empty( $checkout_details->payer_details->phone_number ) ) : ?>
 				<li><strong><?php _e( 'Phone:', 'woocommerce-gateway-paypal-express-checkout' ) ?></strong> <?php echo esc_html( $checkout_details->payer_details->phone_number ); ?></li>
 			<?php elseif ( 'yes' === wc_gateway_ppec()->settings->require_phone_number ) : ?>
-				<li>
-				<?php
-				if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
-					$fields = WC()->checkout->checkout_fields['billing'];
-				} else {
-					$fields = WC()->checkout->get_checkout_fields( 'billing' );
-				}
-				woocommerce_form_field( 'billing_phone', $fields['billing_phone'], WC()->checkout->get_value( 'billing_phone' ) );
-				?>
-				</li>
+				<li><?php woocommerce_form_field( 'billing_phone', $fields['billing_phone'], WC()->checkout->get_value( 'billing_phone' ) ); ?></li>
 			<?php endif; ?>
 		</ul>
 		<?php
