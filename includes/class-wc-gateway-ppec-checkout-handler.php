@@ -246,16 +246,12 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			wc_add_notice( $e->getMessage(), 'error' );
 			return;
 		}
-		// check if the payer details have been set on the PP response before rendering them to prevent PHP errors
-		if ( empty( $checkout_details->payer_details ) ) {
-			return;
-		}
 		?>
 		<h3><?php _e( 'Billing details', 'woocommerce-gateway-paypal-express-checkout' ); ?></h3>
 		<ul>
-			<?php if ( $checkout_details->payer_details->billing_address ) : ?>
+			<?php if ( ! empty( $checkout_details->payer_details->billing_address ) ) : ?>
 				<li><strong><?php _e( 'Address:', 'woocommerce-gateway-paypal-express-checkout' ) ?></strong></br><?php echo WC()->countries->get_formatted_address( $this->get_mapped_billing_address( $checkout_details ) ); ?></li>
-			<?php else : ?>
+			<?php elseif ( ! empty( $checkout_details->payer_details->first_name ) && ! empty( $checkout_details->payer_details->last_name ) ) : ?>
 				<li><strong><?php _e( 'Name:', 'woocommerce-gateway-paypal-express-checkout' ) ?></strong> <?php echo esc_html( $checkout_details->payer_details->first_name . ' ' . $checkout_details->payer_details->last_name ); ?></li>
 			<?php endif; ?>
 
