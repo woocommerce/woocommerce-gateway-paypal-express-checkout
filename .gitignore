@@ -4,3 +4,5 @@ Gruntfile.js
 package.json
 .idea
 *.iml
+.vscode
+.DS_Store
