@@ -210,7 +210,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			// Set flag so that WC copies billing to shipping
 			$_POST['ship_to_different_address'] = 0;
 
-			$copyable_keys = array( 'address_1', 'address_2', 'city', 'state', 'postcode', 'country' );
+			$copyable_keys = array( 'first_name', 'last_name', 'address_1', 'address_2', 'city', 'state', 'postcode', 'country' );
 			foreach ( $copyable_keys as $copyable_key ) {
 				if ( array_key_exists( $copyable_key, $shipping_details ) ) {
 					$billing_details[ $copyable_key ] = $shipping_details[ $copyable_key ];
