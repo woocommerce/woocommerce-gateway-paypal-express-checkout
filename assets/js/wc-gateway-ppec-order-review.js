@@ -2,6 +2,7 @@
 	'use strict';
 
 	$( 'form.checkout' ).on( 'click', 'input[name="payment_method"]', function() {
+		// Avoid toggling submit button if on confirmation screen
 		if ( $( '#payment' ).find( '.wc-gateway-ppec-cancel' ).length ) {
 			return;
 		}
