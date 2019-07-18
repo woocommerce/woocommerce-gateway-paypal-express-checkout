@@ -3,7 +3,7 @@ Contributors: automattic, woothemes, akeda, dwainm, royho, allendav, slash1andy,
 Tags: ecommerce, e-commerce, commerce, woothemes, wordpress ecommerce, store, sales, sell, shop, shopping, cart, checkout, configurable, paypal
 Requires at least: 4.4
 Tested up to: 5.2.0
-Stable tag: 1.6.15
+Stable tag: 1.6.16
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -100,6 +100,10 @@ Please use this to inform us about bugs, or make contributions via PRs.
 9. Initiate checkout from mini-cart.
 
 == Changelog ==
+
+= 1.6.16 - 2019-07-18 =
+* Fix - Don't require address for renewal of virtual subscriptions
+* Fix - Avoid broken confirmation screen edge case after 10486 redirect
 
 = 1.6.15 - 2019-06-19 =
 * Fix - Prevent PHP errors when no billing details are present in PP response

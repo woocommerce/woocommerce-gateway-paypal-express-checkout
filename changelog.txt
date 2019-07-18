@@ -1,5 +1,9 @@
 *** Changelog ***
 
+= 1.6.16 - 2019-07-18 =
+* Fix - Don't require address for renewal of virtual subscriptions
+* Fix - Avoid broken confirmation screen edge case after 10486 redirect
+
 = 1.6.15 - 2019-06-19 =
 * Fix - Prevent PHP errors when no billing details are present in PP response
 * Fix - Require billing address for virtual products when enabled
