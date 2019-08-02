@@ -1033,7 +1033,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			}
 		}
 
-		return $needs_billing_agreement;
+		return apply_filters( 'woocommerce_paypal_express_checkout_needs_billing_agreement', $needs_billing_agreement );
 	}
 
 	/**
