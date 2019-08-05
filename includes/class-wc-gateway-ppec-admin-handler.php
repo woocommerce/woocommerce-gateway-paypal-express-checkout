@@ -21,8 +21,8 @@ class WC_Gateway_PPEC_Admin_Handler {
 
 		add_action( 'woocommerce_order_status_processing', array( $this, 'capture_payment' ) );
 		add_action( 'woocommerce_order_status_completed', array( $this, 'capture_payment' ) );
-		add_action( 'woocommerce_order_status_cancelled', array( $this, 'cancel_payment' ) );
-		add_action( 'woocommerce_order_status_refunded', array( $this, 'cancel_payment' ) );
+		add_action( 'woocommerce_order_status_cancelled', array( $this, 'cancel_authorization' ) );
+		add_action( 'woocommerce_order_status_refunded', array( $this, 'cancel_authorization' ) );
 
 		add_filter( 'woocommerce_order_actions', array( $this, 'add_capture_charge_order_action' ) );
 		add_action( 'woocommerce_order_action_ppec_capture_charge', array( $this, 'maybe_capture_charge' ) );
@@ -197,11 +197,11 @@ class WC_Gateway_PPEC_Admin_Handler {
 	}
 
 	/**
-	 * Cancel authorization
+	 * Cancel authorization (if one is present)
 	 *
 	 * @param  int $order_id
 	 */
-	public function cancel_payment( $order_id ) {
+	public function cancel_authorization( $order_id ) {
 		$order = wc_get_order( $order_id );
 		$old_wc = version_compare( WC_VERSION, '3.0', '<' );
 		$payment_method = $old_wc ? $order->payment_method : $order->get_payment_method();
