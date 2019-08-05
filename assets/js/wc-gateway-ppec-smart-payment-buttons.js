@@ -61,6 +61,11 @@
 
 		var selector = isMiniCart ? '#woo_pp_ec_button_mini_cart' : '#woo_pp_ec_button_' + wc_ppec_context.page;
 
+		// Don't render if already rendered in DOM.
+		if ( $( selector ).children().length ) {
+			return;
+		}
+
 		paypal.Button.render( {
 			env: wc_ppec_context.environment,
 			locale: wc_ppec_context.locale,
