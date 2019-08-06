@@ -103,6 +103,7 @@ Please use this to inform us about bugs, or make contributions via PRs.
 
 = 1.6.17 - 2019-08-07 =
 * Update - WooCommerce 3.7 compatibility.
+* Add - Filter to require display of billing agreement during checkout
 
 = 1.6.16 - 2019-07-18 =
 * Fix - Don't require address for renewal of virtual subscriptions
