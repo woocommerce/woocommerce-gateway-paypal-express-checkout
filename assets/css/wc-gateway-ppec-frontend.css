@@ -40,6 +40,7 @@
 
 .payment_method_ppec_paypal img {
 	max-height: 68px !important;
+	border-radius: 0;
 }
 
 .wc-gateway-ppec-cancel {
