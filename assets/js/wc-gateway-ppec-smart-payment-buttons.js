@@ -151,7 +151,9 @@
 
 	// Render cart, single product, or checkout buttons.
 	if ( wc_ppec_context.page ) {
-		render();
+		if ( 'checkout' !== wc_ppec_context.page ) {
+			render();
+		}
 		$( document.body ).on( 'updated_cart_totals updated_checkout', render.bind( this, false ) );
 	}
 
