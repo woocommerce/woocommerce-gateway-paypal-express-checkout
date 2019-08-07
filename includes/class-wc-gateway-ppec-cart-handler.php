@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * WC_Gateway_PPEC_Cart_Handler handles button display in the cart.
+ * WC_Gateway_PPEC_Cart_Handler handles button display in the frontend.
  */
 class WC_Gateway_PPEC_Cart_Handler {
 
@@ -431,7 +431,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 		$settings = wc_gateway_ppec()->settings;
 		$client   = wc_gateway_ppec()->client;
 
-		wp_enqueue_style( 'wc-gateway-ppec-frontend-cart', wc_gateway_ppec()->plugin_url . 'assets/css/wc-gateway-ppec-frontend-cart.css' );
+		wp_enqueue_style( 'wc-gateway-ppec-frontend', wc_gateway_ppec()->plugin_url . 'assets/css/wc-gateway-ppec-frontend.css' );
 
 		$is_cart     = is_cart() && ! WC()->cart->is_empty() && 'yes' === $settings->cart_checkout_enabled;
 		$is_product  = is_product() && 'yes' === $settings->checkout_on_single_product_enabled;
