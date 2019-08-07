@@ -47,3 +47,11 @@
 	text-align: center;
 	padding: 10px;
 }
+
+#woo_pp_ec_button_checkout {
+	display: none;
+}
+
+#payment .place-order .button {
+	display: block;
+}
