@@ -102,9 +102,12 @@ Please use this to inform us about bugs, or make contributions via PRs.
 == Changelog ==
 
 = 1.6.17 - 2019-08-08 =
-* Update - WooCommerce 3.7 compatibility.
+* Update - WooCommerce 3.7 compatibility
 * Add - Filter to require display of billing agreement during checkout
 * Add - Add CURRENCYCODE to capture_payment
+* Add - Add filter for buttons on products
+* Fix - Skip wasteful render on initial Checkout page load
+* Fix - Appearance tweaks on Checkout screen
 
 = 1.6.16 - 2019-07-18 =
 * Fix - Don't require address for renewal of virtual subscriptions
