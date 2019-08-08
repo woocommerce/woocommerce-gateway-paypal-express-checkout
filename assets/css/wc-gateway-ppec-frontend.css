@@ -37,3 +37,22 @@
 .site-header .widget_shopping_cart .woocommerce-mini-cart__empty-message + p.buttons.wcppec-cart-widget-spb {
 	display: none;
 }
+
+.payment_method_ppec_paypal img {
+	max-height: 68px !important;
+	border-radius: 0;
+}
+
+.wc-gateway-ppec-cancel {
+	display: block;
+	text-align: center;
+	padding: 10px;
+}
+
+#woo_pp_ec_button_checkout {
+	display: none;
+}
+
+#payment .place-order .button {
+	display: block;
+}
