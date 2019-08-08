@@ -2,8 +2,8 @@
 Contributors: automattic, woothemes, akeda, dwainm, royho, allendav, slash1andy, woosteve, spraveenitpro, mikedmoore, fernashes, shellbeezy, danieldudzic, mikaey, fullysupportedphil, dsmithweb, corsonr, bor0, zandyring, pauldechov, robobot3000
 Tags: ecommerce, e-commerce, commerce, woothemes, wordpress ecommerce, store, sales, sell, shop, shopping, cart, checkout, configurable, paypal
 Requires at least: 4.4
-Tested up to: 5.2.0
-Stable tag: 1.6.16
+Tested up to: 5.2.2
+Stable tag: 1.6.17
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -100,6 +100,14 @@ Please use this to inform us about bugs, or make contributions via PRs.
 9. Initiate checkout from mini-cart.
 
 == Changelog ==
+
+= 1.6.17 - 2019-08-08 =
+* Update - WooCommerce 3.7 compatibility
+* Add - Filter to require display of billing agreement during checkout
+* Add - Add CURRENCYCODE to capture_payment
+* Add - Add filter for buttons on products
+* Fix - Skip wasteful render on initial Checkout page load
+* Fix - Appearance tweaks on Checkout screen
 
 = 1.6.16 - 2019-07-18 =
 * Fix - Don't require address for renewal of virtual subscriptions
