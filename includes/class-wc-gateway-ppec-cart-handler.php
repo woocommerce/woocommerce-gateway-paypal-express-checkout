@@ -275,6 +275,10 @@ class WC_Gateway_PPEC_Cart_Handler {
 			return;
 		}
 
+		if ( apply_filters( 'woocommerce_paypal_express_checkout_hide_button_on_product_page', false ) ) {
+			return;
+		}
+
 		$settings = wc_gateway_ppec()->settings;
 
 		$express_checkout_img_url = apply_filters( 'woocommerce_paypal_express_checkout_button_img_url', sprintf( 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-%s.png', $settings->button_size ) );
