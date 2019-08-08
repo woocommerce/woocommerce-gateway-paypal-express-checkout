@@ -954,6 +954,8 @@ class WC_Gateway_PPEC_Client {
 			'VERSION'     => self::API_VERSION,
 			'REFERENCEID' => $billing_agreement_id,
 		);
+
+		return $this->_request( $params );
 	}
 
 	/**
