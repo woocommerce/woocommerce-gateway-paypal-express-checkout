@@ -1,159 +1,188 @@
-# Copyright (C) 2016 Automattic
-# This file is distributed under the GNU General Public License v3.0.
+# Copyright (C) 2019 WooCommerce
+# This file is distributed under the same license as the WooCommerce PayPal Checkout Gateway plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: WooCommerce PayPal Express Checkout Gateway 1.1.1\n"
-"Report-Msgid-Bugs-To: "
-"https://github.com/woothemes/woocommerce-gateway-paypal-express-checkout/"
-"issues\n"
-"POT-Creation-Date: 2016-08-20 20:23:39+00:00\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2016-MO-DA HO:MI+ZONE\n"
+"Project-Id-Version: WooCommerce PayPal Checkout Gateway 1.6.17\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woocommerce-gateway-paypal-express-checkout\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
-"X-Generator: grunt-wp-i18n 0.5.4\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2019-08-14T03:56:04+02:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.3.0\n"
+"X-Domain: woocommerce-gateway-paypal-express-checkout\n"
 
-#: includes/abstracts/abstract-wc-gateway-ppec.php:19
-#: includes/settings/settings-ppec.php:135
-msgid "PayPal Express Checkout"
+#. Plugin Name of the plugin
+msgid "WooCommerce PayPal Checkout Gateway"
 msgstr ""
 
-#: includes/abstracts/abstract-wc-gateway-ppec.php:20
+#. Plugin URI of the plugin
+msgid "https://woocommerce.com/products/woocommerce-gateway-paypal-express-checkout/"
+msgstr ""
+
+#. Description of the plugin
+msgid "A payment gateway for PayPal Checkout (https://www.paypal.com/us/webapps/mpp/paypal-checkout)."
+msgstr ""
+
+#. Author of the plugin
+msgid "WooCommerce"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://woocommerce.com"
+msgstr ""
+
+#: includes/abstracts/abstract-wc-gateway-ppec.php:18
+#: includes/class-wc-gateway-ppec-privacy.php:12
+msgid "PayPal Checkout"
+msgstr ""
+
+#: includes/abstracts/abstract-wc-gateway-ppec.php:19
 msgid "Allow customers to conveniently checkout directly with PayPal."
 msgstr ""
 
-#: includes/abstracts/abstract-wc-gateway-ppec.php:23
+#: includes/abstracts/abstract-wc-gateway-ppec.php:22
 msgid "Continue to payment"
 msgstr ""
 
-#: includes/abstracts/abstract-wc-gateway-ppec.php:120
-msgid ""
-"Sorry, an error occurred while trying to process your payment. Please try "
-"again."
+#: includes/abstracts/abstract-wc-gateway-ppec.php:157
+msgid "Sorry, an error occurred while trying to process your payment. Please try again."
 msgstr ""
 
-#: includes/abstracts/abstract-wc-gateway-ppec.php:150
+#: includes/abstracts/abstract-wc-gateway-ppec.php:190
 msgid "No API certificate on file."
 msgstr ""
 
-#: includes/abstracts/abstract-wc-gateway-ppec.php:162
+#: includes/abstracts/abstract-wc-gateway-ppec.php:202
 msgid "expired on %s"
 msgstr ""
 
-#: includes/abstracts/abstract-wc-gateway-ppec.php:165
-#: includes/abstracts/abstract-wc-gateway-ppec.php:168
+#: includes/abstracts/abstract-wc-gateway-ppec.php:205
+#: includes/abstracts/abstract-wc-gateway-ppec.php:208
 msgid "expires on %s"
 msgstr ""
 
-#: includes/abstracts/abstract-wc-gateway-ppec.php:172
+#: includes/abstracts/abstract-wc-gateway-ppec.php:212
 msgid "Certificate belongs to API username %1$s; %2$s"
 msgstr ""
 
-#: includes/abstracts/abstract-wc-gateway-ppec.php:174
+#: includes/abstracts/abstract-wc-gateway-ppec.php:214
 msgid "The certificate on file is not valid."
 msgstr ""
 
-#: includes/abstracts/abstract-wc-gateway-ppec.php:189
-msgid "Error: The logo image URL you provided is not valid and cannot be used."
-msgstr ""
-
-#: includes/abstracts/abstract-wc-gateway-ppec.php:237
+#: includes/abstracts/abstract-wc-gateway-ppec.php:269
 msgid "Error: You must enter API password."
 msgstr ""
 
-#: includes/abstracts/abstract-wc-gateway-ppec.php:248
-#: includes/abstracts/abstract-wc-gateway-ppec.php:283
-msgid ""
-"Error: The %s credentials you provided are not valid.  Please double-check "
-"that you entered them correctly and try again."
+#: includes/abstracts/abstract-wc-gateway-ppec.php:280
+#: includes/abstracts/abstract-wc-gateway-ppec.php:314
+msgid "Error: The API credentials you provided are not valid.  Please double-check that you entered them correctly and try again."
 msgstr ""
 
-#: includes/abstracts/abstract-wc-gateway-ppec.php:253
-#: includes/abstracts/abstract-wc-gateway-ppec.php:288
-msgid ""
-"An error occurred while trying to validate your %s API credentials.  Unable "
-"to verify that your API credentials are correct."
+#: includes/abstracts/abstract-wc-gateway-ppec.php:285
+#: includes/abstracts/abstract-wc-gateway-ppec.php:318
+msgid "An error occurred while trying to validate your API credentials.  Unable to verify that your API credentials are correct."
 msgstr ""
 
-#: includes/abstracts/abstract-wc-gateway-ppec.php:261
-msgid "Error: The %s API certificate is not valid."
+#: includes/abstracts/abstract-wc-gateway-ppec.php:292
+msgid "Error: The API certificate is not valid."
 msgstr ""
 
-#: includes/abstracts/abstract-wc-gateway-ppec.php:269
-msgid "Error: The %s API certificate has expired."
+#: includes/abstracts/abstract-wc-gateway-ppec.php:300
+msgid "Error: The API certificate has expired."
 msgstr ""
 
-#: includes/abstracts/abstract-wc-gateway-ppec.php:274
-msgid ""
-"Error: The API username does not match the name in the API certificate.  "
-"Make sure that you have the correct API certificate."
+#: includes/abstracts/abstract-wc-gateway-ppec.php:305
+msgid "Error: The API username does not match the name in the API certificate.  Make sure that you have the correct API certificate."
 msgstr ""
 
-#: includes/abstracts/abstract-wc-gateway-ppec.php:293
-msgid "Error: You must provide a %s API signature or certificate."
+#: includes/abstracts/abstract-wc-gateway-ppec.php:323
+msgid "Error: You must provide API signature or certificate."
 msgstr ""
 
-#: includes/abstracts/abstract-wc-gateway-ppec.php:311
-msgid ""
-"The \"require billing address\" option is not enabled by your account and "
-"has been disabled."
+#: includes/abstracts/abstract-wc-gateway-ppec.php:341
+msgid "The \"require billing address\" option is not enabled by your account and has been disabled."
 msgstr ""
 
-#: includes/abstracts/abstract-wc-gateway-ppec.php:324
+#: includes/abstracts/abstract-wc-gateway-ppec.php:360
 msgid "Refund Error: You need to specify a refund amount."
 msgstr ""
 
-#: includes/abstracts/abstract-wc-gateway-ppec.php:347
-#: includes/abstracts/abstract-wc-gateway-ppec.php:370
-#: includes/abstracts/abstract-wc-gateway-ppec.php:421
+#: includes/abstracts/abstract-wc-gateway-ppec.php:380
+#: includes/abstracts/abstract-wc-gateway-ppec.php:403
+#: includes/abstracts/abstract-wc-gateway-ppec.php:453
 msgid "PayPal refund completed; transaction ID = %s"
 msgstr ""
 
-#: includes/abstracts/abstract-wc-gateway-ppec.php:354
-#: includes/abstracts/abstract-wc-gateway-ppec.php:377
 #: includes/abstracts/abstract-wc-gateway-ppec.php:427
-msgid "Error: %1$s - %2$s"
+msgid "Refund Error: All transactions have been fully refunded. There is no amount left to refund"
 msgstr ""
 
-#: includes/abstracts/abstract-wc-gateway-ppec.php:394
-msgid ""
-"Refund Error: All transactions have been fully refunded. There is no amount "
-"left to refund"
+#: includes/abstracts/abstract-wc-gateway-ppec.php:429
+msgid "Refund Error: The requested refund amount is too large. The refund amount must be less than or equal to %s."
 msgstr ""
 
-#: includes/abstracts/abstract-wc-gateway-ppec.php:396
-msgid ""
-"Refund Error: The requested refund amount is too large. The refund amount "
-"must be less than or equal to %s."
+#: includes/abstracts/abstract-wc-gateway-ppec.php:544
+msgid "Already using URL as image: %s"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-admin-handler.php:49
+#: includes/abstracts/abstract-wc-gateway-ppec.php:552
+msgid "Select a image to upload"
+msgstr ""
+
+#: includes/abstracts/abstract-wc-gateway-ppec.php:553
+msgid "Use this image"
+msgstr ""
+
+#: includes/abstracts/abstract-wc-gateway-ppec.php:554
+#: includes/abstracts/abstract-wc-gateway-ppec.php:557
+msgid "Add image"
+msgstr ""
+
+#: includes/abstracts/abstract-wc-gateway-ppec.php:565
+msgid "Remove image"
+msgstr ""
+
+#: includes/class-wc-gateway-ppec-admin-handler.php:57
 msgid "Capture Charge"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-admin-handler.php:73
-msgid ""
-"NOTE: PayPal does not accept decimal places for the currency in which you "
-"are transacting.  The \"Number of Decimals\" option in WooCommerce has "
-"automatically been set to 0 for you."
+#: includes/class-wc-gateway-ppec-admin-handler.php:81
+msgid "NOTE: PayPal does not accept decimal places for the currency in which you are transacting.  The \"Number of Decimals\" option in WooCommerce has automatically been set to 0 for you."
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-admin-handler.php:156
+#: includes/class-wc-gateway-ppec-admin-handler.php:171
 msgid "Unable to capture charge!"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-admin-handler.php:158
-msgid "PayPal Express Checkout charge complete (Charge ID: %s)"
+#: includes/class-wc-gateway-ppec-admin-handler.php:179
+msgid "PayPal Checkout charge complete (Charge ID: %s)"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-admin-handler.php:197
+#: includes/class-wc-gateway-ppec-admin-handler.php:221
 msgid "Unable to void charge!"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-admin-handler.php:199
-msgid "PayPal Express Checkout charge voided (Charge ID: %s)"
+#: includes/class-wc-gateway-ppec-admin-handler.php:223
+msgid "PayPal Checkout charge voided (Charge ID: %s)"
+msgstr ""
+
+#: includes/class-wc-gateway-ppec-admin-handler.php:330
+msgid "This represents the fee PayPal collects for the transaction."
+msgstr ""
+
+#: includes/class-wc-gateway-ppec-admin-handler.php:331
+msgid "PayPal Fee:"
+msgstr ""
+
+#: includes/class-wc-gateway-ppec-admin-handler.php:340
+msgid "This represents the net total that will be credited to your PayPal account. This may be in a different currency than is set in your PayPal account."
+msgstr ""
+
+#: includes/class-wc-gateway-ppec-admin-handler.php:341
+msgid "PayPal Payout:"
 msgstr ""
 
 #: includes/class-wc-gateway-ppec-api-error.php:22
@@ -161,9 +190,7 @@ msgid "Unable to communicate with PayPal.  Please try your payment again."
 msgstr ""
 
 #: includes/class-wc-gateway-ppec-api-error.php:23
-msgid ""
-"PayPal rejected your email address because it is not valid.  Please "
-"double-check your email address and try again."
+msgid "PayPal rejected your email address because it is not valid.  Please double-check your email address and try again."
 msgstr ""
 
 #: includes/class-wc-gateway-ppec-api-error.php:26
@@ -175,189 +202,162 @@ msgid "Your PayPal checkout session has expired.  Please check out again."
 msgstr ""
 
 #: includes/class-wc-gateway-ppec-api-error.php:29
-msgid ""
-"Your PayPal payment has already been completed.  Please contact the store "
-"owner for more information."
+msgid "Your PayPal payment has already been completed.  Please contact the store owner for more information."
 msgstr ""
 
 #: includes/class-wc-gateway-ppec-api-error.php:30
-msgid ""
-"Your PayPal payment could not be processed.  Please check out again or "
-"contact PayPal for assistance."
+msgid "Your PayPal payment could not be processed.  Please check out again or contact PayPal for assistance."
 msgstr ""
 
 #: includes/class-wc-gateway-ppec-api-error.php:31
-msgid ""
-"Your PayPal payment could not be processed.  Please select an alternative "
-"method of payment or contact PayPal for assistance."
+msgid "Your PayPal payment could not be processed.  Please select an alternative method of payment or contact PayPal for assistance."
 msgstr ""
 
 #: includes/class-wc-gateway-ppec-api-error.php:33
-msgid ""
-"Your PayPal payment could not be processed.  Please return to PayPal and "
-"select a new method of payment."
+msgid "Your PayPal payment could not be processed.  Please return to PayPal and select a new method of payment."
 msgstr ""
 
 #: includes/class-wc-gateway-ppec-api-error.php:35
-msgid ""
-"You have not approved this transaction on the PayPal website.  Please check "
-"out again and be sure to complete all steps of the PayPal checkout process."
+msgid "You have not approved this transaction on the PayPal website.  Please check out again and be sure to complete all steps of the PayPal checkout process."
 msgstr ""
 
 #: includes/class-wc-gateway-ppec-api-error.php:36
-msgid ""
-"Your shipping address may not be in a different country than your country "
-"of residence.  Please double-check your shipping address and try again."
+msgid "Your shipping address may not be in a different country than your country of residence.  Please double-check your shipping address and try again."
 msgstr ""
 
 #: includes/class-wc-gateway-ppec-api-error.php:37
-msgid ""
-"This store does not accept transactions from buyers in your country.  "
-"Please contact the store owner for assistance."
+msgid "This store does not accept transactions from buyers in your country.  Please contact the store owner for assistance."
 msgstr ""
 
 #: includes/class-wc-gateway-ppec-api-error.php:38
-msgid ""
-"The transaction is over the threshold allowed by this store.  Please "
-"contact the store owner for assistance."
+msgid "The transaction is over the threshold allowed by this store.  Please contact the store owner for assistance."
 msgstr ""
 
 #: includes/class-wc-gateway-ppec-api-error.php:40
-msgid ""
-"Your transaction was declined.  Please contact the store owner for "
-"assistance."
+msgid "Your transaction was declined.  Please contact the store owner for assistance."
 msgstr ""
 
 #: includes/class-wc-gateway-ppec-api-error.php:41
 #: includes/class-wc-gateway-ppec-api-error.php:46
-msgid ""
-"The country in your shipping address is not valid.  Please double-check "
-"your shipping address and try again."
+msgid "The country in your shipping address is not valid.  Please double-check your shipping address and try again."
 msgstr ""
 
 #: includes/class-wc-gateway-ppec-api-error.php:42
-msgid ""
-"The street address in your shipping address is not valid.  Please "
-"double-check your shipping address and try again."
+msgid "The street address in your shipping address is not valid.  Please double-check your shipping address and try again."
 msgstr ""
 
 #: includes/class-wc-gateway-ppec-api-error.php:43
-msgid ""
-"The city in your shipping address is not valid.  Please double-check your "
-"shipping address and try again."
+msgid "The city in your shipping address is not valid.  Please double-check your shipping address and try again."
 msgstr ""
 
 #: includes/class-wc-gateway-ppec-api-error.php:44
-msgid ""
-"The state in your shipping address is not valid.  Please double-check your "
-"shipping address and try again."
+msgid "The state in your shipping address is not valid.  Please double-check your shipping address and try again."
 msgstr ""
 
 #: includes/class-wc-gateway-ppec-api-error.php:45
-msgid ""
-"The ZIP code or postal code in your shipping address is not valid.  Please "
-"double-check your shipping address and try again."
+msgid "The ZIP code or postal code in your shipping address is not valid.  Please double-check your shipping address and try again."
 msgstr ""
 
 #: includes/class-wc-gateway-ppec-api-error.php:47
-msgid ""
-"PayPal rejected your shipping address because the city, state, and/or ZIP "
-"code are incorrect.  Please double-check that they are all spelled "
-"correctly and try again."
+msgid "PayPal rejected your shipping address because the city, state, and/or ZIP code are incorrect.  Please double-check that they are all spelled correctly and try again."
 msgstr ""
 
 #: includes/class-wc-gateway-ppec-api-error.php:49
-msgid ""
-"Your PayPal payment could not be processed.  Please contact PayPal for "
-"assistance."
+msgid "Your PayPal payment could not be processed.  Please contact PayPal for assistance."
 msgstr ""
 
 #: includes/class-wc-gateway-ppec-api-error.php:51
-msgid ""
-"The redemption code(s) you entered on PayPal cannot be used at this time.  "
-"Please return to PayPal and remove them."
+msgid "The redemption code(s) you entered on PayPal cannot be used at this time.  Please return to PayPal and remove them."
 msgstr ""
 
 #: includes/class-wc-gateway-ppec-api-error.php:54
-msgid ""
-"Your funding instrument is invalid.  Please check out again and select a "
-"new funding source."
+msgid "Your funding instrument is invalid.  Please check out again and select a new funding source."
 msgstr ""
 
 #: includes/class-wc-gateway-ppec-api-error.php:55
-msgid ""
-"An error (%s) occurred while processing your PayPal payment.  Please "
-"contact the store owner for assistance."
+msgid "An error (%s) occurred while processing your PayPal payment.  Please contact the store owner for assistance."
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-cart-handler.php:74
-msgid "&mdash; or &mdash;"
+#: includes/class-wc-gateway-ppec-cart-handler.php:65
+#: includes/class-wc-gateway-ppec-cart-handler.php:117
+#: includes/class-wc-gateway-ppec-cart-handler.php:138
+msgid "Cheatin&#8217; huh?"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-cart-handler.php:79
-#: includes/class-wc-gateway-ppec-cart-handler.php:97
+#: includes/class-wc-gateway-ppec-cart-handler.php:294
+#: includes/class-wc-gateway-ppec-cart-handler.php:331
+#: includes/class-wc-gateway-ppec-cart-handler.php:366
 msgid "Check out with PayPal"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-checkout-handler.php:66
+#: includes/class-wc-gateway-ppec-cart-handler.php:321
+msgid "&mdash; or &mdash;"
+msgstr ""
+
+#: includes/class-wc-gateway-ppec-cart-handler.php:336
+msgid "Pay with PayPal Credit"
+msgstr ""
+
+#: includes/class-wc-gateway-ppec-checkout-handler.php:79
 msgid "Confirm your PayPal order"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-checkout-handler.php:100
+#: includes/class-wc-gateway-ppec-checkout-handler.php:256
 msgid "Billing details"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-checkout-handler.php:103
+#: includes/class-wc-gateway-ppec-checkout-handler.php:259
 msgid "Address:"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-checkout-handler.php:105
+#: includes/class-wc-gateway-ppec-checkout-handler.php:261
 msgid "Name:"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-checkout-handler.php:109
+#: includes/class-wc-gateway-ppec-checkout-handler.php:265
 msgid "Email:"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-checkout-handler.php:113
-msgid "Tel:"
+#: includes/class-wc-gateway-ppec-checkout-handler.php:271
+msgid "Phone:"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-checkout-handler.php:131
+#: includes/class-wc-gateway-ppec-checkout-handler.php:295
+msgid "Create an account?"
+msgstr ""
+
+#: includes/class-wc-gateway-ppec-checkout-handler.php:304
+msgid "Create an account by entering the information below. If you are a returning customer please login at the top of the page."
+msgstr ""
+
+#: includes/class-wc-gateway-ppec-checkout-handler.php:344
 msgid "Shipping details"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-checkout-handler.php:198
-#: includes/class-wc-gateway-ppec-checkout-handler.php:235
+#: includes/class-wc-gateway-ppec-checkout-handler.php:434
+#: includes/class-wc-gateway-ppec-checkout-handler.php:477
 msgid "Your PayPal checkout session has expired. Please check out again."
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-checkout-handler.php:230
-msgid ""
-"Sorry, an error occurred while trying to retrieve your information from "
-"PayPal. Please try again."
+#: includes/class-wc-gateway-ppec-checkout-handler.php:472
+msgid "Sorry, an error occurred while trying to retrieve your information from PayPal. Please try again."
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-checkout-handler.php:282
+#: includes/class-wc-gateway-ppec-checkout-handler.php:580
 msgid "Cancel"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-checkout-handler.php:290
-#: includes/class-wc-gateway-ppec-checkout-handler.php:291
-msgid ""
-"You have cancelled Checkout with PayPal. Please try to process your order "
-"again."
+#: includes/class-wc-gateway-ppec-checkout-handler.php:594
+msgid "You have cancelled Checkout with PayPal. Please try to process your order again."
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-checkout-handler.php:644
-#: includes/class-wc-gateway-ppec-ipn-handler.php:189
-msgid ""
-"Payment authorized. Change payment status to processing or complete to "
-"capture funds."
+#: includes/class-wc-gateway-ppec-checkout-handler.php:953
+#: includes/class-wc-gateway-ppec-ipn-handler.php:190
+msgid "Payment authorized. Change payment status to processing or complete to capture funds."
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-checkout-handler.php:646
-#: includes/class-wc-gateway-ppec-ipn-handler.php:191
+#: includes/class-wc-gateway-ppec-checkout-handler.php:955
+#: includes/class-wc-gateway-ppec-ipn-handler.php:192
 msgid "Payment pending (%s)."
 msgstr ""
 
@@ -382,80 +382,78 @@ msgstr ""
 msgid "Failed to export PKCS12 file during cURL configuration"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-client.php:121
+#: includes/class-wc-gateway-ppec-client.php:166
 msgid "Missing credential"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-client.php:125
+#: includes/class-wc-gateway-ppec-client.php:170
 msgid "Invalid credential object"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-client.php:129
+#: includes/class-wc-gateway-ppec-client.php:174
 msgid "Invalid environment"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-client.php:152
+#: includes/class-wc-gateway-ppec-client.php:191
 msgid "An error occurred while trying to connect to PayPal: %s"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-client.php:158
+#: includes/class-wc-gateway-ppec-client.php:197
 msgid "Malformed response received from PayPal"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-ipn-handler.php:30
+#: includes/class-wc-gateway-ppec-ipn-handler.php:29
 msgid "Empty POST data."
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-ipn-handler.php:39
+#: includes/class-wc-gateway-ppec-ipn-handler.php:38
 msgid "Invalid IPN request."
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-ipn-handler.php:44
+#: includes/class-wc-gateway-ppec-ipn-handler.php:41
 msgid "PayPal IPN Request Failure"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-ipn-handler.php:144
+#: includes/class-wc-gateway-ppec-ipn-handler.php:142
 msgid "Validation error: PayPal currencies do not match (code %s)."
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-ipn-handler.php:159
+#: includes/class-wc-gateway-ppec-ipn-handler.php:157
 msgid "Validation error: PayPal amounts do not match (gross %s)."
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-ipn-handler.php:182
+#: includes/class-wc-gateway-ppec-ipn-handler.php:183
 msgid "IPN payment completed"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-ipn-handler.php:213
-#: includes/class-wc-gateway-ppec-ipn-handler.php:256
-#: includes/class-wc-gateway-ppec-ipn-handler.php:271
+#: includes/class-wc-gateway-ppec-ipn-handler.php:214
+#: includes/class-wc-gateway-ppec-ipn-handler.php:258
+#: includes/class-wc-gateway-ppec-ipn-handler.php:274
 msgid "Payment %s via IPN."
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-ipn-handler.php:258
+#: includes/class-wc-gateway-ppec-ipn-handler.php:260
 msgid "Payment for order %s refunded"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-ipn-handler.php:259
-msgid "Order #%s has been marked as refunded - PayPal reason code: %s"
+#: includes/class-wc-gateway-ppec-ipn-handler.php:261
+msgid "Order #%1$s has been marked as refunded - PayPal reason code: %2$s"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-ipn-handler.php:273
+#: includes/class-wc-gateway-ppec-ipn-handler.php:276
 msgid "Payment for order %s reversed"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-ipn-handler.php:274
-msgid "Order #%s has been marked on-hold due to a reversal - PayPal reason code: %s"
+#: includes/class-wc-gateway-ppec-ipn-handler.php:277
+msgid "Order #%1$s has been marked on-hold due to a reversal - PayPal reason code: %2$s"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-ipn-handler.php:286
+#: includes/class-wc-gateway-ppec-ipn-handler.php:290
 msgid "Reversal cancelled for order #%s"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-ipn-handler.php:287
-msgid ""
-"Order #%s has had a reversal cancelled. Please check the status of payment "
-"and update the order status accordingly here: %s"
+#: includes/class-wc-gateway-ppec-ipn-handler.php:291
+msgid "Order #%1$s has had a reversal cancelled. Please check the status of payment and update the order status accordingly here: %2$s"
 msgstr ""
 
 #: includes/class-wc-gateway-ppec-ips-handler.php:140
@@ -468,55 +466,129 @@ msgid "Sorry, Easy Setup encountered an error.  Please try again."
 msgstr ""
 
 #: includes/class-wc-gateway-ppec-ips-handler.php:173
-msgid ""
-"Easy Setup was able to obtain your API credentials, but was unable to "
-"verify that they work correctly.  Please make sure your PayPal account is "
-"set up properly and try Easy Setup again."
+msgid "Easy Setup was able to obtain your API credentials, but was unable to verify that they work correctly.  Please make sure your PayPal account is set up properly and try Easy Setup again."
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-ips-handler.php:178
-msgid ""
-"Easy Setup was able to obtain your API credentials, but an error occurred "
-"while trying to verify that they work correctly.  Please try Easy Setup "
-"again."
+#: includes/class-wc-gateway-ppec-ips-handler.php:177
+msgid "Easy Setup was able to obtain your API credentials, but an error occurred while trying to verify that they work correctly.  Please try Easy Setup again."
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-ips-handler.php:183
+#: includes/class-wc-gateway-ppec-ips-handler.php:182
 msgid "Success!  Your PayPal account has been set up successfully."
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-plugin.php:153
-msgid ""
-"%s in WooCommerce Gateway PayPal Express Checkout plugin can only be called "
-"once"
+#: includes/class-wc-gateway-ppec-plugin.php:156
+msgid "%s in WooCommerce Gateway PayPal Checkout plugin can only be called once"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-plugin.php:208
-msgid ""
-"WooCommerce Gateway PayPal Express Checkout requires WooCommerce to be "
-"activated"
+#: includes/class-wc-gateway-ppec-plugin.php:238
+msgid "<p>PayPal&nbsp;Checkout with new <strong>Smart&nbsp;Payment&nbsp;Buttons™</strong> gives your customers the power to pay the way they want without leaving your site.</p><p>The <strong>existing buttons will be deprecated and removed</strong> in future releases. Upgrade to Smart&nbsp;Payment&nbsp;Buttons in the <a href=\"%s\">PayPal&nbsp;Checkout settings</a>.</p>"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-plugin.php:212
-msgid ""
-"WooCommerce Gateway PayPal Express Checkout requires WooCommerce version "
-"2.5 or greater"
+#: includes/class-wc-gateway-ppec-plugin.php:291
+msgid "WooCommerce Gateway PayPal Checkout requires WooCommerce to be activated"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-plugin.php:216
-msgid ""
-"WooCommerce Gateway PayPal Express Checkout requires cURL to be installed "
-"on your server"
+#: includes/class-wc-gateway-ppec-plugin.php:295
+msgid "WooCommerce Gateway PayPal Checkout requires WooCommerce version 2.5 or greater"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-plugin.php:219
-msgid ""
-"WooCommerce Gateway PayPal Express Checkout requires OpenSSL >= 1.0.1 to be "
-"installed on your server"
+#: includes/class-wc-gateway-ppec-plugin.php:299
+msgid "WooCommerce Gateway PayPal Checkout requires cURL to be installed on your server"
 msgstr ""
 
-#: includes/functions.php:45
-msgid "Payment error:"
+#: includes/class-wc-gateway-ppec-plugin.php:302
+msgid "WooCommerce Gateway PayPal Checkout requires OpenSSL >= 1.0.1 to be installed on your server"
+msgstr ""
+
+#: includes/class-wc-gateway-ppec-plugin.php:329
+msgid "PayPal Checkout is almost ready. To get started, <a href=\"%s\">connect your PayPal account</a>."
+msgstr ""
+
+#: includes/class-wc-gateway-ppec-plugin.php:451
+msgid "Settings"
+msgstr ""
+
+#: includes/class-wc-gateway-ppec-plugin.php:454
+msgid "Docs"
+msgstr ""
+
+#: includes/class-wc-gateway-ppec-privacy.php:14
+msgid "WooCommerce PPEC Order Data"
+msgstr ""
+
+#: includes/class-wc-gateway-ppec-privacy.php:16
+msgid "WooCommerce PPEC Subscriptions Data"
+msgstr ""
+
+#: includes/class-wc-gateway-ppec-privacy.php:19
+msgid "WooCommerce PPEC Data"
+msgstr ""
+
+#: includes/class-wc-gateway-ppec-privacy.php:53
+msgid "By using this extension, you may be storing personal data or sharing data with an external service. <a href=\"%s\" target=\"_blank\">Learn more about how this works, including what you may want to include in your privacy policy.</a>"
+msgstr ""
+
+#: includes/class-wc-gateway-ppec-privacy.php:76
+msgid "Orders"
+msgstr ""
+
+#: includes/class-wc-gateway-ppec-privacy.php:80
+#: includes/class-wc-gateway-ppec-privacy.php:145
+msgid "PPEC Refundable transaction data"
+msgstr ""
+
+#: includes/class-wc-gateway-ppec-privacy.php:84
+#: includes/class-wc-gateway-ppec-privacy.php:149
+msgid "PPEC Billing agreement id"
+msgstr ""
+
+#: includes/class-wc-gateway-ppec-privacy.php:141
+msgid "Subscriptions"
+msgstr ""
+
+#: includes/class-wc-gateway-ppec-privacy.php:245
+msgid "PayPal Checkout Subscriptions Data Erased."
+msgstr ""
+
+#: includes/class-wc-gateway-ppec-privacy.php:268
+msgid "PayPal Checkout Order Data Erased."
+msgstr ""
+
+#: includes/class-wc-gateway-ppec-with-paypal-addons.php:157
+msgid "PayPal API error"
+msgstr ""
+
+#. translators: placeholder is pending reason from PayPal API.
+#: includes/class-wc-gateway-ppec-with-paypal-addons.php:165
+msgid "PayPal transaction held: %s"
+msgstr ""
+
+#: includes/class-wc-gateway-ppec-with-paypal-addons.php:176
+msgid "PayPal payment approved (ID: %s)"
+msgstr ""
+
+#: includes/class-wc-gateway-ppec-with-paypal-addons.php:180
+msgid "PayPal payment declined"
+msgstr ""
+
+#: includes/class-wc-gateway-ppec-with-paypal-credit.php:15
+#: includes/settings/settings-ppec.php:574
+msgid "PayPal Credit"
+msgstr ""
+
+#: includes/exceptions/class-wc-gateway-ppec-api-exception.php:40
+#: includes/exceptions/class-wc-gateway-ppec-api-exception.php:68
+msgid "An error occurred while calling the PayPal API."
+msgstr ""
+
+#. translators: placeholders are error code and message from PayPal
+#: includes/exceptions/class-wc-gateway-ppec-api-exception.php:64
+msgid "PayPal error (%1$s): %2$s"
+msgstr ""
+
+#: includes/exceptions/class-wc-gateway-ppec-missing-session-exception.php:19
+msgid "The buyer's session information could not be found."
 msgstr ""
 
 #: includes/settings/settings-ppec.php:15
@@ -524,322 +596,501 @@ msgid "Setup or link an existing PayPal account"
 msgstr ""
 
 #: includes/settings/settings-ppec.php:16
-msgid ""
-"%s or <a href=\"#\" class=\"ppec-toggle-settings\">click here to toggle "
-"manual API credential input</a>."
+msgid "%s or <a href=\"#\" class=\"ppec-toggle-settings\">click here to toggle manual API credential input</a>."
 msgstr ""
 
-#: includes/settings/settings-ppec.php:22
+#: includes/settings/settings-ppec.php:27
+msgid "To reset current credentials and use other account <a href=\"%1$s\" title=\"%2$s\">click here</a>."
+msgstr ""
+
+#: includes/settings/settings-ppec.php:27
+msgid "Reset current credentials"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:31
 msgid "Setup or link an existing PayPal Sandbox account"
 msgstr ""
 
-#: includes/settings/settings-ppec.php:23
-msgid ""
-"%s or <a href=\"#\" class=\"ppec-toggle-sandbox-settings\">click here to "
-"toggle manual API credential input</a>."
+#: includes/settings/settings-ppec.php:32
+msgid "%s or <a href=\"#\" class=\"ppec-toggle-sandbox-settings\">click here to toggle manual API credential input</a>."
 msgstr ""
 
-#: includes/settings/settings-ppec.php:91
+#: includes/settings/settings-ppec.php:43
+msgid "Your account setting is set to sandbox, no real charging takes place. To accept live payments, switch your environment to live and connect your PayPal account. To reset current credentials and use other sandbox account <a href=\"%1$s\" title=\"%2$s\">click here</a>."
+msgstr ""
+
+#: includes/settings/settings-ppec.php:43
+msgid "Reset current sandbox credentials"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:46
+#: includes/settings/settings-ppec.php:580
+msgid "Enable PayPal Credit"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:48
+msgid "This option is disabled. Currently PayPal Credit only available for U.S. merchants using USD currency."
+msgstr ""
+
+#: includes/settings/settings-ppec.php:51
+msgid "This enables PayPal Credit, which displays a PayPal Credit button next to the primary PayPal Checkout button. PayPal Checkout lets you give customers access to financing through PayPal Credit® - at no additional cost to you. You get paid up front, even though customers have more time to pay. A pre-integrated payment button shows up next to the PayPal Button, and lets customers pay quickly with PayPal Credit®. (Should be unchecked for stores involved in Real Money Gaming.)"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:255
 msgid "Enable/Disable"
 msgstr ""
 
-#: includes/settings/settings-ppec.php:93
-msgid "Enable PayPal Express Checkout"
+#: includes/settings/settings-ppec.php:257
+msgid "Enable PayPal Checkout"
 msgstr ""
 
-#: includes/settings/settings-ppec.php:94
-msgid ""
-"This enables PayPal Express Checkout which allows customers to checkout "
-"directly via PayPal from your cart page."
+#: includes/settings/settings-ppec.php:258
+msgid "This enables PayPal Checkout which allows customers to checkout directly via PayPal from your cart page."
 msgstr ""
 
-#: includes/settings/settings-ppec.php:99
-msgid "Button Size"
-msgstr ""
-
-#: includes/settings/settings-ppec.php:102
-msgid ""
-"PayPal offers different sizes of the \"PayPal Checkout\" buttons, allowing "
-"you to select a size that best fits your site's theme. This setting will "
-"allow you to choose which size button(s) appear on your cart page."
-msgstr ""
-
-#: includes/settings/settings-ppec.php:106
-msgid "Small"
-msgstr ""
-
-#: includes/settings/settings-ppec.php:107
-msgid "Medium"
-msgstr ""
-
-#: includes/settings/settings-ppec.php:108
-msgid "Large"
-msgstr ""
-
-#: includes/settings/settings-ppec.php:112
-msgid "Environment"
-msgstr ""
-
-#: includes/settings/settings-ppec.php:115
-msgid ""
-"This setting specifies whether you will process live transactions, or "
-"whether you will process simulated transactions using the PayPal Sandbox."
-msgstr ""
-
-#: includes/settings/settings-ppec.php:119
-msgid "Live"
-msgstr ""
-
-#: includes/settings/settings-ppec.php:120
-msgid "Sandbox"
-msgstr ""
-
-#: includes/settings/settings-ppec.php:124
-msgid "PayPal Mark"
-msgstr ""
-
-#: includes/settings/settings-ppec.php:126
-msgid "Enable the PayPal Mark on regular checkout"
-msgstr ""
-
-#: includes/settings/settings-ppec.php:127
-msgid ""
-"This enables the PayPal mark, which can be shown on regular WooCommerce "
-"checkout to use PayPal Express Checkout like a regular WooCommerce gateway."
-msgstr ""
-
-#: includes/settings/settings-ppec.php:132
+#: includes/settings/settings-ppec.php:264
 msgid "Title"
 msgstr ""
 
-#: includes/settings/settings-ppec.php:134
+#: includes/settings/settings-ppec.php:266
 msgid "This controls the title which the user sees during checkout."
 msgstr ""
 
-#: includes/settings/settings-ppec.php:139
-msgid "Description"
-msgstr ""
-
-#: includes/settings/settings-ppec.php:142
-msgid "This controls the description which the user sees during checkout."
-msgstr ""
-
-#: includes/settings/settings-ppec.php:143
-msgid ""
-"Pay using either your PayPal account or credit card. All credit card "
-"payments will be processed by PayPal."
-msgstr ""
-
-#: includes/settings/settings-ppec.php:147
-msgid "API Credentials"
-msgstr ""
-
-#: includes/settings/settings-ppec.php:152
-msgid "Live API Username"
-msgstr ""
-
-#: includes/settings/settings-ppec.php:154
-#: includes/settings/settings-ppec.php:161
-#: includes/settings/settings-ppec.php:168
-#: includes/settings/settings-ppec.php:196
-#: includes/settings/settings-ppec.php:203
-#: includes/settings/settings-ppec.php:210
-#: includes/settings/settings-ppec.php:217
-msgid "Get your API credentials from PayPal."
-msgstr ""
-
-#: includes/settings/settings-ppec.php:159
-msgid "Live API Password"
-msgstr ""
-
-#: includes/settings/settings-ppec.php:166
-msgid "Live API Signature"
-msgstr ""
-
-#: includes/settings/settings-ppec.php:171
-msgid "Optional if you provide a certificate below"
-msgstr ""
-
-#: includes/settings/settings-ppec.php:174
-msgid "Live API Certificate"
-msgstr ""
-
-#: includes/settings/settings-ppec.php:180
-msgid "Live API Subject"
-msgstr ""
-
-#: includes/settings/settings-ppec.php:182
-#: includes/settings/settings-ppec.php:224
-msgid ""
-"If you're processing transactions on behalf of someone else's PayPal "
-"account, enter their email address or Secure Merchant Account ID (also "
-"known as a Payer ID) here. Generally, you must have API permissions in "
-"place with the other account in order to process anything other than "
-"\"sale\" transactions for them."
-msgstr ""
-
-#: includes/settings/settings-ppec.php:185
-#: includes/settings/settings-ppec.php:227
-#: includes/settings/settings-ppec.php:284
-msgid "Optional"
-msgstr ""
-
-#: includes/settings/settings-ppec.php:189
-msgid "Sandbox API Credentials"
-msgstr ""
-
-#: includes/settings/settings-ppec.php:194
-msgid "Sandbox API Username"
-msgstr ""
-
-#: includes/settings/settings-ppec.php:201
-msgid "Sandbox API Password"
-msgstr ""
-
-#: includes/settings/settings-ppec.php:208
-msgid "Sandbox API Signature"
-msgstr ""
-
-#: includes/settings/settings-ppec.php:215
-msgid "Sandbox API Certificate"
-msgstr ""
-
-#: includes/settings/settings-ppec.php:222
-msgid "Sandbox API Subject"
-msgstr ""
-
-#: includes/settings/settings-ppec.php:231
-msgid "Advanced Settings"
-msgstr ""
-
-#: includes/settings/settings-ppec.php:236
-msgid "Debug Log"
-msgstr ""
-
-#: includes/settings/settings-ppec.php:238
-msgid "Enable Logging"
-msgstr ""
-
-#: includes/settings/settings-ppec.php:241
-msgid "Log PayPal events, such as IPN requests."
-msgstr ""
-
-#: includes/settings/settings-ppec.php:244
-msgid "Invoice Prefix"
-msgstr ""
-
-#: includes/settings/settings-ppec.php:246
-msgid ""
-"Please enter a prefix for your invoice numbers. If you use your PayPal "
-"account for multiple stores ensure this prefix is unique as PayPal will not "
-"allow orders with the same invoice number."
-msgstr ""
-
-#: includes/settings/settings-ppec.php:251
-msgid "Billing Addresses"
-msgstr ""
-
-#: includes/settings/settings-ppec.php:253
-msgid "Require Billing Address"
-msgstr ""
-
-#: includes/settings/settings-ppec.php:256
-msgid ""
-"PayPal does not share buyer billing details with you. However, there are "
-"times when you must collect the buyer billing address to fulfill an "
-"essential business function (such as determining whether you must charge "
-"the buyer tax). Enable this function to collect the address before payment "
-"is taken."
-msgstr ""
-
-#: includes/settings/settings-ppec.php:259
-msgid "Payment Action"
-msgstr ""
-
-#: includes/settings/settings-ppec.php:262
-msgid ""
-"Choose whether you wish to capture funds immediately or authorize payment "
-"only."
-msgstr ""
-
-#: includes/settings/settings-ppec.php:266
-msgid "Sale"
-msgstr ""
-
 #: includes/settings/settings-ppec.php:267
-msgid "Authorize"
+msgid "PayPal"
 msgstr ""
 
 #: includes/settings/settings-ppec.php:271
-msgid "Instant Payments"
+msgid "Description"
 msgstr ""
 
-#: includes/settings/settings-ppec.php:273
-msgid "Require Instant Payment"
+#: includes/settings/settings-ppec.php:274
+msgid "This controls the description which the user sees during checkout."
 msgstr ""
 
-#: includes/settings/settings-ppec.php:276
-msgid ""
-"If you enable this setting, PayPal will be instructed not to allow the "
-"buyer to use funding sources that take additional time to complete (for "
-"example, eChecks). Instead, the buyer will be required to use an instant "
-"funding source, such as an instant transfer, a credit/debit card, or PayPal "
-"Credit."
+#: includes/settings/settings-ppec.php:275
+msgid "Pay via PayPal; you can pay with your credit card if you don't have a PayPal account."
 msgstr ""
 
 #: includes/settings/settings-ppec.php:279
-msgid "Logo Image URL"
+msgid "Account Settings"
 msgstr ""
 
-#: includes/settings/settings-ppec.php:281
-msgid ""
-"If you want PayPal to co-brand the checkout page with your logo, enter the "
-"URL of your logo image here.<br/>The image must be no larger than 190x60, "
-"GIF, PNG, or JPG format, and should be served over HTTPS."
+#: includes/settings/settings-ppec.php:284
+msgid "Environment"
 msgstr ""
 
 #: includes/settings/settings-ppec.php:287
+msgid "This setting specifies whether you will process live transactions, or whether you will process simulated transactions using the PayPal Sandbox."
+msgstr ""
+
+#: includes/settings/settings-ppec.php:291
+msgid "Live"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:292
+msgid "Sandbox"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:297
+msgid "API Credentials"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:302
+msgid "Live API Username"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:304
+#: includes/settings/settings-ppec.php:311
+#: includes/settings/settings-ppec.php:318
+#: includes/settings/settings-ppec.php:346
+#: includes/settings/settings-ppec.php:353
+#: includes/settings/settings-ppec.php:360
+#: includes/settings/settings-ppec.php:367
+msgid "Get your API credentials from PayPal."
+msgstr ""
+
+#: includes/settings/settings-ppec.php:309
+msgid "Live API Password"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:316
+msgid "Live API Signature"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:321
+msgid "Optional if you provide a certificate below"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:324
+msgid "Live API Certificate"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:330
+msgid "Live API Subject"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:332
+#: includes/settings/settings-ppec.php:374
+msgid "If you're processing transactions on behalf of someone else's PayPal account, enter their email address or Secure Merchant Account ID (also known as a Payer ID) here. Generally, you must have API permissions in place with the other account in order to process anything other than \"sale\" transactions for them."
+msgstr ""
+
+#: includes/settings/settings-ppec.php:335
+#: includes/settings/settings-ppec.php:377
+#: includes/settings/settings-ppec.php:398
+#: includes/settings/settings-ppec.php:406
+#: includes/settings/settings-ppec.php:414
+msgid "Optional"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:339
+msgid "Sandbox API Credentials"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:344
+msgid "Sandbox API Username"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:351
+msgid "Sandbox API Password"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:358
+msgid "Sandbox API Signature"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:365
+msgid "Sandbox API Certificate"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:372
+msgid "Sandbox API Subject"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:381
+msgid "PayPal-hosted Checkout Settings"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:383
+msgid "Customize the appearance of PayPal Checkout on the PayPal side."
+msgstr ""
+
+#: includes/settings/settings-ppec.php:386
+msgid "Brand Name"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:388
+msgid "A label that overrides the business name in the PayPal account on the PayPal hosted checkout pages."
+msgstr ""
+
+#: includes/settings/settings-ppec.php:393
+msgid "Logo Image (190×60)"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:395
+msgid "If you want PayPal to co-brand the checkout page with your logo, enter the URL of your logo image here.<br/>The image must be no larger than 190x60, GIF, PNG, or JPG format, and should be served over HTTPS."
+msgstr ""
+
+#: includes/settings/settings-ppec.php:401
+msgid "Header Image (750×90)"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:403
+msgid "If you want PayPal to co-brand the checkout page with your header, enter the URL of your header image here.<br/>The image must be no larger than 750x90, GIF, PNG, or JPG format, and should be served over HTTPS."
+msgstr ""
+
+#: includes/settings/settings-ppec.php:409
+msgid "Page Style"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:411
+msgid "Optionally enter the name of the page style you wish to use. These are defined within your PayPal account."
+msgstr ""
+
+#: includes/settings/settings-ppec.php:417
+msgid "Landing Page"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:420
+msgid "Type of PayPal page to display."
+msgstr ""
+
+#: includes/settings/settings-ppec.php:424
+msgctxt "Type of PayPal page"
+msgid "Billing (Non-PayPal account)"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:425
+msgctxt "Type of PayPal page"
+msgid "Login (PayPal account login)"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:430
+msgid "Advanced Settings"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:435
+msgid "Debug Log"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:437
+msgid "Enable Logging"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:440
+msgid "Log PayPal events, such as IPN requests."
+msgstr ""
+
+#: includes/settings/settings-ppec.php:443
+msgid "Invoice Prefix"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:445
+msgid "Please enter a prefix for your invoice numbers. If you use your PayPal account for multiple stores ensure this prefix is unique as PayPal will not allow orders with the same invoice number."
+msgstr ""
+
+#: includes/settings/settings-ppec.php:450
+msgid "Billing Addresses"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:452
+msgid "Require Billing Address"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:454
+msgid "PayPal only returns a shipping address back to the website. To make sure billing address is returned as well, please enable this functionality on your PayPal account by calling %1$sPayPal Technical Support%2$s."
+msgstr ""
+
+#: includes/settings/settings-ppec.php:457
+#: includes/settings/settings-ppec.php:459
+msgid "Require Phone Number"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:461
+msgid "Require buyer to enter their telephone number during checkout if none is provided by PayPal"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:464
+msgid "Payment Action"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:467
+msgid "Choose whether you wish to capture funds immediately or authorize payment only."
+msgstr ""
+
+#: includes/settings/settings-ppec.php:471
+msgid "Sale"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:472
+msgid "Authorize"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:476
+msgid "Instant Payments"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:478
+msgid "Require Instant Payment"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:481
+msgid "If you enable this setting, PayPal will be instructed not to allow the buyer to use funding sources that take additional time to complete (for example, eChecks). Instead, the buyer will be required to use an instant funding source, such as an instant transfer, a credit/debit card, or PayPal Credit."
+msgstr ""
+
+#: includes/settings/settings-ppec.php:484
 msgid "Subtotal Mismatch Behavior"
 msgstr ""
 
-#: includes/settings/settings-ppec.php:290
-msgid ""
-"Internally, WC calculates line item prices and taxes out to four decimal "
-"places; however, PayPal can only handle amounts out to two decimal places "
-"(or, depending on the currency, no decimal places at all). Occasionally, "
-"this can cause discrepancies between the way WooCommerce calculates prices "
-"versus the way PayPal calculates them. If a mismatch occurs, this option "
-"controls how the order is dealt with so payment can still be taken."
+#: includes/settings/settings-ppec.php:487
+msgid "Internally, WC calculates line item prices and taxes out to four decimal places; however, PayPal can only handle amounts out to two decimal places (or, depending on the currency, no decimal places at all). Occasionally, this can cause discrepancies between the way WooCommerce calculates prices versus the way PayPal calculates them. If a mismatch occurs, this option controls how the order is dealt with so payment can still be taken."
 msgstr ""
 
-#: includes/settings/settings-ppec.php:294
+#: includes/settings/settings-ppec.php:491
 msgid "Add another line item"
 msgstr ""
 
-#: includes/settings/settings-ppec.php:295
+#: includes/settings/settings-ppec.php:492
 msgid "Do not send line items to PayPal"
 msgstr ""
 
-#. Plugin Name of the plugin/theme
-msgid "WooCommerce PayPal Express Checkout Gateway"
+#: includes/settings/settings-ppec.php:497
+msgid "Button Settings"
 msgstr ""
 
-#. Plugin URI of the plugin/theme
-msgid ""
-"https://www.woothemes.com/products/woocommerce-gateway-paypal-express-"
-"checkout/"
+#: includes/settings/settings-ppec.php:499
+msgid "Customize the appearance of PayPal Checkout on your site."
 msgstr ""
 
-#. Description of the plugin/theme
-msgid ""
-"A payment gateway for PayPal Express Checkout "
-"(https://www.paypal.com/us/webapps/mpp/express-checkout)."
+#: includes/settings/settings-ppec.php:502
+msgid "Smart Payment Buttons"
 msgstr ""
 
-#. Author of the plugin/theme
-msgid "Automattic"
+#: includes/settings/settings-ppec.php:505
+msgid "Use Smart Payment Buttons"
 msgstr ""
 
-#. Author URI of the plugin/theme
-msgid "https://woocommerce.com"
+#: includes/settings/settings-ppec.php:506
+msgid "PayPal Checkout's Smart Payment Buttons provide a variety of button customization options, such as color, language, shape, and multiple button layout. <a href=\"%s\">Learn more about Smart Payment Buttons</a>."
+msgstr ""
+
+#: includes/settings/settings-ppec.php:509
+msgid "Button Color"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:514
+msgid "Controls the background color of the primary button. Use \"Gold\" to leverage PayPal's recognition and preference, or change it to match your site design or aesthetic."
+msgstr ""
+
+#: includes/settings/settings-ppec.php:516
+msgid "Gold (Recommended)"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:517
+msgid "Blue"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:518
+msgid "Silver"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:519
+msgid "Black"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:523
+msgid "Button Shape"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:528
+msgid "The pill-shaped button's unique and powerful shape signifies PayPal in people's minds. Use the rectangular button as an alternative when pill-shaped buttons might pose design challenges."
+msgstr ""
+
+#: includes/settings/settings-ppec.php:530
+msgid "Pill"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:531
+msgid "Rectangle"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:541
+msgid "Button Layout"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:546
+msgid "If additional funding sources are available to the buyer through PayPal, such as Venmo, then multiple buttons are displayed in the space provided. Choose \"vertical\" for a dynamic list of alternative and local payment options, or \"horizontal\" when space is limited."
+msgstr ""
+
+#: includes/settings/settings-ppec.php:548
+msgid "Vertical"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:549
+msgid "Horizontal"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:553
+msgid "Button Size"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:558
+msgid "PayPal offers different sizes of the \"PayPal Checkout\" buttons, allowing you to select a size that best fits your site's theme. This setting will allow you to choose which size button(s) appear on your cart page. (The \"Responsive\" option adjusts to container size, and is available and recommended for Smart Payment Buttons.)"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:560
+msgid "Responsive"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:561
+msgid "Small"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:562
+msgid "Medium"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:563
+msgid "Large"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:572
+msgid "Hides the specified funding methods."
+msgstr ""
+
+#: includes/settings/settings-ppec.php:575
+msgid "ELV"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:576
+msgid "Credit Card"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:599
+msgid "Checkout on cart page"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:602
+msgid "Enable PayPal Checkout on the cart page"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:603
+msgid "This shows or hides the PayPal Checkout button on the cart page."
+msgstr ""
+
+#: includes/settings/settings-ppec.php:612
+msgid "Mini-cart Button Settings"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:617
+#: includes/settings/settings-ppec.php:648
+#: includes/settings/settings-ppec.php:680
+msgid "Configure Settings"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:618
+msgid "Configure settings specific to mini-cart"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:623
+#: includes/settings/settings-ppec.php:654
+#: includes/settings/settings-ppec.php:686
+msgid "Optionally override global button settings above and configure buttons for this context."
+msgstr ""
+
+#: includes/settings/settings-ppec.php:634
+msgid "Single Product Button Settings"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:639
+#: includes/settings/settings-ppec.php:642
+msgid "Checkout on Single Product"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:645
+msgid "Enable PayPal Checkout on Single Product view."
+msgstr ""
+
+#: includes/settings/settings-ppec.php:649
+msgid "Configure settings specific to Single Product view"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:666
+msgid "Regular Checkout Button Settings"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:671
+msgid "PayPal Mark"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:674
+msgid "Enable the PayPal Mark on regular checkout"
+msgstr ""
+
+#: includes/settings/settings-ppec.php:675
+msgid "This enables the PayPal mark, which can be shown on regular WooCommerce checkout to use PayPal Checkout like a regular WooCommerce gateway."
+msgstr ""
+
+#: includes/settings/settings-ppec.php:681
+msgid "Configure settings specific to regular checkout"
 msgstr ""
