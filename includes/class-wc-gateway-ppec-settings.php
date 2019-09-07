@@ -177,7 +177,7 @@ class WC_Gateway_PPEC_Settings {
 			$url .= '#/checkout/chooseCreditOffer';
 		}
 
-		return $url;
+		return apply_filters( 'woocommerce_paypal_express_checkout_paypal_redirect_url', $url );
 	}
 
 	public function get_set_express_checkout_shortcut_params( $buckets = 1 ) {
