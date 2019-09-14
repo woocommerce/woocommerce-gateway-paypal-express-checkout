@@ -1,8 +1,21 @@
-deploy-to-wp-org.sh
-node_modules
-Gruntfile.js
-package.json
-.idea
-*.iml
-.vscode
+/nbproject/private/
+/node_modules/
+project.xml
+project.properties
 .DS_Store
+Thumbs.db
+.buildpath
+.project
+.settings*
+sftp-config.json
+/deploy/
+
+# Ignore all log files except for .htaccess
+/logs/*
+!/logs/.htaccess
+
+# Ignore deploy script
+deploy-to-wp-org.sh
+
+# Test configs
+tests/e2e/config/local-*
