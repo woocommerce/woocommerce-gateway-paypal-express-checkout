@@ -297,13 +297,22 @@ class WC_Gateway_PPEC_Settings {
 	}
 
 	/**
+	 * Get supported locales for PayPal.
+	 *
+	 * @return array
+	 */
+	public function get_paypal_locales() {
+		return apply_filters( 'woocommerce_paypal_express_checkout_paypal_locales', $this->_supported_locales );
+	}
+
+	/**
 	 * Get locale for PayPal.
 	 *
 	 * @return string
 	 */
 	public function get_paypal_locale() {
 		$locale = get_locale();
-		if ( ! in_array( $locale, $this->_supported_locales ) ) {
+		if ( ! in_array( $locale, $this->get_paypal_locales() ) ) {
 			$locale = 'en_US';
 		}
 		return apply_filters( 'woocommerce_paypal_express_checkout_paypal_locale', $locale );
