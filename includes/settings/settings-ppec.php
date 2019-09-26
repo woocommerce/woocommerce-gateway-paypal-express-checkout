@@ -125,7 +125,7 @@ wc_enqueue_js( "
 			var button_size        = table.find( '.woocommerce_ppec_paypal_button_size' );
 			var button_size_option = button_size.find( 'option[value=\"small\"]' );
 			if ( button_size_option.prop( 'disabled' ) !== isVertical ) {
-				button_size.removeClass( 'enhanced' )
+				button_size.removeClass( 'enhanced' );
 				button_size_option.prop( 'disabled', isVertical );
 				$( document.body ).trigger( 'wc-enhanced-select-init' );
 				! button_size.val() && button_size.val( 'responsive' ).change();
