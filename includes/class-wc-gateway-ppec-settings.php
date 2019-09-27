@@ -48,6 +48,16 @@ class WC_Gateway_PPEC_Settings {
 		'zh_TW',
 	);
 
+	protected $_locales_map = array(
+		'de_DE_formal' => 'de_DE',
+		'ja'           => 'ja_JP',
+		'nb_NO'        => 'no_NO',
+		'nn_NO'        => 'no_NO',
+		'nl_NL_formal' => 'nl_NL',
+		'pt_PT_ao90'   => 'pt_PT',
+		'th'           => 'th_TH',
+	);
+
 	/**
 	 * Flag to indicate setting has been loaded from DB.
 	 *
@@ -303,6 +313,12 @@ class WC_Gateway_PPEC_Settings {
 	 */
 	public function get_paypal_locale() {
 		$locale = get_locale();
+
+        // Remap some locales
+        if( in_array( $locale, $this->_locales_map ) ) {
+            $locale = $this->_locales_map[ $locale ];
+        }
+
 		if ( ! in_array( $locale, $this->_supported_locales ) ) {
 			$locale = 'en_US';
 		}
