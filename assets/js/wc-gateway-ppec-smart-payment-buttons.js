@@ -35,29 +35,10 @@
 		$( document.body ).trigger( 'checkout_error' );
 	}
 
-	// Map funding method settings to enumerated options provided by PayPal.
-	var getFundingMethods = function( methods ) {
-		if ( ! methods ) {
-			return undefined;
-		}
-
-		var paypal_funding_methods = [];
-		for ( var i = 0; i < methods.length; i++ ) {
-			var method = paypal.FUNDING[ methods[ i ] ];
-			if ( method ) {
-				paypal_funding_methods.push( method );
-			}
-		}
-		return paypal_funding_methods;
-	}
-
 	var render = function( isMiniCart ) {
 		var prefix        = isMiniCart ? 'mini_cart_' : '';
-		var button_size   = wc_ppec_context[ prefix + 'button_size' ];
 		var button_layout = wc_ppec_context[ prefix + 'button_layout' ];
 		var button_label  = wc_ppec_context[ prefix + 'button_label' ];
-		var allowed       = wc_ppec_context[ prefix + 'allowed_methods' ];
-		var disallowed    = wc_ppec_context[ prefix + 'disallowed_methods' ];
 
 		var selector     = isMiniCart ? '#woo_pp_ec_button_mini_cart' : '#woo_pp_ec_button_' + wc_ppec_context.page;
 		var fromCheckout = 'checkout' === wc_ppec_context.page && ! isMiniCart;
@@ -67,21 +48,11 @@
 			return;
 		}
 
-		paypal.Button.render( {
-			env: wc_ppec_context.environment,
-			locale: wc_ppec_context.locale,
-			commit: fromCheckout,
-
-			funding: {
-				allowed: getFundingMethods( allowed ),
-				disallowed: getFundingMethods( disallowed ),
-			},
-
+		paypal.Buttons( {
 			style: {
 				color: wc_ppec_context.button_color,
 				shape: wc_ppec_context.button_shape,
 				layout: button_layout,
-				size: button_size,
 				label: button_label,
 				branding: true,
 				tagline: false,
@@ -94,11 +65,11 @@
 					.on( 'disable', actions.disable );
 			},
 
-			payment: function() {
+			createOrder: function() {
 				// Clear any errors from previous attempt.
 				$( '.woocommerce-error', selector ).remove();
 
-				return new paypal.Promise( function( resolve, reject ) {
+				return new Promise( function( resolve, reject ) {
 					// First, generate cart if triggered from single product.
 					if ( 'product' === wc_ppec_context.page && ! isMiniCart ) {
 						window.wc_ppec_generate_cart( resolve );
@@ -115,12 +86,16 @@
 							.attr( 'value', fromCheckout ? 'yes' : 'no' )
 						)
 						.serialize();
-
-					return paypal.request( {
+					
+					return fetch( wc_ppec_context.start_checkout_url, {
 						method: 'post',
-						url: wc_ppec_context.start_checkout_url,
+						headers: {
+							'Content-Type': 'application/x-www-form-urlencoded',
+						},
 						body: data,
-					} ).then( function( response ) {
+					} ).then(
+						response => response.json()
+					).then( function( response ) {
 						if ( ! response.success ) {
 							var messageItems = response.data.messages.map( function( message ) {
 								return '<li>' + message + '</li>';
@@ -134,7 +109,7 @@
 				} );
 			},
 
-			onAuthorize: function( data, actions ) {
+			onApprove: function( data, actions ) {
 				if ( fromCheckout ) {
 					// Pass data necessary for authorizing payment to back-end.
 					$( 'form.checkout' )
@@ -147,7 +122,7 @@
 				}
 			},
 
-		}, selector );
+		} ).render( selector );
 	};
 
 	// Render cart, single product, or checkout buttons.
