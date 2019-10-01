@@ -459,22 +459,30 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 		} elseif ( 'yes' === $settings->use_spb ) {
 			// TODO: Add client ID.
-			$environment = 'sandbox' === $settings->get_environment() ? 'sb' : '<client_id>';
+			$client_id = 'sandbox' === $settings->get_environment() ? 'sb' : '<client_id>';
 			// TODO: Add commit true/false.
 			// TODO: Pass disable-funding.
 			// TODO: Pass disable-card.
+			$script_url = add_query_arg( array(
+				'client-id' => $client_id,
+				'locale'    => $settings->get_paypal_locale(),
+			), 'https://www.paypal.com/sdk/js' );
 			wp_register_script(
 				'paypal-checkout-js',
-				'https://www.paypal.com/sdk/js?client-id=' . $environment . '&locale=' . $settings->get_paypal_locale(),
+				$script_url,
 				array(),
 				null,
 				true
 			);
-			wp_register_script( 'wc-gateway-ppec-smart-payment-buttons', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-smart-payment-buttons.js', array( 'jquery', 'paypal-checkout-js' ), wc_gateway_ppec()->version, true );
+			wp_register_script(
+				'wc-gateway-ppec-smart-payment-buttons',
+				wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-smart-payment-buttons.js',
+				array( 'jquery', 'paypal-checkout-js' ),
+				wc_gateway_ppec()->version,
+				true
+			);
 
 			$data = array(
-				'environment'          => 'sandbox' === $settings->get_environment() ? 'sandbox' : 'production',
-				'locale'               => $settings->get_paypal_locale(),
 				'page'                 => $page,
 				'button_color'         => $settings->button_color,
 				'button_shape'         => $settings->button_shape,
