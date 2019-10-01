@@ -480,6 +480,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 				'button_shape'         => $settings->button_shape,
 				'start_checkout_nonce' => wp_create_nonce( '_wc_ppec_start_checkout_nonce' ),
 				'start_checkout_url'   => WC_AJAX::get_endpoint( 'wc_ppec_start_checkout' ),
+				'return_url'           => wc_get_checkout_url(),
 			);
 
 			if ( ! is_null(  $page ) ) {

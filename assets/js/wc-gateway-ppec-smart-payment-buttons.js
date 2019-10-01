@@ -42,6 +42,7 @@
 
 		var selector     = isMiniCart ? '#woo_pp_ec_button_mini_cart' : '#woo_pp_ec_button_' + wc_ppec_context.page;
 		var fromCheckout = 'checkout' === wc_ppec_context.page && ! isMiniCart;
+		const return_url = wc_ppec_context[ prefix + 'return_url' ];
 
 		// Don't render if already rendered in DOM.
 		if ( $( selector ).children().length ) {
@@ -113,12 +114,13 @@
 				if ( fromCheckout ) {
 					// Pass data necessary for authorizing payment to back-end.
 					$( 'form.checkout' )
-						.append( $( '<input type="hidden" name="paymentToken" /> ' ).attr( 'value', data.paymentToken ) )
+						.append( $( '<input type="hidden" name="paymentToken" /> ' ).attr( 'value', data.orderID ) )
 						.append( $( '<input type="hidden" name="payerID" /> ' ).attr( 'value', data.payerID ) )
 						.submit();
 				} else {
 					// Navigate to order confirmation URL specified in original request to PayPal from back-end.
-					return actions.redirect();
+					const query_args = `?woo-paypal-return=true&token=${ data.orderID }&PayerID=${ data.payerID }`
+					return actions.redirect( return_url + query_args );
 				}
 			},
 
