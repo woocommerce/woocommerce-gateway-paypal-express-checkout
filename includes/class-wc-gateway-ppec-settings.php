@@ -314,10 +314,10 @@ class WC_Gateway_PPEC_Settings {
 	public function get_paypal_locale() {
 		$locale = get_locale();
 
-        // Remap some locales
-        if( in_array( $locale, $this->_locales_map ) ) {
-            $locale = $this->_locales_map[ $locale ];
-        }
+		// Remap some locales
+		if( in_array( $locale, $this->_locales_map ) ) {
+			$locale = $this->_locales_map[ $locale ];
+		}
 
 		if ( ! in_array( $locale, $this->_supported_locales ) ) {
 			$locale = 'en_US';
