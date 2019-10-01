@@ -42,7 +42,8 @@
 
 		var selector     = isMiniCart ? '#woo_pp_ec_button_mini_cart' : '#woo_pp_ec_button_' + wc_ppec_context.page;
 		var fromCheckout = 'checkout' === wc_ppec_context.page && ! isMiniCart;
-		const return_url = wc_ppec_context[ prefix + 'return_url' ];
+		// Don't use `prefix + 'return_url'` since `return_url` is same in all cases.
+		const return_url = wc_ppec_context[ 'return_url' ];
 
 		// Don't render if already rendered in DOM.
 		if ( $( selector ).children().length ) {
