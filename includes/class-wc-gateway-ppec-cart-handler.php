@@ -458,11 +458,28 @@ class WC_Gateway_PPEC_Cart_Handler {
 			);
 
 		} elseif ( 'yes' === $settings->use_spb ) {
-			// TODO: Add client ID.
+			/** 
+			 * TODO: Add client ID retrieved from DB. For implementation details see:
+			 *       https://developer.paypal.com/docs/checkout/integrate/#2-add-the-paypal-script-to-your-web-page
+			 *       For details about client IDs, see:
+			 *       https://developer.paypal.com/docs/checkout/reference/customize-sdk/#client-id
+			 * 
+			 * According to @dechov we might not have the client id stored yet. - @reykjalin
+			 */
 			$client_id = 'sandbox' === $settings->get_environment() ? 'sb' : '<client_id>';
-			// TODO: Add commit true/false.
-			// TODO: Pass disable-funding.
-			// TODO: Pass disable-card.
+			/**
+			 * There are several query arguments missing in the `$script_url`:
+			 * 
+			 * - commit: true/false - Determines whether to show the "Pay now" or "Continue" button
+			 *                        in checkout flow.
+			 *                        Details here: https://developer.paypal.com/docs/checkout/reference/customize-sdk/#commit
+			 * - disable-funding    - Comma separated list of values that correspond to disabled funding sources.
+			 *                        For details see:
+			 *                        https://developer.paypal.com/docs/checkout/reference/customize-sdk/#disable-funding
+			 * - disable-card:      - Comma separated list of values that correspond to disabled cards.
+			 *                        For details see:
+			 *                        https://developer.paypal.com/docs/checkout/reference/customize-sdk/#disable-card
+			 */
 			$script_url = add_query_arg( array(
 				'client-id' => $client_id,
 				'locale'    => $settings->get_paypal_locale(),
