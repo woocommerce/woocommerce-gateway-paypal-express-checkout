@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2019-08-14T03:56:04+02:00\n"
+"POT-Creation-Date: 2019-10-17T15:40:55+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.3.0\n"
 "X-Domain: woocommerce-gateway-paypal-express-checkout\n"
@@ -23,7 +23,7 @@ msgid "https://woocommerce.com/products/woocommerce-gateway-paypal-express-check
 msgstr ""
 
 #. Description of the plugin
-msgid "A payment gateway for PayPal Checkout (https://www.paypal.com/us/webapps/mpp/paypal-checkout)."
+msgid "Accept all major credit and debit cards, plus Venmo and PayPal Credit in the US, presenting options in a customizable stack of payment buttons. Fast, seamless, and flexible."
 msgstr ""
 
 #. Author of the plugin
