@@ -462,7 +462,7 @@ class WC_Gateway_PPEC_Client {
 		$discounts     = WC()->cart->get_cart_discount_total();
 
 		$details = array(
-			'total_item_amount' => round( WC()->cart->cart_contents_total + WC()->cart->fee_total, $decimals ) + $discounts,
+			'total_item_amount' => round( WC()->cart->cart_contents_total + $discounts + WC()->cart->fee_total, $decimals ),
 			'order_tax'         => round( WC()->cart->tax_total + WC()->cart->shipping_tax_total, $decimals ),
 			'shipping'          => round( WC()->cart->shipping_total, $decimals ),
 			'items'             => $this->_get_paypal_line_items_from_cart(),
@@ -602,10 +602,10 @@ class WC_Gateway_PPEC_Client {
 		$details['ship_discount_amount'] = 0;
 
 		// AMT
-		$details['order_total']       = $details['order_total'] - $discounts;
+		$details['order_total']       = round( $details['order_total'] - $discounts, $decimals );
 
 		// ITEMAMT
-		$details['total_item_amount'] = $details['total_item_amount'] - $discounts;
+		$details['total_item_amount'] = round( $details['total_item_amount'] - $discounts, $decimals );
 
 		// If the totals don't line up, adjust the tax to make it work (it's
 		// probably a tax mismatch).
