@@ -106,6 +106,7 @@ Please use this to inform us about bugs, or make contributions via PRs.
 * Fix - Fix error 10426 when coupons are used
 * Fix - Call to a member function has_session() on null
 * Add - Notice about legacy payment buttons deprecation
+* Fix - Use order currency when renewing subscription instead of store currency
 
 = 1.6.17 - 2019-08-08 =
 * Update - WooCommerce 3.7 compatibility
