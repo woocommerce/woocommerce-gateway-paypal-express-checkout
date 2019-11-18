@@ -103,6 +103,7 @@ Please use this to inform us about bugs, or make contributions via PRs.
 
 = 1.6.18 - 2019-x-x =
 * Fix - Send fees to PayPal as line items
+* Add - Notice about legacy payment buttons deprecation
 
 = 1.6.17 - 2019-08-08 =
 * Update - WooCommerce 3.7 compatibility
