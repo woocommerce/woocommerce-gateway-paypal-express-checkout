@@ -455,12 +455,14 @@ class WC_Gateway_PPEC_Client {
 		$settings = wc_gateway_ppec()->settings;
 		$old_wc = version_compare( WC_VERSION, '3.0', '<' );
 
+		WC()->cart->calculate_totals();
+
 		$decimals      = $settings->get_number_of_decimal_digits();
 		$rounded_total = $this->_get_rounded_total_in_cart();
 		$discounts     = WC()->cart->get_cart_discount_total();
 
 		$details = array(
-			'total_item_amount' => round( WC()->cart->cart_contents_total, $decimals ) + $discounts,
+			'total_item_amount' => round( WC()->cart->cart_contents_total + WC()->cart->fee_total, $decimals ) + $discounts,
 			'order_tax'         => round( WC()->cart->tax_total + WC()->cart->shipping_tax_total, $decimals ),
 			'shipping'          => round( WC()->cart->shipping_total, $decimals ),
 			'items'             => $this->_get_paypal_line_items_from_cart(),
@@ -505,6 +507,17 @@ class WC_Gateway_PPEC_Client {
 			$items[] = $item;
 		}
 
+		foreach ( WC()->cart->get_fees() as $fee_key => $fee_values ) {
+			$item   = array(
+				'name'        => $fee_values->name,
+				'description' => '',
+				'quantity'    => 1,
+				'amount'      => round( $fee_values->total, $decimals ),
+			);
+
+			$items[] = $item;
+		}
+
 		return $items;
 	}
 
@@ -523,6 +536,10 @@ class WC_Gateway_PPEC_Client {
 		foreach ( WC()->cart->cart_contents as $cart_item_key => $values ) {
 			$amount         = round( $values['line_subtotal'] / $values['quantity'] , $decimals );
 			$rounded_total += round( $amount * $values['quantity'], $decimals );
+		}
+
+		foreach ( WC()->cart->get_fees() as $fee_key => $fee_values ) {
+			$rounded_total += round( $fee_values->total, $decimals );
 		}
 
 		return $rounded_total;
