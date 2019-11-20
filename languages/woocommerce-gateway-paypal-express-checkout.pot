@@ -9,9 +9,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2019-10-17T15:40:55+00:00\n"
+"POT-Creation-Date: 2019-11-20T17:08:08+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.3.0\n"
+"X-Generator: WP-CLI 2.4.0\n"
 "X-Domain: woocommerce-gateway-paypal-express-checkout\n"
 
 #. Plugin Name of the plugin
@@ -481,35 +481,35 @@ msgstr ""
 msgid "%s in WooCommerce Gateway PayPal Checkout plugin can only be called once"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-plugin.php:238
-msgid "<p>PayPal&nbsp;Checkout with new <strong>Smart&nbsp;Payment&nbsp;Buttons™</strong> gives your customers the power to pay the way they want without leaving your site.</p><p>The <strong>existing buttons will be deprecated and removed</strong> in future releases. Upgrade to Smart&nbsp;Payment&nbsp;Buttons in the <a href=\"%s\">PayPal&nbsp;Checkout settings</a>.</p>"
+#: includes/class-wc-gateway-ppec-plugin.php:237
+msgid "<p>PayPal Checkout with new <strong>Smart Payment Buttons™</strong> gives your customers the power to pay the way they want without leaving your site.</p><p>The <strong>existing buttons will be removed</strong> in the <strong>next release</strong>. Please upgrade to Smart Payment Buttons on the <a href=\"%s\">PayPal Checkout settings page</a>.</p>"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-plugin.php:291
+#: includes/class-wc-gateway-ppec-plugin.php:275
 msgid "WooCommerce Gateway PayPal Checkout requires WooCommerce to be activated"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-plugin.php:295
+#: includes/class-wc-gateway-ppec-plugin.php:279
 msgid "WooCommerce Gateway PayPal Checkout requires WooCommerce version 2.5 or greater"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-plugin.php:299
+#: includes/class-wc-gateway-ppec-plugin.php:283
 msgid "WooCommerce Gateway PayPal Checkout requires cURL to be installed on your server"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-plugin.php:302
+#: includes/class-wc-gateway-ppec-plugin.php:286
 msgid "WooCommerce Gateway PayPal Checkout requires OpenSSL >= 1.0.1 to be installed on your server"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-plugin.php:329
+#: includes/class-wc-gateway-ppec-plugin.php:313
 msgid "PayPal Checkout is almost ready. To get started, <a href=\"%s\">connect your PayPal account</a>."
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-plugin.php:451
+#: includes/class-wc-gateway-ppec-plugin.php:435
 msgid "Settings"
 msgstr ""
 
-#: includes/class-wc-gateway-ppec-plugin.php:454
+#: includes/class-wc-gateway-ppec-plugin.php:438
 msgid "Docs"
 msgstr ""
 
