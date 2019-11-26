@@ -509,13 +509,15 @@ class WC_Gateway_PPEC_Cart_Handler {
 	 * Creates a customer session if one is not already active.
 	 */
 	public function ensure_session() {
+		// TODO: this tries to replicate Woo core functionality of checking for frontend requests.
+		// It can be removed once we drop support for pre-3.5 versions.
 		$frontend = ( ! is_admin() || defined( 'DOING_AJAX' ) ) && ! defined( 'DOING_CRON' ) && ! defined( 'REST_REQUEST' );
 
 		if ( ! $frontend ) {
 			return;
 		}
 
-		if ( ! WC()->session->has_session() ) {
+		if ( ! empty( WC()->session ) && ! WC()->session->has_session() ) {
 			WC()->session->set_customer_session_cookie( true );
 		}
 	}
