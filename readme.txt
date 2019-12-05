@@ -2,8 +2,8 @@
 Contributors: automattic, woothemes, akeda, dwainm, royho, allendav, slash1andy, woosteve, spraveenitpro, mikedmoore, fernashes, shellbeezy, danieldudzic, mikaey, fullysupportedphil, dsmithweb, corsonr, bor0, zandyring, pauldechov, robobot3000
 Tags: ecommerce, e-commerce, commerce, woothemes, wordpress ecommerce, store, sales, sell, shop, shopping, cart, checkout, configurable, paypal
 Requires at least: 4.4
-Tested up to: 5.2.2
-Stable tag: 1.6.17
+Tested up to: 5.3
+Stable tag: 1.6.18
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -101,12 +101,14 @@ Please use this to inform us about bugs, or make contributions via PRs.
 
 == Changelog ==
 
-= 1.6.18 - 2019-x-x =
+= 1.6.18 - 2019-12-05 =
 * Fix - Send fees to PayPal as line items
 * Fix - Fix error 10426 when coupons are used
 * Fix - Call to a member function has_session() on null
 * Add - Notice about legacy payment buttons deprecation
 * Fix - Use order currency when renewing subscription instead of store currency
+* Update - WooCommerce 3.8 compatibility
+* Update - WordPress 5.3 compatibility
 
 = 1.6.17 - 2019-08-08 =
 * Update - WooCommerce 3.7 compatibility
