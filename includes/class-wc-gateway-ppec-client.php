@@ -1047,7 +1047,7 @@ class WC_Gateway_PPEC_Client {
 			'SHIPDISCAMT'   => $details['ship_discount_amount'],
 			'INSURANCEAMT'  => 0,
 			'HANDLINGAMT'   => 0,
-			'CURRENCYCODE'  => get_woocommerce_currency(),
+			'CURRENCYCODE'  => $old_wc ? $order->order_currency : $order->get_currency(),
 			'NOTIFYURL'     => WC()->api_request_url( 'WC_Gateway_PPEC' ),
 			'PAYMENTACTION' => $settings->get_paymentaction(),
 			'INVNUM'        => $settings->invoice_prefix . $order->get_order_number(),
