@@ -366,7 +366,9 @@ class WC_Gateway_PPEC_Client {
 			$query_args['create-billing-agreement'] = 'true';
 		}
 
-		return add_query_arg( $query_args, wc_get_checkout_url() );
+		$url = add_query_arg( $query_args, wc_get_checkout_url() );
+		$order_id = $context_args['order_id'];
+		return apply_filters( 'woocommerce_paypal_express_checkout_set_express_checkout_params_get_return_url', $url, $order_id);
 	}
 
 	/**
