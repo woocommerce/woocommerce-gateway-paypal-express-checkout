@@ -255,7 +255,7 @@ class WC_Gateway_PPEC_Client {
 		$params['PAGESTYLE'] = $settings->page_style;
 		$params['BRANDNAME'] = $settings->get_brand_name();
 		$params['RETURNURL'] = $this->_get_return_url( $args );
-		$params['CANCELURL'] = $this->_get_cancel_url();
+		$params['CANCELURL'] = $this->_get_cancel_url( $args );
 
 		if ( wc_gateway_ppec_is_using_credit() ) {
 			$params['USERSELECTEDFUNDINGSOURCE'] = 'Finance';
@@ -380,8 +380,10 @@ class WC_Gateway_PPEC_Client {
 	 *
 	 * @return string Cancel URL
 	 */
-	protected function _get_cancel_url() {
-		return add_query_arg( 'woo-paypal-cancel', 'true', wc_get_cart_url() );
+	protected function _get_cancel_url( $context_args ) {
+		$url = add_query_arg( 'woo-paypal-cancel', 'true', wc_get_cart_url() );
+		$order_id = $context_args['order_id'];
+		return apply_filters( 'woocommerce_paypal_express_checkout_set_express_checkout_params_get_cancel_url', $url, $order_id );
 	}
 
 	/**
