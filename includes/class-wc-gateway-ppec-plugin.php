@@ -450,11 +450,10 @@ class WC_Gateway_PPEC_Plugin {
 	 * @return bool
 	 */
 	public static function needs_shipping() {
-		$cart_contents  = WC()->cart->cart_contents;
 		$needs_shipping = false;
 
-		if ( ! empty( $cart_contents ) ) {
-			foreach ( $cart_contents as $cart_item_key => $values ) {
+		if ( ! empty( WC()->cart->cart_contents ) ) {
+			foreach ( WC()->cart->cart_contents as $cart_item_key => $values ) {
 				if ( $values['data']->needs_shipping() ) {
 					$needs_shipping = true;
 					break;
