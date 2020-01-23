@@ -421,6 +421,15 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 * Checks data is correctly set when returning from PayPal Checkout
 	 */
 	public function maybe_return_from_paypal() {
+		if (
+			isset( $_GET['woo-paypal-return'] )
+			&& isset( $_GET['update_subscription_payment_method'] )
+			&& 'true' === $_GET['update_subscription_payment_method']
+		) {
+			$this->handle_subscription_payment_change_success();
+			return;
+		}
+
 		if ( empty( $_GET['woo-paypal-return'] ) || empty( $_GET['token'] ) || empty( $_GET['PayerID'] ) ) {
 			return;
 		}
@@ -588,6 +597,15 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 * Clears the session data and display notice.
 	 */
 	public function maybe_cancel_checkout_with_paypal() {
+		if (
+			isset( $_GET['update_subscription_payment_method'] )
+			&& 'true' === $_GET['update_subscription_payment_method']
+			&& isset( $_GET['woo-paypal-cancel'] )
+		) {
+			$this->handle_subscription_payment_change_failure();
+			return;
+		}
+
 		if ( is_cart() && ! empty( $_GET['wc-gateway-ppec-clear-session'] ) ) {
 			$this->maybe_clear_session_data();
 
@@ -1031,6 +1049,10 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			if ( function_exists( 'wcs_order_contains_renewal' ) ) {
 				$needs_billing_agreement = ( $needs_billing_agreement || wcs_order_contains_renewal( $args['order_id'] ) );
 			}
+			// If the order is a subscription, we're updating the payment method.
+			if ( function_exists( 'wcs_is_subscription' ) ) {
+				$needs_billing_agreement = ( $needs_billing_agreement || wcs_is_subscription( $args['order_id'] ) );
+			}
 		}
 
 		return apply_filters( 'woocommerce_paypal_express_checkout_needs_billing_agreement', $needs_billing_agreement );
@@ -1093,5 +1115,84 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		$params['wc_ajax_url'] = add_query_arg( 'wc-ajax', '%%endpoint%%', $params['wc_ajax_url'] );
 
 		return $params;
+	}
+
+	/**
+	 * Handles a success payment method change for a WooCommerce Subscription.
+	 *
+	 * The user has returned back from PayPal after confirming the payment method change.
+	 * This updates the payment method for the subscription and redirects the user back to the
+	 * subscription update page.
+	 *
+	 * @since 1.7.0
+	 */
+	public function handle_subscription_payment_change_success() {
+		try {
+			$session = WC()->session->get( 'paypal' );
+
+			if ( isset( $_GET['token'] ) ) {
+				$token = sanitize_text_field( wp_unslash( $_GET['token'] ) );
+			} elseif ( isset( $session->token ) ) {
+				$token = $session->token;
+			}
+
+			if ( ! isset( $token ) ) {
+				return;
+			}
+
+			if ( empty( $session ) || $this->session_has_expired( $token ) ) {
+				wc_add_notice( __( 'Your PayPal checkout session has expired. Please check out again.', 'woocommerce-gateway-paypal-express-checkout' ), 'error' );
+				return;
+			}
+
+			// Get the info we need and create the billing agreement.
+			$order            = wc_get_order( $session->order_id );
+			$checkout_details = $this->get_checkout_details( $token );
+			$this->create_billing_agreement( $order, $checkout_details );
+
+			// Update the payment method for the current subscription.
+			WC_Subscriptions_Change_Payment_Gateway::update_payment_method( $order, 'ppec_paypal' );
+			$success_notice = __( 'The payment method was updated for this subscription.', 'woocommerce-gateway-paypal-express-checkout' );
+
+			// Update the payment method for all subscriptions if that checkbox was checked.
+			if ( wcs_is_subscription( $order ) && WC_Subscriptions_Change_Payment_Gateway::will_subscription_update_all_payment_methods( $order ) ) {
+				WC_Subscriptions_Change_Payment_Gateway::update_all_payment_methods_from_subscription( $order, $payment_method->id );
+				$success_notice = __( 'The payment method was updated for all your current subscriptions.', 'woocommerce-gateway-paypal-express-checkout' );
+			}
+
+			wc_clear_notices();
+			wc_add_notice( $success_notice );
+			wp_safe_redirect( $order->get_view_order_url() );
+			exit;
+		} catch ( PayPal_API_Exception $e ) {
+			wc_clear_notices();
+			wc_add_notice( __( 'There was a problem updating your payment method. Please try again later or use a different payment method.', 'woocommerce-gateway-paypal-express-checkout' ), 'error' );
+			wp_safe_redirect( $order->get_view_order_url() );
+			exit;
+		}
+	}
+
+	/**
+	 * Handles the cancellation of a WooCommerce Subscription payment method change.
+	 *
+	 * The user has returned back from PayPal after cancelling the payment method change.
+	 * This redirects the user back to the subscription page with an error message.
+	 *
+	 * @since 1.7.0
+	 */
+	public function handle_subscription_payment_change_failure() {
+		$session      = WC()->session->get( 'paypal' );
+		$order        = isset( $session->order_id )
+			? wc_get_order( $session->order_id )
+			: false;
+		$redirect_url = is_callable( array( $order, 'get_view_order_url' ) )
+			? $order->get_view_order_url()
+			: false;
+		wc_clear_notices();
+		wc_add_notice( __( 'You have cancelled Checkout with PayPal. The payment method was not updated.', 'woocommerce-gateway-paypal-express-checkout' ), 'error' );
+		if ( $redirect_url ) {
+			wp_safe_redirect( $redirect_url );
+			exit;
+		}
 	}
 }
