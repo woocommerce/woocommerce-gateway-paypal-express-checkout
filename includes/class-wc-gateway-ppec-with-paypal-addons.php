@@ -43,7 +43,7 @@ class WC_Gateway_PPEC_With_PayPal_Addons extends WC_Gateway_PPEC_With_PayPal {
 		// When changing the payment method for a WooCommerce Subscription to PayPal Checkout, let WooCommerce Subscription
 		// know that the payment method for that subscription should not be changed immediately. Instead, it should
 		// wait for the IPN notification, after the user confirmed the payment method change with PayPal.
-		add_filter( 'woocommerce_subscriptions_update_payment_via_pay_shortcode', array( $this, 'indicate_async_payment_method_update' ), 10, 3 );
+		add_filter( 'woocommerce_subscriptions_update_payment_via_pay_shortcode', array( $this, 'indicate_async_payment_method_update' ), 10, 2 );
 
 		// Add extra parameter when updating the subscription payment method to PayPal.
 		add_filter( 'woocommerce_paypal_express_checkout_set_express_checkout_params_get_return_url', array( $this, 'add_query_param_to_url_subscription_payment_method_change' ), 10, 2 );
@@ -255,17 +255,16 @@ class WC_Gateway_PPEC_With_PayPal_Addons extends WC_Gateway_PPEC_With_PayPal {
 	 *
 	 * @since 1.7.0
 	 *
-	 * @param bool            $should_update Current value of whether the payment method should be updated immediately.
-	 * @param string          $new_payment_method The new payment method name.
-	 * @param WC_Subscription $subscription The subscription whose payment method is being updated.
+	 * @param bool   $should_update Current value of whether the payment method should be updated immediately.
+	 * @param string $new_payment_method The new payment method name.
 	 *
-	 * @return boolean
+	 * @return bool Whether the subscription's payment method should be updated on checkout or async when a response is returned.
 	 */
-	public function indicate_async_payment_method_update( $should_update, $new_payment_method, $subscription ) {
+	public function indicate_async_payment_method_update( $should_update, $new_payment_method ) {
 		if ( 'ppec_paypal' === $new_payment_method ) {
-			$update = false;
+			$should_update = false;
 		}
-		return $update;
+		return $should_update;
 	}
 
 	/**
