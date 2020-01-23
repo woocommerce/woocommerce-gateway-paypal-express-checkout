@@ -22,30 +22,41 @@ class WC_Gateway_PPEC_Settings {
 	 * @var array
 	 */
 	protected $_supported_locales = array(
+		'ar_EG',
+		'cs_CZ',
 		'da_DK',
 		'de_DE',
+		'el_GR',
 		'en_AU',
+		'en_IN',
 		'en_GB',
 		'en_US',
 		'es_ES',
+		'es_XC',
+		'fi_FI',
 		'fr_CA',
 		'fr_FR',
+		'fr_XC',
 		'he_IL',
+		'hu_HU',
 		'id_ID',
 		'it_IT',
 		'ja_JP',
+		'ko_KR',
 		'nl_NL',
 		'no_NO',
 		'pl_PL',
 		'pt_BR',
 		'pt_PT',
 		'ru_RU',
+		'sk_SK',
 		'sv_SE',
 		'th_TH',
-		'tr_TR',
+		'tr_TR', // Not supported
 		'zh_CN',
 		'zh_HK',
 		'zh_TW',
+		'zh_XC',
 	);
 
 	/**
