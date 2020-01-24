@@ -61,7 +61,7 @@ class WC_Gateway_PPEC_Settings {
 	/**
 	 * Mapping between WP locale codes and PayPal locale codes
 	 *
-	 * @var bool
+	 * @var array
 	 */
 	protected $_locales_mapping = array(
 		'ar'             => 'ar_EG',
@@ -95,7 +95,7 @@ class WC_Gateway_PPEC_Settings {
 		'pt_AO'          => 'pt_PT',
 		'pt_PT_ao90'     => 'pt_PT',
 		'th'             => 'th_TH',
-		'zh_SG'          => 'zh_SG',
+		'zh_SG'          => 'zh_CN',
 	);
 
 	/**
