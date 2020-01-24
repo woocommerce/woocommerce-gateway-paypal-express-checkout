@@ -40,6 +40,10 @@ class WC_Gateway_PPEC_Admin_Handler {
 
 		$order = wc_get_order( $_REQUEST['post'] );
 
+		if ( empty( $order ) ) {
+			return $actions;
+		}
+
 		$old_wc         = version_compare( WC_VERSION, '3.0', '<' );
 		$order_id       = $old_wc ? $order->id : $order->get_id();
 		$payment_method = $old_wc ? $order->payment_method : $order->get_payment_method();
