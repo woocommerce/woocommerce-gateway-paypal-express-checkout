@@ -52,7 +52,6 @@ class WC_Gateway_PPEC_Settings {
 		'sk_SK',
 		'sv_SE',
 		'th_TH',
-		'tr_TR', // Not supported
 		'zh_CN',
 		'zh_HK',
 		'zh_TW',
