@@ -693,6 +693,42 @@ class PayPal_Address {
 				'kagoshima-ken' => 'JP46',
 				'okinawa-ken'   => 'JP47',
 			);
+		} elseif ( 'MX' == $this->_country ) {
+			$translation_table = array(
+				'ags'   => 'AG',
+				'bc'    => 'BC',
+				'bcs'   => 'BS',
+				'camp'  => 'CM',
+				'chis'  => 'CS',
+				'chih'  => 'CH',
+				'cdmx'  => 'DF', // Both cdmx and df are mapped to DF
+				'coah'  => 'CO',
+				'col'   => 'CL',
+				'df'    => 'DF', // Both cdmx and df are mapped to DF
+				'dgo'   => 'DG',
+				'mex'   => 'MX',
+				'gto'   => 'GT',
+				'gro'   => 'GR',
+				'hgo'   => 'HG',
+				'jal'   => 'JA',
+				'mich'  => 'MI',
+				'mor'   => 'MO',
+				'nay'   => 'NA',
+				'nl'    => 'NL',
+				'oax'   => 'OA',
+				'pue'   => 'PU',
+				'qro'   => 'QT',
+				'q roo' => 'QR',
+				'slp'   => 'SL',
+				'sin'   => 'SI',
+				'son'   => 'SO',
+				'tab'   => 'TB',
+				'tamps' => 'TM',
+				'tlax'  => 'TL',
+				'ver'   => 'VE',
+				'yuc'   => 'YU',
+				'zac'   => 'ZA',
+			);
 		} elseif ( 'NL' == $this->_country ) {
 			$translation_table = array(
 				'drenthe'       => 'DR',
