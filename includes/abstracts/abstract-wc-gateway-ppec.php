@@ -27,6 +27,9 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		$this->init_form_fields();
 		$this->init_settings();
 
+		// With 1.7.0, override the use_spb option pulled from the DB to the value set in WC_Gateway_PPEC_Settings
+		$this->settings['use_spb'] = wc_gateway_ppec()->settings->use_spb;
+
 		$this->title        = $this->method_title;
 		$this->description  = '';
 		$this->enabled      = $this->get_option( 'enabled', 'yes' );
