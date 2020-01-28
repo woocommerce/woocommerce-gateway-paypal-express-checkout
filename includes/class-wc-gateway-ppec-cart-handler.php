@@ -351,7 +351,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 		$settings = wc_gateway_ppec()->settings;
 
 		// billing details on checkout page to calculate shipping costs
-		if ( ! isset( $gateways['ppec_paypal'] ) || 'no' === $settings->cart_checkout_enabled || 0 === WC()->cart->get_cart_contents_count() ) {
+		if ( ! isset( $gateways['ppec_paypal'] ) || 'no' === $settings->cart_checkout_enabled || 0 === WC()->cart->get_cart_contents_count() || '0.00' === WC()->cart->get_total( 'edit' ) ) {
 			return;
 		}
 		?>
