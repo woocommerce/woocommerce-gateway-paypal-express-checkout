@@ -402,6 +402,41 @@ class PayPal_Address {
 				// This derivation doesn't show up on the list, but seems obvious
 				'yukon territory'       => 'YT'
 			);
+		} elseif ( 'CN' == $this->_country ) {
+			$translation_table = array(
+					'cn-yn' => 'CN1',
+					'cn-bj' => 'CN2',
+					'cn-tj' => 'CN3',
+					'cn-he' => 'CN4',
+					'cn-sx' => 'CN5',
+					'cn-nm' => 'CN6',
+					'cn-ln' => 'CN7',
+					'cn-jl' => 'CN8',
+					'cn-hl' => 'CN9',
+					'cn-sh' => 'CN10',
+					'cn-js' => 'CN11',
+					'cn-zj' => 'CN12',
+					'cn-ah' => 'CN13',
+					'cn-fj' => 'CN14',
+					'cn-jx' => 'CN15',
+					'cn-sd' => 'CN16',
+					'cn-ha' => 'CN17',
+					'cn-hb' => 'CN18',
+					'cn-hn' => 'CN19',
+					'cn-gd' => 'CN20',
+					'cn-gx' => 'CN21',
+					'cn-hi' => 'CN22',
+					'cn-cq' => 'CN23',
+					'cn-sc' => 'CN24',
+					'cn-gz' => 'CN25',
+					'cn-sn' => 'CN26',
+					'cn-gs' => 'CN27',
+					'cn-qh' => 'CN28',
+					'cn-nx' => 'CN29',
+					'cn-mo' => 'CN30',
+					'cn-xz' => 'CN31',
+					'cn-xj' => 'CN32',
+			);
 		} elseif ( 'IE' == $this->_country ) {
 			$translation_table = array(
 				'co clare'     => 'CE',
