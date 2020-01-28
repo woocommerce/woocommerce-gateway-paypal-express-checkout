@@ -269,9 +269,11 @@ class WC_Gateway_PPEC_Cart_Handler {
 	 * @since 1.4.0
 	 */
 	public function display_paypal_button_product() {
+		global $product;
+
 		$gateways = WC()->payment_gateways->get_available_payment_gateways();
 
-		if ( ! is_product() || ! isset( $gateways['ppec_paypal'] ) ) {
+		if ( ! is_product() || ! isset( $gateways['ppec_paypal'] ) || ! $product->is_in_stock() ) {
 			return;
 		}
 
