@@ -87,29 +87,25 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 			if ( $product->is_type( 'variable' ) ) {
 				$attributes = array();
-				$slugs      = array();
 
-				/**
-				 * We need to make sure we're not passing bad data to a query later on, 
-				 * so we get the attributes for the product. 
-				 */
 				foreach ( $product->get_attributes() as $attribute ) {
-					foreach ( $attribute->get_terms() as $term ) {
-						$slugs[] = $term->slug;
+					if ( ! $attribute['is_variation'] ) {
+						continue;
+					}
+
+					$attribute_key = 'attribute_' . sanitize_title( $attribute['name'] );
+
+					if ( isset( $_POST['attributes'][ $attribute_key ] ) ) {
+						if ( $attribute['is_taxonomy'] ) {
+							// Don't use wc_clean as it destroys sanitized characters.
+							$value = sanitize_title( wp_unslash( $_POST['attributes'][ $attribute_key ] ) );
+						} else {
+							$value = html_entity_decode( wc_clean( wp_unslash( $_POST['attributes'][ $attribute_key ] ) ), ENT_QUOTES, get_bloginfo( 'charset' ) );
+						}
+
+						$attributes[ $attribute_key ] = $value;
 					}
 				}
-
-				/**
-				 * And then we clean anything that doesn't match a slug for the product. 
-				 */
-				foreach ( $_POST['attributes'] as $attribute => $term ) {
-					if ( in_array( $term, $slugs ) ) {
-						$attributes[ $attribute ] = $term;
-					} else {
-						$attributes[ $attribute ] = wc_clean( $term );
-					}
-				}
-
 
 				if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
 					$variation_id = $product->get_matching_variation( $attributes );
