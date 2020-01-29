@@ -150,6 +150,36 @@ class WC_Gateway_PPEC_Settings {
 	}
 
 	/**
+	 * Get REST API credentials for live environment.
+	 *
+	 * @since 1.7.0
+	 * @return object
+	 */
+	public function get_live_rest_api_credentials() {
+		return (object) array( 'client_id' => $this->api_client_id, 'secret' => $this->api_secret );
+	}
+
+	/**
+	 * Get REST API credentials for sandbox environment.
+	 *
+	 * @since 1.7.0
+	 * @return object
+	 */
+	public function get_sandbox_rest_api_credentials() {
+		return (object) array( 'client_id' => $this->sandbox_api_client_id, 'secret' => $this->sandbox_api_secret );
+	}
+
+	/**
+	 * Get REST API credentials for current environment.
+	 *
+	 * @since 1.7.0
+	 * @return object
+	 */
+	public function get_active_rest_api_credentials() {
+		return 'live' === $this->get_environment() ? $this->get_live_rest_api_credentials() : $this->get_sandbox_rest_api_credentials();
+	}
+
+	/**
 	 * Get PayPal redirect URL.
 	 *
 	 * @param string $token  Token

@@ -39,12 +39,18 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 			$this->api_signature   = $this->get_option( 'api_signature' );
 			$this->api_certificate = $this->get_option( 'api_certificate' );
 			$this->api_subject     = $this->get_option( 'api_subject' );
+
+			$this->api_client_id   = $this->get_option( 'api_client_id' );
+			$this->api_secret      = $this->get_option( 'api_secret' );
 		} else {
 			$this->api_username    = $this->get_option( 'sandbox_api_username' );
 			$this->api_password    = $this->get_option( 'sandbox_api_password' );
 			$this->api_signature   = $this->get_option( 'sandbox_api_signature' );
 			$this->api_certificate = $this->get_option( 'sandbox_api_certificate' );
 			$this->api_subject     = $this->get_option( 'sandbox_api_subject' );
+
+			$this->api_client_id   = $this->get_option( 'sandbox_api_client_id' );
+			$this->api_secret      = $this->get_option( 'sandbox_api_secret' );
 		}
 
 		$this->debug                      = 'yes' === $this->get_option( 'debug', 'no' );
