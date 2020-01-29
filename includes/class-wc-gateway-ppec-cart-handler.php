@@ -273,7 +273,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 		$gateways = WC()->payment_gateways->get_available_payment_gateways();
 
-		if ( ! is_product() || ! isset( $gateways['ppec_paypal'] ) || ! $product->is_in_stock() || $product->is_type( 'external' ) ) {
+		if ( ! is_product() || ! isset( $gateways['ppec_paypal'] ) || ! $product->is_in_stock() || $product->is_type( 'external' ) || $product->is_type( 'grouped' ) ) {
 			return;
 		}
 
