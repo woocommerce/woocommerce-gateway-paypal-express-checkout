@@ -328,10 +328,11 @@ class WC_Gateway_PPEC_Client {
 			$count = 0;
 			foreach ( $details['items'] as $line_item_key => $values ) {
 				$line_item_params = array(
-					'L_PAYMENTREQUEST_0_NAME' . $count => $values['name'],
-					'L_PAYMENTREQUEST_0_DESC' . $count => ! empty( $values['description'] ) ? substr( strip_tags( $values['description'] ), 0, 127 ) : '',
-					'L_PAYMENTREQUEST_0_QTY' . $count  => $values['quantity'],
-					'L_PAYMENTREQUEST_0_AMT' . $count  => $values['amount'],
+					'L_PAYMENTREQUEST_0_NAME' . $count   => $values['name'],
+					'L_PAYMENTREQUEST_0_DESC' . $count   => ! empty( $values['description'] ) ? substr( strip_tags( $values['description'] ), 0, 127 ) : '',
+					'L_PAYMENTREQUEST_0_QTY' . $count    => $values['quantity'],
+					'L_PAYMENTREQUEST_0_AMT' . $count    => $values['amount'],
+					'L_PAYMENTREQUEST_0_NUMBER' . $count => $values['sku'],
 				);
 
 				$params = array_merge( $params, $line_item_params );
@@ -493,19 +494,20 @@ class WC_Gateway_PPEC_Client {
 			$amount = round( $values['line_subtotal'] / $values['quantity'] , $decimals );
 
 			if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
-				$name = $values['data']->post->post_title;
+				$name        = $values['data']->post->post_title;
 				$description = $values['data']->post->post_content;
 			} else {
-				$product = $values['data'];
-				$name = $product->get_name();
+				$product     = $values['data'];
+				$name        = $product->get_name();
 				$description = $product->get_description();
 			}
 
-			$item   = array(
+			$item = array(
 				'name'        => $name,
 				'description' => $description,
 				'quantity'    => $values['quantity'],
 				'amount'      => $amount,
+				'sku'         => $values['data']->get_sku(),
 			);
 
 			$items[] = $item;
@@ -811,25 +813,24 @@ class WC_Gateway_PPEC_Client {
 		$order    = wc_get_order( $order );
 
 		$items = array();
-		foreach ( $order->get_items( array( 'line_item', 'fee' ) ) as $cart_item_key => $values ) {
+		foreach ( $order->get_items( array( 'line_item', 'fee' ) ) as $cart_item_key => $order_item ) {
 
-
-			if( 'fee' === $values['type']) {
+			if( 'fee' === $order_item['type']) {
 				$item   = array(
-					'name'     => $values['name'],
+					'name'     => $order_item['name'],
 					'quantity' => 1,
-					'amount'   => round( $values['line_total'], $decimals),
+					'amount'   => round( $order_item['line_total'], $decimals ),
 				);
 			} else {
-				$amount = round( $values['line_subtotal'] / $values['qty'] , $decimals );
-				$item   = array(
-					'name'     => $values['name'],
-					'quantity' => $values['qty'],
+				$amount  = round( $order_item['line_subtotal'] / $order_item['qty'] , $decimals );
+				$product = version_compare( WC_VERSION, '3.0', '<' ) ? $order->get_product_from_item( $order_item ) : $order_item->get_product();
+				$item    = array(
+					'name'     => $order_item['name'],
+					'quantity' => $order_item['qty'],
 					'amount'   => $amount,
+					'sku'      => $product->get_sku(),
 				);
-
 			}
-
 
 			$items[] = $item;
 		}
@@ -953,10 +954,11 @@ class WC_Gateway_PPEC_Client {
 			$count = 0;
 			foreach ( $details['items'] as $line_item_key => $values ) {
 				$line_item_params = array(
-					'L_PAYMENTREQUEST_0_NAME' . $count => $values['name'],
-					'L_PAYMENTREQUEST_0_DESC' . $count => ! empty( $values['description'] ) ? strip_tags( $values['description'] ) : '',
-					'L_PAYMENTREQUEST_0_QTY' . $count  => $values['quantity'],
-					'L_PAYMENTREQUEST_0_AMT' . $count  => $values['amount'],
+					'L_PAYMENTREQUEST_0_NAME' . $count   => $values['name'],
+					'L_PAYMENTREQUEST_0_DESC' . $count   => ! empty( $values['description'] ) ? strip_tags( $values['description'] ) : '',
+					'L_PAYMENTREQUEST_0_QTY' . $count    => $values['quantity'],
+					'L_PAYMENTREQUEST_0_AMT' . $count    => $values['amount'],
+					'L_PAYMENTREQUEST_0_NUMBER' . $count => $values['sku'],
 				);
 
 				$params = array_merge( $params, $line_item_params );
@@ -1082,10 +1084,11 @@ class WC_Gateway_PPEC_Client {
 			$count = 0;
 			foreach ( $details['items'] as $line_item_key => $values ) {
 				$line_item_params = array(
-					'L_NAME' . $count => $values['name'],
-					'L_DESC' . $count => ! empty( $values['description'] ) ? strip_tags( $values['description'] ) : '',
-					'L_QTY' . $count  => $values['quantity'],
-					'L_AMT' . $count  => $values['amount'],
+					'L_NAME' . $count   => $values['name'],
+					'L_DESC' . $count   => ! empty( $values['description'] ) ? strip_tags( $values['description'] ) : '',
+					'L_QTY' . $count    => $values['quantity'],
+					'L_AMT' . $count    => $values['amount'],
+					'L_NUMBER' . $count => $values['sku'],
 				);
 
 				$params = array_merge( $params, $line_item_params );
