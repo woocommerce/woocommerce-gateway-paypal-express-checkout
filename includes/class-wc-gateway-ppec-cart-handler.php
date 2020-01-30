@@ -469,6 +469,9 @@ class WC_Gateway_PPEC_Cart_Handler {
 		$is_checkout = is_checkout() && 'yes' === $settings->mark_enabled && ! wc_gateway_ppec()->checkout->has_active_session();
 		$page        = $is_cart ? 'cart' : ( $is_product ? 'product' : ( $is_checkout ? 'checkout' : null ) );
 
+		$rest_creds  = $settings->get_active_rest_api_credentials();
+		$use_js_sdk  = $settings->use_spb && ! empty( $rest_creds->client_id ) && ! empty( $rest_creds->secret );
+
 		if ( 'yes' !== $settings->use_spb && $is_cart ) {
 			wp_enqueue_script( 'paypal-checkout-js', 'https://www.paypalobjects.com/api/checkout.js', array(), null, true );
 			wp_enqueue_script( 'wc-gateway-ppec-frontend-in-context-checkout', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-frontend-in-context-checkout.js', array( 'jquery' ), wc_gateway_ppec()->version, true );
@@ -485,10 +488,8 @@ class WC_Gateway_PPEC_Cart_Handler {
 			);
 
 		} elseif ( 'yes' === $settings->use_spb ) {
-			wp_register_script( 'paypal-checkout-js', 'https://www.paypalobjects.com/api/checkout.js', array(), null, true );
-			wp_register_script( 'wc-gateway-ppec-smart-payment-buttons', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-smart-payment-buttons.js', array( 'jquery', 'paypal-checkout-js' ), wc_gateway_ppec()->version, true );
-
 			$data = array(
+				'use_js_sdk'           => $use_js_sdk,
 				'environment'          => 'sandbox' === $settings->get_environment() ? 'sandbox' : 'production',
 				'locale'               => $settings->get_paypal_locale(),
 				'page'                 => $page,
@@ -497,6 +498,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 				'button_label'         => $settings->button_label,
 				'start_checkout_nonce' => wp_create_nonce( '_wc_ppec_start_checkout_nonce' ),
 				'start_checkout_url'   => WC_AJAX::get_endpoint( 'wc_ppec_start_checkout' ),
+				'return_url'           => wc_get_checkout_url(),
 			);
 
 			if ( ! is_null(  $page ) ) {
@@ -519,6 +521,25 @@ class WC_Gateway_PPEC_Cart_Handler {
 			}
 			$data = array_merge( $data, $mini_cart_data );
 
+			if ( $use_js_sdk ) {
+				$script_args = array(
+					'client-id'  => $rest_creds->client_id,
+					'locale'     => $settings->get_paypal_locale(),
+					'components' => 'buttons',
+					'commit'     => 'checkout' === $page ? 'true' : 'false',
+				);
+
+				// TODO: Handle 'disable-funding' for mini cart.
+				if ( ! empty( $data['disallowed_methods'] ) ) {
+					$script_args['disable-funding'] = implode( ',', array_map( 'strtolower', $data['disallowed_methods'] ) );
+				}
+
+				wp_register_script( 'paypal-checkout-js', add_query_arg( $script_args, 'https://www.paypal.com/sdk/js' ), array(), null, true );
+			} else {
+				wp_register_script( 'paypal-checkout-js', 'https://www.paypalobjects.com/api/checkout.js', array(), null, true );
+			}
+
+			wp_register_script( 'wc-gateway-ppec-smart-payment-buttons', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-smart-payment-buttons.js', array( 'jquery', 'paypal-checkout-js' ), wc_gateway_ppec()->version, true );
 			wp_localize_script( 'wc-gateway-ppec-smart-payment-buttons', 'wc_ppec_context', $data );
 		}
 	}
