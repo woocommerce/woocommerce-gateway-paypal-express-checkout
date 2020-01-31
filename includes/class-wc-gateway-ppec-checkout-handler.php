@@ -155,14 +155,14 @@ class WC_Gateway_PPEC_Checkout_Handler {
 
 			// Only unset if not required and empty
 			foreach ( $not_required_fields as $not_required_field ) {
-				if ( array_key_exists( $not_required_field, $fields ) && ! empty( $fields[ $not_required_field ] ) ) {
+				if ( array_key_exists( $not_required_field, $fields ) && empty( $fields[ $not_required_field ] ) ) {
 					unset( $fields[ $not_required_field ] );
 				}
 			}
 		}
 
 		// Regardless of shipping, PP doesn't have the county required (e.g. using Ireland without a county is acceptable)
-		if ( array_key_exists( 'billing_state', $fields ) && ! empty( $fields['billing_state'] ) ) {
+		if ( array_key_exists( 'billing_state', $fields ) && empty( $fields['billing_state'] ) ) {
 			unset( $fields['billing_state'] );
 		}
 
