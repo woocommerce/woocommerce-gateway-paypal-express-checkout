@@ -353,8 +353,6 @@ class WC_Gateway_PPEC_Admin_Handler {
 
 		<?php
 	}
-<<<<<<< HEAD
-=======
 
 	/**
 	 * Displays an admin notice for sites running a WC version pre 3.0.
@@ -390,5 +388,4 @@ class WC_Gateway_PPEC_Admin_Handler {
 		</div>
 		<?php
 	}
->>>>>>> 9845c0b... fixup! Adds a do_action when the plugin is updated
 }
