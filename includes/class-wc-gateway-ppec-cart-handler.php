@@ -460,18 +460,15 @@ class WC_Gateway_PPEC_Cart_Handler {
 	 * Frontend scripts
 	 */
 	public function enqueue_scripts() {
-		global $post;
-
 		$settings = wc_gateway_ppec()->settings;
 		$client   = wc_gateway_ppec()->client;
 
 		wp_enqueue_style( 'wc-gateway-ppec-frontend', wc_gateway_ppec()->plugin_url . 'assets/css/wc-gateway-ppec-frontend.css' );
 
-		$is_cart               = is_cart() && ! WC()->cart->is_empty() && 'yes' === $settings->cart_checkout_enabled;
-		$has_product_shortcode = is_singular( array( 'page' ) ) && has_shortcode( $post->post_content, 'product_page' );
-		$is_product            = ( is_product() || $has_product_shortcode ) && 'yes' === $settings->checkout_on_single_product_enabled;
-		$is_checkout           = is_checkout() && 'yes' === $settings->mark_enabled && ! wc_gateway_ppec()->checkout->has_active_session();
-		$page                  = $is_cart ? 'cart' : ( $is_product ? 'product' : ( $is_checkout ? 'checkout' : null ) );
+		$is_cart     = is_cart() && ! WC()->cart->is_empty() && 'yes' === $settings->cart_checkout_enabled;
+		$is_product  = ( is_product() || wc_post_content_has_shortcode( 'product_page' ) ) && 'yes' === $settings->checkout_on_single_product_enabled;
+		$is_checkout = is_checkout() && 'yes' === $settings->mark_enabled && ! wc_gateway_ppec()->checkout->has_active_session();
+		$page        = $is_cart ? 'cart' : ( $is_product ? 'product' : ( $is_checkout ? 'checkout' : null ) );
 
 		if ( 'yes' !== $settings->use_spb && $is_cart ) {
 			wp_enqueue_script( 'paypal-checkout-js', 'https://www.paypalobjects.com/api/checkout.js', array(), null, true );
