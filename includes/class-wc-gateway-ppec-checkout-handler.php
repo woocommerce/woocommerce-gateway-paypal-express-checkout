@@ -37,8 +37,9 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		add_action( 'init', array( $this, 'init' ) );
 		add_filter( 'the_title', array( $this, 'endpoint_page_titles' ) );
 		add_action( 'woocommerce_checkout_init', array( $this, 'checkout_init' ) );
-		add_filter( 'woocommerce_default_address_fields', array( $this, 'filter_default_address_fields' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		add_filter( 'woocommerce_billing_fields', array( $this, 'filter_billing_fields' ) );
+		add_filter( 'woocommerce_checkout_posted_data', array( $this, 'maybe_filter_checkout_fields' ), 10, 1 );
 		add_action( 'woocommerce_checkout_process', array( $this, 'copy_checkout_details_to_post' ) );
 
 		add_action( 'wp', array( $this, 'maybe_return_from_paypal' ) );
@@ -109,37 +110,59 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	}
 
 	/**
+	 * Scripts for checkout handler.
+	 * @since 1.6.19
+	 */
+	public function enqueue_scripts() {
+		if ( 'yes' !== wc_gateway_ppec()->settings->enabled ) {
+			return;
+		}
+
+		// Allow filtering so that address fields are always required
+		if ( ! apply_filters( 'woocommerce_paypal_express_checkout_address_not_required', ! WC_Gateway_PPEC_Plugin::needs_shipping() ) ) {
+			return;
+		}
+
+		$not_need_shipping = method_exists( WC()->cart, 'needs_shipping' ) && ! WC()->cart->needs_shipping() && 'no' === wc_gateway_ppec()->settings->require_billing;
+
+		$not_required_fields = array( 'billing_first_name', 'billing_last_name', 'billing_address_1', 'billing_city', 'billing_state', 'billing_postcode', 'billing_country' );
+
+		wp_enqueue_script( 'wc-gateway-ppec-checkout-handler', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-checkout-handler.js', array( 'jquery' ), wc_gateway_ppec()->version, true );
+		wp_localize_script( 'wc-gateway-ppec-checkout-handler', 'wc_ppec_checkout_handler_context',
+			array(
+				'do_not_require_fields'  => $not_need_shipping,
+				'not_required_fields'    => $not_required_fields,
+			)
+		);
+	}
+	/**
 	 * If the cart doesn't need shipping at all, don't require the address fields
 	 * (this is unique to PPEC). This is one of two places we need to filter fields.
 	 * See also filter_billing_fields below.
 	 *
 	 * @since 1.2.1
 	 * @since 1.5.4 Check to make sure PPEC is even enable before continuing.
+	 * @since 1.6.19 Only filter when PPEC is chosen payment gateway
 	 * @param $fields array
 	 *
-	 * @return array
+	 * @return $fields array Data for checkout, possible without billing fields which are optional
 	 */
 	public function filter_default_address_fields( $fields ) {
-		if ( 'yes' !== wc_gateway_ppec()->settings->enabled ) {
-			return $fields;
-		}
-
-		if ( ! apply_filters( 'woocommerce_paypal_express_checkout_address_not_required', ! WC_Gateway_PPEC_Plugin::needs_shipping() ) ) {
-			return $fields;
-		}
 
 		if ( method_exists( WC()->cart, 'needs_shipping' ) && ! WC()->cart->needs_shipping() && 'no' === wc_gateway_ppec()->settings->require_billing ) {
-			$not_required_fields = array( 'first_name', 'last_name', 'company', 'address_1', 'address_2', 'city', 'postcode', 'country' );
+
+			$not_required_fields = array( 'billing_first_name', 'billing_last_name', 'billing_company', 'billing_address_1', 'billing_address_2', 'billing_city', 'billing_postcode', 'billing_country' );
+
 			foreach ( $not_required_fields as $not_required_field ) {
 				if ( array_key_exists( $not_required_field, $fields ) ) {
-					$fields[ $not_required_field ]['required'] = false;
+					unset( $fields[ $not_required_field ] );
 				}
 			}
 		}
 
 		// Regardless of shipping, PP doesn't have the county required (e.g. using Ireland without a county is acceptable)
-		if ( array_key_exists( 'state', $fields ) ) {
-			$fields['state']['required'] = false;
+		if ( array_key_exists( 'billing_state', $fields ) ) {
+			unset( $fields['billing_state'] );
 		}
 
 		return $fields;
@@ -172,6 +195,29 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		}
 
 		return $billing_fields;
+	}
+
+	/**
+	 * Only filter checkout fields if PPEC is the chosen payment gateway.
+	 *
+	 * @since 1.6.19
+	 * @param $data array Posted data from checkout
+	 */
+	public function maybe_filter_checkout_fields( $data ) {
+
+		if ( 'yes' !== wc_gateway_ppec()->settings->enabled ) {
+			return $data;
+		}
+
+		// Allow filtering so that address fields are always required
+		if ( ! apply_filters( 'woocommerce_paypal_express_checkout_address_not_required', ! WC_Gateway_PPEC_Plugin::needs_shipping() ) ) {
+			return $data;
+		}
+
+		if ( 'ppec_paypal' === $data['payment_method'] ) {
+			$data = $this->filter_default_address_fields( $data );
+		}
+		return $data;
 	}
 
 	/**
