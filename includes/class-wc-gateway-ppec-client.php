@@ -328,13 +328,14 @@ class WC_Gateway_PPEC_Client {
 			$count = 0;
 			foreach ( $details['items'] as $line_item_key => $values ) {
 				$line_item_params = array(
-					'L_PAYMENTREQUEST_0_NAME' . $count   => $values['name'],
-					'L_PAYMENTREQUEST_0_DESC' . $count   => ! empty( $values['description'] ) ? substr( strip_tags( $values['description'] ), 0, 127 ) : '',
-					'L_PAYMENTREQUEST_0_QTY' . $count    => $values['quantity'],
-					'L_PAYMENTREQUEST_0_AMT' . $count    => $values['amount'],
+					'L_PAYMENTREQUEST_0_NAME' . $count => $values['name'],
+					'L_PAYMENTREQUEST_0_DESC' . $count => ! empty( $values['description'] ) ? substr( strip_tags( $values['description'] ), 0, 127 ) : '',
+					'L_PAYMENTREQUEST_0_QTY' . $count  => $values['quantity'],
+					'L_PAYMENTREQUEST_0_AMT' . $count  => $values['amount'],
 				);
+
 				if ( isset( $values['sku'] ) ) {
-					$line_item_params['L_PAYMENTREQUEST_0_NUMBER' . $count] = $values['sku'];
+					$line_item_params[ 'L_PAYMENTREQUEST_0_NUMBER' . $count ] = $values['sku'];
 				}
 
 				$params = array_merge( $params, $line_item_params );
@@ -956,13 +957,14 @@ class WC_Gateway_PPEC_Client {
 			$count = 0;
 			foreach ( $details['items'] as $line_item_key => $values ) {
 				$line_item_params = array(
-					'L_PAYMENTREQUEST_0_NAME' . $count   => $values['name'],
-					'L_PAYMENTREQUEST_0_DESC' . $count   => ! empty( $values['description'] ) ? strip_tags( $values['description'] ) : '',
-					'L_PAYMENTREQUEST_0_QTY' . $count    => $values['quantity'],
-					'L_PAYMENTREQUEST_0_AMT' . $count    => $values['amount'],
+					'L_PAYMENTREQUEST_0_NAME' . $count => $values['name'],
+					'L_PAYMENTREQUEST_0_DESC' . $count => ! empty( $values['description'] ) ? strip_tags( $values['description'] ) : '',
+					'L_PAYMENTREQUEST_0_QTY' . $count  => $values['quantity'],
+					'L_PAYMENTREQUEST_0_AMT' . $count  => $values['amount'],
 				);
+
 				if ( isset( $values['sku'] ) ) {
-					$line_item_params['L_PAYMENTREQUEST_0_NUMBER' . $count] = $values['sku'];
+					$line_item_params[ 'L_PAYMENTREQUEST_0_NUMBER' . $count ] = $values['sku'];
 				}
 
 				$params = array_merge( $params, $line_item_params );
