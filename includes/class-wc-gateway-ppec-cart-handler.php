@@ -383,7 +383,6 @@ class WC_Gateway_PPEC_Cart_Handler {
 	/**
 	 * Convert from settings to values expected by PayPal Button API:
 	 *   - 'small' button size only allowed if layout is 'vertical'.
-	 *   - 'label' only allowed if layout is 'vertical'.
 	 *   - 'disallowed' funding methods if layout is 'vertical'.
 	 *   - 'allowed' funding methods if layout is 'horizontal'.
 	 *   - Only allow PayPal Credit if supported.
@@ -399,12 +398,12 @@ class WC_Gateway_PPEC_Cart_Handler {
 		$data = array(
 			'button_layout'        => $settings->{ $prefix . 'button_layout' },
 			'button_size'          => $settings->{ $prefix . 'button_size' },
+			'button_label'         => $settings->{ $prefix . 'button_label' },
 			'hide_funding_methods' => $settings->{ $prefix . 'hide_funding_methods' },
 			'credit_enabled'       => $settings->{ $prefix . 'credit_enabled' },
 		);
 
 		$button_layout        = $data['button_layout'];
-		$data['button_label'] = 'horizontal' === $button_layout ? 'buynow' : null;
 		$data['button_size']  = 'vertical' === $button_layout && 'small' === $data['button_size']
 			? 'medium'
 			: $data['button_size'];
@@ -467,6 +466,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 				'page'                 => $page,
 				'button_color'         => $settings->button_color,
 				'button_shape'         => $settings->button_shape,
+				'button_label'         => $settings->button_label,
 				'start_checkout_nonce' => wp_create_nonce( '_wc_ppec_start_checkout_nonce' ),
 				'start_checkout_url'   => WC_AJAX::get_endpoint( 'wc_ppec_start_checkout' ),
 			);
