@@ -51,4 +51,58 @@ class WC_Gateway_PPEC_REST_Client {
 		$this->_environment = ( in_array( $environment, array( 'live', 'sandbox' ) ) ) ? $environment : 'live';
 	}
 
+	/**
+	 * Tests the given REST API credentials.
+	 *
+	 * @param WC_Gateway_PPEC_REST_Client_Credential $credential
+	 * @param string $environment
+	 */
+	public function test_api_credentials( $credential, $environment = 'live' ) {
+		$this->set_credential( $credential );
+		$this->set_environment( $environment );
+
+		$base_url = ( 'sandbox' === $this->_environment ) ? 'https://api.sandbox.paypal.com/' : 'https://api.paypal.com/';
+		$url      = $base_url . 'v1/oauth2/token';
+
+		$args = array(
+			'method'     => 'POST',
+			'timeout'    => 30,
+			'user-agent' => __CLASS__,
+			'headers'    => array(
+				'Authorization' => sprintf( 'Basic %s', $this->_credential->get_basic_auth_header_string() ),
+			),
+			'body'       => array(
+				'grant_type' => 'client_credentials',
+			),
+		);
+
+		$response      = wp_remote_request( $url, $args );
+		$error_message = '';
+
+		if ( is_wp_error( $response ) ) {
+			$error_message = $response->get_error_message();
+		}
+
+		if ( ! $error_message ) {
+			$body = json_decode( $response['body'] );
+
+			if ( ! empty( $body->error ) ) {
+				$error_message = ( ! empty( $body->error_description ) ) ? $body->error_description : $body->error;
+			}
+		}
+
+		if ( ! $error_message ) {
+			set_transient(
+				'woocommerce_ppec_rest_api_oauth_token_' . $this->_environment . '_' . md5( $this->_credential->get_client_id() . ':' . $this->_credential->get_client_secret() ),
+				array(
+					'token'  => $body->access_token,
+					'app_id' => $body->app_id,
+				),
+				$body->expires_in
+			);
+		}
+
+		return ( ! $error_message ) ? true : new WP_Error( 'ppec_rest_credentials_validation_error', $error_message );
+	}
+
 }
