@@ -361,6 +361,7 @@ class WC_Gateway_PPEC_Plugin {
 		require_once( $this->includes_path . 'class-wc-gateway-ppec-client-credential-certificate.php' );
 		require_once( $this->includes_path . 'class-wc-gateway-ppec-client-credential-signature.php' );
 		require_once( $this->includes_path . 'class-wc-gateway-ppec-client.php' );
+		require_once( $this->includes_path . 'class-wc-gateway-ppec-rest-client-credential.php' );
 	}
 
 	/**
