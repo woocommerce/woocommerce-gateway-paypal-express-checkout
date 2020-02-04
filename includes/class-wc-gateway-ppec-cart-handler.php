@@ -470,7 +470,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 		$page        = $is_cart ? 'cart' : ( $is_product ? 'product' : ( $is_checkout ? 'checkout' : null ) );
 
 		$rest_creds  = $settings->get_active_rest_api_credentials();
-		$use_js_sdk  = $settings->use_spb && ! empty( $rest_creds->client_id ) && ! empty( $rest_creds->secret );
+		$use_js_sdk  = $settings->use_spb && ! empty( $rest_creds->get_client_id() ) && ! empty( $rest_creds->get_client_secret() );
 
 		if ( 'yes' !== $settings->use_spb && $is_cart ) {
 			wp_enqueue_script( 'paypal-checkout-js', 'https://www.paypalobjects.com/api/checkout.js', array(), null, true );
@@ -523,7 +523,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 			if ( $use_js_sdk ) {
 				$script_args = array(
-					'client-id'  => $rest_creds->client_id,
+					'client-id'  => $rest_creds->get_client_id(),
 					'locale'     => $settings->get_paypal_locale(),
 					'components' => 'buttons',
 					'commit'     => 'checkout' === $page ? 'true' : 'false',
