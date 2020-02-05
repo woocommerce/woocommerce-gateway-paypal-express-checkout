@@ -133,6 +133,12 @@ class WC_Gateway_PPEC_Plugin {
 			delete_option( 'pp_woo_enabled' );
 		}
 
+		// Check the the WC version on plugin update to determine if we need to display a warning.
+		// The option was added in 1.6.19 so we only need to check stores updating from before that version. Updating from 1.6.19 or greater would already have it set.
+		if ( version_compare( get_option( 'wc_ppec_version' ), '1.6.19', '<' ) && version_compare( WC_VERSION, '3.0', '<' ) ) {
+			update_option( 'wc_ppec_display_wc_3_0_warning', 'true' );
+		}
+
 		update_option( 'wc_ppec_version', $new_version );
 	}
 

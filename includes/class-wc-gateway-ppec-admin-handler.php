@@ -31,6 +31,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 		add_action( 'load-woocommerce_page_wc-settings', array( $this, 'maybe_reset_api_credentials' ) );
 
 		add_action( 'woocommerce_admin_order_totals_after_total', array( $this, 'display_order_fee_and_payout' ) );
+		add_action( 'admin_notices', array( $this, 'show_wc_version_warning' ) );
 	}
 
 	public function add_capture_charge_order_action( $actions ) {
@@ -350,6 +351,41 @@ class WC_Gateway_PPEC_Admin_Handler {
 			</td>
 		</tr>
 
+		<?php
+	}
+
+	/**
+	 * Displays an admin notice for sites running a WC version pre 3.0.
+	 * The WC minimum supported version will be increased to WC 3.0 in Q1 2020.
+	 *
+	 * @since 1.6.19
+	 */
+	public static function show_wc_version_warning() {
+
+		if ( 'true' !== get_option( 'wc_ppec_display_wc_3_0_warning' ) ) {
+			return;
+		}
+
+		// Check if the notice needs to be dismissed.
+		$wc_updated = version_compare( WC_VERSION, '3.0', '>=' );
+		$dismissed  = isset( $_GET['wc_ppec_hide_3_0_notice'], $_GET['_wc_ppec_notice_nonce'] ) && wp_verify_nonce( $_GET['_wc_ppec_notice_nonce'], 'wc_ppec_hide_wc_notice_nonce' );
+
+		if ( $wc_updated || $dismissed ) {
+			delete_option( 'wc_ppec_display_wc_3_0_warning' );
+			return;
+		}
+		?>
+		<div class="error">
+			<a href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'wc_ppec_hide_3_0_notice', 'true' ), 'wc_ppec_hide_wc_notice_nonce', '_wc_ppec_notice_nonce' ) ); ?>" class="woocommerce-message-close notice-dismiss" style="position:relative;float:right;padding:9px 0px 9px 9px 9px;text-decoration:none;"></a>
+			<p>
+			<?php printf( __(
+				'%1$sWarning!%2$s PayPal Checkout will drop support for WooCommerce %3$s in a soon to be released update. To continue using PayPal Checkout please %4$supdate to %1$sWooCommerce 3.0%2$s or greater%5$s.', 'woocommerce-gateway-paypal-express-checkout' ),
+				'<strong>', '</strong>',
+				WC_VERSION,
+				'<a href="' . admin_url( 'plugins.php' ) . '">', '</a>'
+			); ?>
+			</p>
+		</div>
 		<?php
 	}
 }
