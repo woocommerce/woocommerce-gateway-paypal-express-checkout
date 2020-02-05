@@ -450,7 +450,7 @@ class WC_Gateway_PPEC_Plugin {
 	 * @deprecated 1.7.0
 	 */
 	public function show_spb_notice() {
-		_deprecated_function( __METHOD__, '1.7.0', '' );
+		_deprecated_function( __METHOD__, '1.7.0' );
 
 		// Should only show when PPEC is enabled but not in SPB mode.
 		if ( 'yes' !== $this->settings->enabled || 'yes' === $this->settings->use_spb ) {
