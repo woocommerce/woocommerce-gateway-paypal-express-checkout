@@ -174,6 +174,10 @@
 					return actions.redirect();
 				}
 			},
+
+			onError: function( error ) {
+				showError( '<div class="woocommerce-error">' + wc_ppec_context.generic_error_msg + '</div>', selector );
+			},
 		};
 
 		if ( wc_ppec_context.use_js_sdk ) {
