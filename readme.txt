@@ -3,7 +3,7 @@ Contributors: automattic, woothemes, akeda, dwainm, royho, allendav, slash1andy,
 Tags: ecommerce, e-commerce, commerce, woothemes, wordpress ecommerce, store, sales, sell, shop, shopping, cart, checkout, configurable, paypal
 Requires at least: 4.4
 Tested up to: 5.3
-Stable tag: 1.6.18
+Stable tag: 1.6.19
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -100,6 +100,16 @@ Please use this to inform us about bugs, or make contributions via PRs.
 9. Initiate checkout from mini-cart.
 
 == Changelog ==
+
+= 1.6.19 - 2020-02-06 =
+* Fix - Check if order exists before adding order actions. PR #653
+* Fix - Global attributes stripped before sent to PayPal if unicode characters. PR#470
+* Fix - Handle subscription payment change. PR#640
+* Fix - Fixes error "Trying to get property of non-object" found during onboarding wizard. PR#654
+* Fix - Hide smart payment buttons on mini cart when cart is empty. PR#450
+* Fix - Only display smart buttons on product page if product is in stock. PR#662
+* Fix - Do not display smart buttons for external products and grouped products. PR#663
+* Update - Display a WooCommerce pre 3.0 admin notice warning. In an upcoming release PayPal Checkout will drop support for WC 2.6 and below. PR#671
 
 = 1.6.18 - 2019-12-05 =
 * Fix - Send fees to PayPal as line items

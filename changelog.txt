@@ -1,8 +1,14 @@
 *** Changelog ***
 
-= 1.6.19 - 2020-xx-xx =
-* Fix - Check if order exists before adding order actions
-* Fix - Global attributes stripped before sent to PayPal if unicode characters
+= 1.6.19 - 2020-02-06 =
+* Fix - Check if order exists before adding order actions. PR #653
+* Fix - Global attributes stripped before sent to PayPal if unicode characters. PR#470
+* Fix - Handle subscription payment change. PR#640
+* Fix - Fixes error "Trying to get property of non-object" found during onboarding wizard. PR#654
+* Fix - Hide smart payment buttons on mini cart when cart is empty. PR#450
+* Fix - Only display smart buttons on product page if product is in stock. PR#662
+* Fix - Do not display smart buttons for external products and grouped products. PR#663
+* Update - Display a WooCommerce pre 3.0 admin notice warning. In an upcoming release PayPal Checkout will drop support for WC 2.6 and below. PR#671
 
 = 1.6.18 - 2019-12-05 =
 * Fix - Send fees to PayPal as line items
