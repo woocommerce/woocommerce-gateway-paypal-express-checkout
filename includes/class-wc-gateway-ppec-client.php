@@ -575,11 +575,11 @@ class WC_Gateway_PPEC_Client {
 		// the difference.
 		$diff = 0;
 
-		if ( $details['total_item_amount'] != $rounded_total ) {
+		if ( $details['total_item_amount'] + $discounts != $rounded_total ) {
 			if ( 'add' === $settings->get_subtotal_mismatch_behavior() ) {
 				// Add line item to make up different between WooCommerce
 				// calculations and PayPal calculations.
-				$diff = round( $details['total_item_amount'] - $rounded_total, $decimals );
+				$diff = round( $details['total_item_amount'] + $discounts - $rounded_total, $decimals );
 				if ( abs( $diff ) > 0.000001 && 0.0 !== (float) $diff ) {
 					$extra_line_item = $this->_get_extra_offset_line_item( $diff );
 
@@ -595,10 +595,10 @@ class WC_Gateway_PPEC_Client {
 
 		// Enter discount shenanigans. Item total cannot be 0 so make modifications
 		// accordingly.
-		if ( $details['total_item_amount'] == $discounts ) {
+		if ( $details['total_item_amount'] == 0 ) {
 			// Omit line items altogether.
 			unset( $details['items'] );
-		} else if ( $discounts > 0 && $discounts < $details['total_item_amount'] && ! empty( $details['items'] ) ) {
+		} else if ( $discounts > 0 && 0 < $details['total_item_amount'] && ! empty( $details['items'] ) ) {
 			// Else if there is discount, add them to the line-items
 			$details['items'][] = $this->_get_extra_discount_line_item($discounts);
 		}
@@ -606,10 +606,10 @@ class WC_Gateway_PPEC_Client {
 		$details['ship_discount_amount'] = 0;
 
 		// AMT
-		$details['order_total']       = round( $details['order_total'] - $discounts, $decimals );
+		$details['order_total']       = round( $details['order_total'], $decimals );
 
 		// ITEMAMT
-		$details['total_item_amount'] = round( $details['total_item_amount'] - $discounts, $decimals );
+		$details['total_item_amount'] = round( $details['total_item_amount'], $decimals );
 
 		// If the totals don't line up, adjust the tax to make it work (it's
 		// probably a tax mismatch).
