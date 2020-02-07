@@ -852,7 +852,12 @@ class WC_Gateway_PPEC_Client {
 		$order    = wc_get_order( $order );
 
 		$rounded_total = 0;
-		foreach ( $order->get_items( array( 'line_item', 'fee' ) ) as $cart_item_key => $values ) {
+		foreach ( $order->get_items( array( 'line_item', 'fee', 'coupon' ) ) as $cart_item_key => $values ) {
+			if( 'coupon' === $values['type']) {
+				$amount = round($values['line_total'], $decimals);
+				$rounded_total -= $amount;
+				continue;
+			}
 			if( 'fee' === $values['type']) {
 				$amount = round( $values['line_total'], $decimals);
 			} else {
