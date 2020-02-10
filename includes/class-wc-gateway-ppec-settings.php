@@ -89,8 +89,9 @@ class WC_Gateway_PPEC_Settings {
 		if ( $this->_is_setting_loaded && ! $force_reload ) {
 			return $this;
 		}
-		$this->_settings          = (array) get_option( 'woocommerce_ppec_paypal_settings', array() );
-		$this->_is_setting_loaded = true;
+		$this->_settings            = (array) get_option( 'woocommerce_ppec_paypal_settings', array() );
+		$this->_settings['use_spb'] = ! apply_filters( 'woocommerce_paypal_express_checkout_disable_smart_payment_buttons', false, $this ) ? 'yes' : 'no';
+		$this->_is_setting_loaded   = true;
 		return $this;
 	}
 
