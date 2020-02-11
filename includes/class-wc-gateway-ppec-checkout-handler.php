@@ -719,7 +719,6 @@ class WC_Gateway_PPEC_Checkout_Handler {
 
 		if ( $client->response_has_success_status( $response ) ) {
 			$session_data_args['token'] = $response['TOKEN'];
-			$session_data_args['cancel_url'] = add_query_arg( 'token', $response['TOKEN'], $params['CANCELURL'] );
 
 			WC()->session->paypal = new WC_Gateway_PPEC_Session_Data( $session_data_args );
 
