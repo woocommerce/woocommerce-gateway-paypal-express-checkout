@@ -65,6 +65,7 @@
 		var selector     = isMiniCart ? '#woo_pp_ec_button_mini_cart' : '#woo_pp_ec_button_' + wc_ppec_context.page;
 		var fromCheckout = 'checkout' === wc_ppec_context.page && ! isMiniCart;
 		const return_url = wc_ppec_context['return_url'];
+		var cancel_url   = '';
 
 		// Don't render if already rendered in DOM.
 		if ( $( selector ).children().length ) {
@@ -99,6 +100,8 @@
 			},
 
 			payment: function() {
+				cancel_url = '';
+
 				// Clear any errors from previous attempt.
 				$( '.woocommerce-error', selector ).remove();
 
@@ -129,6 +132,8 @@
 							showError( '<ul class="woocommerce-error" role="alert">' + messageItems + '</ul>', selector );
 							return null;
 						}
+
+						cancel_url = response.data.cancel_url;
 						return response.data.token;
 					};
 
@@ -167,6 +172,12 @@
 					}
 
 					return actions.redirect();
+				}
+			},
+
+			onCancel: function( data, actions ) {
+				if ( cancel_url ) {
+					return actions.redirect( redirect_to );
 				}
 			},
 
