@@ -84,6 +84,7 @@ class WC_Gateway_PPEC_Session_Data {
 			'order_id'          => false,
 			'expires_in'        => 10800,
 			'use_paypal_credit' => false,
+			'cancel_url'        => '',
 		) );
 
 		$this->token             = $args['token'];
