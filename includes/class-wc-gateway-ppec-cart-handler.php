@@ -198,7 +198,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 	protected function start_checkout( $skip_checkout ) {
 		try {
 			wc_gateway_ppec()->checkout->start_checkout_from_cart( $skip_checkout );
-			wp_send_json_success( array( 'token' => WC()->session->paypal->token ) );
+			wp_send_json_success( array( 'token' => WC()->session->paypal->token, 'cancel_url' => WC()->session->paypal->cancel_url ) );
 		} catch( PayPal_API_Exception $e ) {
 			wp_send_json_error( array( 'messages' => array( $e->getMessage() ) ) );
 		}

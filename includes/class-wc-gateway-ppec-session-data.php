@@ -73,6 +73,14 @@ class WC_Gateway_PPEC_Session_Data {
 	public $use_paypal_credit;
 
 	/**
+	 * The cancel URL.
+	 *
+	 * @since 1.7.0
+	 * @var string
+	 */
+	public $cancel_url;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param array $args Arguments for session data
@@ -84,12 +92,14 @@ class WC_Gateway_PPEC_Session_Data {
 			'order_id'          => false,
 			'expires_in'        => 10800,
 			'use_paypal_credit' => false,
+			'cancel_url'        => '',
 		) );
 
 		$this->token             = $args['token'];
 		$this->source            = $args['source'];
 		$this->expiry_time       = time() + $args['expires_in'];
 		$this->use_paypal_credit = $args['use_paypal_credit'];
+		$this->cancel_url        = $args['cancel_url'];
 
 		if ( 'order' === $this->source ) {
 			$this->order_id = $args['order_id'];
