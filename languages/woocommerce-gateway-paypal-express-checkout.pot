@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the WooCommerce PayPal Checkout Gateway plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: WooCommerce PayPal Checkout Gateway 1.6.19\n"
+"Project-Id-Version: WooCommerce PayPal Checkout Gateway 1.6.20\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woocommerce-gateway-paypal-express-checkout\n"
 "POT-Creation-Date: 2020-02-06 01:32:37+00:00\n"
 "MIME-Version: 1.0\n"

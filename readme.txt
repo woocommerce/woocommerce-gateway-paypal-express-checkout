@@ -101,6 +101,9 @@ Please use this to inform us about bugs, or make contributions via PRs.
 
 == Changelog ==
 
+= 1.6.20 - 2020-02-18 =
+* Fix - Upgrade the plugin on plugins loaded rather than on plugin init. PR#682
+
 = 1.6.19 - 2020-02-06 =
 * Fix - Check if order exists before adding order actions. PR #653
 * Fix - Global attributes stripped before sent to PayPal if unicode characters. PR#470
