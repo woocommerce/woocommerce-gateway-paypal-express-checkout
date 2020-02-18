@@ -76,17 +76,12 @@ class WC_Gateway_PPEC_Plugin {
 		$this->plugin_path   = trailingslashit( plugin_dir_path( $this->file ) );
 		$this->plugin_url    = trailingslashit( plugin_dir_url( $this->file ) );
 		$this->includes_path = $this->plugin_path . trailingslashit( 'includes' );
-
-		// Updates
-		if ( version_compare( $version, get_option( 'wc_ppec_version' ), '>' ) ) {
-			$this->run_updater( $version );
-		}
 	}
 
 	/**
 	 * Handle updates.
-	 * @param  [type] $new_version [description]
-	 * @return [type]              [description]
+	 *
+	 * @param string $new_version The plugin's new version.
 	 */
 	private function run_updater( $new_version ) {
 		// Map old settings to settings API
@@ -163,6 +158,11 @@ class WC_Gateway_PPEC_Plugin {
 			}
 
 			$this->_check_dependencies();
+
+			if ( $this->needs_update() ) {
+				$this->run_updater( $this->version );
+			}
+
 			$this->_run();
 			$this->_check_credentials();
 
@@ -384,6 +384,15 @@ class WC_Gateway_PPEC_Plugin {
 		require_once( $this->includes_path . 'class-wc-gateway-ppec-client-credential-certificate.php' );
 		require_once( $this->includes_path . 'class-wc-gateway-ppec-client-credential-signature.php' );
 		require_once( $this->includes_path . 'class-wc-gateway-ppec-client.php' );
+	}
+
+	/**
+	 * Checks if the plugin needs to record an update.
+	 *
+	 * @return bool Whether the plugin needs to be updated.
+	 */
+	protected function needs_update() {
+		return version_compare( $this->version, get_option( 'wc_ppec_version' ), '>' );
 	}
 
 	/**
