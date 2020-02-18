@@ -1,7 +1,7 @@
 {
   "name": "woocommerce-gateway-paypal-express-checkout",
   "title": "WooCommerce Gateway PayPal Express Checkout",
-  "version": "1.6.19",
+  "version": "1.6.20",
   "license": "GPL-3.0",
   "homepage": "https://wordpress.org/plugins/woocommerce-gateway-paypal-express-checkout/",
   "repository": {

@@ -3,7 +3,7 @@ Contributors: automattic, woothemes, akeda, dwainm, royho, allendav, slash1andy,
 Tags: ecommerce, e-commerce, commerce, woothemes, wordpress ecommerce, store, sales, sell, shop, shopping, cart, checkout, configurable, paypal
 Requires at least: 4.4
 Tested up to: 5.3
-Stable tag: 1.6.19
+Stable tag: 1.6.20
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -100,6 +100,9 @@ Please use this to inform us about bugs, or make contributions via PRs.
 9. Initiate checkout from mini-cart.
 
 == Changelog ==
+
+= 1.6.20 - 2020-02-18 =
+* Fix - Upgrade the plugin on plugins loaded rather than on plugin init. PR#682
 
 = 1.6.19 - 2020-02-06 =
 * Fix - Check if order exists before adding order actions. PR #653
