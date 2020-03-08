@@ -50,14 +50,43 @@ if ( ! wc_gateway_ppec_is_credit_supported() ) {
 
 $credit_enabled_description  = __( 'This enables PayPal Credit, which displays a PayPal Credit button next to the primary PayPal Checkout button. PayPal Checkout lets you give customers access to financing through PayPal Credit® - at no additional cost to you. You get paid up front, even though customers have more time to pay. A pre-integrated payment button shows up next to the PayPal Button, and lets customers pay quickly with PayPal Credit®. (Should be unchecked for stores involved in Real Money Gaming.)', 'woocommerce-gateway-paypal-express-checkout' );
 
+// Build a query to the Customizer.
+$customizer_query['autofocus[section]'] = 'woocommerce_checkout';
+$customizer_query['return']             = urlencode( site_url( add_query_arg() ) );
+$customizer_query['url']                = wc_get_checkout_url();
+// Build a link to the Customizer.
+$customizer_link = esc_url( add_query_arg( $customizer_query, admin_url( 'customize.php' ) ) );
+
 // If set to Hidden or Required in the WooCommerce Customizer alter the settings.
-if ( 'hidden' === get_option( 'woocommerce_checkout_phone_field', 'required' ) || 'required' === get_option( 'woocommerce_checkout_phone_field', 'required' ) ) {
-	$require_phone_description = __( 'This setting is disabled and overwritten by the WooCommerce Customizer. Require buyer to enter their telephone number during checkout if none is provided by PayPal', 'woocommerce-gateway-paypal-express-checkout' );
-	$require_phone_disable = true;
+if ( 'hidden' === get_option('woocommerce_checkout_phone_field', 'required' ) ) {
+	$require_phone_disable      = true;
+	$require_phone_description  = sprintf(
+		'%s<a href="%s" alt="%s">%s</a>%s',
+		__( 'The billing phone number field is currently set to "Hidden" in the ', 'woocommerce-gateway-paypal-express-checkout' ),
+		$customizer_link,
+		esc_attr__( 'link to the Customizer settings', 'woocommerce-gateway-paypal-express-checkout' ),
+		__( 'Customizer > WooCommerce > Checkout' ),
+		__( ' settings. ', 'woocommerce-gateway-paypal-express-checkout' ),
+	);
+	$require_phone_description .= __( 'Please update the Customizer setting first to requirer the buyer\'s phone number. ', 'woocommerce-gateway-paypal-express-checkout' );
+} elseif ( 'required' === get_option( 'woocommerce_checkout_phone_field', 'required' ) ) {
+	$require_phone_disable      = false;
+	$require_phone_description  = sprintf(
+		'%s<a href="%s" alt="%s">%s</a>%s',
+		__( 'The billing phone number field is currently set to "Required" in the ', 'woocommerce-gateway-paypal-express-checkout' ),
+		$customizer_link,
+		esc_attr__( 'link to the Customizer settings', 'woocommerce-gateway-paypal-express-checkout' ),
+		__( 'Customizer > WooCommerce > Checkout' ),
+		__( ' settings. ', 'woocommerce-gateway-paypal-express-checkout' ),
+	);
+	$require_phone_description .= __ ( 'This setting will override what is set in the Customizer. ', 'woocommerce-gateway-paypal-express-checkout' );
 } else {
-	$require_phone_description = __( 'Require buyer to enter their telephone number during checkout if none is provided by PayPal', 'woocommerce-gateway-paypal-express-checkout' );
-	$require_phone_disable = false;
+	$require_phone_disable     = false;
+	$require_phone_description = '';
 }
+
+$require_phone_description .= __( 'Require buyer to enter their phone number during checkout if none is provided by PayPal', 'woocommerce-gateway-paypal-express-checkout' );
+
 
 wc_enqueue_js( "
 	jQuery( function( $ ) {
