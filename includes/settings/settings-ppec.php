@@ -50,6 +50,23 @@ if ( ! wc_gateway_ppec_is_credit_supported() ) {
 
 $credit_enabled_description  = __( 'This enables PayPal Credit, which displays a PayPal Credit button next to the primary PayPal Checkout button. PayPal Checkout lets you give customers access to financing through PayPal Credit® - at no additional cost to you. You get paid up front, even though customers have more time to pay. A pre-integrated payment button shows up next to the PayPal Button, and lets customers pay quickly with PayPal Credit®. (Should be unchecked for stores involved in Real Money Gaming.)', 'woocommerce-gateway-paypal-express-checkout' );
 
+// Build a query to the Customizer.
+$customizer_query['autofocus[section]'] = 'woocommerce_checkout';
+$customizer_query['return']             = urlencode( site_url( add_query_arg() ) );
+$customizer_query['url']                = wc_get_checkout_url();
+// Build a link to the Customizer.
+$customizer_link = esc_url( add_query_arg( $customizer_query, admin_url( 'customize.php' ) ) );
+
+// Build required phone field description with link.
+$require_phone_description = sprintf(
+	'%s<a href="%s" alt="%s">%s</a>%s',
+	__( 'Require buyer to enter their phone number during checkout if none is provided by PayPal. This is set in the ', 'woocommerce-gateway-paypal-express-checkout' ),
+	$customizer_link,
+	esc_attr__( 'link to the Customizer settings', 'woocommerce-gateway-paypal-express-checkout' ),
+	__( 'Customizer > WooCommerce > Checkout' ),
+	__( ' settings. ', 'woocommerce-gateway-paypal-express-checkout' ),
+);
+
 wc_enqueue_js( "
 	jQuery( function( $ ) {
 		var ppec_mark_fields      = '#woocommerce_ppec_paypal_title, #woocommerce_ppec_paypal_description';
@@ -455,10 +472,10 @@ $settings = array(
 	),
 	'require_phone_number' => array(
 		'title'       => __( 'Require Phone Number', 'woocommerce-gateway-paypal-express-checkout' ),
-		'type'        => 'checkbox',
-		'label'       => __( 'Require Phone Number', 'woocommerce-gateway-paypal-express-checkout' ),
-		'default'     => 'no',
-		'description' => __( 'Require buyer to enter their telephone number during checkout if none is provided by PayPal', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'        => 'text',
+		'placeholder' => ucfirst( get_option( 'woocommerce_checkout_phone_field', 'required' ) ),
+		'description' => $require_phone_description,
+		'disabled'    => true,
 	),
 	'paymentaction' => array(
 		'title'       => __( 'Payment Action', 'woocommerce-gateway-paypal-express-checkout' ),

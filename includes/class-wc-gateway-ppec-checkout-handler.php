@@ -38,7 +38,6 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		add_filter( 'the_title', array( $this, 'endpoint_page_titles' ) );
 		add_action( 'woocommerce_checkout_init', array( $this, 'checkout_init' ) );
 		add_filter( 'woocommerce_default_address_fields', array( $this, 'filter_default_address_fields' ) );
-		add_filter( 'woocommerce_billing_fields', array( $this, 'filter_billing_fields' ) );
 		add_action( 'woocommerce_checkout_process', array( $this, 'copy_checkout_details_to_post' ) );
 
 		add_action( 'wp', array( $this, 'maybe_return_from_paypal' ) );
@@ -111,7 +110,6 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	/**
 	 * If the cart doesn't need shipping at all, don't require the address fields
 	 * (this is unique to PPEC). This is one of two places we need to filter fields.
-	 * See also filter_billing_fields below.
 	 *
 	 * @since 1.2.1
 	 * @since 1.5.4 Check to make sure PPEC is even enable before continuing.
@@ -144,34 +142,6 @@ class WC_Gateway_PPEC_Checkout_Handler {
 
 		return $fields;
 
-	}
-
-	/**
-	 * Since PayPal doesn't always give us the phone number for the buyer, we need to make
-	 * that field not required. Note that core WooCommerce adds the phone field after calling
-	 * get_default_address_fields, so the woocommerce_default_address_fields cannot
-	 * be used to make the phone field not required.
-	 *
-	 * This is one of two places we need to filter fields. See also filter_default_address_fields above.
-	 *
-	 * @since 1.2.0
-	 * @since 1.5.4 Check to make sure PPEC is even enable before continuing.
-	 * @param $billing_fields array
-	 *
-	 * @return array
-	 */
-	public function filter_billing_fields( $billing_fields ) {
-		if ( 'yes' !== wc_gateway_ppec()->settings->enabled ) {
-			return $billing_fields;
-		}
-
-		$require_phone_number = wc_gateway_ppec()->settings->require_phone_number;
-
-		if ( array_key_exists( 'billing_phone', $billing_fields ) ) {
-			$billing_fields['billing_phone']['required'] = 'yes' === $require_phone_number;
-		}
-
-		return $billing_fields;
 	}
 
 	/**
@@ -269,7 +239,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 
 			<?php if ( ! empty( $checkout_details->payer_details->phone_number ) ) : ?>
 				<li><strong><?php _e( 'Phone:', 'woocommerce-gateway-paypal-express-checkout' ) ?></strong> <?php echo esc_html( $checkout_details->payer_details->phone_number ); ?></li>
-			<?php elseif ( 'yes' === wc_gateway_ppec()->settings->require_phone_number ) : ?>
+			<?php elseif ( 'required' === get_option( 'woocommerce_checkout_phone_field', 'required' ) ) : ?>
 				<li><?php woocommerce_form_field( 'billing_phone', $fields['billing_phone'], WC()->checkout->get_value( 'billing_phone' ) ); ?></li>
 			<?php endif; ?>
 		</ul>
@@ -368,7 +338,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 
 		if ( ! empty( $checkout_details->payer_details->phone_number ) ) {
 			$phone = $checkout_details->payer_details->phone_number;
-		} elseif ( 'yes' === wc_gateway_ppec()->settings->require_phone_number && ! empty( $_POST['billing_phone'] ) ) {
+		} elseif ( 'required' === get_option( 'woocommerce_checkout_phone_field', 'required' ) && ! empty( $_POST['billing_phone'] ) ) {
 			$phone = wc_clean( $_POST['billing_phone'] );
 		}
 
