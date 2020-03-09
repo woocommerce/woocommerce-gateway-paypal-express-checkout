@@ -303,9 +303,21 @@ class WC_Gateway_PPEC_Settings {
 	 */
 	public function get_paypal_locale() {
 		$locale = get_locale();
-		if ( ! in_array( $locale, $this->_supported_locales ) ) {
+
+		// For stores based in the US, we need to do some special mapping so PayPal Credit is allowed.
+		if ( wc_gateway_ppec_is_US_based_store() ) {
+			// PayPal has support for French, Spanish and Chinese languages based in the US. See https://developer.paypal.com/docs/archive/checkout/reference/supported-locales/
+			preg_match('/^(fr|es|zh)_/', $locale, $language_code );
+
+			if ( ! empty( $language_code ) ) {
+				$locale = $language_code[0] . 'US';
+			} else {
+				$locale = 'en_US';
+			}
+		} else if ( ! in_array( $locale, $this->_supported_locales ) ) {
 			$locale = 'en_US';
 		}
+
 		return apply_filters( 'woocommerce_paypal_express_checkout_paypal_locale', $locale );
 	}
 
