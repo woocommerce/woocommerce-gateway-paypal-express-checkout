@@ -43,7 +43,19 @@
 	};
 
 	var validate_form = function() {
-		fields_valid = form.get( 0 ).checkValidity();
+		
+		// Construct a custom event.
+		var validate_form_event = jQuery.Event( 'wc_ppec_validate_product_form' );
+		
+		// Set the .valid property.
+		validate_form_event.valid = form.get( 0 ).checkValidity();
+		
+		// We trigger the event to allow third parties to filter the validate_form_event.valid variable.
+		$( document ).trigger( validate_form_event, [ form ] );
+		
+		// Set status to result.
+		fields_valid = validate_form_event.valid;
+
 		update_button();
 	};
 
