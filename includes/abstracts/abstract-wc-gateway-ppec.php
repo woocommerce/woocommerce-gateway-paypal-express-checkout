@@ -140,8 +140,12 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 					$checkout->create_billing_agreement( $order, $checkout_details );
 				}
 
-				// Complete the payment now.
-				$checkout->do_payment( $order, $session->token, $session->payer_id );
+				// Complete the payment now if there's an amount to process.
+				if ( $order->get_total() > 0 ) {
+					$checkout->do_payment( $order, $session->token, $session->payer_id );
+				} else {
+					$order->payment_complete();
+				}
 
 				// Clear Cart
 				WC()->cart->empty_cart();
