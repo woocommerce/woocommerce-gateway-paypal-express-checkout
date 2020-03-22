@@ -79,7 +79,10 @@
 		// Hack: IE11 uses the previous field value for the checkValidity() check if it's called in the onChange handler
 		setTimeout( validate_form, 0 );
 	} );
-	validate_form();
+
+	$( document ).ready(function() {
+		validate_form();
+	} );
 
 	var generate_cart = function( callback ) {
 		var data = {
