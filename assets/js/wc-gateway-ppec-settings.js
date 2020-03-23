@@ -9,6 +9,9 @@
 
 			$( 'button.image_remove' )
 				.on( 'click', this.removeProductImage );
+
+			$( '.wc_ppec_remove_certificate' )
+				.on( 'click', this.removeCertificate );
 		},
 
 		onClickUploadButton: function( event ) {
@@ -76,6 +79,15 @@
 			$button.hide();
 			$field.siblings( 'button.image_upload' ).show();
 		},
+
+		removeCertificate: function( event ) {
+			event.preventDefault();
+			var environment = $( event.target ).data( 'environment' );
+
+			// Add a hidden element that will trigger the cert to be deleted on save.
+			$( event.target ).parent( '.description' ).append( '<input name="woocommerce_ppec_delete_' + environment + '_api_certificate" type="hidden" value="true">' );
+			$( event.target ).parent( '.description' ).fadeOut();
+		}
 	};
 
 	function getAttachmentUrl( attachment ) {

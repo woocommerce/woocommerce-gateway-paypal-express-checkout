@@ -231,6 +231,9 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 			$_POST['woocommerce_ppec_paypal_api_certificate'] = base64_encode( file_get_contents( $_FILES['woocommerce_ppec_paypal_api_certificate']['tmp_name'] ) );
 			unlink( $_FILES['woocommerce_ppec_paypal_api_certificate']['tmp_name'] );
 			unset( $_FILES['woocommerce_ppec_paypal_api_certificate'] );
+		} elseif ( isset( $_POST['woocommerce_ppec_delete_live_api_certificate'] ) ) {
+			$_POST['woocommerce_ppec_paypal_api_certificate'] = '';
+			unset( $_POST['woocommerce_ppec_delete_live_api_certificate'] );
 		} else {
 			$_POST['woocommerce_ppec_paypal_api_certificate'] = $this->get_option( 'api_certificate' );
 		}
@@ -243,6 +246,9 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 			$_POST['woocommerce_ppec_paypal_sandbox_api_certificate'] = base64_encode( file_get_contents( $_FILES['woocommerce_ppec_paypal_sandbox_api_certificate']['tmp_name'] ) );
 			unlink( $_FILES['woocommerce_ppec_paypal_sandbox_api_certificate']['tmp_name'] );
 			unset( $_FILES['woocommerce_ppec_paypal_sandbox_api_certificate'] );
+		} elseif ( isset( $_POST['woocommerce_ppec_delete_sandbox_api_certificate'] ) ) {
+			$_POST['woocommerce_ppec_paypal_sandbox_api_certificate'] = '';
+			unset( $_POST['woocommerce_ppec_delete_sandbox_api_certificate'] );
 		} else {
 			$_POST['woocommerce_ppec_paypal_sandbox_api_certificate'] = $this->get_option( 'sandbox_api_certificate' );
 		}
