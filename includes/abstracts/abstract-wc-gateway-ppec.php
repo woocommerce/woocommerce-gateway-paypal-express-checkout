@@ -576,4 +576,32 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 
 		return ob_get_clean();
 	}
+
+	/**
+	 * Gets the description for an environment's certificate setting.
+	 *
+	 * Includes information about the certificate on file and remove link.
+	 *
+	 * @param string $environment The environment. Optional. Can be 'live' or 'sandbox'. Default is 'live'.
+	 * @return string The HTML string for an environment's certificate including a remove link if one is on file.
+	 */
+	private function get_certificate_setting_description( $environment = 'live' ) {
+		if ( 'live' === $environment ) {
+			$credentials = wc_gateway_ppec()->settings->get_live_api_credentials();
+		} else {
+			$credentials = wc_gateway_ppec()->settings->get_sandbox_api_credentials();
+		}
+
+		// If we don't have a certificate credential return the empty certificate info.
+		if ( ! is_callable( array( $credentials, 'get_certificate' ) ) ) {
+			return $this->get_certificate_info( '' );
+		}
+
+		return sprintf(
+			'%1$s <a href="#" class="wc_ppec_remove_certificate" data-environment="%2$s">%3$s</a>',
+			$this->get_certificate_info( $credentials->get_certificate() ),
+			esc_attr( $environment ),
+			__( 'Remove', 'woocommerce-gateway-paypal-express-checkout' )
+		);
+	}
 }

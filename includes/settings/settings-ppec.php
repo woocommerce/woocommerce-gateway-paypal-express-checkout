@@ -323,7 +323,7 @@ $settings = array(
 	'api_certificate' => array(
 		'title'       => __( 'Live API Certificate', 'woocommerce-gateway-paypal-express-checkout' ),
 		'type'        => 'file',
-		'description' => $this->get_certificate_info( $this->get_option( 'api_certificate' ) ),
+		'description' => $this->get_certificate_setting_description(),
 		'default'     => '',
 	),
 	'api_subject' => array(
@@ -364,9 +364,8 @@ $settings = array(
 	'sandbox_api_certificate' => array(
 		'title'       => __( 'Sandbox API Certificate', 'woocommerce-gateway-paypal-express-checkout' ),
 		'type'        => 'file',
-		'description' => __( 'Get your API credentials from PayPal.', 'woocommerce-gateway-paypal-express-checkout' ),
+		'description' => $this->get_certificate_setting_description( 'sandbox' ),
 		'default'     => '',
-		'desc_tip'    => true,
 	),
 	'sandbox_api_subject' => array(
 		'title'       => __( 'Sandbox API Subject', 'woocommerce-gateway-paypal-express-checkout' ),
