@@ -43,12 +43,8 @@
 	};
 
 	var validate_form = function() {
-			
-		// Set the .valid property.
-		fields_valid = form.get( 0 ).checkValidity();
-		
-		// We trigger the event to allow third parties to filter the fields_valid variable.
-		fields_valid = $( document ).triggerHandler( 'wc_ppec_validate_product_form', [ fields_valid, form ] );
+		// Check fields are valid and allow third parties to attach their own validation checks
+		fields_valid = form.get( 0 ).checkValidity() && $( document ).triggerHandler( 'wc_ppec_validate_product_form', [ fields_valid, form ] ) !== false;
 
 		update_button();
 	};
