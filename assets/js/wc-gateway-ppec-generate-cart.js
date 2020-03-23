@@ -43,7 +43,9 @@
 	};
 
 	var validate_form = function() {
-		fields_valid = form.get( 0 ).checkValidity();
+		// Check fields are valid and allow third parties to attach their own validation checks
+		fields_valid = form.get( 0 ).checkValidity() && $( document ).triggerHandler( 'wc_ppec_validate_product_form', [ fields_valid, form ] ) !== false;
+
 		update_button();
 	};
 
@@ -67,7 +69,10 @@
 		// Hack: IE11 uses the previous field value for the checkValidity() check if it's called in the onChange handler
 		setTimeout( validate_form, 0 );
 	} );
-	validate_form();
+
+	$( document ).ready(function() {
+		validate_form();
+	} );
 
 	var generate_cart = function( callback ) {
 		var data = {
