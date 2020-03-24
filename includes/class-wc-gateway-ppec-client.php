@@ -695,7 +695,7 @@ class WC_Gateway_PPEC_Client {
 		$fees          = round( $this->_get_total_order_fees( $order ), $decimals );
 
 		$details = array(
-			'total_item_amount' => round( $order->get_subtotal() - $discounts + $fees, $decimals ),
+			'total_item_amount' => round( $order->get_subtotal() + $fees, $decimals ),
 			'order_tax'         => round( $order->get_total_tax(), $decimals ),
 			'shipping'          => round( ( version_compare( WC_VERSION, '3.0', '<' ) ? $order->get_total_shipping() : $order->get_shipping_total() ), $decimals ),
 			'items'             => $this->_get_paypal_line_items_from_order( $order ),
