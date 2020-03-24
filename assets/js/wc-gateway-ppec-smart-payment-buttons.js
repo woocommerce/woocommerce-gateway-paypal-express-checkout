@@ -47,7 +47,7 @@
 
 		var paypal_funding_methods = [];
 		for ( var i = 0; i < methods.length; i++ ) {
-			var method = paypal.FUNDING[ methods[ i ] ];
+			var method = paypal.FUNDING[ methods[ i ].toUpperCase() ];
 			if ( method ) {
 				paypal_funding_methods.push( method );
 			}

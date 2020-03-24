@@ -439,16 +439,16 @@ class WC_Gateway_PPEC_Cart_Handler {
 		if ( ! wc_gateway_ppec_is_credit_supported() ) {
 			$data['credit_enabled'] = 'no';
 			if ( ! is_array( $data['hide_funding_methods'] ) ) {
-				$data['hide_funding_methods'] = array( 'CREDIT' );
-			} elseif ( ! in_array( 'CREDIT', $data['hide_funding_methods'] ) ) {
-				$data['hide_funding_methods'][] = 'CREDIT';
+				$data['hide_funding_methods'] = array( 'credit' );
+			} elseif ( ! in_array( 'credit', $data['hide_funding_methods'] ) ) {
+				$data['hide_funding_methods'][] = 'credit';
 			}
 		}
 
 		if ( 'vertical' === $button_layout ) {
 			$data['disallowed_methods'] = $data['hide_funding_methods'];
 		} else {
-			$data['allowed_methods'] = 'yes' === $data['credit_enabled'] ? array( 'CREDIT' ) : array();
+			$data['allowed_methods'] = 'yes' === $data['credit_enabled'] ? array( 'credit' ) : array();
 		}
 		unset( $data['hide_funding_methods'], $data['credit_enabled'] );
 
@@ -522,6 +522,21 @@ class WC_Gateway_PPEC_Cart_Handler {
 			}
 			$data = array_merge( $data, $mini_cart_data );
 
+			// The JS SDK doesn't allow per-context funding methods.
+			if ( $use_js_sdk ) {
+				foreach ( array( '', 'single_product_', 'mark_', 'mini_cart_' ) as $context ) {
+					foreach ( array( 'allowed_methods', 'disallowed_methods' ) as $key ) {
+						unset( $data[ $context . $key ] );
+					}
+				}
+
+				$data['disallowed_methods'] = array_merge(
+					( is_array( $settings->hide_funding_methods ) ? $settings->hide_funding_methods : array() ),
+					( ! $settings->is_credit_enabled() ? array( 'credit' ) : array() )
+				);
+				$data['disallowed_methods'] = array_map( 'strtolower', $data['disallowed_methods'] );
+			}
+
 			if ( $use_js_sdk ) {
 				$script_args = array(
 					'client-id'  => $rest_creds->get_client_id(),
@@ -530,9 +545,8 @@ class WC_Gateway_PPEC_Cart_Handler {
 					'commit'     => 'checkout' === $page ? 'true' : 'false',
 				);
 
-				// TODO: Handle 'disable-funding' for mini cart.
 				if ( ! empty( $data['disallowed_methods'] ) ) {
-					$script_args['disable-funding'] = implode( ',', array_map( 'strtolower', $data['disallowed_methods'] ) );
+					$script_args['disable-funding'] = implode( ',', $data['disallowed_methods'] );
 				}
 
 				wp_register_script( 'paypal-checkout-js', add_query_arg( $script_args, 'https://www.paypal.com/sdk/js' ), array(), null, true );
