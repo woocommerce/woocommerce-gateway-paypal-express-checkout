@@ -153,19 +153,24 @@ class WC_Gateway_PPEC_Admin_Handler {
 	 * @param int $order_id
 	 */
 	public function capture_payment( $order_id ) {
-		$order  = wc_get_order( $order_id );
-		$old_wc = version_compare( WC_VERSION, '3.0', '<' );
+		$order = wc_get_order( $order_id );
 
+		if ( ! $order ) {
+			return;
+		}
+
+		$old_wc         = version_compare( WC_VERSION, '3.0', '<' );
 		$payment_method = $old_wc ? $order->payment_method : $order->get_payment_method();
-		if ( 'ppec_paypal' === $payment_method ) {
+		$transaction_id = get_post_meta( $order_id, '_transaction_id', true );
 
-			$trans_id = get_post_meta( $order_id, '_transaction_id', true );
-			$trans_details = wc_gateway_ppec()->client->get_transaction_details( array( 'TRANSACTIONID' => $trans_id ) );
+		if ( 'ppec_paypal' === $payment_method && $transaction_id ) {
 
-			if ( $trans_id && $this->is_authorized_only( $trans_details ) ) {
+			$trans_details = wc_gateway_ppec()->client->get_transaction_details( array( 'TRANSACTIONID' => $transaction_id ) );
+
+			if ( $this->is_authorized_only( $trans_details ) ) {
 				$order_total = $old_wc ? $order->order_total : $order->get_total();
 
-				$params['AUTHORIZATIONID'] = $trans_id;
+				$params['AUTHORIZATIONID'] = $transaction_id;
 				$params['AMT'] = floatval( $order_total );
 				$params['CURRENCYCODE'] = $old_wc ? $order->order_currency : $order->get_currency();
 				$params['COMPLETETYPE'] = 'Complete';
@@ -181,7 +186,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 						update_post_meta( $order_id, '_transaction_id', $result['TRANSACTIONID'] );
 					}
 
-					$order->add_order_note( sprintf( __( 'PayPal Checkout charge complete (Charge ID: %s)', 'woocommerce-gateway-paypal-express-checkout' ), $trans_id ) );
+					$order->add_order_note( sprintf( __( 'PayPal Checkout charge complete (Charge ID: %s)', 'woocommerce-gateway-paypal-express-checkout' ), $transaction_id ) );
 				}
 			}
 		}
