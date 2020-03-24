@@ -41,7 +41,7 @@ class WC_Gateway_PPEC_REST_Client_Credential {
 	}
 
 	/**
-	 * Retruns the REST API Client Secret.
+	 * Returns the REST API Client Secret.
 	 *
 	 * @return string
 	 */
