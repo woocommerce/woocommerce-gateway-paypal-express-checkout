@@ -141,9 +141,9 @@
 								'Content-Type': 'application/x-www-form-urlencoded',
 							},
 							body: data,
-						} ).then(
-							response => response.json()
-						).then( request_callback );
+						} ).then( function ( response ) {
+							return response.json();
+						} ).then( request_callback );
 					} else {
 						return paypal.request( {
 							method: 'post',
@@ -164,7 +164,7 @@
 				} else {
 					// Navigate to order confirmation URL specified in original request to PayPal from back-end.
 					if ( wc_ppec_context.use_js_sdk ) {
-						const query_args = `?woo-paypal-return=true&token=${ data.orderID }&PayerID=${ data.payerID }`;
+						const query_args = '?woo-paypal-return=true&token=' + data.orderID +'&PayerID=' + data.payerID;
 						return actions.redirect( return_url + query_args );
 					}
 
@@ -174,7 +174,7 @@
 
 			onCancel: function( data, actions ) {
 				if ( 'orderID' in data ) {
-					const query_args = `?woo-paypal-cancel=true&token=${ data.orderID }`;
+					const query_args = '?woo-paypal-cancel=true&token=' + data.orderID;
 					return actions.redirect( cancel_url + query_args );
 				}
 			},
@@ -193,7 +193,12 @@
 			delete button_args['style']['size'];
 
 			// Drop other args no longer needed in the JS SDK.
-			[ 'env', 'locale', 'commit', 'funding', 'payment', 'onAuthorize' ].forEach( e => delete button_args[ e ] );
+			delete button_args[ 'env' ];
+			delete button_args[ 'locale' ];
+			delete button_args[ 'commit' ];
+			delete button_args[ 'funding' ];
+			delete button_args[ 'payment' ];
+			delete button_args[ 'onAuthorize' ];
 
 			paypal.Buttons( button_args ).render( selector );
 		} else {
