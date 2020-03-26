@@ -135,7 +135,6 @@
 							}
 							return null;
 						}
-
 						return response.data.token;
 					};
 
@@ -184,8 +183,7 @@
 				}
 			},
 
-			onError: function( error ) {
-				showError( '<div class="woocommerce-error">' + wc_ppec_context.generic_error_msg + '</div>', selector );
+			onError: function() {
 			},
 		};
 
