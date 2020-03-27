@@ -459,6 +459,8 @@ class WC_Gateway_PPEC_Cart_Handler {
 	 * Frontend scripts
 	 */
 	public function enqueue_scripts() {
+		global $is_IE;
+
 		$settings = wc_gateway_ppec()->settings;
 		$client   = wc_gateway_ppec()->client;
 
@@ -488,7 +490,8 @@ class WC_Gateway_PPEC_Cart_Handler {
 			);
 
 		} elseif ( 'yes' === $settings->use_spb ) {
-			$data = array(
+			$spb_script_dependencies = array( 'jquery', 'paypal-checkout-js' );
+			$data                    = array(
 				'use_js_sdk'           => $use_js_sdk,
 				'environment'          => 'sandbox' === $settings->get_environment() ? 'sandbox' : 'production',
 				'locale'               => $settings->get_paypal_locale(),
@@ -551,11 +554,19 @@ class WC_Gateway_PPEC_Cart_Handler {
 				}
 
 				wp_register_script( 'paypal-checkout-js', add_query_arg( $script_args, 'https://www.paypal.com/sdk/js' ), array(), null, true );
+
+				// register the fetch/promise polyfills files so the new PayPal Checkout SDK works with IE
+				if ( $is_IE ) {
+					wp_register_script( 'wc-gateway-ppec-promise-polyfill', wc_gateway_ppec()->plugin_url . 'assets/js/dist/promise-polyfill.min.js', array(), null, true );
+					wp_register_script( 'wc-gateway-ppec-fetch-polyfill',   wc_gateway_ppec()->plugin_url . 'assets/js/dist/fetch-polyfill.min.js', array(), null, true );
+
+					$spb_script_dependencies = array_merge( $spb_script_dependencies, array( 'wc-gateway-ppec-fetch-polyfill', 'wc-gateway-ppec-promise-polyfill' ) );
+				}
 			} else {
 				wp_register_script( 'paypal-checkout-js', 'https://www.paypalobjects.com/api/checkout.js', array(), null, true );
 			}
 
-			wp_register_script( 'wc-gateway-ppec-smart-payment-buttons', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-smart-payment-buttons.js', array( 'jquery', 'paypal-checkout-js' ), wc_gateway_ppec()->version, true );
+			wp_register_script( 'wc-gateway-ppec-smart-payment-buttons', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-smart-payment-buttons.js', $spb_script_dependencies, wc_gateway_ppec()->version, true );
 			wp_localize_script( 'wc-gateway-ppec-smart-payment-buttons', 'wc_ppec_context', $data );
 		}
 	}
