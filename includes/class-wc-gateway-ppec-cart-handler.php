@@ -499,6 +499,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 				'start_checkout_nonce' => wp_create_nonce( '_wc_ppec_start_checkout_nonce' ),
 				'start_checkout_url'   => WC_AJAX::get_endpoint( 'wc_ppec_start_checkout' ),
 				'return_url'           => wc_get_checkout_url(),
+				'cancel_url'           => wc_get_cart_url(),
 				'generic_error_msg'    => wp_kses( __( 'An error occurred while processing your PayPal payment. Please contact the store owner for assistance.', 'woocommerce-gateway-paypal-express-checkout' ), array() ),
 			);
 
