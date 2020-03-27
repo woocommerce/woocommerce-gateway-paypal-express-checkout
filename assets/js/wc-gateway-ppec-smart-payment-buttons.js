@@ -152,6 +152,11 @@
 
 	// Render cart, single product, or checkout buttons.
 	if ( wc_ppec_context.page ) {
+		// Return early in cases where no form is present in product page
+		// i.e. out of stock product
+		if ( 'product' === wc_ppec_context.page && ! $( 'form.cart' ).length ) {
+			return;
+		}
 		if ( 'checkout' !== wc_ppec_context.page ) {
 			render();
 		}
