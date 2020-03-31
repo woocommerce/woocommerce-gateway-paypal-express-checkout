@@ -190,32 +190,31 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 			return __( 'No API certificate on file.', 'woocommerce-gateway-paypal-express-checkout' );
 		}
 
-		$cert = @openssl_x509_read( $cert_string ); // @codingStandardsIgnoreLine
-		$out  = '';
+		$cert      = @openssl_x509_read( $cert_string ); // @codingStandardsIgnoreLine
+		$cert_info = $cert ? openssl_x509_parse( $cert ) : null;
+		$output    = '';
 
-		if ( false !== $cert ) {
-			$certinfo = openssl_x509_parse( $cert );
-			if ( false !== $certinfo ) {
-				$valid_until = $certinfo['validTo_time_t'];
-				if ( $valid_until < time() ) {
-					// Display in red if the cert is already expired
-					$expires = '<span style="color: red;">' . __( 'expired on %s', 'woocommerce-gateway-paypal-express-checkout' ) . '</span>';
-				} elseif ( $valid_until < ( time() - 2592000 ) ) {
-					// Also display in red if the cert is going to expire in the next 30 days
-					$expires = '<span style="color: red;">' . __( 'expires on %s', 'woocommerce-gateway-paypal-express-checkout' ) . '</span>';
-				} else {
-					// Otherwise just display a normal message
-					$expires = __( 'expires on %s', 'woocommerce-gateway-paypal-express-checkout' );
-				}
+		if ( $cert_info ) {
+			$valid_until = $cert_info['validTo_time_t'];
 
-				$expires = sprintf( $expires, date_i18n( get_option( 'date_format' ), $valid_until ) );
-				$out = sprintf( __( 'Certificate belongs to API username %1$s; %2$s.', 'woocommerce-gateway-paypal-express-checkout' ), $certinfo['subject']['CN'], $expires );
+			if ( $valid_until < time() ) {
+				// Display in red if the cert is already expired
+				$expires = '<span style="color: red;">' . __( 'expired on %s', 'woocommerce-gateway-paypal-express-checkout' ) . '</span>';
+			} elseif ( $valid_until < ( time() - 2592000 ) ) {
+				// Also display in red if the cert is going to expire in the next 30 days
+				$expires = '<span style="color: red;">' . __( 'expires on %s', 'woocommerce-gateway-paypal-express-checkout' ) . '</span>';
 			} else {
-				$out = __( 'The certificate on file is not valid.', 'woocommerce-gateway-paypal-express-checkout' );
+				// Otherwise just display a normal message
+				$expires = __( 'expires on %s', 'woocommerce-gateway-paypal-express-checkout' );
 			}
+
+			$expires = sprintf( $expires, date_i18n( get_option( 'date_format' ), $valid_until ) );
+			$output = sprintf( __( 'Certificate belongs to API username %1$s; %2$s.', 'woocommerce-gateway-paypal-express-checkout' ), $cert_info['subject']['CN'], $expires );
+		} else {
+			$output = __( 'The certificate on file is not valid.', 'woocommerce-gateway-paypal-express-checkout' );
 		}
 
-		return $out;
+		return $output;
 	}
 
 	/**
