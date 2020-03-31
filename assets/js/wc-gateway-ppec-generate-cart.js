@@ -2,14 +2,6 @@
 ;(function( $, window, document ) {
 	'use strict';
 
-	var form = $( 'form.cart' );
-
-	// Return early in cases where no form is present
-	// i.e. out of stock product
-	if ( ! form.length ) {
-		return;
-	}
-
 	// This button state is only applicable to non-SPB click handler below.
 	var button_enabled = true;
 	$( '#woo_pp_ec_button_product' )
@@ -44,6 +36,7 @@
 	// True if all the fields of the product form are valid (such as required fields configured by Product Add-Ons). False otherwise
 	var fields_valid = true;
 
+	var form = $( 'form.cart' );
 
 	var update_button = function() {
 		$( '#woo_pp_ec_button_product' ).trigger( ( variation_valid && fields_valid ) ? 'enable' : 'disable' );

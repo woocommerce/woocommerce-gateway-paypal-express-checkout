@@ -316,6 +316,14 @@ class WC_Gateway_PPEC_Cart_Handler {
 			<?php endif; ?>
 		</div>
 		<?php
+
+		wp_enqueue_script( 'wc-gateway-ppec-generate-cart', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-generate-cart.js', array( 'jquery' ), wc_gateway_ppec()->version, true );
+		wp_localize_script( 'wc-gateway-ppec-generate-cart', 'wc_ppec_generate_cart_context',
+			array(
+				'generate_cart_nonce' => wp_create_nonce( '_wc_ppec_generate_cart_nonce' ),
+				'ajaxurl'             => WC_AJAX::get_endpoint( 'wc_ppec_generate_cart' ),
+			)
+		);
 	}
 
 	/**
@@ -512,16 +520,6 @@ class WC_Gateway_PPEC_Cart_Handler {
 			$data = array_merge( $data, $mini_cart_data );
 
 			wp_localize_script( 'wc-gateway-ppec-smart-payment-buttons', 'wc_ppec_context', $data );
-		}
-
-		if ( $is_product ) {
-			wp_enqueue_script( 'wc-gateway-ppec-generate-cart', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-generate-cart.js', array( 'jquery' ), wc_gateway_ppec()->version, true );
-			wp_localize_script( 'wc-gateway-ppec-generate-cart', 'wc_ppec_generate_cart_context',
-				array(
-					'generate_cart_nonce' => wp_create_nonce( '_wc_ppec_generate_cart_nonce' ),
-					'ajaxurl'             => WC_AJAX::get_endpoint( 'wc_ppec_generate_cart' ),
-				)
-			);
 		}
 	}
 
