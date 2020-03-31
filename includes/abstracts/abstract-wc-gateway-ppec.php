@@ -196,20 +196,21 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 
 		if ( $cert_info ) {
 			$valid_until = $cert_info['validTo_time_t'];
+			$expires     = __( 'expires on %s (%s)', 'woocommerce-gateway-paypal-express-checkout' );
 
 			if ( $valid_until < time() ) {
 				// Display in red if the cert is already expired
-				$expires = '<span style="color: red;">' . __( 'expired on %s', 'woocommerce-gateway-paypal-express-checkout' ) . '</span>';
-			} elseif ( $valid_until < ( time() - 2592000 ) ) {
+				$expires = '<span style="color: red;">' . __( 'expired on %s (%s)', 'woocommerce-gateway-paypal-express-checkout' ) . '</span>';
+			} elseif ( $valid_until < ( time() - ( 30 * DAY_IN_SECONDS ) ) ) {
 				// Also display in red if the cert is going to expire in the next 30 days
-				$expires = '<span style="color: red;">' . __( 'expires on %s', 'woocommerce-gateway-paypal-express-checkout' ) . '</span>';
-			} else {
-				// Otherwise just display a normal message
-				$expires = __( 'expires on %s', 'woocommerce-gateway-paypal-express-checkout' );
+				$expires = '<span style="color: red;">' . $expires . '</span>';
 			}
 
-			$expires = sprintf( $expires, date_i18n( get_option( 'date_format' ), $valid_until ) );
-			$output = sprintf( __( 'Certificate belongs to API username %1$s; %2$s.', 'woocommerce-gateway-paypal-express-checkout' ), $cert_info['subject']['CN'], $expires );
+			$expiry_date = new WC_DateTime( "@{$valid_until}", new DateTimeZone( 'UTC' ) );
+			$expiry_date->setTimezone( wp_timezone() );
+
+			$expires = sprintf( $expires, date_i18n( get_option( 'date_format' ), $expiry_date->getTimestamp() + $expiry_date->getOffset() ), $expiry_date->format( 'T' ) );
+			$output  = sprintf( __( 'Certificate belongs to API username %1$s; %2$s.', 'woocommerce-gateway-paypal-express-checkout' ), $cert_info['subject']['CN'], $expires );
 		} else {
 			$output = __( 'The certificate on file is not valid.', 'woocommerce-gateway-paypal-express-checkout' );
 		}
