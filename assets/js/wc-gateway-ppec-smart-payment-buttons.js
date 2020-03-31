@@ -62,8 +62,8 @@
 		var selector     = isMiniCart ? '#woo_pp_ec_button_mini_cart' : '#woo_pp_ec_button_' + wc_ppec_context.page;
 		var fromCheckout = 'checkout' === wc_ppec_context.page && ! isMiniCart;
 
-		// Don't render if already rendered in DOM.
-		if ( $( selector ).children().length ) {
+		// Don't render if selector doesn't exist or is already rendered in DOM.
+		if ( ! $( selector ).length || $( selector ).children().length ) {
 			return;
 		}
 
@@ -167,5 +167,4 @@
 			render( true );
 		}
 	} );
-
 } )( jQuery, window, document );
