@@ -150,6 +150,16 @@
 		}, selector );
 	};
 
+	// Render buttons in mini-cart if present.
+	$( document.body ).on( 'wc_fragments_loaded wc_fragments_refreshed', function() {
+		var $button = $( '.widget_shopping_cart #woo_pp_ec_button_mini_cart' );
+		if ( $button.length ) {
+			// Clear any existing button in container, and render.
+			$button.empty();
+			render( true );
+		}
+	} );
+
 	// Render cart, single product, or checkout buttons.
 	if ( wc_ppec_context.page ) {
 		// Return early in cases where no form is present in product page
@@ -162,15 +172,4 @@
 		}
 		$( document.body ).on( 'updated_cart_totals updated_checkout', render.bind( this, false ) );
 	}
-
-	// Render buttons in mini-cart if present.
-	$( document.body ).on( 'wc_fragments_loaded wc_fragments_refreshed', function() {
-		var $button = $( '.widget_shopping_cart #woo_pp_ec_button_mini_cart' );
-		if ( $button.length ) {
-			// Clear any existing button in container, and render.
-			$button.empty();
-			render( true );
-		}
-	} );
-
 } )( jQuery, window, document );
