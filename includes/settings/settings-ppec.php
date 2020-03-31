@@ -60,21 +60,21 @@ wc_enqueue_js( "
 		var enable_sandbox_toggle = $( 'a.ppec-toggle-sandbox-settings' ).length > 0;
 
 		$( '#woocommerce_ppec_paypal_environment' ).change(function(){
-			$( ppec_sandbox_fields + ',' + ppec_live_fields ).closest( 'tr' ).hide();
+			$( '#woocommerce_ppec_paypal_api_credentials + p + table, #woocommerce_ppec_paypal_sandbox_api_credentials + p + table' ).hide();
 
 			if ( 'live' === $( this ).val() ) {
 				$( '#woocommerce_ppec_paypal_api_credentials, #woocommerce_ppec_paypal_api_credentials + p' ).show();
 				$( '#woocommerce_ppec_paypal_sandbox_api_credentials, #woocommerce_ppec_paypal_sandbox_api_credentials + p' ).hide();
 
 				if ( ! enable_toggle ) {
-					$( ppec_live_fields ).closest( 'tr' ).show();
+					$( '#woocommerce_ppec_paypal_api_credentials + p + table' ).show();
 				}
 			} else {
 				$( '#woocommerce_ppec_paypal_api_credentials, #woocommerce_ppec_paypal_api_credentials + p' ).hide();
 				$( '#woocommerce_ppec_paypal_sandbox_api_credentials, #woocommerce_ppec_paypal_sandbox_api_credentials + p' ).show();
 
 				if ( ! enable_sandbox_toggle ) {
-					$( ppec_sandbox_fields ).closest( 'tr' ).show();
+					$( '#woocommerce_ppec_paypal_sandbox_api_credentials + p + table' ).show();
 				}
 			}
 		}).change();
@@ -98,14 +98,14 @@ wc_enqueue_js( "
 		if ( enable_toggle ) {
 			$( document ).off( 'click', '.ppec-toggle-settings' );
 			$( document ).on( 'click', '.ppec-toggle-settings', function( e ) {
-				$( ppec_live_fields ).closest( 'tr' ).toggle( 'fast' );
+				$( '#woocommerce_ppec_paypal_api_credentials + p + table' ).toggle( 'fast' );
 				e.preventDefault();
 			} );
 		}
 		if ( enable_sandbox_toggle ) {
 			$( document ).off( 'click', '.ppec-toggle-sandbox-settings' );
 			$( document ).on( 'click', '.ppec-toggle-sandbox-settings', function( e ) {
-				$( ppec_sandbox_fields ).closest( 'tr' ).toggle( 'fast' );
+				$( '#woocommerce_ppec_paypal_sandbox_api_credentials + p + table' ).toggle( 'fast' );
 				e.preventDefault();
 			} );
 		}
