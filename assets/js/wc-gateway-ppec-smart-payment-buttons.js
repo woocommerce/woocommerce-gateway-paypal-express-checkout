@@ -17,21 +17,6 @@
 		$( '.woocommerce-NoticeGroup-checkout, .woocommerce-error, .woocommerce-message' ).remove();
 		$container.prepend( '<div class="woocommerce-NoticeGroup woocommerce-NoticeGroup-checkout">' + errorMessage + '</div>' );
 		$container.find( '.input-text, select, input:checkbox' ).trigger( 'validate' ).blur();
-
-		var scrollElement = $( '.woocommerce-NoticeGroup-checkout' );
-		if ( ! scrollElement.length ) {
-			scrollElement = $container;
-		}
-
-		if ( $.scroll_to_notices ) {
-			$.scroll_to_notices( scrollElement );
-		} else {
-			// Compatibility with WC <3.3
-			$( 'html, body' ).animate( {
-				scrollTop: ( $container.offset().top - 100 )
-			}, 1000 );
-		}
-
 		$( document.body ).trigger( 'checkout_error' );
 	}
 
@@ -127,6 +112,7 @@
 							} ).join( '' );
 
 							showError( '<ul class="woocommerce-error" role="alert">' + messageItems + '</ul>', selector );
+							$( 'form.checkout' ).submit();
 							return null;
 						}
 						return response.data.token;
