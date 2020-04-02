@@ -26,9 +26,10 @@ if ( $enable_ips && $needs_creds ) {
 
 	$api_creds_text = sprintf(
 		// Translators: Placeholders are opening an closing link HTML tags.
-		__( 'To reset current credentials and use another account %1$sclick here%2$s.', 'woocommerce-gateway-paypal-express-checkout' ),
+		__( 'To reset current credentials and use another account %1$sclick here%2$s. %3$sLearn more about your API Credentials%2$s.', 'woocommerce-gateway-paypal-express-checkout' ),
 		'<a href="' . $reset_link . '" title="' . __( 'Reset current credentials', 'woocommerce-gateway-paypal-express-checkout' ) . '">',
-		'</a>'
+		'</a>',
+		'<a href="https://docs.woocommerce.com/document/paypal-express-checkout/#section-4" title="' . __( 'Learn more', 'woocommerce-gateway-paypal-express-checkout' ) . '">'
 	);
 }
 
@@ -47,9 +48,10 @@ if ( $enable_ips && $needs_sandbox_creds ) {
 
 	$sandbox_api_creds_text = sprintf(
 		// Translators: Placeholders are opening and closing link HTML tags.
-		__( 'Your account setting is set to sandbox, no real charging takes place. To accept live payments, switch your environment to live and connect your PayPal account. To reset current credentials and use other sandbox account %1$sclick here%2$s.', 'woocommerce-gateway-paypal-express-checkout' ),
+		__( 'Your account setting is set to sandbox, no real charging takes place. To accept live payments, switch your environment to live and connect your PayPal account. To reset current credentials and use other sandbox account %1$sclick here%2$s. %3$sLearn more about your API Credentials%2$s.', 'woocommerce-gateway-paypal-express-checkout' ),
 		'<a href="' . $reset_link . '" title="' . __( 'Reset current credentials', 'woocommerce-gateway-paypal-express-checkout' ) . '">',
-		'</a>'
+		'</a>',
+		'<a href="https://docs.woocommerce.com/document/paypal-express-checkout/#section-4" title="' . __( 'Learn more', 'woocommerce-gateway-paypal-express-checkout' ) . '">'
 	);
 }
 
@@ -370,6 +372,7 @@ $settings = array(
 		'description' => __( 'Get your API credentials from PayPal.', 'woocommerce-gateway-paypal-express-checkout' ),
 		'default'     => '',
 		'desc_tip'    => true,
+		'placeholder' => __( 'Optional if you provide a certificate below', 'woocommerce-gateway-paypal-express-checkout' ),
 	),
 	'sandbox_api_certificate' => array(
 		'title'       => __( 'Sandbox API Certificate', 'woocommerce-gateway-paypal-express-checkout' ),
