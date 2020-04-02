@@ -24,7 +24,12 @@ if ( $enable_ips && $needs_creds ) {
 		wc_gateway_ppec()->get_admin_setting_link()
 	);
 
-	$api_creds_text = sprintf( __( 'To reset current credentials and use other account <a href="%1$s" title="%2$s">click here</a>.', 'woocommerce-gateway-paypal-express-checkout' ), $reset_link, __( 'Reset current credentials', 'woocommerce-gateway-paypal-express-checkout' ) );
+	$api_creds_text = sprintf(
+		// Translators: Placeholders are opening an closing link HTML tags.
+		__( 'To reset current credentials and use another account %1$sclick here%2$s.', 'woocommerce-gateway-paypal-express-checkout' ),
+		'<a href="' . $reset_link . '" title="' . __( 'Reset current credentials', 'woocommerce-gateway-paypal-express-checkout' ) . '">',
+		'</a>'
+	);
 }
 
 if ( $enable_ips && $needs_sandbox_creds ) {
@@ -40,7 +45,12 @@ if ( $enable_ips && $needs_sandbox_creds ) {
 		wc_gateway_ppec()->get_admin_setting_link()
 	);
 
-	$sandbox_api_creds_text = sprintf( __( 'Your account setting is set to sandbox, no real charging takes place. To accept live payments, switch your environment to live and connect your PayPal account. To reset current credentials and use other sandbox account <a href="%1$s" title="%2$s">click here</a>.', 'woocommerce-gateway-paypal-express-checkout' ), $reset_link, __( 'Reset current sandbox credentials', 'woocommerce-gateway-paypal-express-checkout' ) );
+	$sandbox_api_creds_text = sprintf(
+		// Translators: Placeholders are opening and closing link HTML tags.
+		__( 'Your account setting is set to sandbox, no real charging takes place. To accept live payments, switch your environment to live and connect your PayPal account. To reset current credentials and use other sandbox account %1$sclick here%2$s.', 'woocommerce-gateway-paypal-express-checkout' ),
+		'<a href="' . $reset_link . '" title="' . __( 'Reset current credentials', 'woocommerce-gateway-paypal-express-checkout' ) . '">',
+		'</a>'
+	);
 }
 
 $credit_enabled_label = __( 'Enable PayPal Credit', 'woocommerce-gateway-paypal-express-checkout' );
