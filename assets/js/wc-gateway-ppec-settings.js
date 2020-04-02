@@ -123,6 +123,11 @@
 
 		handleSignatureDisplayFor: function( event, environment ) {
 			var certificate_upload_input = environment === 'sandbox' ? $( '#woocommerce_ppec_paypal_sandbox_api_certificate' )[0] : $( '#woocommerce_ppec_paypal_api_certificate' )[0];
+
+			if ( ! certificate_upload_input ) {
+				return;
+			}
+
 			var uploaded_new_cert        = certificate_upload_input.files.length > 0;
 			var delete_cert_element_name = 'woocommerce_ppec_delete_' + environment + '_api_certificate';
 			var cert_removed             = $( '.description > input[name="' + delete_cert_element_name + '"]' ).length > 0;

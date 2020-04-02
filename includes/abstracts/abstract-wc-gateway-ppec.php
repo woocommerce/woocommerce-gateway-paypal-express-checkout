@@ -95,7 +95,12 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		// Image upload.
 		wp_enqueue_media();
 
-		wp_enqueue_script( 'wc-gateway-ppec-settings', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-settings.js', array( 'jquery' ), wc_gateway_ppec()->version, true );
+		$screen = get_current_screen();
+
+		// Only enqueue the setting scripts on the PayPal Checkout settings screen.
+		if ( $screen && 'woocommerce_page_wc-settings' === $screen->id && isset( $_GET['tab'], $_GET['section'] ) && 'checkout' === $_GET['tab'] && 'ppec_paypal' === $_GET['section'] ) {
+			wp_enqueue_script( 'wc-gateway-ppec-settings', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-settings.js', array( 'jquery' ), wc_gateway_ppec()->version, true );
+		}
 	}
 
 	/**
