@@ -14,20 +14,29 @@
 
 	$( '#woo_pp_ec_button_product' )
 		.on( 'enable', function() {
-			$( '#woo_pp_ec_button_product' ).css( {
-				'cursor': '',
-				'-webkit-filter': '', // Safari 6.0 - 9.0
-				'filter': '',
-			} );
-			$( '#woo_pp_ec_button_product > *' ).css( 'pointer-events', '' );
+			$( '#woo_pp_ec_button_product' )
+				.css( {
+					'cursor': '',
+					'-webkit-filter': '', // Safari 6.0 - 9.0
+					'filter': '',
+				} )
+				.off( 'mouseup' )
+				.find( '> *' )
+				.css( 'pointer-events', '' );
 		} )
 		.on( 'disable', function() {
-			$( '#woo_pp_ec_button_product' ).css( {
-				'cursor': 'not-allowed',
-				'-webkit-filter': 'grayscale( 100% )', // Safari 6.0 - 9.0
-				'filter': 'grayscale( 100% )',
-			} );
-			$( '#woo_pp_ec_button_product > *' ).css( 'pointer-events', 'none' );
+			$( '#woo_pp_ec_button_product' )
+				.css( {
+					'cursor': ( variation_valid ? 'pointer' : 'not-allowed' ),
+					'-webkit-filter': 'grayscale( 100% )', // Safari 6.0 - 9.0
+					'filter': 'grayscale( 100% )',
+				} )
+				.on( 'mouseup', function( event ) {
+					event.stopImmediatePropagation();
+					form.find( ':submit' ).click();
+				} )
+				.find( '> *' )
+				.css( 'pointer-events', 'none' );
 		} );
 
 	// True if the product is simple or the user selected a valid variation. False on variable product without a valid variation selected
