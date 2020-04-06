@@ -416,4 +416,16 @@ class WC_Gateway_PPEC_Settings {
 	public function get_number_of_decimal_digits() {
 		return $this->is_currency_supports_zero_decimal() ? 0 : 2;
 	}
+
+	/**
+	 * Whether to use checkout.js or the latest available SDK.
+	 *
+	 * @since 1.7.0
+	 *
+	 * @return bool
+	 */
+	public function use_legacy_checkout_js() {
+		return (bool) apply_filters( 'woocommerce_paypal_express_checkout_use_legacy_checkout_js', false );
+	}
+
 }
