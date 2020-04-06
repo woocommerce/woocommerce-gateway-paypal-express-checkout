@@ -37,10 +37,6 @@
 
 	// Map funding method settings to enumerated options provided by PayPal (checkout.js).
 	var getFundingMethods = function( methods ) {
-		if ( wc_ppec_context.use_js_sdk ) {
-			return [];
-		}
-
 		if ( ! methods ) {
 			return undefined;
 		}
@@ -138,7 +134,7 @@
 						return response.data.token;
 					};
 
-					if ( wc_ppec_context.use_js_sdk ) {
+					if ( ! wc_ppec_context.use_checkout_js ) {
 						return fetch( wc_ppec_context.start_checkout_url, {
 							method: 'post',
 							headers: {
@@ -162,12 +158,12 @@
 				if ( fromCheckout ) {
 					// Pass data necessary for authorizing payment to back-end.
 					$( 'form.checkout' )
-						.append( $( '<input type="hidden" name="paymentToken" /> ' ).attr( 'value', wc_ppec_context.use_js_sdk ? data.orderID : data.paymentToken ) )
+						.append( $( '<input type="hidden" name="paymentToken" /> ' ).attr( 'value', ! wc_ppec_context.use_checkout_js ? data.orderID : data.paymentToken ) )
 						.append( $( '<input type="hidden" name="payerID" /> ' ).attr( 'value', data.payerID ) )
 						.submit();
 				} else {
 					// Navigate to order confirmation URL specified in original request to PayPal from back-end.
-					if ( wc_ppec_context.use_js_sdk ) {
+					if ( ! wc_ppec_context.use_checkout_js ) {
 						const query_args = '?woo-paypal-return=true&token=' + data.orderID + '&PayerID=' + data.payerID;
 						return actions.redirect( return_url + query_args );
 					}
@@ -187,7 +183,7 @@
 			},
 		};
 
-		if ( wc_ppec_context.use_js_sdk ) {
+		if ( ! wc_ppec_context.use_checkout_js ) {
 			// 'payment()' and 'onAuthorize()' callbacks from checkout.js are now 'createOrder()' and 'onApprove()'.
 			Object.defineProperty( button_args, 'createOrder', Object.getOwnPropertyDescriptor( button_args, 'payment' ) );
 			Object.defineProperty( button_args, 'onApprove', Object.getOwnPropertyDescriptor( button_args, 'onAuthorize' ) );

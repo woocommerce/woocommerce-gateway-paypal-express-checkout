@@ -492,7 +492,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 		} elseif ( 'yes' === $settings->use_spb ) {
 			$spb_script_dependencies = array( 'jquery', 'paypal-checkout-js' );
 			$data                    = array(
-				'use_js_sdk'           => $use_js_sdk,
+				'use_checkout_js'      => $settings->use_legacy_checkout_js(),
 				'environment'          => 'sandbox' === $settings->get_environment() ? 'sandbox' : 'production',
 				'locale'               => $settings->get_paypal_locale(),
 				'page'                 => $page,
@@ -527,7 +527,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 			$data = array_merge( $data, $mini_cart_data );
 
 			// The JS SDK doesn't allow per-context funding methods.
-			if ( $use_js_sdk ) {
+			if ( ! $settings->use_legacy_checkout_js() ) {
 				foreach ( array( '', 'single_product_', 'mark_', 'mini_cart_' ) as $context ) {
 					foreach ( array( 'allowed_methods', 'disallowed_methods' ) as $key ) {
 						unset( $data[ $context . $key ] );
@@ -541,7 +541,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 				$data['disallowed_methods'] = array_map( 'strtolower', $data['disallowed_methods'] );
 			}
 
-			if ( $use_js_sdk ) {
+			if ( ! $settings->use_legacy_checkout_js() ) {
 				$script_args = array(
 					'client-id'  => $rest_creds->get_client_id(),
 					'locale'     => $settings->get_paypal_locale(),
