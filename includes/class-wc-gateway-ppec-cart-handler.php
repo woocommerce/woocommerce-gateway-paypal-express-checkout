@@ -526,32 +526,13 @@ class WC_Gateway_PPEC_Cart_Handler {
 			}
 			$data = array_merge( $data, $mini_cart_data );
 
-			// The JS SDK doesn't allow per-context funding methods.
-			if ( ! $settings->use_legacy_checkout_js() ) {
-				foreach ( array( '', 'single_product_', 'mark_', 'mini_cart_' ) as $context ) {
-					foreach ( array( 'allowed_methods', 'disallowed_methods' ) as $key ) {
-						unset( $data[ $context . $key ] );
-					}
-				}
-
-				$data['disallowed_methods'] = array_merge(
-					( is_array( $settings->hide_funding_methods ) ? $settings->hide_funding_methods : array() ),
-					( ! $settings->is_credit_enabled() ? array( 'credit' ) : array() )
-				);
-				$data['disallowed_methods'] = array_map( 'strtolower', $data['disallowed_methods'] );
-			}
-
 			if ( ! $settings->use_legacy_checkout_js() ) {
 				$script_args = array(
-					'client-id'  => $rest_creds->get_client_id(),
+					'client-id'  => 'sandbox' === $settings->get_environment() ? 'sb' : $rest_creds->get_client_id(),
 					'locale'     => $settings->get_paypal_locale(),
-					'components' => 'buttons',
+					'components' => 'buttons,funding-eligibility',
 					'commit'     => 'checkout' === $page ? 'true' : 'false',
 				);
-
-				if ( ! empty( $data['disallowed_methods'] ) ) {
-					$script_args['disable-funding'] = implode( ',', $data['disallowed_methods'] );
-				}
 
 				wp_register_script( 'paypal-checkout-js', add_query_arg( $script_args, 'https://www.paypal.com/sdk/js' ), array(), null, true );
 
