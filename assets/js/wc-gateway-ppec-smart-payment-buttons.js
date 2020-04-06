@@ -55,6 +55,7 @@
 		var prefix        = isMiniCart ? 'mini_cart_' : '';
 		var button_size   = wc_ppec_context[ prefix + 'button_size' ];
 		var button_layout = wc_ppec_context[ prefix + 'button_layout' ];
+		var button_label  = ( 'undefined' !== wc_ppec_context[ prefix + 'button_label' ] ) ? wc_ppec_context[ prefix + 'button_label' ] : wc_ppec_context['button_label'];
 		var allowed       = wc_ppec_context[ prefix + 'allowed_methods' ];
 		var disallowed    = wc_ppec_context[ prefix + 'disallowed_methods' ];
 
@@ -81,7 +82,7 @@
 			style: {
 				color: wc_ppec_context.button_color,
 				shape: wc_ppec_context.button_shape,
-				label: wc_ppec_context.button_label,
+				label: button_label,
 				layout: button_layout,
 				size: button_size,
 				branding: true,
@@ -197,7 +198,32 @@
 				delete button_args[ arg ]
 			});
 
-			paypal.Buttons( button_args ).render( selector );
+			var disabledFundingSources = getFundingMethods( disallowed );
+			if ( 'undefined' === typeof( disabledFundingSources ) || ! disabledFundingSources ) {
+				paypal.Buttons( button_args ).render( selector );
+			} else {
+				// Render context specific buttons.
+				paypal.getFundingSources().forEach( function( fundingSource ) {
+					if ( -1 !== disabledFundingSources.indexOf( fundingSource ) ) {
+						return;
+					}
+
+					var buttonSettings = {
+						createOrder:   button_args.createOrder,
+						onApprove:     button_args.onApprove,
+						onError:       button_args.onError,
+						onCancel:      button_args.onCancel,
+						fundingSource: fundingSource,
+						style:         ( paypal.FUNDING.PAYPAL === fundingSource ) ? button_args.style : []
+					};
+
+					var button = paypal.Buttons( buttonSettings );
+
+					if ( button.isEligible() ) {
+						button.render( selector );
+					}
+				} );
+			}
 		} else {
 			paypal.Button.render( button_args, selector );
 		}
