@@ -192,7 +192,32 @@
 				delete button_args[ arg ]
 			});
 
-			paypal.Buttons( button_args ).render( selector );
+			var disabledFundingSources = getFundingMethods( disallowed );
+			if ( 'undefined' === typeof( disabledFundingSources ) || ! disabledFundingSources ) {
+				paypal.Buttons( button_args ).render( selector );
+			} else {
+				// Render context specific buttons.
+				paypal.getFundingSources().forEach( function( fundingSource ) {
+					if ( -1 !== disabledFundingSources.indexOf( fundingSource ) ) {
+						return;
+					}
+
+					var buttonSettings = {
+						createOrder:   button_args.createOrder,
+						onApprove:     button_args.onApprove,
+						onError:       button_args.onError,
+						onCancel:      button_args.onCancel,
+						fundingSource: fundingSource,
+						style:         ( paypal.FUNDING.PAYPAL === fundingSource ) ? button_args.style : []
+					};
+
+					var button = paypal.Buttons( buttonSettings );
+
+					if ( button.isEligible() ) {
+						button.render( selector );
+					}
+				} );
+			}
 		} else {
 			paypal.Button.render( button_args, selector );
 		}
