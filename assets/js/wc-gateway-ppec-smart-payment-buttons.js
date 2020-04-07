@@ -201,7 +201,7 @@
 			});
 
 			var disabledFundingSources = getFundingMethods( disallowed );
-			if ( 'undefined' === typeof( disabledFundingSources ) || ! disabledFundingSources ) {
+			if ( 'undefined' === typeof( disabledFundingSources ) || ! disabledFundingSources || 0 === disabledFundingSources.length ) {
 				paypal.Buttons( button_args ).render( selector );
 			} else {
 				// Render context specific buttons.
@@ -216,7 +216,7 @@
 						onError:       button_args.onError,
 						onCancel:      button_args.onCancel,
 						fundingSource: fundingSource,
-						style:         ( paypal.FUNDING.PAYPAL === fundingSource ) ? button_args.style : []
+						style:         ( paypal.FUNDING.PAYPAL === fundingSource ) ? button_args.style : {}
 					};
 
 					var button = paypal.Buttons( buttonSettings );
