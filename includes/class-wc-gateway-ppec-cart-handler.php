@@ -527,6 +527,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 			}
 
 			$data = array_merge( $data, $mini_cart_data );
+			$data = apply_filters( 'woocommerce_paypal_express_checkout_payment_button_data', $data, $page );
 
 			if ( ! $settings->use_legacy_checkout_js() ) {
 				$script_args = array(
