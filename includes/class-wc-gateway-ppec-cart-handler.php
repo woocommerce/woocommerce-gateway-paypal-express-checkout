@@ -444,16 +444,17 @@ class WC_Gateway_PPEC_Cart_Handler {
 		if ( ! wc_gateway_ppec_is_credit_supported() ) {
 			$data['credit_enabled'] = 'no';
 			if ( ! is_array( $data['hide_funding_methods'] ) ) {
-				$data['hide_funding_methods'] = array( 'credit' );
-			} elseif ( ! in_array( 'credit', $data['hide_funding_methods'] ) ) {
-				$data['hide_funding_methods'][] = 'credit';
+				$data['hide_funding_methods'] = array( 'CREDIT' );
+			} elseif ( ! in_array( 'CREDIT', $data['hide_funding_methods'] ) ) {
+				$data['hide_funding_methods'][] = 'CREDIT';
 			}
 		}
 
 		if ( 'vertical' === $button_layout ) {
 			$data['disallowed_methods'] = $data['hide_funding_methods'];
 		} else {
-			$data['allowed_methods'] = 'yes' === $data['credit_enabled'] ? array( 'credit' ) : array();
+			$data['allowed_methods']    = 'yes' === $data['credit_enabled'] ? array( 'CREDIT' ) : array();
+			$data['disallowed_methods'] = 'yes' !== $data['credit_enabled'] ? array( 'CREDIT' ) : array();
 		}
 		unset( $data['hide_funding_methods'], $data['credit_enabled'] );
 
@@ -598,9 +599,9 @@ class WC_Gateway_PPEC_Cart_Handler {
 		$needs_billing_agreement = wc_gateway_ppec()->checkout->needs_billing_agreement_creation( array() );
 
 		// Mini-cart handling. By default an empty string is passed if no methods are disallowed, therefore we need to check for non array formats too.
-		if ( $needs_billing_agreement && ( ! is_array( $payment_button_data['mini_cart_disallowed_methods'] ) || ! in_array( 'card', $payment_button_data['mini_cart_disallowed_methods'] ) ) ) {
+		if ( $needs_billing_agreement && ( ! is_array( $payment_button_data['mini_cart_disallowed_methods'] ) || ! in_array( 'CARD', $payment_button_data['mini_cart_disallowed_methods'] ) ) ) {
 			$payment_button_data['mini_cart_disallowed_methods']   = ! is_array( $payment_button_data['mini_cart_disallowed_methods'] ) ? array() : $payment_button_data['mini_cart_disallowed_methods'];
-			$payment_button_data['mini_cart_disallowed_methods'][] = 'card';
+			$payment_button_data['mini_cart_disallowed_methods'][] = 'CARD';
 		}
 
 		// Specific Page handling.
@@ -614,9 +615,9 @@ class WC_Gateway_PPEC_Cart_Handler {
 		}
 
 		// By default an empty string is passed if no methods are disallowed, therefore we need to check for non array formats too.
-		if ( $needs_billing_agreement && ( ! isset( $payment_button_data['disallowed_methods'] ) || ! is_array( $payment_button_data['disallowed_methods'] ) || ! in_array( 'card', $payment_button_data['disallowed_methods'] ) ) ) {
+		if ( $needs_billing_agreement && ( ! isset( $payment_button_data['disallowed_methods'] ) || ! is_array( $payment_button_data['disallowed_methods'] ) || ! in_array( 'CARD', $payment_button_data['disallowed_methods'] ) ) ) {
 			$payment_button_data['disallowed_methods']   = ( ! isset( $payment_button_data['disallowed_methods'] ) || ! is_array( $payment_button_data['disallowed_methods'] ) ) ? array() : $payment_button_data['disallowed_methods'];
-			$payment_button_data['disallowed_methods'][] = 'card';
+			$payment_button_data['disallowed_methods'][] = 'CARD';
 		}
 
 		return $payment_button_data;
