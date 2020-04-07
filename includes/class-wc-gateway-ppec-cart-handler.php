@@ -506,7 +506,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 				'generic_error_msg'    => wp_kses( __( 'An error occurred while processing your PayPal payment. Please contact the store owner for assistance.', 'woocommerce-gateway-paypal-express-checkout' ), array() ),
 			);
 
-			if ( ! is_null(  $page ) ) {
+			if ( ! is_null( $page ) ) {
 				if ( 'product' === $page && 'yes' === $settings->single_product_settings_toggle ) {
 					$button_settings = $this->get_button_settings( $settings, 'single_product' );
 				} elseif ( 'checkout' === $page && 'yes' === $settings->mark_settings_toggle ) {
@@ -520,10 +520,12 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 			$settings_toggle = 'yes' === $settings->mini_cart_settings_toggle;
 			$mini_cart_data  = $this->get_button_settings( $settings, $settings_toggle ? 'mini_cart' : '' );
+
 			foreach( $mini_cart_data as $key => $value ) {
 				unset( $mini_cart_data[ $key ] );
 				$mini_cart_data[ 'mini_cart_' . $key ] = $value;
 			}
+
 			$data = array_merge( $data, $mini_cart_data );
 
 			if ( ! $settings->use_legacy_checkout_js() ) {
