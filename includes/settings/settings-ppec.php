@@ -55,7 +55,7 @@ if ( $enable_ips && $needs_sandbox_creds ) {
 	);
 }
 
-$credit_enabled_label = __( 'Enable PayPal Credit to elegible customers', 'woocommerce-gateway-paypal-express-checkout' );
+$credit_enabled_label = __( 'Enable PayPal Credit to eligible customers', 'woocommerce-gateway-paypal-express-checkout' );
 if ( ! wc_gateway_ppec_is_credit_supported() ) {
 	$credit_enabled_label .= '<p><em>' . __( 'This option is disabled. Currently PayPal Credit only available for U.S. merchants using USD currency.', 'woocommerce-gateway-paypal-express-checkout' ) . '</em></p>';
 }
@@ -453,7 +453,7 @@ $per_context_settings = array(
 		),
 	),
 	'credit_enabled' => array(
-		'title'       => __( 'Enable PayPal Credit to elegible customers', 'woocommerce-gateway-paypal-express-checkout' ),
+		'title'       => __( 'Enable PayPal Credit to eligible customers', 'woocommerce-gateway-paypal-express-checkout' ),
 		'type'        => 'checkbox',
 		'label'       => $credit_enabled_label,
 		'disabled'    => ! wc_gateway_ppec_is_credit_supported(),
