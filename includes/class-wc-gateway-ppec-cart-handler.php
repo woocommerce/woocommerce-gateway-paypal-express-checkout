@@ -38,6 +38,11 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 		add_action( 'wc_ajax_wc_ppec_update_shipping_costs', array( $this, 'wc_ajax_update_shipping_costs' ) );
 		add_action( 'wc_ajax_wc_ppec_start_checkout', array( $this, 'wc_ajax_start_checkout' ) );
+
+		// Load callbacks specific to Subscriptions integration.
+		if ( class_exists( 'WC_Subscriptions_Order' ) ) {
+			add_filter( 'woocommerce_paypal_express_checkout_payment_button_data', array( $this, 'hide_card_payment_buttons_for_subscriptions' ), 10, 2 );
+		}
 	}
 
 	/**
@@ -570,6 +575,51 @@ class WC_Gateway_PPEC_Cart_Handler {
 		if ( ! empty( WC()->session ) && ! WC()->session->has_session() ) {
 			WC()->session->set_customer_session_cookie( true );
 		}
+	}
+
+
+	/**
+	 * Removes card payment method buttons from carts or pages which require a billing agreement.
+	 *
+	 * When the payment requires a billing agreement, we need a PayPal account and so require the customer to login. This means
+	 * card payment buttons cannot be used to make these purchases.
+	 *
+	 * @since 1.7.0
+	 *
+	 * @param array       $payment_button_data PayPal Smart Payment Button settings.
+	 * @param string|null $page The specific page the customer is viewing. Can be 'product', 'cart' or 'checkout'. Otherwise null.
+	 * @return array      $payment_button_data
+	 */
+	public function hide_card_payment_buttons_for_subscriptions( $payment_button_data, $page ) {
+		if ( ! class_exists( 'WC_Subscriptions_Product' ) ) {
+			return $payment_button_data;
+		}
+
+		$needs_billing_agreement = wc_gateway_ppec()->checkout->needs_billing_agreement_creation( array() );
+
+		// Mini-cart handling. By default an empty string is passed if no methods are disallowed, therefore we need to check for non array formats too.
+		if ( $needs_billing_agreement && ( ! is_array( $payment_button_data['mini_cart_disallowed_methods'] ) || ! in_array( 'card', $payment_button_data['mini_cart_disallowed_methods'] ) ) ) {
+			$payment_button_data['mini_cart_disallowed_methods']   = ! is_array( $payment_button_data['mini_cart_disallowed_methods'] ) ? array() : $payment_button_data['mini_cart_disallowed_methods'];
+			$payment_button_data['mini_cart_disallowed_methods'][] = 'card';
+		}
+
+		// Specific Page handling.
+		if ( ! $page ) {
+			return $payment_button_data;
+		}
+
+		// Add special handling for the product page where we need to use the product to test eligibility.
+		if ( 'product' === $page ) {
+			$needs_billing_agreement = WC_Subscriptions_Product::is_subscription( $GLOBALS['post']->ID );
+		}
+
+		// By default an empty string is passed if no methods are disallowed, therefore we need to check for non array formats too.
+		if ( $needs_billing_agreement && ( ! isset( $payment_button_data['disallowed_methods'] ) || ! is_array( $payment_button_data['disallowed_methods'] ) || ! in_array( 'card', $payment_button_data['disallowed_methods'] ) ) ) {
+			$payment_button_data['disallowed_methods']   = ( ! isset( $payment_button_data['disallowed_methods'] ) || ! is_array( $payment_button_data['disallowed_methods'] ) ) ? array() : $payment_button_data['disallowed_methods'];
+			$payment_button_data['disallowed_methods'][] = 'card';
+		}
+
+		return $payment_button_data;
 	}
 
 	/**
