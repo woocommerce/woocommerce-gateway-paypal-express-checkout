@@ -195,8 +195,44 @@ class WC_Gateway_PPEC_With_PayPal_Addons extends WC_Gateway_PPEC_With_PayPal {
 			if ( ! $client->response_has_success_status( $response ) ) {
 				throw new Exception( __( 'PayPal API error', 'woocommerce-gateway-paypal-express-checkout' ) );
 			}
+			$settings = wc_gateway_ppec()->settings;
+			$old_wc   = version_compare( WC_VERSION, '3.0', '<' );
+			$meta     = $old_wc ? get_post_meta( $order_id, '_woo_pp_txnData', true ) : $order->get_meta( '_woo_pp_txnData', true );
+
+			if ( ! empty( $meta ) ) {
+				$txnData = $meta;
+			} else {
+				$txnData = array( 'refundable_txns' => array() );
+			}
+
+			$txn = array(
+				'txnID'           => $response['TRANSACTIONID'],
+				'amount'          => $response['AMT'],
+				'refunded_amount' => 0
+			);
 
 			$status = ! empty( $response['PAYMENTSTATUS'] ) ? $response['PAYMENTSTATUS'] : '';
+
+			if ( 'Completed' == $status ) {
+				$txn['status'] = 'Completed';
+			} else {
+				$txn['status'] = $status . '_' . $response['REASONCODE'];
+			}
+			$txnData['refundable_txns'][] = $txn;
+
+			$paymentAction = $settings->get_paymentaction();
+
+			if ( 'authorization' == $paymentAction ) {
+				$txnData['auth_status'] = 'NotCompleted';
+			}
+
+			$txnData['txn_type'] = $paymentAction;
+
+			if ( $old_wc ) {
+				update_post_meta( $order_id, '_woo_pp_txnData', $txnData );
+			} else {
+				$order->update_meta_data( '_woo_pp_txnData', $txnData );
+			}
 
 			switch ( $status ) {
 				case 'Pending':
