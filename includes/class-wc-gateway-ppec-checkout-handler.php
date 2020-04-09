@@ -432,12 +432,11 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			return;
 		}
 
-		if ( empty( $_GET['woo-paypal-return'] ) || empty( $_GET['token'] ) || empty( $_GET['PayerID'] ) ) {
+		if ( empty( $_GET['woo-paypal-return'] ) || empty( $_GET['token'] ) ) {
 			return;
 		}
 
 		$token                    = $_GET['token'];
-		$payer_id                 = $_GET['PayerID'];
 		$create_billing_agreement = ! empty( $_GET['create-billing-agreement'] );
 		$session                  = WC()->session->get( 'paypal' );
 
@@ -448,8 +447,15 @@ class WC_Gateway_PPEC_Checkout_Handler {
 
 		// Store values in session.
 		$session->checkout_completed = true;
-		$session->payer_id           = $payer_id;
 		$session->token              = $token;
+
+		if ( ! empty( $_GET['PayerID'] ) ) {
+			$session->payer_id = $_GET['PayerID'];
+		} elseif ( $create_billing_agreement ) {
+			$session->create_billing_agreement = true;
+		} else {
+			return;
+		}
 
 		// Update customer addresses here from PayPal selection so they can be used to calculate local taxes.
 		$this->update_customer_addresses_from_paypal( $token );
@@ -470,7 +476,11 @@ class WC_Gateway_PPEC_Checkout_Handler {
 				}
 
 				// Complete the payment now.
-				$this->do_payment( $order, $session->token, $session->payer_id );
+				if ( ! empty( $session->payer_id ) ) {
+					$this->do_payment( $order, $session->token, $session->payer_id );
+				} elseif ( $order->get_total() <= 0 ) {
+					$order->payment_complete();
+				}
 
 				// Clear Cart
 				WC()->cart->empty_cart();
@@ -657,7 +667,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		}
 
 		$session = WC()->session->paypal;
-		return ( is_a( $session, 'WC_Gateway_PPEC_Session_Data' ) && $session->payer_id && $session->expiry_time > time() );
+		return ( is_a( $session, 'WC_Gateway_PPEC_Session_Data' ) && ( $session->payer_id || $session->create_billing_agreement ) && $session->expiry_time > time() );
 	}
 
 	/**
