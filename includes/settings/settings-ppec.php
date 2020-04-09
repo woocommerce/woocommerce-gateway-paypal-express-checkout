@@ -4,11 +4,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$api_username         = $this->get_option( 'api_username' );
-$sandbox_api_username = $this->get_option( 'sandbox_api_username' );
+$live_credentials       = wc_gateway_ppec()->settings->get_live_api_credentials();
+$sandbox_credentials    = wc_gateway_ppec()->settings->get_sandbox_api_credentials();
+$has_live_credential    = is_a( $live_credentials, 'WC_Gateway_PPEC_Client_Credential_Signature' ) ? (bool) $live_credentials->get_signature() : (bool) $live_credentials->get_certificate();
+$has_sandbox_credential = is_a( $sandbox_credentials, 'WC_Gateway_PPEC_Client_Credential_Signature' ) ? (bool) $sandbox_credentials->get_signature() : (bool) $sandbox_credentials->get_certificate();
 
-$needs_creds         = empty( $api_username );
-$needs_sandbox_creds = empty( $sandbox_api_username );
+$needs_creds         = ! $has_live_credential && ! (bool) $live_credentials->get_username() && ! (bool) $live_credentials->get_password();
+$needs_sandbox_creds = ! $has_sandbox_credential && ! (bool) $sandbox_credentials->get_username() && ! (bool) $sandbox_credentials->get_password();
 $enable_ips          = wc_gateway_ppec()->ips->is_supported();
 
 if ( $enable_ips && $needs_creds ) {
