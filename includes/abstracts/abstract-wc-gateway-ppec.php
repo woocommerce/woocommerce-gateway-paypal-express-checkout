@@ -95,7 +95,12 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		// Image upload.
 		wp_enqueue_media();
 
-		wp_enqueue_script( 'wc-gateway-ppec-settings', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-settings.js', array( 'jquery' ), wc_gateway_ppec()->version, true );
+		$screen = get_current_screen();
+
+		// Only enqueue the setting scripts on the PayPal Checkout settings screen.
+		if ( $screen && 'woocommerce_page_wc-settings' === $screen->id && isset( $_GET['tab'], $_GET['section'] ) && 'checkout' === $_GET['tab'] && 'ppec_paypal' === $_GET['section'] ) {
+			wp_enqueue_script( 'wc-gateway-ppec-settings', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-settings.js', array( 'jquery' ), wc_gateway_ppec()->version, true );
+		}
 	}
 
 	/**
@@ -194,32 +199,32 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 			return __( 'No API certificate on file.', 'woocommerce-gateway-paypal-express-checkout' );
 		}
 
-		$cert = @openssl_x509_read( $cert_string ); // @codingStandardsIgnoreLine
-		$out  = '';
+		$cert      = @openssl_x509_read( $cert_string ); // @codingStandardsIgnoreLine
+		$cert_info = $cert ? openssl_x509_parse( $cert ) : null;
+		$output    = '';
 
-		if ( false !== $cert ) {
-			$certinfo = openssl_x509_parse( $cert );
-			if ( false !== $certinfo ) {
-				$valid_until = $certinfo['validTo_time_t'];
-				if ( $valid_until < time() ) {
-					// Display in red if the cert is already expired
-					$expires = '<span style="color: red;">' . __( 'expired on %s', 'woocommerce-gateway-paypal-express-checkout' ) . '</span>';
-				} elseif ( $valid_until < ( time() - 2592000 ) ) {
-					// Also display in red if the cert is going to expire in the next 30 days
-					$expires = '<span style="color: red;">' . __( 'expires on %s', 'woocommerce-gateway-paypal-express-checkout' ) . '</span>';
-				} else {
-					// Otherwise just display a normal message
-					$expires = __( 'expires on %s', 'woocommerce-gateway-paypal-express-checkout' );
-				}
+		if ( $cert_info ) {
+			$valid_until = $cert_info['validTo_time_t'];
+			$expires     = __( 'expires on %s (%s)', 'woocommerce-gateway-paypal-express-checkout' );
 
-				$expires = sprintf( $expires, date_i18n( get_option( 'date_format' ), $valid_until ) );
-				$out = sprintf( __( 'Certificate belongs to API username %1$s; %2$s', 'woocommerce-gateway-paypal-express-checkout' ), $certinfo['subject']['CN'], $expires );
-			} else {
-				$out = __( 'The certificate on file is not valid.', 'woocommerce-gateway-paypal-express-checkout' );
+			if ( $valid_until < time() ) {
+				// Display in red if the cert is already expired
+				$expires = '<span style="color: red;">' . __( 'expired on %s (%s)', 'woocommerce-gateway-paypal-express-checkout' ) . '</span>';
+			} elseif ( $valid_until < ( time() - ( 30 * DAY_IN_SECONDS ) ) ) {
+				// Also display in red if the cert is going to expire in the next 30 days
+				$expires = '<span style="color: red;">' . $expires . '</span>';
 			}
+
+			$expiry_date = new WC_DateTime( "@{$valid_until}", new DateTimeZone( 'UTC' ) );
+			$expiry_date->setTimezone( wp_timezone() );
+
+			$expires = sprintf( $expires, date_i18n( get_option( 'date_format' ), $expiry_date->getTimestamp() + $expiry_date->getOffset() ), $expiry_date->format( 'T' ) );
+			$output  = sprintf( __( 'Certificate belongs to API username %1$s; %2$s.', 'woocommerce-gateway-paypal-express-checkout' ), $cert_info['subject']['CN'], $expires );
+		} else {
+			$output = __( 'The certificate on file is not valid.', 'woocommerce-gateway-paypal-express-checkout' );
 		}
 
-		return $out;
+		return $output;
 	}
 
 	/**
@@ -235,6 +240,9 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 			$_POST['woocommerce_ppec_paypal_api_certificate'] = base64_encode( file_get_contents( $_FILES['woocommerce_ppec_paypal_api_certificate']['tmp_name'] ) );
 			unlink( $_FILES['woocommerce_ppec_paypal_api_certificate']['tmp_name'] );
 			unset( $_FILES['woocommerce_ppec_paypal_api_certificate'] );
+		} elseif ( isset( $_POST['woocommerce_ppec_delete_live_api_certificate'] ) ) {
+			$_POST['woocommerce_ppec_paypal_api_certificate'] = '';
+			unset( $_POST['woocommerce_ppec_delete_live_api_certificate'] );
 		} else {
 			$_POST['woocommerce_ppec_paypal_api_certificate'] = $this->get_option( 'api_certificate' );
 		}
@@ -247,6 +255,9 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 			$_POST['woocommerce_ppec_paypal_sandbox_api_certificate'] = base64_encode( file_get_contents( $_FILES['woocommerce_ppec_paypal_sandbox_api_certificate']['tmp_name'] ) );
 			unlink( $_FILES['woocommerce_ppec_paypal_sandbox_api_certificate']['tmp_name'] );
 			unset( $_FILES['woocommerce_ppec_paypal_sandbox_api_certificate'] );
+		} elseif ( isset( $_POST['woocommerce_ppec_delete_sandbox_api_certificate'] ) ) {
+			$_POST['woocommerce_ppec_paypal_sandbox_api_certificate'] = '';
+			unset( $_POST['woocommerce_ppec_delete_sandbox_api_certificate'] );
 		} else {
 			$_POST['woocommerce_ppec_paypal_sandbox_api_certificate'] = $this->get_option( 'sandbox_api_certificate' );
 		}
@@ -579,5 +590,33 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		<?php
 
 		return ob_get_clean();
+	}
+
+	/**
+	 * Gets the description for an environment's certificate setting.
+	 *
+	 * Includes information about the certificate on file and remove link.
+	 *
+	 * @param string $environment The environment. Optional. Can be 'live' or 'sandbox'. Default is 'live'.
+	 * @return string The HTML string for an environment's certificate including a remove link if one is on file.
+	 */
+	private function get_certificate_setting_description( $environment = 'live' ) {
+		if ( 'live' === $environment ) {
+			$credentials = wc_gateway_ppec()->settings->get_live_api_credentials();
+		} else {
+			$credentials = wc_gateway_ppec()->settings->get_sandbox_api_credentials();
+		}
+
+		// If we don't have a certificate credential return the empty certificate info.
+		if ( ! is_callable( array( $credentials, 'get_certificate' ) ) ) {
+			return $this->get_certificate_info( '' );
+		}
+
+		return sprintf(
+			'%1$s <a href="#" class="wc_ppec_remove_certificate" data-environment="%2$s">%3$s</a>',
+			$this->get_certificate_info( $credentials->get_certificate() ),
+			esc_attr( $environment ),
+			__( 'Remove', 'woocommerce-gateway-paypal-express-checkout' )
+		);
 	}
 }

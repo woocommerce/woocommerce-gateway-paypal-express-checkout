@@ -466,7 +466,7 @@ class WC_Gateway_PPEC_Client {
 		$discounts     = WC()->cart->get_cart_discount_total();
 
 		$details = array(
-			'total_item_amount' => round( WC()->cart->cart_contents_total + $discounts + WC()->cart->fee_total, $decimals ),
+			'total_item_amount' => round( WC()->cart->cart_contents_total + WC()->cart->fee_total, $decimals ),
 			'order_tax'         => round( WC()->cart->tax_total + WC()->cart->shipping_tax_total, $decimals ),
 			'shipping'          => round( WC()->cart->shipping_total, $decimals ),
 			'items'             => $this->_get_paypal_line_items_from_cart(),
@@ -575,11 +575,11 @@ class WC_Gateway_PPEC_Client {
 		// the difference.
 		$diff = 0;
 
-		if ( $details['total_item_amount'] != $rounded_total ) {
+		if ( $details['total_item_amount'] + $discounts != $rounded_total ) {
 			if ( 'add' === $settings->get_subtotal_mismatch_behavior() ) {
 				// Add line item to make up different between WooCommerce
 				// calculations and PayPal calculations.
-				$diff = round( $details['total_item_amount'] - $rounded_total, $decimals );
+				$diff = round( $details['total_item_amount'] + $discounts - $rounded_total, $decimals );
 				if ( abs( $diff ) > 0.000001 && 0.0 !== (float) $diff ) {
 					$extra_line_item = $this->_get_extra_offset_line_item( $diff );
 
@@ -595,10 +595,10 @@ class WC_Gateway_PPEC_Client {
 
 		// Enter discount shenanigans. Item total cannot be 0 so make modifications
 		// accordingly.
-		if ( $details['total_item_amount'] == $discounts ) {
+		if ( $details['total_item_amount'] == 0 ) {
 			// Omit line items altogether.
 			unset( $details['items'] );
-		} else if ( $discounts > 0 && $discounts < $details['total_item_amount'] && ! empty( $details['items'] ) ) {
+		} else if ( $discounts > 0 && 0 < $details['total_item_amount'] && ! empty( $details['items'] ) ) {
 			// Else if there is discount, add them to the line-items
 			$details['items'][] = $this->_get_extra_discount_line_item($discounts);
 		}
@@ -606,10 +606,10 @@ class WC_Gateway_PPEC_Client {
 		$details['ship_discount_amount'] = 0;
 
 		// AMT
-		$details['order_total']       = round( $details['order_total'] - $discounts, $decimals );
+		$details['order_total']       = round( $details['order_total'], $decimals );
 
 		// ITEMAMT
-		$details['total_item_amount'] = round( $details['total_item_amount'] - $discounts, $decimals );
+		$details['total_item_amount'] = round( $details['total_item_amount'], $decimals );
 
 		// If the totals don't line up, adjust the tax to make it work (it's
 		// probably a tax mismatch).
@@ -690,7 +690,7 @@ class WC_Gateway_PPEC_Client {
 		$fees          = round( $this->_get_total_order_fees( $order ), $decimals );
 
 		$details = array(
-			'total_item_amount' => round( $order->get_subtotal() + $discounts + $fees, $decimals ),
+			'total_item_amount' => round( $order->get_subtotal() - $discounts + $fees, $decimals ),
 			'order_tax'         => round( $order->get_total_tax(), $decimals ),
 			'shipping'          => round( ( version_compare( WC_VERSION, '3.0', '<' ) ? $order->get_total_shipping() : $order->get_shipping_total() ), $decimals ),
 			'items'             => $this->_get_paypal_line_items_from_order( $order ),
@@ -852,7 +852,12 @@ class WC_Gateway_PPEC_Client {
 		$order    = wc_get_order( $order );
 
 		$rounded_total = 0;
-		foreach ( $order->get_items( array( 'line_item', 'fee' ) ) as $cart_item_key => $values ) {
+		foreach ( $order->get_items( array( 'line_item', 'fee', 'coupon' ) ) as $cart_item_key => $values ) {
+			if( 'coupon' === $values['type']) {
+				$amount = round($values['line_total'], $decimals);
+				$rounded_total -= $amount;
+				continue;
+			}
 			if( 'fee' === $values['type']) {
 				$amount = round( $values['line_total'], $decimals);
 			} else {

@@ -107,12 +107,17 @@
 						body: data,
 					} ).then( function( response ) {
 						if ( ! response.success ) {
-							var messageItems = response.data.messages.map( function( message ) {
-								return '<li>' + message + '</li>';
-							} ).join( '' );
-
-							showError( '<ul class="woocommerce-error" role="alert">' + messageItems + '</ul>', selector );
-							$( 'form.checkout' ).submit();
+							// Error messages may be preformatted in which case response structure will differ
+							var messages = response.data ? response.data.messages : response.messages;
+							if ( 'string' === typeof messages ) {
+								showError( messages );
+							} else {
+								var messageItems = messages.map( function( message ) {
+									return '<li>' + message + '</li>';
+								} ).join( '' );
+								showError( '<ul class="woocommerce-error" role="alert">' + messageItems + '</ul>', selector );
+							}
+              $( 'form.checkout' ).submit();
 							return null;
 						}
 						return response.data.token;

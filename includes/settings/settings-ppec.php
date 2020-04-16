@@ -24,7 +24,13 @@ if ( $enable_ips && $needs_creds ) {
 		wc_gateway_ppec()->get_admin_setting_link()
 	);
 
-	$api_creds_text = sprintf( __( 'To reset current credentials and use other account <a href="%1$s" title="%2$s">click here</a>.', 'woocommerce-gateway-paypal-express-checkout' ), $reset_link, __( 'Reset current credentials', 'woocommerce-gateway-paypal-express-checkout' ) );
+	$api_creds_text = sprintf(
+		// Translators: Placeholders are opening an closing link HTML tags.
+		__( 'To reset current credentials and use another account %1$sclick here%2$s. %3$sLearn more about your API Credentials%2$s.', 'woocommerce-gateway-paypal-express-checkout' ),
+		'<a href="' . $reset_link . '" title="' . __( 'Reset current credentials', 'woocommerce-gateway-paypal-express-checkout' ) . '">',
+		'</a>',
+		'<a href="https://docs.woocommerce.com/document/paypal-express-checkout/#section-4" title="' . __( 'Learn more', 'woocommerce-gateway-paypal-express-checkout' ) . '">'
+	);
 }
 
 if ( $enable_ips && $needs_sandbox_creds ) {
@@ -40,7 +46,13 @@ if ( $enable_ips && $needs_sandbox_creds ) {
 		wc_gateway_ppec()->get_admin_setting_link()
 	);
 
-	$sandbox_api_creds_text = sprintf( __( 'Your account setting is set to sandbox, no real charging takes place. To accept live payments, switch your environment to live and connect your PayPal account. To reset current credentials and use other sandbox account <a href="%1$s" title="%2$s">click here</a>.', 'woocommerce-gateway-paypal-express-checkout' ), $reset_link, __( 'Reset current sandbox credentials', 'woocommerce-gateway-paypal-express-checkout' ) );
+	$sandbox_api_creds_text = sprintf(
+		// Translators: Placeholders are opening and closing link HTML tags.
+		__( 'Your account setting is set to sandbox, no real charging takes place. To accept live payments, switch your environment to live and connect your PayPal account. To reset current credentials and use other sandbox account %1$sclick here%2$s. %3$sLearn more about your API Credentials%2$s.', 'woocommerce-gateway-paypal-express-checkout' ),
+		'<a href="' . $reset_link . '" title="' . __( 'Reset current credentials', 'woocommerce-gateway-paypal-express-checkout' ) . '">',
+		'</a>',
+		'<a href="https://docs.woocommerce.com/document/paypal-express-checkout/#section-4" title="' . __( 'Learn more', 'woocommerce-gateway-paypal-express-checkout' ) . '">'
+	);
 }
 
 $credit_enabled_label = __( 'Enable PayPal Credit', 'woocommerce-gateway-paypal-express-checkout' );
@@ -60,21 +72,21 @@ wc_enqueue_js( "
 		var enable_sandbox_toggle = $( 'a.ppec-toggle-sandbox-settings' ).length > 0;
 
 		$( '#woocommerce_ppec_paypal_environment' ).change(function(){
-			$( ppec_sandbox_fields + ',' + ppec_live_fields ).closest( 'tr' ).hide();
+			$( '#woocommerce_ppec_paypal_api_credentials + p + table, #woocommerce_ppec_paypal_sandbox_api_credentials + p + table' ).hide();
 
 			if ( 'live' === $( this ).val() ) {
 				$( '#woocommerce_ppec_paypal_api_credentials, #woocommerce_ppec_paypal_api_credentials + p' ).show();
 				$( '#woocommerce_ppec_paypal_sandbox_api_credentials, #woocommerce_ppec_paypal_sandbox_api_credentials + p' ).hide();
 
 				if ( ! enable_toggle ) {
-					$( ppec_live_fields ).closest( 'tr' ).show();
+					$( '#woocommerce_ppec_paypal_api_credentials + p + table' ).show();
 				}
 			} else {
 				$( '#woocommerce_ppec_paypal_api_credentials, #woocommerce_ppec_paypal_api_credentials + p' ).hide();
 				$( '#woocommerce_ppec_paypal_sandbox_api_credentials, #woocommerce_ppec_paypal_sandbox_api_credentials + p' ).show();
 
 				if ( ! enable_sandbox_toggle ) {
-					$( ppec_sandbox_fields ).closest( 'tr' ).show();
+					$( '#woocommerce_ppec_paypal_sandbox_api_credentials + p + table' ).show();
 				}
 			}
 		}).change();
@@ -98,14 +110,14 @@ wc_enqueue_js( "
 		if ( enable_toggle ) {
 			$( document ).off( 'click', '.ppec-toggle-settings' );
 			$( document ).on( 'click', '.ppec-toggle-settings', function( e ) {
-				$( ppec_live_fields ).closest( 'tr' ).toggle( 'fast' );
+				$( '#woocommerce_ppec_paypal_api_credentials + p + table' ).toggle( 'fast' );
 				e.preventDefault();
 			} );
 		}
 		if ( enable_sandbox_toggle ) {
 			$( document ).off( 'click', '.ppec-toggle-sandbox-settings' );
 			$( document ).on( 'click', '.ppec-toggle-sandbox-settings', function( e ) {
-				$( ppec_sandbox_fields ).closest( 'tr' ).toggle( 'fast' );
+				$( '#woocommerce_ppec_paypal_sandbox_api_credentials + p + table' ).toggle( 'fast' );
 				e.preventDefault();
 			} );
 		}
@@ -323,7 +335,7 @@ $settings = array(
 	'api_certificate' => array(
 		'title'       => __( 'Live API Certificate', 'woocommerce-gateway-paypal-express-checkout' ),
 		'type'        => 'file',
-		'description' => $this->get_certificate_info( $this->get_option( 'api_certificate' ) ),
+		'description' => $this->get_certificate_setting_description(),
 		'default'     => '',
 	),
 	'api_subject' => array(
@@ -360,13 +372,13 @@ $settings = array(
 		'description' => __( 'Get your API credentials from PayPal.', 'woocommerce-gateway-paypal-express-checkout' ),
 		'default'     => '',
 		'desc_tip'    => true,
+		'placeholder' => __( 'Optional if you provide a certificate below', 'woocommerce-gateway-paypal-express-checkout' ),
 	),
 	'sandbox_api_certificate' => array(
 		'title'       => __( 'Sandbox API Certificate', 'woocommerce-gateway-paypal-express-checkout' ),
 		'type'        => 'file',
-		'description' => __( 'Get your API credentials from PayPal.', 'woocommerce-gateway-paypal-express-checkout' ),
+		'description' => $this->get_certificate_setting_description( 'sandbox' ),
 		'default'     => '',
-		'desc_tip'    => true,
 	),
 	'sandbox_api_subject' => array(
 		'title'       => __( 'Sandbox API Subject', 'woocommerce-gateway-paypal-express-checkout' ),

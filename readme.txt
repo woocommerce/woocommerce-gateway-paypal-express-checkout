@@ -3,7 +3,7 @@ Contributors: automattic, woothemes, akeda, dwainm, royho, allendav, slash1andy,
 Tags: ecommerce, e-commerce, commerce, woothemes, wordpress ecommerce, store, sales, sell, shop, shopping, cart, checkout, configurable, paypal
 Requires at least: 4.4
 Tested up to: 5.3
-Stable tag: 1.6.20
+Stable tag: 1.6.21
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -100,6 +100,20 @@ Please use this to inform us about bugs, or make contributions via PRs.
 9. Initiate checkout from mini-cart.
 
 == Changelog ==
+
+= 1.6.21 - 2020-04-14 =
+* Fix - Ensure Puerto Rico and supported Locales are eligible for PayPal Credit. PR#693
+* Fix - Support purchasing subscriptions with $0 initial payment - free trials, synced etc. PR#698
+* Fix - Only make the billing fields optional during an active PayPal Checkout session. PR#697
+* Fix - Uncaught JS errors on product page when viewing and out-of-stock product. PR#704
+* Fix - Loading API certificates and improves managing certificate settings. PR#696
+* Fix - Displaying PayPal Smart Payment buttons on pages with single product shortcode. PR#665
+* Fix - Do not add discounts to total item amount and cause line item amount offset. PR#677
+* Fix - Redirect to Confirm your PayPal Order page for subscriptions initial purchases using PayPal Smart Buttons. PR#702
+* Fix - Display missing checkout notice when email format is incorrect. PR#708
+* Add - Filter product form validity via a new `wc_ppec_validate_product_form` event. PR#695
+* Add - Translation tables for states of more countries. PR#659
+* Update - WooCommerce 4.0 compatibility
 
 = 1.6.20 - 2020-02-18 =
 * Fix - Upgrade the plugin on plugins loaded rather than on plugin init. PR#682
