@@ -1002,23 +1002,6 @@ class WC_Gateway_PPEC_Client {
 	}
 
 	/**
-	 * Updates or deletes a billing agreement.
-	 *
-	 * @see https://developer.paypal.com/docs/classic/api/merchant/BAUpdate_API_Operation_NVP/
-	 *
-	 * @since 1.2.0
-	 *
-	 * @param string $billing_agreement_id Billing agreement ID
-	 */
-	public function update_billing_agreement( $billing_agreement_id ) {
-		$params = array(
-			'METHOD'      => 'BillAgreementUpdate',
-			'VERSION'     => self::API_VERSION,
-			'REFERENCEID' => $billing_agreement_id,
-		);
-	}
-
-	/**
 	 * Processes a payment from a buyer's account, which is identified by a
 	 * previous transaction
 	 *
@@ -1241,6 +1224,27 @@ class WC_Gateway_PPEC_Client {
 			isset( $response['ACK'] )
 			&&
 			in_array( $response['ACK'], array( 'Success', 'SuccessWithWarning' ) )
+		);
+	}
+
+	/** Deprecated Functions */
+
+	/**
+	 * Updates or deletes a billing agreement.
+	 *
+	 * @see https://developer.paypal.com/docs/classic/api/merchant/BAUpdate_API_Operation_NVP/
+	 *
+	 * @since 1.2.0
+	 * @deprecated 1.7.0
+	 *
+	 * @param string $billing_agreement_id Billing agreement ID
+	 */
+	public function update_billing_agreement( $billing_agreement_id ) {
+		_deprecated_function( __METHOD__, '1.7.0' );
+		$params = array(
+			'METHOD'      => 'BillAgreementUpdate',
+			'VERSION'     => self::API_VERSION,
+			'REFERENCEID' => $billing_agreement_id,
 		);
 	}
 }
