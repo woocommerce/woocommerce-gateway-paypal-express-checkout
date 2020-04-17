@@ -55,7 +55,6 @@
 		var prefix        = isMiniCart ? 'mini_cart_' : '';
 		var button_size   = wc_ppec_context[ prefix + 'button_size' ];
 		var button_layout = wc_ppec_context[ prefix + 'button_layout' ];
-		var button_label  = wc_ppec_context[ prefix + 'button_label' ];
 		var allowed       = wc_ppec_context[ prefix + 'allowed_methods' ];
 		var disallowed    = wc_ppec_context[ prefix + 'disallowed_methods' ];
 
@@ -80,9 +79,9 @@
 			style: {
 				color: wc_ppec_context.button_color,
 				shape: wc_ppec_context.button_shape,
+				label: wc_ppec_context.button_label,
 				layout: button_layout,
 				size: button_size,
-				label: button_label,
 				branding: true,
 				tagline: false,
 			},

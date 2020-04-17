@@ -546,6 +546,20 @@ $settings = array(
 			'rect' => __( 'Rectangle', 'woocommerce-gateway-paypal-express-checkout' ),
 		),
 	),
+	'button_label' => array(
+		'title'       => __( 'Button Label', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'        => 'select',
+		'class'       => 'wc-enhanced-select woocommerce_ppec_paypal_spb',
+		'default'     => 'paypal',
+		'desc_tip'    => true,
+		'description' => __( 'This controls the label on the primary button.', 'woocommerce-gateway-paypal-express-checkout' ),
+		'options'     => array(
+			'paypal'   => __( 'PayPal', 'woocommerce-gateway-paypal-express-checkout' ),
+			'checkout' => __( 'PayPal Checkout', 'woocommerce-gateway-paypal-express-checkout' ),
+			'buynow'   => __( 'PayPal Buy Now', 'woocommerce-gateway-paypal-express-checkout' ),
+			'pay'      => __( 'Pay with PayPal', 'woocommerce-gateway-paypal-express-checkout' ),
+		),
+	),
 );
 
 /**
@@ -576,6 +590,20 @@ $per_context_settings = array(
 			'small'      => __( 'Small', 'woocommerce-gateway-paypal-express-checkout' ),
 			'medium'     => __( 'Medium', 'woocommerce-gateway-paypal-express-checkout' ),
 			'large'      => __( 'Large', 'woocommerce-gateway-paypal-express-checkout' ),
+		),
+	),
+	'button_label' => array(
+		'title'       => __( 'Button Label', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'        => 'select',
+		'class'       => 'wc-enhanced-select woocommerce_ppec_paypal_spb',
+		'default'     => 'paypal',
+		'desc_tip'    => true,
+		'description' => __( 'PayPal offers different labels on the "PayPal Checkout" buttons, allowing you to select a suitable label.)', 'woocommerce-gateway-paypal-express-checkout' ),
+		'options'     => array(
+			'paypal'   => __( 'PayPal', 'woocommerce-gateway-paypal-express-checkout' ),
+			'checkout' => __( 'PayPal Checkout', 'woocommerce-gateway-paypal-express-checkout' ),
+			'buynow'   => __( 'PayPal Buy Now', 'woocommerce-gateway-paypal-express-checkout' ),
+			'pay'      => __( 'Pay with PayPal', 'woocommerce-gateway-paypal-express-checkout' ),
 		),
 	),
 	'hide_funding_methods' => array(
