@@ -71,6 +71,9 @@ wc_enqueue_js( "
 		var enable_toggle         = $( 'a.ppec-toggle-settings' ).length > 0;
 		var enable_sandbox_toggle = $( 'a.ppec-toggle-sandbox-settings' ).length > 0;
 
+		// as of v1.7.0 this option is enabled by default, but can be modified using a filter. Hiding the checkbox will let the settings page hide/show the correct settings depending on whether spb is enabled or disabled
+		$( '#woocommerce_ppec_paypal_use_spb' ).closest( 'tr' ).hide();
+
 		$( '#woocommerce_ppec_paypal_environment' ).change(function(){
 			$( '#woocommerce_ppec_paypal_api_credentials + p + table, #woocommerce_ppec_paypal_sandbox_api_credentials + p + table' ).hide();
 

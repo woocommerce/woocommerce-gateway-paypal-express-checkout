@@ -226,28 +226,6 @@ class WC_Gateway_PPEC_Plugin {
 		}
 	}
 
-	public function show_spb_notice() {
-		// Should only show when PPEC is enabled but not in SPB mode.
-		if ( 'yes' !== $this->settings->enabled || 'yes' === $this->settings->use_spb ) {
-			return;
-		}
-
-		// Should only show on WooCommerce screens, the main dashboard, and on the plugins screen (as in WC_Admin_Notices).
-		$screen    = get_current_screen();
-		$screen_id = $screen ? $screen->id : '';
-		if ( ! in_array( $screen_id, wc_get_screen_ids(), true ) && 'dashboard' !== $screen_id && 'plugins' !== $screen_id ) {
-			return;
-		}
-
-		$setting_link = $this->get_admin_setting_link();
-		$message = sprintf( __( '<p>PayPal Checkout with new <strong>Smart Payment Buttons™</strong> gives your customers the power to pay the way they want without leaving your site.</p><p>The <strong>existing buttons will be removed</strong> in the <strong>next release</strong>. Please upgrade to Smart Payment Buttons on the <a href="%s">PayPal Checkout settings page</a>.</p>', 'woocommerce-gateway-paypal-express-checkout' ), esc_url( $setting_link ) );
-		?>
-		<div class="notice notice-error">
-			<?php echo wp_kses( $message, array( 'a' => array( 'href' => array() ), 'strong' => array(), 'p' => array() ) ); ?>
-		</div>
-		<?php
-	}
-
 	/**
 	 * AJAX handler for dismiss notice action.
 	 *
@@ -326,7 +304,6 @@ class WC_Gateway_PPEC_Plugin {
 	protected function _run() {
 		require_once( $this->includes_path . 'functions.php' );
 		$this->_load_handlers();
-		add_action( 'admin_notices', array( $this, 'show_spb_notice' ) );
 	}
 
 	/**
@@ -477,5 +454,37 @@ class WC_Gateway_PPEC_Plugin {
 		}
 
 		return apply_filters( 'woocommerce_cart_needs_shipping', $needs_shipping );
+	}
+
+	/* Deprecated Functions */
+
+	/**
+	 * Shows an admin notice notifying store managers that support for non-spb
+	 * on the checkout is being removed in 1.7.0
+	 *
+	 * @deprecated 1.7.0
+	 */
+	public function show_spb_notice() {
+		_deprecated_function( __METHOD__, '1.7.0' );
+
+		// Should only show when PPEC is enabled but not in SPB mode.
+		if ( 'yes' !== $this->settings->enabled || 'yes' === $this->settings->use_spb ) {
+			return;
+		}
+
+		// Should only show on WooCommerce screens, the main dashboard, and on the plugins screen (as in WC_Admin_Notices).
+		$screen    = get_current_screen();
+		$screen_id = $screen ? $screen->id : '';
+		if ( ! in_array( $screen_id, wc_get_screen_ids(), true ) && 'dashboard' !== $screen_id && 'plugins' !== $screen_id ) {
+			return;
+		}
+
+		$setting_link = $this->get_admin_setting_link();
+		$message = sprintf( __( '<p>PayPal Checkout with new <strong>Smart Payment Buttons™</strong> gives your customers the power to pay the way they want without leaving your site.</p><p>The <strong>existing buttons will be removed</strong> in the <strong>next release</strong>. Please upgrade to Smart Payment Buttons on the <a href="%s">PayPal Checkout settings page</a>.</p>', 'woocommerce-gateway-paypal-express-checkout' ), esc_url( $setting_link ) );
+		?>
+		<div class="notice notice-error">
+			<?php echo wp_kses( $message, array( 'a' => array( 'href' => array() ), 'strong' => array(), 'p' => array() ) ); ?>
+		</div>
+		<?php
 	}
 }

@@ -18,14 +18,13 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		$this->method_title       = __( 'PayPal Checkout', 'woocommerce-gateway-paypal-express-checkout' );
 		$this->method_description = __( 'Allow customers to conveniently checkout directly with PayPal.', 'woocommerce-gateway-paypal-express-checkout' );
 
-		if ( empty( $_GET['woo-paypal-return'] ) && 'yes' !== $this->get_option( 'use_spb' ) ) {
-			$this->order_button_text  = __( 'Continue to payment', 'woocommerce-gateway-paypal-express-checkout' );
-		}
-
 		wc_gateway_ppec()->ips->maybe_received_credentials();
 
 		$this->init_form_fields();
 		$this->init_settings();
+
+		// With 1.7.0, override the use_spb option pulled from the DB to the value set in WC_Gateway_PPEC_Settings
+		$this->settings['use_spb'] = wc_gateway_ppec()->settings->use_spb;
 
 		$this->title        = $this->method_title;
 		$this->description  = '';
@@ -55,6 +54,10 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		$this->paymentaction              = $this->get_option( 'paymentaction', 'sale' );
 		$this->subtotal_mismatch_behavior = $this->get_option( 'subtotal_mismatch_behavior', 'add' );
 		$this->use_ppc                    = false;
+
+		if ( empty( $_GET['woo-paypal-return'] ) && 'yes' !== $this->get_option( 'use_spb', 'yes' ) ) {
+			$this->order_button_text = __( 'Continue to payment', 'woocommerce-gateway-paypal-express-checkout' );
+		}
 
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
 
