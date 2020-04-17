@@ -386,6 +386,10 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		$txn_data = $old_wc ? get_post_meta( $order_id, '_woo_pp_txnData', true ) : $order->get_meta( '_woo_pp_txnData', true );
 		$order_currency = $old_wc ? $order->order_currency : $order->get_currency();
 
+		if( ! isset($txn_data['refundable_txns'] ) ) {
+			return new WP_Error( 'paypal_refund_error', __( 'Refund Error: Sorry! This is not a refundable transaction.', 'woocommerce-gateway-paypal-express-checkout' ) );
+		}
+
 		foreach ( $txn_data['refundable_txns'] as $key => $value ) {
 			$refundable_amount = $value['amount'] - $value['refunded_amount'];
 

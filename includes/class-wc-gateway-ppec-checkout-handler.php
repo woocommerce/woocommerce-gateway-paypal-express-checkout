@@ -897,7 +897,6 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 * Complete a payment that has been authorized via PPEC.
 	 */
 	public function do_payment( $order, $token, $payer_id ) {
-		$settings     = wc_gateway_ppec()->settings;
 		$session_data = WC()->session->get( 'paypal', null );
 
 		if ( ! $order || null === $session_data || $this->session_has_expired( $token ) || empty( $payer_id ) ) {
@@ -919,38 +918,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			$payment_details = new PayPal_Payment_Details();
 			$payment_details->loadFromDoECResponse( $response );
 
-			$meta = $old_wc ? get_post_meta( $order_id, '_woo_pp_txnData', true ) : $order->get_meta( '_woo_pp_txnData', true );
-			if ( ! empty( $meta ) ) {
-				$txnData = $meta;
-			} else {
-				$txnData = array( 'refundable_txns' => array() );
-			}
-
-			$paymentAction = $settings->get_paymentaction();
-
-			$txn = array(
-				'txnID'           => $payment_details->payments[0]->transaction_id,
-				'amount'          => $order->get_total(),
-				'refunded_amount' => 0
-			);
-			if ( 'Completed' == $payment_details->payments[0]->payment_status ) {
-				$txn['status'] = 'Completed';
-			} else {
-				$txn['status'] = $payment_details->payments[0]->payment_status . '_' . $payment_details->payments[0]->pending_reason;
-			}
-			$txnData['refundable_txns'][] = $txn;
-
-			if ( 'authorization' == $paymentAction ) {
-				$txnData['auth_status'] = 'NotCompleted';
-			}
-
-			$txnData['txn_type'] = $paymentAction;
-
-			if ( $old_wc ) {
-				update_post_meta( $order_id, '_woo_pp_txnData', $txnData );
-			} else {
-				$order->update_meta_data( '_woo_pp_txnData', $txnData );
-			}
+			wc_gateway_ppec_save_transaction_data( $order, $response, 'PAYMENTINFO_0_' );
 
 			// Payment was taken so clear session
 			$this->maybe_clear_session_data();

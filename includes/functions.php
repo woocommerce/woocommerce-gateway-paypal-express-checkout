@@ -165,3 +165,56 @@ function wc_gateway_ppec_is_US_based_store() {
 	$base_location = wc_get_base_location();
 	return in_array( $base_location['country'], array( 'US', 'PR', 'GU', 'VI', 'AS', 'MP' ), true );
 }
+
+/**
+ * Saves the transaction details from the transaction response into a post meta.
+ *
+ * @since 2.0
+ *
+ * @param object $order                Order for which the transaction was made
+ * @param object $transaction_response Response from a transaction, which contains the transaction details
+ * @param object $prefix               A prefix string which is empty for Reference Transactions and is 'PAYMENTINFO_0_' for Express Checkout
+ * @return void
+ */
+function wc_gateway_ppec_save_transaction_data( $order, $transaction_response, $prefix = '' ) {
+
+	$settings = wc_gateway_ppec()->settings;
+	$old_wc   = version_compare( WC_VERSION, '3.0', '<' );
+	$order_id = $old_wc ? $order->id : $order->get_id();
+	$meta     = $old_wc ? get_post_meta( $order_id, '_woo_pp_txnData', true ) : $order->get_meta( '_woo_pp_txnData', true );
+
+	if ( ! empty( $meta ) ) {
+		$txnData = $meta;
+	} else {
+		$txnData = array( 'refundable_txns' => array() );
+	}
+
+	$txn = array(
+		'txnID'           => $transaction_response[$prefix . 'TRANSACTIONID'],
+		'amount'          => $transaction_response[$prefix . 'AMT'],
+		'refunded_amount' => 0
+	);
+
+	$status = ! empty( $transaction_response[$prefix . 'PAYMENTSTATUS'] ) ? $transaction_response[$prefix . 'PAYMENTSTATUS'] : '';
+
+	if ( 'Completed' == $status ) {
+		$txn['status'] = 'Completed';
+	} else {
+		$txn['status'] = $status . '_' . $transaction_response[$prefix . 'REASONCODE'];
+	}
+	$txnData['refundable_txns'][] = $txn;
+
+	$paymentAction = $settings->get_paymentaction();
+
+	if ( 'authorization' == $paymentAction ) {
+		$txnData['auth_status'] = 'NotCompleted';
+	}
+
+	$txnData['txn_type'] = $paymentAction;
+
+	if ( $old_wc ) {
+		update_post_meta( $order_id, '_woo_pp_txnData', $txnData );
+	} else {
+		$order->update_meta_data( '_woo_pp_txnData', $txnData );
+	}
+}
