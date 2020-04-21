@@ -1,9 +1,33 @@
 <?xml version="1.0"?>
 <ruleset name="WordPress Coding Standards for Plugins">
-	<description>Generally-applicable sniffs for WordPress plugins</description>
+	<description>PHP_CodeSniffer ruleset for WooCommerce PayPal Checkout.</description>
 
-	<rule ref="WordPress-Core" />
-	<rule ref="WordPress-Docs" />
+	<config name="minimum_supported_wp_version" value="5.0" />
+	<arg value="psv"/>
+
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array" value="woocommerce-gateway-paypal-express-checkout" />
+		</properties>
+	</rule>
+
+	<rule ref="WooCommerce-Core">
+		<!-- We do not comply with these right now. -->
+		<exclude name="Generic.NamingConventions.UpperCaseConstantName.ClassConstantNotUpperCase" />
+		<exclude name="WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase" />
+		<exclude name="WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid" />
+		<exclude name="WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase" />
+		<exclude name="WordPress.NamingConventions.ValidVariableName.PropertyNotSnakeCase" />
+		<exclude name="WordPress.NamingConventions.ValidFunctionName.FunctionNameInvalid" />
+		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
+		<exclude name="Generic.Files.OneObjectStructurePerFile.MultipleFound" />
+		<exclude name="Squiz.Commenting" />
+		<exclude name="Generic.Commenting" />
+	</rule>
+
+	<!-- Files to check -->
+	<arg name="extensions" value="php"/>
+	<file>.</file>
 
 	<exclude-pattern>*/node_modules/*</exclude-pattern>
 	<exclude-pattern>*/vendor/*</exclude-pattern>
