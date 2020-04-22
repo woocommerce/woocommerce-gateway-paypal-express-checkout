@@ -388,7 +388,7 @@ class WC_Gateway_PPEC_Settings {
 				$locale = 'en_US';
 			}
 		} elseif ( ! in_array( $locale, $this->_supported_locales ) ) {
-			// Mapping some WP locales to PayPal locales
+			// Mapping some WP locales to PayPal locales.
 			if ( isset( $this->_locales_mapping[ $locale ] ) ) {
 				$locale = $this->_locales_mapping[ $locale ];
 			} else {

@@ -604,7 +604,7 @@ class WC_Gateway_PPEC_Client {
 		if ( 0 == $details['total_item_amount'] ) {
 			// Omit line items altogether.
 			unset( $details['items'] );
-		} else if ( $discounts > 0 && 0 < $details['total_item_amount'] && ! empty( $details['items'] ) ) {
+		} elseif ( $discounts > 0 && 0 < $details['total_item_amount'] && ! empty( $details['items'] ) ) {
 			// Else if there is discount, add them to the line-items
 			$details['items'][] = $this->_get_extra_discount_line_item($discounts);
 		}
