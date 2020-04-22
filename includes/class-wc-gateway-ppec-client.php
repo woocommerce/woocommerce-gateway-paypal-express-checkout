@@ -128,7 +128,7 @@ class WC_Gateway_PPEC_Client {
 			// For cURL transport.
 			add_action( 'http_api_curl', array( $this->_credential, 'configure_curl' ), 10, 3 );
 
-			wc_gateway_ppec_log( sprintf( '%s: remote request to %s with params: %s', __METHOD__, $this->get_endpoint(), print_r( $body, true ) ) );
+			wc_gateway_ppec_log( sprintf( '%s: remote request to %s with params: %s', __METHOD__, $this->get_endpoint(), print_r( $body, true ) ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
 
 			$resp = wp_safe_remote_post( $this->get_endpoint(), $args );
 
@@ -147,7 +147,7 @@ class WC_Gateway_PPEC_Client {
 				'L_SEVERITYCODE0' => 'Error',
 			);
 
-			wc_gateway_ppec_log( sprintf( '%s: returns error: %s', __METHOD__, print_r( $error, true ) ) );
+			wc_gateway_ppec_log( sprintf( '%s: returns error: %s', __METHOD__, print_r( $error, true ) ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
 
 			return $error;
 		}
@@ -198,7 +198,7 @@ class WC_Gateway_PPEC_Client {
 			throw new Exception( __( 'Malformed response received from PayPal', 'woocommerce-gateway-paypal-express-checkout' ), self::REQUEST_ERROR );
 		}
 
-		wc_gateway_ppec_log( sprintf( '%s: acknowleged response body: %s', __METHOD__, print_r( $result, true ) ) );
+		wc_gateway_ppec_log( sprintf( '%s: acknowleged response body: %s', __METHOD__, print_r( $result, true ) ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
 
 		remove_action( 'http_api_curl', array( $this->_credential, 'configure_curl' ), 10 );
 

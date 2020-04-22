@@ -140,7 +140,7 @@ class WC_Gateway_PPEC_IPS_Handler {
 			wp_die( __( 'Invalid connection request', 'woocommerce-gateway-paypal-express-checkout' ) );
 		}
 
-		wc_gateway_ppec_log( sprintf( '%s: returned back from IPS flow with parameters: %s', __METHOD__, print_r( $_GET, true ) ) );
+		wc_gateway_ppec_log( sprintf( '%s: returned back from IPS flow with parameters: %s', __METHOD__, print_r( $_GET, true ) ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
 
 		// Check if error.
 		if ( ! empty( $_GET['error'] ) ) {
@@ -183,7 +183,7 @@ class WC_Gateway_PPEC_IPS_Handler {
 		);
 
 		if ( ! empty( $error_msgs ) ) {
-			wc_gateway_ppec_log( sprintf( '%s: returned back from IPS flow: %s', __METHOD__, print_r( $error_msgs, true ) ) );
+			wc_gateway_ppec_log( sprintf( '%s: returned back from IPS flow: %s', __METHOD__, print_r( $error_msgs, true ) ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
 		}
 
 		// Save credentials to settings API

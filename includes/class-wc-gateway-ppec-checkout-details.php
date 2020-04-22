@@ -77,7 +77,7 @@ class PayPal_Checkout_Details {
 
 		$this->payer_details = new PayPal_Checkout_Payer_Details();
 		if ( ! $this->payer_details->loadFromGetECResponse( $getECResponse ) ) {
-			wc_gateway_ppec_log( sprintf( 'PayPal response did not include the payer billing details: %s', print_r( $getECResponse, true ) ) );
+			wc_gateway_ppec_log( sprintf( 'PayPal response did not include the payer billing details: %s', print_r( $getECResponse, true ) ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
 			$this->payer_details = false;
 		}
 

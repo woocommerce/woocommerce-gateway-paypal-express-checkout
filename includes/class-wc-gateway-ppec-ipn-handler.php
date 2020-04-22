@@ -70,8 +70,8 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 		// Post back to PayPal to check validity of IPN request.
 		$response = wp_safe_remote_post( $this->get_validator_url(), $params );
 
-		wc_gateway_ppec_log( sprintf( '%s: %s: %s', __FUNCTION__, 'Verify IPN request', print_r( $params, true ) ) );
-		wc_gateway_ppec_log( sprintf( '%s: %s: %s', __FUNCTION__, 'Response for the IPN request', print_r( $response, true ) ) );
+		wc_gateway_ppec_log( sprintf( '%s: %s: %s', __FUNCTION__, 'Verify IPN request', print_r( $params, true ) ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
+		wc_gateway_ppec_log( sprintf( '%s: %s: %s', __FUNCTION__, 'Response for the IPN request', print_r( $response, true ) ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
 
 		if ( is_wp_error( $response ) ) {
 			throw new Exception( $response->get_error_message() );
