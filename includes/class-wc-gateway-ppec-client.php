@@ -601,7 +601,7 @@ class WC_Gateway_PPEC_Client {
 
 		// Enter discount shenanigans. Item total cannot be 0 so make modifications
 		// accordingly.
-		if ( $details['total_item_amount'] == 0 ) {
+		if ( 0 == $details['total_item_amount'] ) {
 			// Omit line items altogether.
 			unset( $details['items'] );
 		} else if ( $discounts > 0 && 0 < $details['total_item_amount'] && ! empty( $details['items'] ) ) {
