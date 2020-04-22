@@ -139,6 +139,7 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 		if ( $order_currency !== $currency ) {
 			wc_gateway_ppec_log( 'Payment error: Currencies do not match (sent "' . $order_currency . '" | returned "' . $currency . '")' );
 			// Put this order on-hold for manual checking.
+			// Translators: placeholder is a currency code.
 			$order->update_status( 'on-hold', sprintf( __( 'Validation error: PayPal currencies do not match (code %s).', 'woocommerce-gateway-paypal-express-checkout' ), $currency ) );
 			exit;
 		}
@@ -154,6 +155,7 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 		if ( number_format( $order->get_total(), 2, '.', '' ) != number_format( $amount, 2, '.', '' ) ) {
 			wc_gateway_ppec_log( 'Payment error: Amounts do not match (gross ' . $amount . ')' );
 			// Put this order on-hold for manual checking.
+			// Translators: placeholder is an amount.
 			$order->update_status( 'on-hold', sprintf( __( 'Validation error: PayPal amounts do not match (gross %s).', 'woocommerce-gateway-paypal-express-checkout' ), $amount ) );
 			exit;
 		}
@@ -189,6 +191,7 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 			if ( 'authorization' === $posted_data['pending_reason'] ) {
 				$this->payment_on_hold( $order, __( 'Payment authorized. Change payment status to processing or complete to capture funds.', 'woocommerce-gateway-paypal-express-checkout' ) );
 			} else {
+				// Translators: placeholder is the reason for the payment to be in pending status.
 				$this->payment_on_hold( $order, sprintf( __( 'Payment pending (%s).', 'woocommerce-gateway-paypal-express-checkout' ), $posted_data['pending_reason'] ) );
 			}
 		}
@@ -211,6 +214,7 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 	 * @param array $posted_data Posted data
 	 */
 	protected function payment_status_failed( $order, $posted_data ) {
+		// Translators: placeholder is a payment status.
 		$order->update_status( 'failed', sprintf( __( 'Payment %s via IPN.', 'woocommerce-gateway-paypal-express-checkout' ), wc_clean( $posted_data['payment_status'] ) ) );
 	}
 
@@ -255,9 +259,12 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 		$order_id = version_compare( WC_VERSION, '3.0', '<' ) ? $order->id : $order->get_id();
 		if ( $order->get_total() == ( $posted_data['mc_gross'] * -1 ) ) {
 			// Mark order as refunded.
+			// Translators: placeholder is a payment status.
 			$order->update_status( 'refunded', sprintf( __( 'Payment %s via IPN.', 'woocommerce-gateway-paypal-express-checkout' ), strtolower( $posted_data['payment_status'] ) ) );
 			$this->send_ipn_email_notification(
+				/* Translators: placeholder is an order number (linked to its details screen). */
 				sprintf( __( 'Payment for order %s refunded', 'woocommerce-gateway-paypal-express-checkout' ), '<a class="link" href="' . esc_url( admin_url( 'post.php?post=' . $order_id . '&action=edit' ) ) . '">' . $order->get_order_number() . '</a>' ),
+				/* Translators: 1) is an order number, 2) is a PayPal reason code. */
 				sprintf( __( 'Order #%1$s has been marked as refunded - PayPal reason code: %2$s', 'woocommerce-gateway-paypal-express-checkout' ), $order->get_order_number(), $posted_data['reason_code'] )
 			);
 		}
@@ -271,9 +278,12 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 	 */
 	protected function payment_status_reversed( $order, $posted_data ) {
 		$order_id = version_compare( WC_VERSION, '3.0', '<' ) ? $order->id : $order->get_id();
+		// Translators: placeholder is a payment status.
 		$order->update_status( 'on-hold', sprintf( __( 'Payment %s via IPN.', 'woocommerce-gateway-paypal-express-checkout' ), wc_clean( $posted_data['payment_status'] ) ) );
 		$this->send_ipn_email_notification(
+			/* Translators: placeholder is an order number (linked to its details screen). */
 			sprintf( __( 'Payment for order %s reversed', 'woocommerce-gateway-paypal-express-checkout' ), '<a class="link" href="' . esc_url( admin_url( 'post.php?post=' . $order_id . '&action=edit' ) ) . '">' . $order->get_order_number() . '</a>' ),
+			/* Translators: 1) is an order number, 2) is a PayPal reason code. */
 			sprintf( __( 'Order #%1$s has been marked on-hold due to a reversal - PayPal reason code: %2$s', 'woocommerce-gateway-paypal-express-checkout' ), $order->get_order_number(), wc_clean( $posted_data['reason_code'] ) )
 		);
 	}
@@ -287,7 +297,9 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 	protected function payment_status_canceled_reversal( $order, $posted_data ) {
 		$order_id = version_compare( WC_VERSION, '3.0', '<' ) ? $order->id : $order->get_id();
 		$this->send_ipn_email_notification(
+			/* Translators: placeholder is an order number. */
 			sprintf( __( 'Reversal cancelled for order #%s', 'woocommerce-gateway-paypal-express-checkout' ), $order->get_order_number() ),
+			/* Translators: 1) is an order number, 2) is the URL of the order's edit screen. */
 			sprintf( __( 'Order #%1$s has had a reversal cancelled. Please check the status of payment and update the order status accordingly here: %2$s', 'woocommerce-gateway-paypal-express-checkout' ), $order->get_order_number(), esc_url( admin_url( 'post.php?post=' . $order_id . '&action=edit' ) ) )
 		);
 	}

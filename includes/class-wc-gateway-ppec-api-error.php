@@ -52,7 +52,7 @@ class PayPal_API_Error {
 			case '17203':
 			case '17204':
 			case '17200': return __( 'Your funding instrument is invalid.  Please check out again and select a new funding source.', 'woocommerce-gateway-paypal-express-checkout' );
-			default:      return sprintf( __( 'An error (%s) occurred while processing your PayPal payment.  Please contact the store owner for assistance.', 'woocommerce-gateway-paypal-express-checkout' ), $this->error_code );
+			default:      /* Translators: placeholder is an error code. */ return sprintf( __( 'An error (%s) occurred while processing your PayPal payment.  Please contact the store owner for assistance.', 'woocommerce-gateway-paypal-express-checkout' ), $this->error_code );
 		}
 	}
 }

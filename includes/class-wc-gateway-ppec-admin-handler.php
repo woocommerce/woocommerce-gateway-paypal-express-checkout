@@ -186,6 +186,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 						update_post_meta( $order_id, '_transaction_id', $result['TRANSACTIONID'] );
 					}
 
+					// Translators: %s is a transaction ID.
 					$order->add_order_note( sprintf( __( 'PayPal Checkout charge complete (Charge ID: %s)', 'woocommerce-gateway-paypal-express-checkout' ), $transaction_id ) );
 				}
 			}
@@ -230,6 +231,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 				if ( is_wp_error( $result ) ) {
 					$order->add_order_note( __( 'Unable to void charge!', 'woocommerce-gateway-paypal-express-checkout' ) . ' ' . $result->get_error_message() );
 				} else {
+					// Translators: %s is a transaction ID.
 					$order->add_order_note( sprintf( __( 'PayPal Checkout charge voided (Charge ID: %s)', 'woocommerce-gateway-paypal-express-checkout' ), $trans_id ) );
 				}
 			}
@@ -383,12 +385,18 @@ class WC_Gateway_PPEC_Admin_Handler {
 		<div class="error">
 			<a href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'wc_ppec_hide_3_0_notice', 'true' ), 'wc_ppec_hide_wc_notice_nonce', '_wc_ppec_notice_nonce' ) ); ?>" class="woocommerce-message-close notice-dismiss" style="position:relative;float:right;padding:9px 0px 9px 9px 9px;text-decoration:none;"></a>
 			<p>
-			<?php printf( __(
-				'%1$sWarning!%2$s PayPal Checkout will drop support for WooCommerce %3$s in a soon to be released update. To continue using PayPal Checkout please %4$supdate to %1$sWooCommerce 3.0%2$s or greater%5$s.', 'woocommerce-gateway-paypal-express-checkout' ),
+			<?php
+			printf(
+				/* Translators: %1$ <strong> tag, %2$ </strong> closing tag, %3$ WooCommerce version, %4$ <a> tag linking to Plugins screen, %5$ </a> closing tag. */
+				__(
+					'%1$sWarning!%2$s PayPal Checkout will drop support for WooCommerce %3$s in a soon to be released update. To continue using PayPal Checkout please %4$supdate to %1$sWooCommerce 3.0%2$s or greater%5$s.',
+					'woocommerce-gateway-paypal-express-checkout'
+				),
 				'<strong>', '</strong>',
 				WC_VERSION,
 				'<a href="' . admin_url( 'plugins.php' ) . '">', '</a>'
-			); ?>
+			);
+			?>
 			</p>
 		</div>
 		<?php

@@ -214,6 +214,7 @@ class WC_Gateway_PPEC_With_PayPal_Addons extends WC_Gateway_PPEC_With_PayPal {
 				case 'Processed':
 				case 'In-Progress':
 					$transaction_id = $response['TRANSACTIONID'];
+					// Translators: %s is a transaction ID.
 					$order->add_order_note( sprintf( __( 'PayPal payment approved (ID: %s)', 'woocommerce-gateway-paypal-express-checkout' ), $transaction_id ) );
 					$order->payment_complete( $transaction_id );
 					break;

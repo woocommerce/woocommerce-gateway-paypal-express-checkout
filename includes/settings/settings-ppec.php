@@ -15,6 +15,7 @@ $enable_ips          = wc_gateway_ppec()->ips->is_supported();
 
 if ( $enable_ips && $needs_creds ) {
 	$ips_button         = '<a href="' . esc_url( wc_gateway_ppec()->ips->get_signup_url( 'live' ) ) . '" class="button button-primary">' . __( 'Setup or link an existing PayPal account', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>';
+	// Translators: placeholder is the button "Setup or link an existing PayPal account".
 	$api_creds_text = sprintf( __( '%s or <a href="#" class="ppec-toggle-settings">click here to toggle manual API credential input</a>.', 'woocommerce-gateway-paypal-express-checkout' ), $ips_button );
 } else {
 	$reset_link = add_query_arg(
@@ -37,6 +38,7 @@ if ( $enable_ips && $needs_creds ) {
 
 if ( $enable_ips && $needs_sandbox_creds ) {
 	$sandbox_ips_button = '<a href="' . esc_url( wc_gateway_ppec()->ips->get_signup_url( 'sandbox' ) ) . '" class="button button-primary">' . __( 'Setup or link an existing PayPal Sandbox account', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>';
+	// Translators: placeholder is the button "Setup or link an existing PayPal sandbox account".
 	$sandbox_api_creds_text = sprintf( __( '%s or <a href="#" class="ppec-toggle-sandbox-settings">click here to toggle manual API credential input</a>.', 'woocommerce-gateway-paypal-express-checkout' ), $sandbox_ips_button );
 } else {
 	$reset_link = add_query_arg(
@@ -266,7 +268,12 @@ $settings = array(
 		'type'        => 'checkbox',
 		'label'       => __( 'Require Billing Address', 'woocommerce-gateway-paypal-express-checkout' ),
 		'default'     => 'no',
-		'description' => sprintf( __( 'PayPal only returns a shipping address back to the website. To make sure billing address is returned as well, please enable this functionality on your PayPal account by calling %1$sPayPal Technical Support%2$s.', 'woocommerce-gateway-paypal-express-checkout' ), '<a href="https://www.paypal.com/us/selfhelp/contact/call">', '</a>' ),
+		'description' => sprintf(
+			/* Translators: 1) is an <a> tag linking to PayPal's contact info, 2) is the closing </a> tag. */
+			__( 'PayPal only returns a shipping address back to the website. To make sure billing address is returned as well, please enable this functionality on your PayPal account by calling %1$sPayPal Technical Support%2$s.', 'woocommerce-gateway-paypal-express-checkout' ),
+			'<a href="https://www.paypal.com/us/selfhelp/contact/call">',
+			'</a>'
+		),
 	),
 	'require_phone_number' => array(
 		'title'       => __( 'Require Phone Number', 'woocommerce-gateway-paypal-express-checkout' ),
@@ -318,7 +325,11 @@ $settings = array(
 		'type'        => 'checkbox',
 		'default'     => $this->get_option( 'button_size' ) ? 'no' : 'yes', // A 'button_size' value having been set indicates that settings have been initialized before, requiring merchant opt-in to SPB.
 		'label'       => __( 'Use Smart Payment Buttons', 'woocommerce-gateway-paypal-express-checkout' ),
-		'description' => sprintf( __( 'PayPal Checkout\'s Smart Payment Buttons provide a variety of button customization options, such as color, language, shape, and multiple button layout. <a href="%s">Learn more about Smart Payment Buttons</a>.', 'woocommerce-gateway-paypal-express-checkout' ), 'https://developer.paypal.com/docs/integration/direct/express-checkout/integration-jsv4/#smart-payment-buttons' ),
+		'description' => sprintf(
+			/* Translators: %s is the URL of the Smart Payment Buttons integration docs. */
+			__( 'PayPal Checkout\'s Smart Payment Buttons provide a variety of button customization options, such as color, language, shape, and multiple button layout. <a href="%s">Learn more about Smart Payment Buttons</a>.', 'woocommerce-gateway-paypal-express-checkout' ),
+			'https://developer.paypal.com/docs/integration/direct/express-checkout/integration-jsv4/#smart-payment-buttons'
+		),
 	),
 	'button_color' => array(
 		'title'       => __( 'Button Color', 'woocommerce-gateway-paypal-express-checkout' ),

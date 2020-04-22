@@ -84,6 +84,7 @@ class WC_Gateway_PPEC_Client_Credential_Certificate extends WC_Gateway_PPEC_Clie
 	protected function _maybe_create_certificate_file( $password ) {
 		$temp_file = tempnam( sys_get_temp_dir(), 'pptmp_' );
 		if ( ! $temp_file ) {
+			// Translators: %s is a filepath.
 			throw new Exception( sprintf( __( 'Unable to write certificate file %s during cURL configuration', 'woocommerce-gateway-paypal-express-checkout' ), $temp_file ), WC_Gateway_PPEC_Client::INVALID_ENVIRONMENT_ERROR );
 		}
 
@@ -130,6 +131,7 @@ class WC_Gateway_PPEC_Client_Credential_Certificate extends WC_Gateway_PPEC_Clie
 	 */
 	protected function _maybe_create_non_secure_certificate_file( $temp_file ) {
 		if ( false === file_put_contents( $temp_file, $this->_certificate ) ) {
+			// Translators: %s is a filepath.
 			throw new Exception( sprintf( __( 'Unable to write certificate file %s during cURL configuration', 'woocommerce-gateway-paypal-express-checkout' ), $temp_file ), WC_Gateway_PPEC_Client::INVALID_ENVIRONMENT_ERROR );
 		}
 	}
