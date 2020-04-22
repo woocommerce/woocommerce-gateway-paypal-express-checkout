@@ -330,7 +330,7 @@ class WC_Gateway_PPEC_Client {
 			foreach ( $details['items'] as $line_item_key => $values ) {
 				$line_item_params = array(
 					'L_PAYMENTREQUEST_0_NAME' . $count => $values['name'],
-					'L_PAYMENTREQUEST_0_DESC' . $count => ! empty( $values['description'] ) ? substr( strip_tags( $values['description'] ), 0, 127 ) : '',
+					'L_PAYMENTREQUEST_0_DESC' . $count => ! empty( $values['description'] ) ? substr( strip_tags( $values['description'] ), 0, 127 ) : '', // phpcs:ignore WordPress.WP.AlternativeFunctions.strip_tags_strip_tags
 					'L_PAYMENTREQUEST_0_QTY' . $count  => $values['quantity'],
 					'L_PAYMENTREQUEST_0_AMT' . $count  => $values['amount'],
 				);
@@ -950,7 +950,7 @@ class WC_Gateway_PPEC_Client {
 			'PAYMENTREQUEST_0_NOTIFYURL'     => WC()->api_request_url( 'WC_Gateway_PPEC' ),
 			'PAYMENTREQUEST_0_PAYMENTACTION' => $settings->get_paymentaction(),
 			'PAYMENTREQUEST_0_INVNUM'        => $settings->invoice_prefix . $order->get_order_number(),
-			'PAYMENTREQUEST_0_CUSTOM'        => json_encode( array(
+			'PAYMENTREQUEST_0_CUSTOM'        => wp_json_encode( array(
 				'order_id'     => $order_id,
 				'order_number' => $order_number,
 				'order_key'    => $order_key,
@@ -970,7 +970,7 @@ class WC_Gateway_PPEC_Client {
 			foreach ( $details['items'] as $line_item_key => $values ) {
 				$line_item_params = array(
 					'L_PAYMENTREQUEST_0_NAME' . $count => $values['name'],
-					'L_PAYMENTREQUEST_0_DESC' . $count => ! empty( $values['description'] ) ? strip_tags( $values['description'] ) : '',
+					'L_PAYMENTREQUEST_0_DESC' . $count => ! empty( $values['description'] ) ? strip_tags( $values['description'] ) : '', // phpcs:ignore WordPress.WP.AlternativeFunctions.strip_tags_strip_tags
 					'L_PAYMENTREQUEST_0_QTY' . $count  => $values['quantity'],
 					'L_PAYMENTREQUEST_0_AMT' . $count  => $values['amount'],
 				);
@@ -1058,7 +1058,7 @@ class WC_Gateway_PPEC_Client {
 			'NOTIFYURL'     => WC()->api_request_url( 'WC_Gateway_PPEC' ),
 			'PAYMENTACTION' => $settings->get_paymentaction(),
 			'INVNUM'        => $settings->invoice_prefix . $order->get_order_number(),
-			'CUSTOM'        => json_encode( array(
+			'CUSTOM'        => wp_json_encode( array(
 				'order_id'  => $order_id,
 				'order_key' => $order_key,
 			) ),
@@ -1086,7 +1086,7 @@ class WC_Gateway_PPEC_Client {
 			foreach ( $details['items'] as $line_item_key => $values ) {
 				$line_item_params = array(
 					'L_NAME' . $count   => $values['name'],
-					'L_DESC' . $count   => ! empty( $values['description'] ) ? strip_tags( $values['description'] ) : '',
+					'L_DESC' . $count   => ! empty( $values['description'] ) ? strip_tags( $values['description'] ) : '', // phpcs:ignore WordPress.WP.AlternativeFunctions.strip_tags_strip_tags
 					'L_QTY' . $count    => $values['quantity'],
 					'L_AMT' . $count    => $values['amount'],
 					'L_NUMBER' . $count => $values['sku'],

@@ -352,7 +352,7 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 		$new_order_settings = get_option( 'woocommerce_new_order_settings', array() );
 		$mailer             = WC()->mailer();
 		$message            = $mailer->wrap_message( $subject, $message );
-		$mailer->send( ! empty( $new_order_settings['recipient'] ) ? $new_order_settings['recipient'] : get_option( 'admin_email' ), strip_tags( $subject ), $message );
+		$mailer->send( ! empty( $new_order_settings['recipient'] ) ? $new_order_settings['recipient'] : get_option( 'admin_email' ), wp_strip_all_tags( $subject ), $message );
 	}
 
 	/**

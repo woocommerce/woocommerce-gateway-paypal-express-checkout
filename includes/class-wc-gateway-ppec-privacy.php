@@ -79,7 +79,7 @@ class WC_Gateway_PPEC_Privacy extends WC_Abstract_Privacy {
 					'data'        => array(
 						array(
 							'name'  => __( 'PPEC Refundable transaction data', 'woocommerce-gateway-paypal-express-checkout' ),
-							'value' => json_encode( get_post_meta( $order->get_id(), '_woo_pp_txnData', true ) ),
+							'value' => wp_json_encode( get_post_meta( $order->get_id(), '_woo_pp_txnData', true ) ),
 						),
 						array(
 							'name'  => __( 'PPEC Billing agreement id', 'woocommerce-gateway-paypal-express-checkout' ),
@@ -144,7 +144,7 @@ class WC_Gateway_PPEC_Privacy extends WC_Abstract_Privacy {
 					'data'        => array(
 						array(
 							'name'  => __( 'PPEC Refundable transaction data', 'woocommerce-gateway-paypal-express-checkout' ),
-							'value' => json_encode( get_post_meta( $subscription->get_id(), '_woo_pp_txnData', true ) ),
+							'value' => wp_json_encode( get_post_meta( $subscription->get_id(), '_woo_pp_txnData', true ) ),
 						),
 						array(
 							'name'  => __( 'PPEC Billing agreement id', 'woocommerce-gateway-paypal-express-checkout' ),
