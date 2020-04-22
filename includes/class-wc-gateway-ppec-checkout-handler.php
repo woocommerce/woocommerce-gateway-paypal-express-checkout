@@ -316,7 +316,6 @@ class WC_Gateway_PPEC_Checkout_Handler {
 				</div>
 				<?php
 			}
-
 		}
 	}
 
@@ -566,9 +565,8 @@ class WC_Gateway_PPEC_Checkout_Handler {
 					unset( $gateways[ $id ] );
 				}
 			}
-
-		// If using PayPal standard (this is admin choice) we don't need to also show PayPal EC on checkout.
 		} elseif ( is_checkout() && ( isset( $gateways['paypal'] ) || 'no' === wc_gateway_ppec()->settings->mark_enabled ) ) {
+			// If using PayPal standard (this is admin choice) we don't need to also show PayPal EC on checkout.
 			unset( $gateways['ppec_paypal'] );
 		}
 
@@ -621,7 +619,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		if ( is_cart() && ! empty( $_GET['wc-gateway-ppec-clear-session'] ) ) {
 			$this->maybe_clear_session_data();
 
-			$notice =  __( 'You have cancelled Checkout with PayPal. Please try to process your order again.', 'woocommerce-gateway-paypal-express-checkout' );
+			$notice = __( 'You have cancelled Checkout with PayPal. Please try to process your order again.', 'woocommerce-gateway-paypal-express-checkout' );
 			if ( ! wc_has_notice( $notice, 'notice' ) ) {
 				wc_add_notice( $notice, 'notice' );
 			}
@@ -943,7 +941,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		// Handle $payment response
 		if ( 'completed' === strtolower( $payment->payment_status ) ) {
 			$order->payment_complete( $payment->transaction_id );
-			if ( isset( $payment->fee_amount ) ){
+			if ( isset( $payment->fee_amount ) ) {
 				wc_gateway_ppec_set_transaction_fee( $order, $payment->fee_amount );
 			}
 		} else {

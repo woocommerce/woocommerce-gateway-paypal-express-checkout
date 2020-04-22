@@ -485,7 +485,7 @@ $settings['mini_cart_settings_toggle'] = array(
 	'desc_tip'    => true,
 	'description' => __( 'Optionally override global button settings above and configure buttons for this context.', 'woocommerce-gateway-paypal-express-checkout' ),
 );
-foreach( $per_context_settings as $key => $value ) {
+foreach ( $per_context_settings as $key => $value ) {
 	$value['class'] .= ' woocommerce_ppec_paypal_mini_cart';
 	$settings[ 'mini_cart_' . $key ] = $value;
 }
@@ -516,7 +516,7 @@ $settings['single_product_settings_toggle'] = array(
 	'desc_tip'    => true,
 	'description' => __( 'Optionally override global button settings above and configure buttons for this context.', 'woocommerce-gateway-paypal-express-checkout' ),
 );
-foreach( $per_context_settings as $key => $value ) {
+foreach ( $per_context_settings as $key => $value ) {
 	$value['class'] .= ' woocommerce_ppec_paypal_single_product';
 	$settings[ 'single_product_' . $key ] = $value;
 }
@@ -548,7 +548,7 @@ $settings['mark_settings_toggle'] = array(
 	'desc_tip'    => true,
 	'description' => __( 'Optionally override global button settings above and configure buttons for this context.', 'woocommerce-gateway-paypal-express-checkout' ),
 );
-foreach( $per_context_settings as $key => $value ) {
+foreach ( $per_context_settings as $key => $value ) {
 	$value['class'] .= ' woocommerce_ppec_paypal_mark';
 	$settings[ 'mark_' . $key ] = $value;
 }

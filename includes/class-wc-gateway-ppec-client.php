@@ -251,7 +251,7 @@ class WC_Gateway_PPEC_Client {
 		$params              = array();
 		$logo_url_or_id      = $settings->logo_image_url;
 		$header_url_or_id    = $settings->header_image_url;
-		$params['LOGOIMG']   = filter_var( $logo_url_or_id, FILTER_VALIDATE_URL )   ? $logo_url_or_id   : wp_get_attachment_image_url( $logo_url_or_id, 'thumbnail' );
+		$params['LOGOIMG']   = filter_var( $logo_url_or_id, FILTER_VALIDATE_URL ) ? $logo_url_or_id : wp_get_attachment_image_url( $logo_url_or_id, 'thumbnail' );
 		$params['HDRIMG']    = filter_var( $header_url_or_id, FILTER_VALIDATE_URL ) ? $header_url_or_id : wp_get_attachment_image_url( $header_url_or_id, 'thumbnail' );
 		$params['PAGESTYLE'] = $settings->page_style;
 		$params['BRANDNAME'] = $settings->get_brand_name();
@@ -402,7 +402,7 @@ class WC_Gateway_PPEC_Client {
 		/* Translators: placeholder is blogname. */
 		$description = sprintf( _x( 'Orders with %s', 'data sent to PayPal', 'woocommerce-gateway-paypal-express-checkout'  ), get_bloginfo( 'name' ) );
 
-		if ( strlen( $description  ) > 127  ) {
+		if ( strlen( $description  ) > 127 ) {
 			$description = substr( $description, 0, 124  ) . '...';
 		}
 
@@ -443,7 +443,7 @@ class WC_Gateway_PPEC_Client {
 		$settings = wc_gateway_ppec()->settings;
 		$decimals = $settings->get_number_of_decimal_digits();
 
-		return  array(
+		return array(
 			'name'        => 'Discount',
 			'quantity'    => 1,
 			'amount'      => '-' . round( $amount, $decimals ),
@@ -668,7 +668,7 @@ class WC_Gateway_PPEC_Client {
 	protected function _get_total_order_fees( $order ) {
 		$total = 0;
 		$fees = $order->get_fees();
-		foreach( $fees as $fee ) {
+		foreach ( $fees as $fee ) {
 			$total = $total + $fee->get_amount();
 		}
 
@@ -710,6 +710,7 @@ class WC_Gateway_PPEC_Client {
 		$old_wc = version_compare( WC_VERSION, '3.0', '<' );
 
 		if ( ( $old_wc && ( $order->shipping_address_1 || $order->shipping_address_2 ) ) || ( ! $old_wc && $order->has_shipping_address() ) ) {
+			// phpcs:disable WordPress.WhiteSpace.OperatorSpacing.SpacingBefore
 			$shipping_first_name = $old_wc ? $order->shipping_first_name : $order->get_shipping_first_name();
 			$shipping_last_name  = $old_wc ? $order->shipping_last_name  : $order->get_shipping_last_name();
 			$shipping_address_1  = $old_wc ? $order->shipping_address_1  : $order->get_shipping_address_1();
@@ -718,9 +719,11 @@ class WC_Gateway_PPEC_Client {
 			$shipping_state      = $old_wc ? $order->shipping_state      : $order->get_shipping_state();
 			$shipping_postcode   = $old_wc ? $order->shipping_postcode   : $order->get_shipping_postcode();
 			$shipping_country    = $old_wc ? $order->shipping_country    : $order->get_shipping_country();
+			// phpcs:enable
 		} else {
 			// Fallback to billing in case no shipping methods are set. The address returned from PayPal
 			// will be stored in the order as billing.
+			// phpcs:disable WordPress.WhiteSpace.OperatorSpacing.SpacingBefore
 			$shipping_first_name = $old_wc ? $order->billing_first_name : $order->get_billing_first_name();
 			$shipping_last_name  = $old_wc ? $order->billing_last_name  : $order->get_billing_last_name();
 			$shipping_address_1  = $old_wc ? $order->billing_address_1  : $order->get_billing_address_1();
@@ -729,6 +732,7 @@ class WC_Gateway_PPEC_Client {
 			$shipping_state      = $old_wc ? $order->billing_state      : $order->get_billing_state();
 			$shipping_postcode   = $old_wc ? $order->billing_postcode   : $order->get_billing_postcode();
 			$shipping_country    = $old_wc ? $order->billing_country    : $order->get_billing_country();
+			// phpcs:enable
 		}
 
 		$shipping_address->setName( $shipping_first_name . ' ' . $shipping_last_name );
@@ -770,7 +774,7 @@ class WC_Gateway_PPEC_Client {
 
 		if ( $customer->get_shipping_address() || $customer->get_shipping_address_2() ) {
 			$shipping_first_name = $old_wc ? $customer->shipping_first_name : $customer->get_shipping_first_name();
-			$shipping_last_name  = $old_wc ? $customer->shipping_last_name  : $customer->get_shipping_last_name();
+			$shipping_last_name  = $old_wc ? $customer->shipping_last_name : $customer->get_shipping_last_name();
 			$shipping_address_1  = $customer->get_shipping_address();
 			$shipping_address_2  = $customer->get_shipping_address_2();
 			$shipping_city       = $customer->get_shipping_city();
@@ -780,6 +784,7 @@ class WC_Gateway_PPEC_Client {
 		} else {
 			// Fallback to billing in case no shipping methods are set. The address returned from PayPal
 			// will be stored in the order as billing.
+			// phpcs:disable WordPress.WhiteSpace.OperatorSpacing.SpacingBefore
 			$shipping_first_name = $old_wc ? $customer->billing_first_name : $customer->get_billing_first_name();
 			$shipping_last_name  = $old_wc ? $customer->billing_last_name  : $customer->get_billing_last_name();
 			$shipping_address_1  = $old_wc ? $customer->get_address()      : $customer->get_billing_address_1();
@@ -788,6 +793,7 @@ class WC_Gateway_PPEC_Client {
 			$shipping_state      = $old_wc ? $customer->get_state()        : $customer->get_billing_state();
 			$shipping_postcode   = $old_wc ? $customer->get_postcode()     : $customer->get_billing_postcode();
 			$shipping_country    = $old_wc ? $customer->get_country()      : $customer->get_billing_country();
+			// phpcs:enable
 		}
 
 		$shipping_address->setName( $shipping_first_name . ' ' . $shipping_last_name );
@@ -858,12 +864,12 @@ class WC_Gateway_PPEC_Client {
 
 		$rounded_total = 0;
 		foreach ( $order->get_items( array( 'line_item', 'fee', 'coupon' ) ) as $cart_item_key => $values ) {
-			if( 'coupon' === $values['type']) {
+			if ( 'coupon' === $values['type'] ) {
 				$amount = round($values['line_total'], $decimals);
 				$rounded_total -= $amount;
 				continue;
 			}
-			if( 'fee' === $values['type']) {
+			if ( 'fee' === $values['type'] ) {
 				$amount = round( $values['line_total'], $decimals);
 			} else {
 				$amount = round( $values['line_subtotal'] / $values['qty'] , $decimals );

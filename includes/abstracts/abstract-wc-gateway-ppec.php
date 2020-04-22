@@ -445,7 +445,6 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 				} catch ( PayPal_API_Exception $e ) {
 					return new WP_Error( 'paypal_refund_error', $e->getMessage() );
 				}
-
 			}
 		}
 

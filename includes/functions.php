@@ -7,7 +7,7 @@ function woo_pp_start_checkout() {
 		$redirect_url = $checkout->start_checkout_from_cart();
 		wp_safe_redirect( $redirect_url );
 		exit;
-	} catch( PayPal_API_Exception $e ) {
+	} catch ( PayPal_API_Exception $e ) {
 		wc_add_notice( $e->getMessage(), 'error' );
 
 		$redirect_url = wc_get_cart_url();
@@ -33,7 +33,6 @@ function woo_pp_start_checkout() {
 			wp_safe_redirect( $redirect_url );
 			exit;
 		}
-
 	}
 }
 

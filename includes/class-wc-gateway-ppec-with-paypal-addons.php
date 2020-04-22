@@ -221,7 +221,6 @@ class WC_Gateway_PPEC_With_PayPal_Addons extends WC_Gateway_PPEC_With_PayPal {
 				default:
 					throw new Exception( __( 'PayPal payment declined', 'woocommerce-gateway-paypal-express-checkout' ) );
 			}
-
 		} catch ( Exception $e ) {
 			$order->update_status( 'failed', $e->getMessage() );
 		}

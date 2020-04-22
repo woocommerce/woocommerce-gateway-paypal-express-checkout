@@ -205,7 +205,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 		try {
 			wc_gateway_ppec()->checkout->start_checkout_from_cart( $skip_checkout );
 			wp_send_json_success( array( 'token' => WC()->session->paypal->token ) );
-		} catch( PayPal_API_Exception $e ) {
+		} catch ( PayPal_API_Exception $e ) {
 			wp_send_json_error( array( 'messages' => array( $e->getMessage() ) ) );
 		}
 	}
@@ -218,6 +218,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 	protected function set_customer_data( $data ) {
 		$customer = WC()->customer;
 
+		// phpcs:disable WordPress.WhiteSpace.OperatorSpacing.SpacingBefore
 		$billing_first_name = empty( $data[ 'billing_first_name' ] ) ? '' : wc_clean( $data[ 'billing_first_name' ] );
 		$billing_last_name  = empty( $data[ 'billing_last_name' ] )  ? '' : wc_clean( $data[ 'billing_last_name' ] );
 		$billing_country    = empty( $data[ 'billing_country' ] )    ? '' : wc_clean( $data[ 'billing_country' ] );
@@ -228,8 +229,10 @@ class WC_Gateway_PPEC_Cart_Handler {
 		$billing_postcode   = empty( $data[ 'billing_postcode' ] )   ? '' : wc_clean( $data[ 'billing_postcode' ] );
 		$billing_phone      = empty( $data[ 'billing_phone' ] )      ? '' : wc_clean( $data[ 'billing_phone' ] );
 		$billing_email      = empty( $data[ 'billing_email' ] )      ? '' : wc_clean( $data[ 'billing_email' ] );
+		// phpcs:enable
 
 		if ( isset( $data['ship_to_different_address'] ) ) {
+			// phpcs:disable WordPress.WhiteSpace.OperatorSpacing.SpacingBefore
 			$shipping_first_name = empty( $data[ 'shipping_first_name' ] ) ? '' : wc_clean( $data[ 'shipping_first_name' ] );
 			$shipping_last_name  = empty( $data[ 'shipping_last_name' ] )  ? '' : wc_clean( $data[ 'shipping_last_name' ] );
 			$shipping_country    = empty( $data[ 'shipping_country' ] )    ? '' : wc_clean( $data[ 'shipping_country' ] );
@@ -238,6 +241,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 			$shipping_city       = empty( $data[ 'shipping_city' ] )       ? '' : wc_clean( $data[ 'shipping_city' ] );
 			$shipping_state      = empty( $data[ 'shipping_state' ] )      ? '' : wc_clean( $data[ 'shipping_state' ] );
 			$shipping_postcode   = empty( $data[ 'shipping_postcode' ] )   ? '' : wc_clean( $data[ 'shipping_postcode' ] );
+			// phpcs:enable
 		} else {
 			$shipping_first_name = $billing_first_name;
 			$shipping_last_name  = $billing_last_name;
@@ -363,11 +367,11 @@ class WC_Gateway_PPEC_Cart_Handler {
 				<img src="<?php echo esc_url( $express_checkout_img_url ); ?>" alt="<?php _e( 'Check out with PayPal', 'woocommerce-gateway-paypal-express-checkout' ); ?>" style="width: auto; height: auto;">
 			</a>
 
-			<?php if ( $settings->is_credit_enabled() ) : ?>
+				<?php if ( $settings->is_credit_enabled() ) : ?>
 				<a href="<?php echo esc_url( add_query_arg( array( 'startcheckout' => 'true', 'use-ppc' => 'true' ), wc_get_page_permalink( 'cart' ) ) ); ?>" id="woo_pp_ppc_button" class="wcppec-checkout-buttons__button">
 				<img src="<?php echo esc_url( $paypal_credit_img_url ); ?>" alt="<?php _e( 'Pay with PayPal Credit', 'woocommerce-gateway-paypal-express-checkout' ); ?>" style="width: auto; height: auto;">
 				</a>
-			<?php endif; ?>
+				<?php endif; ?>
 
 			<?php endif; ?>
 		</div>
@@ -408,9 +412,9 @@ class WC_Gateway_PPEC_Cart_Handler {
 			if ( isset( $gateways['ppec_paypal'] ) && 'yes' === $settings->cart_checkout_enabled && 'yes' === $settings->use_spb ) {
 				wp_enqueue_script( 'wc-gateway-ppec-smart-payment-buttons' );
 			}
-        }
+		}
 		return $widget_title;
-    }
+	}
 
 	/**
 	 * Convert from settings to values expected by PayPal Button API:
@@ -522,8 +526,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 			$settings_toggle = 'yes' === $settings->mini_cart_settings_toggle;
 			$mini_cart_data  = $this->get_button_settings( $settings, $settings_toggle ? 'mini_cart' : '' );
-
-			foreach( $mini_cart_data as $key => $value ) {
+			foreach ( $mini_cart_data as $key => $value ) {
 				unset( $mini_cart_data[ $key ] );
 				$mini_cart_data[ 'mini_cart_' . $key ] = $value;
 			}
