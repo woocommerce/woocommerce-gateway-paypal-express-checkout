@@ -133,7 +133,7 @@ class WC_Gateway_PPEC_IPS_Handler {
 		if ( empty( $_GET['wc_ppec_ips_admin_nonce'] ) || empty( $_GET['env'] ) ) {
 			return false;
 		}
-		$env = in_array( $_GET['env'], array( 'live', 'sandbox' ) ) ? $_GET['env'] : 'live';
+		$env = in_array( $_GET['env'], array( 'live', 'sandbox' ) ) ? $_GET['env'] : 'live'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 		// Verify the nonce.
 		if ( ! wp_verify_nonce( $_GET['wc_ppec_ips_admin_nonce'], 'wc_ppec_ips' ) ) {

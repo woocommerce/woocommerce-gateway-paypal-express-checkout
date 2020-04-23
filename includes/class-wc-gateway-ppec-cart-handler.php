@@ -51,7 +51,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 	 */
 	public function before_cart_totals() {
 		// If there then call start_checkout() else do nothing so page loads as normal.
-		if ( ! empty( $_GET['startcheckout'] ) && 'true' === $_GET['startcheckout'] ) {
+		if ( ! empty( $_GET['startcheckout'] ) && 'true' === $_GET['startcheckout'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			// Trying to prevent auto running checkout when back button is pressed from PayPal page.
 			$_GET['startcheckout'] = 'false';
 			woo_pp_start_checkout();

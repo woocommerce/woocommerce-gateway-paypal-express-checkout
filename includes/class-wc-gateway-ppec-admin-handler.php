@@ -35,11 +35,11 @@ class WC_Gateway_PPEC_Admin_Handler {
 	}
 
 	public function add_capture_charge_order_action( $actions ) {
-		if ( ! isset( $_REQUEST['post'] ) ) {
+		if ( ! isset( $_REQUEST['post'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			return $actions;
 		}
 
-		$order = wc_get_order( $_REQUEST['post'] );
+		$order = wc_get_order( $_REQUEST['post'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 		if ( empty( $order ) ) {
 			return $actions;
@@ -109,7 +109,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 			'wc_gateway_ppec_with_paypal_credit',
 		);
 
-		$current_section = isset( $_GET['section'] ) ? $_GET['section'] : '';
+		$current_section = isset( $_GET['section'] ) ? $_GET['section'] : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 		// If the current section is a paypal section, remove the card section,
 		// otherwise, remove the paypal section
@@ -262,11 +262,11 @@ class WC_Gateway_PPEC_Admin_Handler {
 			return;
 		}
 
-		if ( empty( $_GET['tab'] ) || empty( $_GET['section'] ) ) {
+		if ( empty( $_GET['tab'] ) || empty( $_GET['section'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			return;
 		}
 
-		if ( 'checkout' === $_GET['tab'] && 'wc_gateway_paypal' === $_GET['section'] ) {
+		if ( 'checkout' === $_GET['tab'] && 'wc_gateway_paypal' === $_GET['section'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$redirect = add_query_arg( array( 'section' => 'wc_gateway_ppec_with_paypal' ) );
 			wp_safe_redirect( $redirect );
 		}

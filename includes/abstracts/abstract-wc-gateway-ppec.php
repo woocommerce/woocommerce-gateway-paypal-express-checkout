@@ -82,7 +82,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 	 * @return string
 	 */
 	public function pass_return_args_to_ajax( $request ) {
-		if ( isset( $_GET['woo-paypal-return'] ) ) {
+		if ( isset( $_GET['woo-paypal-return'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$request .= '&woo-paypal-return=1';
 		}
 
@@ -101,7 +101,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		$screen = get_current_screen();
 
 		// Only enqueue the setting scripts on the PayPal Checkout settings screen.
-		if ( $screen && 'woocommerce_page_wc-settings' === $screen->id && isset( $_GET['tab'], $_GET['section'] ) && 'checkout' === $_GET['tab'] && 'ppec_paypal' === $_GET['section'] ) {
+		if ( $screen && 'woocommerce_page_wc-settings' === $screen->id && isset( $_GET['tab'], $_GET['section'] ) && 'checkout' === $_GET['tab'] && 'ppec_paypal' === $_GET['section'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			wp_enqueue_script( 'wc-gateway-ppec-settings', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-settings.js', array( 'jquery' ), wc_gateway_ppec()->version, true );
 		}
 	}

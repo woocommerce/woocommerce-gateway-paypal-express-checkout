@@ -62,7 +62,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		} else {
 			add_filter( 'woocommerce_get_script_data', array( $this, 'filter_wc_checkout_params' ), 10, 2 );
 		}
-		if ( isset( $_GET['startcheckout'] ) && 'true' === $_GET['startcheckout'] ) {
+		if ( isset( $_GET['startcheckout'] ) && 'true' === $_GET['startcheckout'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			ob_start();
 		}
 	}
@@ -197,7 +197,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		// Get the buyer details from PayPal
 		try {
 			$session          = WC()->session->get( 'paypal' );
-			$token            = isset( $_GET['token'] ) ? $_GET['token'] : $session->token;
+			$token            = isset( $_GET['token'] ) ? $_GET['token'] : $session->token; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$checkout_details = $this->get_checkout_details( $token );
 		} catch ( PayPal_API_Exception $e ) {
 			wc_add_notice( $e->getMessage(), 'error' );
@@ -241,7 +241,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 */
 	public function paypal_billing_details() {
 		$session          = WC()->session->get( 'paypal' );
-		$token            = isset( $_GET['token'] ) ? $_GET['token'] : $session->token;
+		$token            = isset( $_GET['token'] ) ? $_GET['token'] : $session->token; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		try {
 			$checkout_details = $this->get_checkout_details( $token );
 		} catch ( PayPal_API_Exception $e ) {
@@ -328,7 +328,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 */
 	public function paypal_shipping_details() {
 		$session          = WC()->session->get( 'paypal' );
-		$token            = isset( $_GET['token'] ) ? $_GET['token'] : $session->token;
+		$token            = isset( $_GET['token'] ) ? $_GET['token'] : $session->token; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 		try {
 			$checkout_details = $this->get_checkout_details( $token );
@@ -422,6 +422,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 * Checks data is correctly set when returning from PayPal Checkout
 	 */
 	public function maybe_return_from_paypal() {
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended
 		if (
 			isset( $_GET['woo-paypal-return'] )
 			&& isset( $_GET['update_subscription_payment_method'] )
@@ -455,6 +456,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		} else {
 			return;
 		}
+		// phpcs:enable
 
 		// Update customer addresses here from PayPal selection so they can be used to calculate local taxes.
 		$this->update_customer_addresses_from_paypal( $token );
@@ -607,6 +609,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 * Clears the session data and display notice.
 	 */
 	public function maybe_cancel_checkout_with_paypal() {
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended
 		if (
 			isset( $_GET['update_subscription_payment_method'] )
 			&& 'true' === $_GET['update_subscription_payment_method']
@@ -615,8 +618,9 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			$this->handle_subscription_payment_change_failure();
 			return;
 		}
+		// phpcs:enable
 
-		if ( is_cart() && ! empty( $_GET['wc-gateway-ppec-clear-session'] ) ) {
+		if ( is_cart() && ! empty( $_GET['wc-gateway-ppec-clear-session'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$this->maybe_clear_session_data();
 
 			$notice = __( 'You have cancelled Checkout with PayPal. Please try to process your order again.', 'woocommerce-gateway-paypal-express-checkout' );
@@ -828,8 +832,8 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			return $this->_checkout_details;
 		}
 
-		if ( false === $token && ! empty( $_GET['token'] ) ) {
-			$token = $_GET['token'];
+		if ( false === $token && ! empty( $_GET['token'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$token = $_GET['token']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		}
 
 		$client   = wc_gateway_ppec()->client;
@@ -971,13 +975,13 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 * @return mixed
 	 */
 	public function maybe_add_shipping_information( $packages ) {
-		if ( empty( $_GET['woo-paypal-return'] ) || empty( $_GET['token'] ) || empty( $_GET['PayerID'] ) ) {
+		if ( empty( $_GET['woo-paypal-return'] ) || empty( $_GET['token'] ) || empty( $_GET['PayerID'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			return $packages;
 		}
 
 		// Shipping details from PayPal
 		try {
-			$checkout_details = $this->get_checkout_details( wc_clean( $_GET['token'] ) );
+			$checkout_details = $this->get_checkout_details( wc_clean( $_GET['token'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		} catch ( PayPal_API_Exception $e ) {
 			return $packages;
 		}
@@ -1086,8 +1090,8 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		$params['wc_ajax_url'] = remove_query_arg( 'wc-ajax', $params['wc_ajax_url'] );
 
 		foreach ( $fields as $field ) {
-			if ( ! empty( $_GET[ $field ] ) ) {
-				$params['wc_ajax_url'] = add_query_arg( $field, $_GET[ $field ], $params['wc_ajax_url'] );
+			if ( ! empty( $_GET[ $field ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				$params['wc_ajax_url'] = add_query_arg( $field, $_GET[ $field ], $params['wc_ajax_url'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			}
 		}
 
@@ -1109,8 +1113,8 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		try {
 			$session = WC()->session->get( 'paypal' );
 
-			if ( isset( $_GET['token'] ) ) {
-				$token = sanitize_text_field( wp_unslash( $_GET['token'] ) );
+			if ( isset( $_GET['token'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				$token = sanitize_text_field( wp_unslash( $_GET['token'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			} elseif ( isset( $session->token ) ) {
 				$token = $session->token;
 			}

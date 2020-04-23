@@ -86,7 +86,7 @@ function wc_gateway_ppec_is_credit_supported() {
  * @return bool Returns true if buyer is checking out with PayPal Credit
  */
 function wc_gateway_ppec_is_using_credit() {
-	return ! empty( $_GET['use-ppc'] ) && 'true' === $_GET['use-ppc'];
+	return ! empty( $_GET['use-ppc'] ) && 'true' === $_GET['use-ppc']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 }
 
 const PPEC_FEE_META_NAME_OLD = 'PayPal Transaction Fee';
