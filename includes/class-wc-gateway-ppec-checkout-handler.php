@@ -485,7 +485,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 				WC()->cart->empty_cart();
 
 				// Redirect
-				wp_redirect( $order->get_checkout_order_received_url() );
+				wp_redirect( $order->get_checkout_order_received_url() ); // phpcs:ignore WordPress.Security.SafeRedirect.wp_redirect_wp_redirect
 				exit;
 			}
 		} catch ( PayPal_API_Exception $e ) {
