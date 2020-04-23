@@ -45,12 +45,12 @@ class WC_Gateway_PPEC_With_SPB extends WC_Gateway_PPEC_With_PayPal {
 	 * @return array
 	 */
 	public function process_payment( $order_id ) {
-		if ( isset( $_POST['payerID'] ) && isset( $_POST['paymentToken'] ) ) {
+		if ( isset( $_POST['payerID'] ) && isset( $_POST['paymentToken'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			$session = WC()->session->get( 'paypal', new stdClass() );
 
 			$session->checkout_completed = true;
-			$session->payer_id           = $_POST['payerID'];
-			$session->token              = $_POST['paymentToken'];
+			$session->payer_id           = $_POST['payerID']; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$session->token              = $_POST['paymentToken']; // phpcs:ignore WordPress.Security.NonceVerification.Missing
 
 			WC()->session->set( 'paypal', $session );
 		}

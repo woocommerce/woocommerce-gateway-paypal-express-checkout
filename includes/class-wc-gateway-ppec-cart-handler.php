@@ -186,7 +186,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 		}
 
 		if ( empty( $error_messages ) ) {
-			$this->set_customer_data( $_POST );
+			$this->set_customer_data( $_POST ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			$this->start_checkout( false );
 		} else {
 			wp_send_json_error( array( 'messages' => $error_messages ) );

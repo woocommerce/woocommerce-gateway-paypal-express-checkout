@@ -190,7 +190,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		}
 
 		// Make sure the selected payment method is ppec_paypal
-		if ( ! isset( $_POST['payment_method'] ) || ( 'ppec_paypal' !== $_POST['payment_method'] ) ) {
+		if ( ! isset( $_POST['payment_method'] ) || ( 'ppec_paypal' !== $_POST['payment_method'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			return;
 		}
 
@@ -369,8 +369,8 @@ class WC_Gateway_PPEC_Checkout_Handler {
 
 		if ( ! empty( $checkout_details->payer_details->phone_number ) ) {
 			$phone = $checkout_details->payer_details->phone_number;
-		} elseif ( 'yes' === wc_gateway_ppec()->settings->require_phone_number && ! empty( $_POST['billing_phone'] ) ) {
-			$phone = wc_clean( $_POST['billing_phone'] );
+		} elseif ( 'yes' === wc_gateway_ppec()->settings->require_phone_number && ! empty( $_POST['billing_phone'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$phone = wc_clean( $_POST['billing_phone'] ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 		}
 
 		return array(

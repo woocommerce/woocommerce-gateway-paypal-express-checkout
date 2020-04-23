@@ -25,13 +25,13 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 	 */
 	public function check_request() {
 		try {
-			if ( empty( $_POST ) ) {
+			if ( empty( $_POST ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
 				throw new Exception( esc_html__( 'Empty POST data.', 'woocommerce-gateway-paypal-express-checkout' ) );
 			}
 
-			if ( $this->is_valid_ipn_request( $_POST ) ) {
+			if ( $this->is_valid_ipn_request( $_POST ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
 				wc_gateway_ppec_log( 'IPN request is valid according to PayPal.' );
-				do_action( 'woocommerce_paypal_express_checkout_valid_ipn_request', wp_unslash( $_POST ) );
+				do_action( 'woocommerce_paypal_express_checkout_valid_ipn_request', wp_unslash( $_POST ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 				exit;
 			} else {
 				wc_gateway_ppec_log( 'IPN request is NOT valid according to PayPal.' );
