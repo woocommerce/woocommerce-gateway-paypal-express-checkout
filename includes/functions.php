@@ -21,10 +21,10 @@ function woo_pp_start_checkout() {
 				if( ( window.opener != null ) && ( window.opener !== window ) &&
 						( typeof window.opener.paypal != "undefined" ) &&
 						( typeof window.opener.paypal.checkout != "undefined" ) ) {
-					window.opener.location.assign( "<?php echo $redirect_url; ?>" );
+					window.opener.location.assign( "<?php echo $redirect_url; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" );
 					window.close();
 				} else {
-					window.location.assign( "<?php echo $redirect_url; ?>" );
+					window.location.assign( "<?php echo $redirect_url; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" );
 				}
 			</script>
 			<?php

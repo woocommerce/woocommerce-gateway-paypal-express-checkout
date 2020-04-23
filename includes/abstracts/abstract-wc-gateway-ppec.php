@@ -566,7 +566,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		?>
 		<tr valign="top">
 			<th scope="row" class="titledesc">
-				<label for="<?php echo esc_attr( $field_key ); ?>"><?php echo wp_kses_post( $data['title'] ); ?> <?php echo $this->get_tooltip_html( $data ); ?></label>
+				<label for="<?php echo esc_attr( $field_key ); ?>"><?php echo wp_kses_post( $data['title'] ); ?> <?php echo $this->get_tooltip_html( $data ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></label>
 			</th>
 
 			<td class="image-component-wrapper">
@@ -576,7 +576,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 						echo wp_get_attachment_image( $value, 'thumbnail' );
 					} else {
 						// Translators: placeholder is an image's URL.
-						echo sprintf( __( 'Already using URL as image: %s', 'woocommerce-gateway-paypal-express-checkout' ), $value );
+						echo sprintf( esc_html__( 'Already using URL as image: %s', 'woocommerce-gateway-paypal-express-checkout' ), esc_attr( $value ) );
 					}
 					?>
 				</div>

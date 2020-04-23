@@ -83,7 +83,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 			?>
 			<div class="updated fade">
 				<p>
-					<strong><?php _e( 'NOTE: PayPal does not accept decimal places for the currency in which you are transacting.  The "Number of Decimals" option in WooCommerce has automatically been set to 0 for you.', 'woocommerce-gateway-paypal-express-checkout' ); ?></strong>
+					<strong><?php esc_html_e( 'NOTE: PayPal does not accept decimal places for the currency in which you are transacting.  The "Number of Decimals" option in WooCommerce has automatically been set to 0 for you.', 'woocommerce-gateway-paypal-express-checkout' ); ?></strong>
 				</p>
 			</div>
 			<?php
@@ -344,7 +344,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 			</td>
 			<td width="1%"></td>
 			<td class="total">
-				-&nbsp;<?php echo wc_price( $paypal_fee, array( 'currency' => $order_currency ) ); ?>
+				-&nbsp;<?php echo wc_price( $paypal_fee, array( 'currency' => $order_currency ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			</td>
 		</tr>
 		<tr>
@@ -354,7 +354,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 			</td>
 			<td width="1%"></td>
 			<td class="total">
-				<?php echo wc_price( $net, array( 'currency' => $order_currency ) ); ?>
+				<?php echo wc_price( $net, array( 'currency' => $order_currency ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			</td>
 		</tr>
 
@@ -386,6 +386,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 			<a href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'wc_ppec_hide_3_0_notice', 'true' ), 'wc_ppec_hide_wc_notice_nonce', '_wc_ppec_notice_nonce' ) ); ?>" class="woocommerce-message-close notice-dismiss" style="position:relative;float:right;padding:9px 0px 9px 9px 9px;text-decoration:none;"></a>
 			<p>
 			<?php
+			// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
 			printf(
 				/* Translators: %1$ <strong> tag, %2$ </strong> closing tag, %3$ WooCommerce version, %4$ <a> tag linking to Plugins screen, %5$ </a> closing tag. */
 				__(
@@ -396,6 +397,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 				WC_VERSION,
 				'<a href="' . admin_url( 'plugins.php' ) . '">', '</a>'
 			);
+			// phpcs:enable
 			?>
 			</p>
 		</div>

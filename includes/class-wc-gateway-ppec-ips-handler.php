@@ -137,7 +137,7 @@ class WC_Gateway_PPEC_IPS_Handler {
 
 		// Verify the nonce.
 		if ( ! wp_verify_nonce( $_GET['wc_ppec_ips_admin_nonce'], 'wc_ppec_ips' ) ) {
-			wp_die( __( 'Invalid connection request', 'woocommerce-gateway-paypal-express-checkout' ) );
+			wp_die( __( 'Invalid connection request', 'woocommerce-gateway-paypal-express-checkout' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 
 		wc_gateway_ppec_log( sprintf( '%s: returned back from IPS flow with parameters: %s', __METHOD__, print_r( $_GET, true ) ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
