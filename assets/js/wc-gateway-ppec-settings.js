@@ -26,6 +26,9 @@
 			$( 'body' ).trigger( 'wc_ppec_cert_changed', [ 'live' ] );
 			$( '#woocommerce_ppec_paypal_sandbox_api_signature' ).trigger( 'change' );
 			$( '#woocommerce_ppec_paypal_api_signature' ).trigger( 'change' );
+
+			$( 'input[type=text]' ).on( 'keypress', this.maybeSubmitSettings );
+			$( 'input[type=password]' ).on( 'keypress', this.maybeSubmitSettings );
 		},
 
 		onClickUploadButton: function( event ) {
@@ -140,7 +143,22 @@
 			} else {
 				$( signature_selector ).closest( 'tr' ).fadeIn();
 			}
-		}
+		},
+
+		/**
+		 * Saves the PayPal Checkout settings when the enter key is pressed inside a text field.
+		 *
+		 * This is the default WC behaviour, however, the image upload buttons were being 'clicked' instead.
+		 *
+		 * @param event
+		 */
+		maybeSubmitSettings: function( event ) {
+			// If the enter key is pressed.
+			if ( 13 === event.which ) {
+				event.preventDefault();
+				$( ".woocommerce-save-button[name='save']" ).click();
+			}
+		},
 	};
 
 	function getAttachmentUrl( attachment ) {
