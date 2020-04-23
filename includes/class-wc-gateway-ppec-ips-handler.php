@@ -85,7 +85,7 @@ class WC_Gateway_PPEC_IPS_Handler {
 	 */
 	public function get_signup_url( $env ) {
 		$query_args = array(
-			'redirect'    => urlencode( $this->get_redirect_url( $env ) ),
+			'redirect'    => urlencode( $this->get_redirect_url( $env ) ), /* phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.urlencode_urlencode */
 			'countryCode' => WC()->countries->get_base_country(),
 			'merchantId'  => md5( site_url( '/' ) . time() ),
 		);

@@ -240,7 +240,7 @@ class WC_Gateway_PPEC_Settings {
 			$url .= 'sandbox.';
 		}
 
-		$url .= 'paypal.com/checkoutnow?token=' . urlencode( $token );
+		$url .= 'paypal.com/checkoutnow?token=' . urlencode( $token ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.urlencode_urlencode
 
 		if ( $commit ) {
 			$url .= '&useraction=commit';
