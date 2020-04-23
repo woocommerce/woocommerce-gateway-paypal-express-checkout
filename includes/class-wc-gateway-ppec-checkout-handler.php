@@ -89,7 +89,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 *
 	 * @param WC_Checkout $checkout
 	 */
-	function checkout_init( $checkout ) {
+	public function checkout_init( $checkout ) {
 		if ( ! $this->has_active_session() ) {
 			return;
 		}

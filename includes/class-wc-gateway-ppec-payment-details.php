@@ -62,7 +62,7 @@ class PayPal_Payment_Details {
 class PayPal_Payment_Payment_FMF_Details {
 	public $filters = false;
 
-	function loadFromDoECResponse( $doECResponse, $bucketNum ) {
+	public function loadFromDoECResponse( $doECResponse, $bucketNum ) {
 		$max_filter_num = array(
 			'PENDING' => -1,
 			'REPORT'  => -1,
