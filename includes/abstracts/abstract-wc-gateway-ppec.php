@@ -383,7 +383,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 	public function process_refund( $order_id, $amount = null, $reason = '' ) {
 		$order = wc_get_order( $order_id );
 
-		if ( 0 == $amount || null == $amount ) {
+		if ( 0 == $amount || null == $amount ) { // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
 			return new WP_Error( 'paypal_refund_error', __( 'Refund Error: You need to specify a refund amount.', 'woocommerce-gateway-paypal-express-checkout' ) );
 		}
 
@@ -402,8 +402,8 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		foreach ( $txn_data['refundable_txns'] as $key => $value ) {
 			$refundable_amount = $value['amount'] - $value['refunded_amount'];
 
-			if ( $amount == $refundable_amount ) {
-				$refund_type = ( 0 == $value['refunded_amount'] ) ? 'Full' : 'Partial';
+			if ( $amount == $refundable_amount ) { // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
+				$refund_type = ( 0 == $value['refunded_amount'] ) ? 'Full' : 'Partial'; // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
 
 				try {
 					$refund_txn_id = WC_Gateway_PPEC_Refund::refund_order( $order, $amount, $refund_type, $reason, $order_currency );
@@ -455,7 +455,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		}
 
 		if ( $total_refundable_amount < $amount ) {
-			if ( 0 == $total_refundable_amount ) {
+			if ( 0 == $total_refundable_amount ) { // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
 				return new WP_Error( 'paypal_refund_error', __( 'Refund Error: All transactions have been fully refunded. There is no amount left to refund', 'woocommerce-gateway-paypal-express-checkout' ) );
 			} else {
 				// Translators: placeholder is an amount (with currency symbol).
@@ -475,7 +475,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 
 				if ( 0 < $amount_to_refund ) {
 					$refund_type = 'Partial';
-					if ( 0 == $value['refunded_amount'] && $amount_to_refund == $value['amount'] ) {
+					if ( 0 == $value['refunded_amount'] && $amount_to_refund == $value['amount'] ) { // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
 						$refund_type = 'Full';
 					}
 

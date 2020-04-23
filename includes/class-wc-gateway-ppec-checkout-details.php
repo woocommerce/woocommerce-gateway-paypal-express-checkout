@@ -414,13 +414,13 @@ class PayPal_Checkout_Wallet_Details {
 	public function loadFromGetECResponse( $getECResponse, $wallet_num ) {
 		$found_any = false;
 		foreach ( $getECResponse as $index => $value ) {
-			if ( ( 'WALLETTYPE' . $wallet_num ) == $index ) {
+			if ( ( 'WALLETTYPE' . $wallet_num ) == $index ) { // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
 				$this->wallet_type = $value;
 				$found_any = true;
-			} elseif ( ( 'WALLETID' . $wallet_num ) == $index ) {
+			} elseif ( ( 'WALLETID' . $wallet_num ) == $index ) { // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
 				$this->wallet_id = $value;
 				$found_any = true;
-			} elseif ( ( 'WALLETDESCRIPTION' . $wallet_num ) == $index ) {
+			} elseif ( ( 'WALLETDESCRIPTION' . $wallet_num ) == $index ) { // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
 				$this->wallet_description = $value;
 				$found_any = true;
 			}

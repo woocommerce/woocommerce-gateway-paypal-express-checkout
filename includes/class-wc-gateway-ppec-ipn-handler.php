@@ -97,7 +97,7 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 			$posted_data['payment_status'] = strtolower( $posted_data['payment_status'] );
 
 			// Sandbox fix.
-			if ( ( empty( $posted_data['pending_reason'] ) || 'authorization' !== $posted_data['pending_reason'] ) && isset( $posted_data['test_ipn'] ) && 1 == $posted_data['test_ipn'] && 'pending' == $posted_data['payment_status'] ) {
+			if ( ( empty( $posted_data['pending_reason'] ) || 'authorization' !== $posted_data['pending_reason'] ) && isset( $posted_data['test_ipn'] ) && 1 == $posted_data['test_ipn'] && 'pending' == $posted_data['payment_status'] ) { // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
 				$posted_data['payment_status'] = 'completed';
 			}
 
@@ -152,7 +152,7 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 	 * @param int $amount Amount
 	 */
 	protected function validate_amount( $order, $amount ) {
-		if ( number_format( $order->get_total(), 2, '.', '' ) != number_format( $amount, 2, '.', '' ) ) {
+		if ( number_format( $order->get_total(), 2, '.', '' ) != number_format( $amount, 2, '.', '' ) ) { // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
 			wc_gateway_ppec_log( 'Payment error: Amounts do not match (gross ' . $amount . ')' );
 			// Put this order on-hold for manual checking.
 			// Translators: placeholder is an amount.
@@ -257,7 +257,7 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 	protected function payment_status_refunded( $order, $posted_data ) {
 		// Only handle full refunds, not partial.
 		$order_id = version_compare( WC_VERSION, '3.0', '<' ) ? $order->id : $order->get_id();
-		if ( $order->get_total() == ( $posted_data['mc_gross'] * -1 ) ) {
+		if ( $order->get_total() == ( $posted_data['mc_gross'] * -1 ) ) { // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
 			// Mark order as refunded.
 			// Translators: placeholder is a payment status.
 			$order->update_status( 'refunded', sprintf( __( 'Payment %s via IPN.', 'woocommerce-gateway-paypal-express-checkout' ), strtolower( $posted_data['payment_status'] ) ) );

@@ -162,7 +162,7 @@ class WC_Gateway_PPEC_With_PayPal_Addons extends WC_Gateway_PPEC_With_PayPal {
 			return;
 		}
 
-		if ( 0 == $amount ) {
+		if ( 0.0 === (float) $amount ) {
 			$order->payment_complete();
 			return;
 		}

@@ -581,7 +581,7 @@ class WC_Gateway_PPEC_Client {
 		// the difference.
 		$diff = 0;
 
-		if ( $details['total_item_amount'] + $discounts != $rounded_total ) {
+		if ( $details['total_item_amount'] + $discounts != $rounded_total ) { // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
 			if ( 'add' === $settings->get_subtotal_mismatch_behavior() ) {
 				// Add line item to make up different between WooCommerce
 				// calculations and PayPal calculations.
@@ -601,7 +601,7 @@ class WC_Gateway_PPEC_Client {
 
 		// Enter discount shenanigans. Item total cannot be 0 so make modifications
 		// accordingly.
-		if ( 0 == $details['total_item_amount'] ) {
+		if ( 0 == $details['total_item_amount'] ) { // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
 			// Omit line items altogether.
 			unset( $details['items'] );
 		} elseif ( $discounts > 0 && 0 < $details['total_item_amount'] && ! empty( $details['items'] ) ) {
@@ -622,7 +622,7 @@ class WC_Gateway_PPEC_Client {
 		$wc_order_total = round( $total, $decimals );
 		$discounted_total = $details['order_total'];
 
-		if ( $wc_order_total != $discounted_total ) {
+		if ( $wc_order_total != $discounted_total ) { // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
 			// tax cannot be negative
 			if ( $discounted_total < $wc_order_total ) {
 				$details['order_tax'] += $wc_order_total - $discounted_total;
@@ -1157,12 +1157,12 @@ class WC_Gateway_PPEC_Client {
 
 		$result = $this->get_pal_details();
 
-		if ( 'Success' != $result['ACK'] && 'SuccessWithWarning' != $result['ACK'] ) {
+		if ( 'Success' !== $result['ACK'] && 'SuccessWithWarning' !== $result['ACK'] ) {
 			// Look at the result a little more closely to make sure it's a credentialing issue.
 			$found_10002 = false;
 			foreach ( $result as $index => $value ) {
 				if ( preg_match( '/^L_ERRORCODE\d+$/', $index ) ) {
-					if ( '10002' == $value ) {
+					if ( '10002' == $value ) { // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
 						$found_10002 = true;
 					}
 				}
@@ -1197,11 +1197,11 @@ class WC_Gateway_PPEC_Client {
 		);
 		$result = $this->set_express_checkout( $req );
 
-		if ( 'Success' != $result['ACK'] && 'SuccessWithWarning' != $result['ACK'] ) {
+		if ( 'Success' !== $result['ACK'] && 'SuccessWithWarning' !== $result['ACK'] ) {
 			$found_11601 = false;
 			foreach ( $result as $index => $value ) {
 				if ( preg_match( '/^L_ERRORCODE\d+$/', $index ) ) {
-					if ( '11601' == $value ) {
+					if ( '11601' == $value ) { // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
 						$found_11601 = true;
 					}
 				}

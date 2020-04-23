@@ -315,7 +315,7 @@ class PayPal_Payment_Payment_Protection_Eligibility_Details {
 	public function isItemNotReceivedEligible() {
 		$types = explode( ',', $this->protection_eligibility_type );
 		foreach ( $types as $value ) {
-			if ( self::ProtectionEligibilityTypeItemNotReceivedEligible == $value ) {
+			if ( self::ProtectionEligibilityTypeItemNotReceivedEligible == $value ) { // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
 				return true;
 			}
 		}
@@ -325,7 +325,7 @@ class PayPal_Payment_Payment_Protection_Eligibility_Details {
 	public function isUnauthorizedPaymentEligible() {
 		$types = explode( ',', $this->protection_eligibility_type );
 		foreach ( $types as $value ) {
-			if ( self::ProtectionEligibilityTypeUnauthorizedPaymentEligible == $value ) {
+			if ( self::ProtectionEligibilityTypeUnauthorizedPaymentEligible == $value ) { // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
 				return true;
 			}
 		}

@@ -36,7 +36,7 @@ class WC_Gateway_PPEC_Refund {
 		// if success return the transaction ID of the refund
 		// if failure then do 'throw new PayPal_API_Exception( $response );'
 
-		if ( 'Success' == $response['ACK'] || 'SuccessWithWarning' == $response['ACK'] ) {
+		if ( 'Success' === $response['ACK'] || 'SuccessWithWarning' === $response['ACK'] ) {
 			return $response['REFUNDTRANSACTIONID'];
 		} else {
 			throw new PayPal_API_Exception( $response );
