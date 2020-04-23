@@ -128,7 +128,7 @@ class WC_Gateway_PPEC_Privacy extends WC_Abstract_Privacy {
 		$subscription_query    = array(
 			'posts_per_page'  => 10,
 			'page'            => $page,
-			'meta_query'      => $meta_query,
+			'meta_query'      => $meta_query, /* phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query */
 		);
 
 		$subscriptions = wcs_get_subscriptions( $subscription_query );
