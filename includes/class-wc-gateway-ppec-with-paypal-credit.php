@@ -12,7 +12,7 @@ class WC_Gateway_PPEC_With_PayPal_Credit extends WC_Gateway_PPEC_With_PayPal {
 
 		if ( ! is_admin() ) {
 			if ( wc_gateway_ppec()->checkout->is_started_from_checkout_page() ) {
-				$this->title = __( 'PayPal Credit', 'woocommerce-gateway-paypal-express-checkout' );;
+				$this->title = __( 'PayPal Credit', 'woocommerce-gateway-paypal-express-checkout' );
 			}
 		}
 
