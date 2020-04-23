@@ -159,11 +159,7 @@ class WC_Gateway_PPEC_IPS_Handler {
 			}
 		}
 
-		$creds = new WC_Gateway_PPEC_Client_Credential_Signature(
-			$_GET['api_username'],
-			$_GET['api_password'],
-			$_GET['signature']
-		);
+		$creds = new WC_Gateway_PPEC_Client_Credential_Signature( $_GET['api_username'], $_GET['api_password'], $_GET['signature'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated
 
 		$error_msgs = array();
 		try {
