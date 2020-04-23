@@ -705,7 +705,7 @@ class WC_Gateway_PPEC_Client {
 		$details = $this->get_details( $details, $order->get_total_discount(), $rounded_total, $order->get_total() );
 
 		// PayPal shipping address from order.
-		$shipping_address = new PayPal_Address;
+		$shipping_address = new PayPal_Address();
 
 		$old_wc = version_compare( WC_VERSION, '3.0', '<' );
 
@@ -768,7 +768,7 @@ class WC_Gateway_PPEC_Client {
 	protected function _get_address_from_customer() {
 		$customer = WC()->customer;
 
-		$shipping_address = new PayPal_Address;
+		$shipping_address = new PayPal_Address();
 
 		$old_wc = version_compare( WC_VERSION, '3.0', '<' );
 
