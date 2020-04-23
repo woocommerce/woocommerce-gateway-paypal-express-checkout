@@ -39,7 +39,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 			return $actions;
 		}
 
-		$order = wc_get_order( $_REQUEST['post'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$order = wc_get_order( $_REQUEST['post'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 
 		if ( empty( $order ) ) {
 			return $actions;
@@ -109,7 +109,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 			'wc_gateway_ppec_with_paypal_credit',
 		);
 
-		$current_section = isset( $_GET['section'] ) ? $_GET['section'] : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$current_section = isset( $_GET['section'] ) ? $_GET['section'] : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 
 		// If the current section is a paypal section, remove the card section,
 		// otherwise, remove the paypal section
@@ -288,14 +288,14 @@ class WC_Gateway_PPEC_Admin_Handler {
 			return;
 		}
 
-		if ( empty( $_GET['reset_nonce'] ) || ! wp_verify_nonce( $_GET['reset_nonce'], 'reset_ppec_api_credentials' ) ) {
+		if ( empty( $_GET['reset_nonce'] ) || ! wp_verify_nonce( $_GET['reset_nonce'], 'reset_ppec_api_credentials' ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 			return;
 		}
 
 		$settings = wc_gateway_ppec()->settings;
 		$env      = $settings->_environment;
 		if ( ! empty( $_GET['environment'] ) ) {
-			$env = $_GET['environment'];
+			$env = $_GET['environment']; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 		}
 		$prefix = 'sandbox' === $env ? 'sandbox_' : '';
 
@@ -375,7 +375,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 
 		// Check if the notice needs to be dismissed.
 		$wc_updated = version_compare( WC_VERSION, '3.0', '>=' );
-		$dismissed  = isset( $_GET['wc_ppec_hide_3_0_notice'], $_GET['_wc_ppec_notice_nonce'] ) && wp_verify_nonce( $_GET['_wc_ppec_notice_nonce'], 'wc_ppec_hide_wc_notice_nonce' );
+		$dismissed  = isset( $_GET['wc_ppec_hide_3_0_notice'], $_GET['_wc_ppec_notice_nonce'] ) && wp_verify_nonce( $_GET['_wc_ppec_notice_nonce'], 'wc_ppec_hide_wc_notice_nonce' ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 
 		if ( $wc_updated || $dismissed ) {
 			delete_option( 'wc_ppec_display_wc_3_0_warning' );

@@ -241,10 +241,10 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		if ( array_key_exists( 'woocommerce_ppec_paypal_api_certificate', $_FILES )
 			&& array_key_exists( 'tmp_name', $_FILES['woocommerce_ppec_paypal_api_certificate'] )
 			&& array_key_exists( 'size', $_FILES['woocommerce_ppec_paypal_api_certificate'] )
-			&& $_FILES['woocommerce_ppec_paypal_api_certificate']['size'] ) {
+			&& $_FILES['woocommerce_ppec_paypal_api_certificate']['size'] ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 
-			$_POST['woocommerce_ppec_paypal_api_certificate'] = base64_encode( file_get_contents( $_FILES['woocommerce_ppec_paypal_api_certificate']['tmp_name'] ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents,WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
-			unlink( $_FILES['woocommerce_ppec_paypal_api_certificate']['tmp_name'] );
+			$_POST['woocommerce_ppec_paypal_api_certificate'] = base64_encode( file_get_contents( $_FILES['woocommerce_ppec_paypal_api_certificate']['tmp_name'] ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents,WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+			unlink( $_FILES['woocommerce_ppec_paypal_api_certificate']['tmp_name'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 			unset( $_FILES['woocommerce_ppec_paypal_api_certificate'] );
 		} elseif ( isset( $_POST['woocommerce_ppec_delete_live_api_certificate'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			$_POST['woocommerce_ppec_paypal_api_certificate'] = '';
@@ -256,10 +256,10 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		if ( array_key_exists( 'woocommerce_ppec_paypal_sandbox_api_certificate', $_FILES )
 			&& array_key_exists( 'tmp_name', $_FILES['woocommerce_ppec_paypal_sandbox_api_certificate'] )
 			&& array_key_exists( 'size', $_FILES['woocommerce_ppec_paypal_sandbox_api_certificate'] )
-			&& $_FILES['woocommerce_ppec_paypal_sandbox_api_certificate']['size'] ) {
+			&& $_FILES['woocommerce_ppec_paypal_sandbox_api_certificate']['size'] ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 
-			$_POST['woocommerce_ppec_paypal_sandbox_api_certificate'] = base64_encode( file_get_contents( $_FILES['woocommerce_ppec_paypal_sandbox_api_certificate']['tmp_name'] ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents,WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
-			unlink( $_FILES['woocommerce_ppec_paypal_sandbox_api_certificate']['tmp_name'] );
+			$_POST['woocommerce_ppec_paypal_sandbox_api_certificate'] = base64_encode( file_get_contents( $_FILES['woocommerce_ppec_paypal_sandbox_api_certificate']['tmp_name'] ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents,WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+			unlink( $_FILES['woocommerce_ppec_paypal_sandbox_api_certificate']['tmp_name'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 			unset( $_FILES['woocommerce_ppec_paypal_sandbox_api_certificate'] );
 		} elseif ( isset( $_POST['woocommerce_ppec_delete_sandbox_api_certificate'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			$_POST['woocommerce_ppec_paypal_sandbox_api_certificate'] = '';

@@ -49,8 +49,8 @@ class WC_Gateway_PPEC_With_SPB extends WC_Gateway_PPEC_With_PayPal {
 			$session = WC()->session->get( 'paypal', new stdClass() );
 
 			$session->checkout_completed = true;
-			$session->payer_id           = $_POST['payerID']; // phpcs:ignore WordPress.Security.NonceVerification.Missing
-			$session->token              = $_POST['paymentToken']; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$session->payer_id           = $_POST['payerID']; // phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+			$session->token              = $_POST['paymentToken']; // phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 
 			WC()->session->set( 'paypal', $session );
 		}

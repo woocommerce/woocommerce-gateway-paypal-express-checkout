@@ -197,7 +197,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		// Get the buyer details from PayPal
 		try {
 			$session          = WC()->session->get( 'paypal' );
-			$token            = isset( $_GET['token'] ) ? $_GET['token'] : $session->token; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$token            = isset( $_GET['token'] ) ? $_GET['token'] : $session->token; // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 			$checkout_details = $this->get_checkout_details( $token );
 		} catch ( PayPal_API_Exception $e ) {
 			wc_add_notice( $e->getMessage(), 'error' );
@@ -241,7 +241,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 */
 	public function paypal_billing_details() {
 		$session          = WC()->session->get( 'paypal' );
-		$token            = isset( $_GET['token'] ) ? $_GET['token'] : $session->token; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$token            = isset( $_GET['token'] ) ? $_GET['token'] : $session->token; // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 		try {
 			$checkout_details = $this->get_checkout_details( $token );
 		} catch ( PayPal_API_Exception $e ) {
@@ -328,7 +328,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 */
 	public function paypal_shipping_details() {
 		$session          = WC()->session->get( 'paypal' );
-		$token            = isset( $_GET['token'] ) ? $_GET['token'] : $session->token; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$token            = isset( $_GET['token'] ) ? $_GET['token'] : $session->token; // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 
 		try {
 			$checkout_details = $this->get_checkout_details( $token );
@@ -370,7 +370,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		if ( ! empty( $checkout_details->payer_details->phone_number ) ) {
 			$phone = $checkout_details->payer_details->phone_number;
 		} elseif ( 'yes' === wc_gateway_ppec()->settings->require_phone_number && ! empty( $_POST['billing_phone'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
-			$phone = wc_clean( $_POST['billing_phone'] ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$phone = wc_clean( $_POST['billing_phone'] ); // phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 		}
 
 		return array(
@@ -436,7 +436,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			return;
 		}
 
-		$token                    = $_GET['token'];
+		$token                    = $_GET['token']; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 		$create_billing_agreement = ! empty( $_GET['create-billing-agreement'] );
 		$session                  = WC()->session->get( 'paypal' );
 
@@ -450,7 +450,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		$session->token              = $token;
 
 		if ( ! empty( $_GET['PayerID'] ) ) {
-			$session->payer_id = $_GET['PayerID'];
+			$session->payer_id = $_GET['PayerID']; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 		} elseif ( $create_billing_agreement ) {
 			$session->create_billing_agreement = true;
 		} else {
@@ -833,7 +833,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		}
 
 		if ( false === $token && ! empty( $_GET['token'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			$token = $_GET['token']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$token = $_GET['token']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 		}
 
 		$client   = wc_gateway_ppec()->client;
@@ -981,7 +981,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 
 		// Shipping details from PayPal
 		try {
-			$checkout_details = $this->get_checkout_details( wc_clean( $_GET['token'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$checkout_details = $this->get_checkout_details( wc_clean( $_GET['token'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 		} catch ( PayPal_API_Exception $e ) {
 			return $packages;
 		}
@@ -1091,7 +1091,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 
 		foreach ( $fields as $field ) {
 			if ( ! empty( $_GET[ $field ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-				$params['wc_ajax_url'] = add_query_arg( $field, $_GET[ $field ], $params['wc_ajax_url'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				$params['wc_ajax_url'] = add_query_arg( $field, $_GET[ $field ], $params['wc_ajax_url'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 			}
 		}
 
