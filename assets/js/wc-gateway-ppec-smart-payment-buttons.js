@@ -117,7 +117,7 @@
 								} ).join( '' );
 								showError( '<ul class="woocommerce-error" role="alert">' + messageItems + '</ul>', selector );
 							}
-              $( 'form.checkout' ).submit();
+							$( 'form.checkout' ).submit();
 							return null;
 						}
 						return response.data.token;

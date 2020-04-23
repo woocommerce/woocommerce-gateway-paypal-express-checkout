@@ -173,7 +173,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 	public function maybe_start_checkout( $data, $errors = null ) {
 		// We need to also check for errors added via wc_add_notice 
 		$error_messages = array_map( function( $notice ) {
-			return $notice[ 'notice' ];   
+			return $notice[ 'notice' ];
 		}, wc_get_notices( 'error' ) );
 
 		if ( is_null( $errors ) && empty( $error_messages ) ) {
