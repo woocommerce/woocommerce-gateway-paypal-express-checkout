@@ -31,6 +31,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 		add_action( 'widget_title', array( $this, 'maybe_enqueue_checkout_js' ), 10, 3 );
 
 		if ( 'yes' === wc_gateway_ppec()->settings->checkout_on_single_product_enabled ) {
+			add_action( 'woocommerce_before_main_content', array( $this, 'display_notice_product' ) );
 			add_action( 'woocommerce_after_add_to_cart_form', array( $this, 'display_paypal_button_product' ), 1 );
 			add_action( 'wc_ajax_wc_ppec_generate_cart', array( $this, 'wc_ajax_generate_cart' ) );
 			add_action( 'wp', array( $this, 'ensure_session' ) ); // Ensure there is a customer session so that nonce is not invalidated by new session created on AJAX POST request.
@@ -278,6 +279,17 @@ class WC_Gateway_PPEC_Cart_Handler {
 			$customer->set_billing_postcode( $billing_postcode );
 			$customer->set_billing_phone( $billing_phone );
 			$customer->set_billing_email( $billing_email );
+		}
+	}
+
+	/**
+	 * Display notice on single product page if cart contains items
+	 *
+	 * @since 2.0.0
+	 */
+	public function display_notice_product() {
+		if (WC()->cart->get_cart_contents_count() > 0) {
+			wc_add_notice( apply_filters( 'woocommerce_paypal_express_checkout__cart_not_empty_message', esc_html__('Clicking on the Smart Payment buttons will not add the cart items for purchase!', 'woocommerce-gateway-paypal-express-checkout' ) ), 'notice' );
 		}
 	}
 
