@@ -150,6 +150,36 @@ class WC_Gateway_PPEC_Settings {
 	}
 
 	/**
+	 * Get REST API credentials for live environment.
+	 *
+	 * @since 1.7.0
+	 * @return WC_Gateway_PPEC_REST_Client_Credential
+	 */
+	public function get_live_rest_api_credentials() {
+		return new WC_Gateway_PPEC_REST_Client_Credential( $this->api_client_id, $this->api_secret );
+	}
+
+	/**
+	 * Get REST API credentials for sandbox environment.
+	 *
+	 * @since 1.7.0
+	 * @return WC_Gateway_PPEC_REST_Client_Credential
+	 */
+	public function get_sandbox_rest_api_credentials() {
+		return new WC_Gateway_PPEC_REST_Client_Credential( $this->sandbox_api_client_id, $this->sandbox_api_secret );
+	}
+
+	/**
+	 * Get REST API credentials for current environment.
+	 *
+	 * @since 1.7.0
+	 * @return WC_Gateway_PPEC_REST_Client_Credential
+	 */
+	public function get_active_rest_api_credentials() {
+		return 'live' === $this->get_environment() ? $this->get_live_rest_api_credentials() : $this->get_sandbox_rest_api_credentials();
+	}
+
+	/**
 	 * Get PayPal redirect URL.
 	 *
 	 * @param string $token  Token
@@ -386,4 +416,16 @@ class WC_Gateway_PPEC_Settings {
 	public function get_number_of_decimal_digits() {
 		return $this->is_currency_supports_zero_decimal() ? 0 : 2;
 	}
+
+	/**
+	 * Whether to use checkout.js or the latest available SDK.
+	 *
+	 * @since 1.7.0
+	 *
+	 * @return bool
+	 */
+	public function use_legacy_checkout_js() {
+		return (bool) apply_filters( 'woocommerce_paypal_express_checkout_use_legacy_checkout_js', false );
+	}
+
 }
