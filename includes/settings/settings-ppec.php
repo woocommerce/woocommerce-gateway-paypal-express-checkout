@@ -55,7 +55,7 @@ if ( $enable_ips && $needs_sandbox_creds ) {
 	);
 }
 
-$credit_enabled_label = __( 'Enable PayPal Credit', 'woocommerce-gateway-paypal-express-checkout' );
+$credit_enabled_label = __( 'Enable PayPal Credit to eligible customers', 'woocommerce-gateway-paypal-express-checkout' );
 if ( ! wc_gateway_ppec_is_credit_supported() ) {
 	$credit_enabled_label .= '<p><em>' . __( 'This option is disabled. Currently PayPal Credit only available for U.S. merchants using USD currency.', 'woocommerce-gateway-paypal-express-checkout' ) . '</em></p>';
 }
@@ -149,6 +149,18 @@ $settings = array(
 		'desc_tip'    => true,
 		'placeholder' => __( 'Optional', 'woocommerce-gateway-paypal-express-checkout' ),
 	),
+	'api_client_id' => array(
+		'title'       => __( 'REST API Client ID', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'        => 'text',
+		'default'     => '',
+		'desc_tip'    => true,
+	),
+	'api_secret' => array(
+		'title'       => __( 'REST API Secret', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'        => 'password',
+		'default'     => '',
+		'desc_tip'    => true,
+	),
 
 	'sandbox_api_credentials' => array(
 		'title'       => __( 'Sandbox API Credentials', 'woocommerce-gateway-paypal-express-checkout' ),
@@ -190,6 +202,18 @@ $settings = array(
 		'default'     => '',
 		'desc_tip'    => true,
 		'placeholder' => __( 'Optional', 'woocommerce-gateway-paypal-express-checkout' ),
+	),
+	'sandbox_api_client_id' => array(
+		'title'       => __( 'Sandbox REST API Client ID', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'        => 'text',
+		'default'     => '',
+		'desc_tip'    => true,
+	),
+	'sandbox_api_secret' => array(
+		'title'       => __( 'Sandbox REST API Secret', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'        => 'password',
+		'default'     => '',
+		'desc_tip'    => true,
 	),
 
 	'paypal_hosted_settings' => array(
@@ -409,18 +433,27 @@ $per_context_settings = array(
 	'hide_funding_methods' => array(
 		'title'       => 'Hide Funding Method(s)',
 		'type'        => 'multiselect',
-		'class'       => 'wc-enhanced-select woocommerce_ppec_paypal_spb woocommerce_ppec_paypal_vertical',
+		'class'       => 'wc-enhanced-select woocommerce_ppec_paypal_spb woocommerce_ppec_funding_methods_select woocommerce_ppec_paypal_vertical',
 		'default'     => array( 'CARD' ),
 		'desc_tip'    => true,
 		'description' => __( 'Hides the specified funding methods.', 'woocommerce-gateway-paypal-express-checkout' ),
 		'options'     => array(
-			'CREDIT' => __( 'PayPal Credit', 'woocommerce-gateway-paypal-express-checkout' ),
-			'ELV'    => __( 'ELV', 'woocommerce-gateway-paypal-express-checkout' ),
-			'CARD'   => __( 'Credit Card', 'woocommerce-gateway-paypal-express-checkout' ),
+			'CREDIT'          => __( 'PayPal Credit', 'woocommerce-gateway-paypal-express-checkout' ),
+			'ELV'             => __( 'ELV', 'woocommerce-gateway-paypal-express-checkout' ),
+			'CARD'            => __( 'Credit or debit cards', 'woocommerce-gateway-paypal-express-checkout' ),
+			'VENMO'           => __( 'Venmo', 'woocommerce-gateway-paypal-express-checkout' ),
+			'SEPA'            => __( 'SEPA-Lastschrift', 'woocommerce-gateway-paypal-express-checkout' ),
+			'BANCONTACT'      => __( 'Bancontact', 'woocommerce-gateway-paypal-express-checkout' ),
+			'EPS'             => __( 'eps', 'woocommerce-gateway-paypal-express-checkout' ),
+			'GIROPAY'         => __( 'giropay', 'woocommerce-gateway-paypal-express-checkout' ),
+			'IDEAL'           => __( 'iDEAL', 'woocommerce-gateway-paypal-express-checkout' ),
+			'MYBANK'          => __( 'MyBank', 'woocommerce-gateway-paypal-express-checkout' ),
+			'P24'             => __( 'Przelewy24', 'woocommerce-gateway-paypal-express-checkout' ),
+			'SOFORT'          => __( 'Sofort', 'woocommerce-gateway-paypal-express-checkout' ),
 		),
 	),
 	'credit_enabled' => array(
-		'title'       => __( 'Enable PayPal Credit', 'woocommerce-gateway-paypal-express-checkout' ),
+		'title'       => __( 'Enable PayPal Credit to eligible customers', 'woocommerce-gateway-paypal-express-checkout' ),
 		'type'        => 'checkbox',
 		'label'       => $credit_enabled_label,
 		'disabled'    => ! wc_gateway_ppec_is_credit_supported(),
