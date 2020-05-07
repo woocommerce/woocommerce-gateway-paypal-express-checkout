@@ -126,6 +126,11 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			return $fields;
 		}
 
+		// Regardless of shipping, PP doesn't have the county required (e.g. using Ireland without a county is acceptable)
+		if ( array_key_exists( 'state', $fields ) ) {
+			$fields['state']['required'] = false;
+		}
+
 		if ( ! apply_filters( 'woocommerce_paypal_express_checkout_address_not_required', ! WC_Gateway_PPEC_Plugin::needs_shipping() ) ) {
 			return $fields;
 		}
@@ -137,11 +142,6 @@ class WC_Gateway_PPEC_Checkout_Handler {
 					$fields[ $not_required_field ]['required'] = false;
 				}
 			}
-		}
-
-		// Regardless of shipping, PP doesn't have the county required (e.g. using Ireland without a county is acceptable)
-		if ( array_key_exists( 'state', $fields ) ) {
-			$fields['state']['required'] = false;
 		}
 
 		return $fields;
