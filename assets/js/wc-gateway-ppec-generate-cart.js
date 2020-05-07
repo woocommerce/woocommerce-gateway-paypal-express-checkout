@@ -27,7 +27,7 @@
 		.on( 'disable', function() {
 			$( '#woo_pp_ec_button_product' )
 				.css( {
-					'cursor': ( variation_valid ? 'pointer' : 'not-allowed' ),
+					'cursor': 'not-allowed',
 					'-webkit-filter': 'grayscale( 100% )', // Safari 6.0 - 9.0
 					'filter': 'grayscale( 100% )',
 				} )
