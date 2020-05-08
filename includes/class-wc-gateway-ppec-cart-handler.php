@@ -541,6 +541,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 					'locale'     => $settings->get_paypal_locale(),
 					'components' => 'buttons,funding-eligibility',
 					'commit'     => 'checkout' === $page ? 'true' : 'false',
+					'currency'   => get_woocommerce_currency(),
 				);
 
 				wp_register_script( 'paypal-checkout-js', add_query_arg( $script_args, 'https://www.paypal.com/sdk/js' ), array(), null, true );
