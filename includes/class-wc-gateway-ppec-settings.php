@@ -22,30 +22,80 @@ class WC_Gateway_PPEC_Settings {
 	 * @var array
 	 */
 	protected $_supported_locales = array(
+		'ar_EG',
+		'cs_CZ',
 		'da_DK',
 		'de_DE',
+		'el_GR',
 		'en_AU',
+		'en_IN',
 		'en_GB',
 		'en_US',
 		'es_ES',
+		'es_XC',
+		'fi_FI',
 		'fr_CA',
 		'fr_FR',
+		'fr_XC',
 		'he_IL',
+		'hu_HU',
 		'id_ID',
 		'it_IT',
 		'ja_JP',
+		'ko_KR',
 		'nl_NL',
 		'no_NO',
 		'pl_PL',
 		'pt_BR',
 		'pt_PT',
 		'ru_RU',
+		'sk_SK',
 		'sv_SE',
 		'th_TH',
-		'tr_TR',
 		'zh_CN',
 		'zh_HK',
 		'zh_TW',
+		'zh_XC',
+	);
+
+	/**
+	 * Mapping between WP locale codes and PayPal locale codes
+	 *
+	 * @var array
+	 */
+	protected $_locales_mapping = array(
+		'ar'             => 'ar_EG',
+		'arq'            => 'ar_EG',
+		'ary'            => 'ar_EG',
+		'de_AT'          => 'de_DE',
+		'de_CH'          => 'de_DE',
+		'de_CH_informal' => 'de_DE',
+		'de_DE_formal'   => 'de_DE',
+		'el'             => 'el_GR',
+		'es_AR'          => 'es_ES',
+		'es_CL'          => 'es_ES',
+		'es_CO'          => 'es_ES',
+		'es_CR'          => 'es_ES',
+		'es_DO'          => 'es_ES',
+		'es_GT'          => 'es_ES',
+		'es_HN'          => 'es_ES',
+		'es_MX'          => 'es_ES',
+		'es_PE'          => 'es_ES',
+		'es_PR'          => 'es_ES',
+		'es_ES'          => 'es_ES',
+		'es_UY'          => 'es_ES',
+		'es_VE'          => 'es_ES',
+		'fi'             => 'fi_FI',
+		'fr_BE'          => 'fr_FR',
+		'ja'             => 'ja_JP',
+		'nb_NO'          => 'no_NO',
+		'nn_NO'          => 'no_NO',
+		'nl_BE'          => 'nl_NL',
+		'nl_NL_formal'   => 'nl_NL',
+		'pt_AO'          => 'pt_PT',
+		'pt_PT_ao90'     => 'pt_PT',
+		'th'             => 'th_TH',
+		'zh_SG'          => 'zh_CN',
 	);
 
 	/**
@@ -345,8 +395,13 @@ class WC_Gateway_PPEC_Settings {
 			} else {
 				$locale = 'en_US';
 			}
-		} else if ( ! in_array( $locale, $this->_supported_locales ) ) {
-			$locale = 'en_US';
+		} elseif ( ! in_array( $locale, $this->_supported_locales ) ) {
+			// Mapping some WP locales to PayPal locales
+			if ( isset( $this->_locales_mapping[ $locale ] ) ) {
+				$locale = $this->_locales_mapping[ $locale ];
+			} else {
+				$locale = 'en_US';
+			}
 		}
 
 		return apply_filters( 'woocommerce_paypal_express_checkout_paypal_locale', $locale );
