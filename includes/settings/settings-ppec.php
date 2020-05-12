@@ -149,19 +149,6 @@ $settings = array(
 		'desc_tip'    => true,
 		'placeholder' => __( 'Optional', 'woocommerce-gateway-paypal-express-checkout' ),
 	),
-	'api_client_id' => array(
-		'title'       => __( 'REST API Client ID', 'woocommerce-gateway-paypal-express-checkout' ),
-		'type'        => 'text',
-		'default'     => '',
-		'desc_tip'    => true,
-	),
-	'api_secret' => array(
-		'title'       => __( 'REST API Secret', 'woocommerce-gateway-paypal-express-checkout' ),
-		'type'        => 'password',
-		'default'     => '',
-		'desc_tip'    => true,
-	),
-
 	'sandbox_api_credentials' => array(
 		'title'       => __( 'Sandbox API Credentials', 'woocommerce-gateway-paypal-express-checkout' ),
 		'type'        => 'title',
@@ -203,19 +190,6 @@ $settings = array(
 		'desc_tip'    => true,
 		'placeholder' => __( 'Optional', 'woocommerce-gateway-paypal-express-checkout' ),
 	),
-	'sandbox_api_client_id' => array(
-		'title'       => __( 'Sandbox REST API Client ID', 'woocommerce-gateway-paypal-express-checkout' ),
-		'type'        => 'text',
-		'default'     => '',
-		'desc_tip'    => true,
-	),
-	'sandbox_api_secret' => array(
-		'title'       => __( 'Sandbox REST API Secret', 'woocommerce-gateway-paypal-express-checkout' ),
-		'type'        => 'password',
-		'default'     => '',
-		'desc_tip'    => true,
-	),
-
 	'paypal_hosted_settings' => array(
 		'title'       => __( 'PayPal-hosted Checkout Settings', 'woocommerce-gateway-paypal-express-checkout' ),
 		'type'        => 'title',
