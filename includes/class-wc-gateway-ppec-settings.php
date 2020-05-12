@@ -200,33 +200,23 @@ class WC_Gateway_PPEC_Settings {
 	}
 
 	/**
-	 * Get REST API credentials for live environment.
+	 * Get the REST Client ID for a live environment.
 	 *
-	 * @since 1.7.0
-	 * @return WC_Gateway_PPEC_REST_Client_Credential
+	 * @since 2.0
+	 * @return string
 	 */
-	public function get_live_rest_api_credentials() {
-		return new WC_Gateway_PPEC_REST_Client_Credential( $this->api_client_id, $this->api_secret );
+	public function get_live_rest_client_id() {
+		return 'AQbghYd-7mRPyimEriYScIgTnYUsLnr5wVnPnmfPaSzwKrUe3qNzfEc5hXr9Ucf_JG_HFAZpJMJYXMuk';
 	}
 
 	/**
-	 * Get REST API credentials for sandbox environment.
+	 * Get the REST Client ID for current environment.
 	 *
-	 * @since 1.7.0
-	 * @return WC_Gateway_PPEC_REST_Client_Credential
+	 * @since 2.0
+	 * @return string
 	 */
-	public function get_sandbox_rest_api_credentials() {
-		return new WC_Gateway_PPEC_REST_Client_Credential( $this->sandbox_api_client_id, $this->sandbox_api_secret );
-	}
-
-	/**
-	 * Get REST API credentials for current environment.
-	 *
-	 * @since 1.7.0
-	 * @return WC_Gateway_PPEC_REST_Client_Credential
-	 */
-	public function get_active_rest_api_credentials() {
-		return 'live' === $this->get_environment() ? $this->get_live_rest_api_credentials() : $this->get_sandbox_rest_api_credentials();
+	public function get_active_rest_client_id() {
+		return 'live' === $this->get_environment() ? $this->get_live_rest_client_id() : 'sb';
 	}
 
 	/**

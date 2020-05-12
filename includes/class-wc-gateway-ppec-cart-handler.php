@@ -477,9 +477,6 @@ class WC_Gateway_PPEC_Cart_Handler {
 		$is_checkout = is_checkout() && 'yes' === $settings->mark_enabled && ! wc_gateway_ppec()->checkout->has_active_session();
 		$page        = $is_cart ? 'cart' : ( $is_product ? 'product' : ( $is_checkout ? 'checkout' : null ) );
 
-		$rest_creds  = $settings->get_active_rest_api_credentials();
-		$use_js_sdk  = $settings->use_spb && ! empty( $rest_creds->get_client_id() ) && ! empty( $rest_creds->get_client_secret() );
-
 		if ( 'yes' !== $settings->use_spb && $is_cart ) {
 			wp_enqueue_script( 'paypal-checkout-js', 'https://www.paypalobjects.com/api/checkout.js', array(), null, true );
 			wp_enqueue_script( 'wc-gateway-ppec-frontend-in-context-checkout', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-frontend-in-context-checkout.js', array( 'jquery' ), wc_gateway_ppec()->version, true );
@@ -537,7 +534,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 			if ( ! $settings->use_legacy_checkout_js() ) {
 				$script_args = array(
-					'client-id'  => 'sandbox' === $settings->get_environment() ? 'sb' : $rest_creds->get_client_id(),
+					'client-id'  => $settings->get_active_rest_client_id(),
 					'locale'     => $settings->get_paypal_locale(),
 					'components' => 'buttons,funding-eligibility',
 					'commit'     => 'checkout' === $page ? 'true' : 'false',
