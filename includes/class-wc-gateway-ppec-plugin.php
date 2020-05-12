@@ -349,7 +349,6 @@ class WC_Gateway_PPEC_Plugin {
 		$this->cart           = new WC_Gateway_PPEC_Cart_Handler();
 		$this->ips            = new WC_Gateway_PPEC_IPS_Handler();
 		$this->client         = new WC_Gateway_PPEC_Client( $this->settings->get_active_api_credentials(), $this->settings->environment );
-		$this->rest_client    = new WC_Gateway_PPEC_REST_Client( $this->settings->get_active_rest_api_credentials(), $this->settings->environment );
 	}
 
 	/**
@@ -362,9 +361,6 @@ class WC_Gateway_PPEC_Plugin {
 		require_once( $this->includes_path . 'class-wc-gateway-ppec-client-credential-certificate.php' );
 		require_once( $this->includes_path . 'class-wc-gateway-ppec-client-credential-signature.php' );
 		require_once( $this->includes_path . 'class-wc-gateway-ppec-client.php' );
-
-		require_once( $this->includes_path . 'class-wc-gateway-ppec-rest-client-credential.php' );
-		require_once( $this->includes_path . 'class-wc-gateway-ppec-rest-client.php' );
 	}
 
 	/**

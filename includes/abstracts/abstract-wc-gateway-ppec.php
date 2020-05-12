@@ -360,19 +360,6 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 				}
 			}
 		}
-
-		$rest_creds = $settings->get_active_rest_api_credentials();
-		if ( $rest_creds->get_client_id() ) {
-			if ( ! $rest_creds->get_client_secret() ) {
-				WC_Admin_Settings::add_error( __( 'Error: You must enter the REST API Client Secret.', 'woocommerce-gateway-paypal-express-checkout' ) );
-				return false;
-			}
-
-			$result = wc_gateway_ppec()->rest_client->test_api_credentials( $rest_creds, $settings->get_environment() );
-			if ( is_wp_error( $result ) ) {
-				WC_Admin_Settings::add_error( sprintf( __( 'An error occurred while trying to validate your REST API credentials: %s.', 'woocommerce-gateway-paypal-express-checkout' ), $result->get_error_message() ) );
-			}
-		}
 	}
 
 	/**
