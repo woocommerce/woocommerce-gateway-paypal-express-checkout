@@ -534,11 +534,12 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 			if ( ! $settings->use_legacy_checkout_js() ) {
 				$script_args = array(
-					'client-id'  => $settings->get_active_rest_client_id(),
-					'locale'     => $settings->get_paypal_locale(),
-					'components' => 'buttons,funding-eligibility',
-					'commit'     => 'checkout' === $page ? 'true' : 'false',
-					'currency'   => get_woocommerce_currency(),
+					'client-id'   => $settings->get_active_rest_client_id(),
+					'merchant-id' => $client->get_payer_id(),
+					'locale'      => $settings->get_paypal_locale(),
+					'components'  => 'buttons,funding-eligibility',
+					'commit'      => 'checkout' === $page ? 'true' : 'false',
+					'currency'    => get_woocommerce_currency(),
 				);
 
 				wp_register_script( 'paypal-checkout-js', add_query_arg( $script_args, 'https://www.paypal.com/sdk/js' ), array(), null, true );
