@@ -77,6 +77,11 @@ DEVELOPER.md
 package-lock.json
 package.json
 deploy.sh
+composer.lock
+composer.json
+vendor
+.gitattributes
+.editorconfig
 .gitignore" $SVNPATH/trunk/
 
 echo "Moving assets-wp-repo"

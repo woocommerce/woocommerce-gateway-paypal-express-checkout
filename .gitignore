@@ -10,6 +10,7 @@ Thumbs.db
 sftp-config.json
 /deploy/
 /vendor/
+composer.lock
 
 # Ignore all log files except for .htaccess
 /logs/*
