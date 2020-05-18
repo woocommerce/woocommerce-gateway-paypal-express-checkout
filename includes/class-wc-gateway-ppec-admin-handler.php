@@ -297,7 +297,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 		}
 		$prefix = 'sandbox' === $env ? 'sandbox_' : '';
 
-		foreach ( array( 'api_username', 'api_password', 'api_signature', 'api_certificate', 'api_client_id', 'api_secret' ) as $key ) {
+		foreach ( array( 'api_username', 'api_password', 'api_signature', 'api_certificate' ) as $key ) {
 			$key = $prefix . $key;
 			$settings->{$key} = '';
 		}

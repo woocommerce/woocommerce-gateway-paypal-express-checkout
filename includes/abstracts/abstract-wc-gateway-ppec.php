@@ -39,18 +39,12 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 			$this->api_signature   = $this->get_option( 'api_signature' );
 			$this->api_certificate = $this->get_option( 'api_certificate' );
 			$this->api_subject     = $this->get_option( 'api_subject' );
-
-			$this->api_client_id   = $this->get_option( 'api_client_id' );
-			$this->api_secret      = $this->get_option( 'api_secret' );
 		} else {
 			$this->api_username    = $this->get_option( 'sandbox_api_username' );
 			$this->api_password    = $this->get_option( 'sandbox_api_password' );
 			$this->api_signature   = $this->get_option( 'sandbox_api_signature' );
 			$this->api_certificate = $this->get_option( 'sandbox_api_certificate' );
 			$this->api_subject     = $this->get_option( 'sandbox_api_subject' );
-
-			$this->api_client_id   = $this->get_option( 'sandbox_api_client_id' );
-			$this->api_secret      = $this->get_option( 'sandbox_api_secret' );
 		}
 
 		$this->debug                      = 'yes' === $this->get_option( 'debug', 'no' );
@@ -364,19 +358,6 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 					update_option( 'woocommerce_ppec_paypal_settings', $settings_array );
 					WC_Admin_Settings::add_error( __( 'The "require billing address" option is not enabled by your account and has been disabled.', 'woocommerce-gateway-paypal-express-checkout' ) );
 				}
-			}
-		}
-
-		$rest_creds = $settings->get_active_rest_api_credentials();
-		if ( $rest_creds->get_client_id() ) {
-			if ( ! $rest_creds->get_client_secret() ) {
-				WC_Admin_Settings::add_error( __( 'Error: You must enter the REST API Client Secret.', 'woocommerce-gateway-paypal-express-checkout' ) );
-				return false;
-			}
-
-			$result = wc_gateway_ppec()->rest_client->test_api_credentials( $rest_creds, $settings->get_environment() );
-			if ( is_wp_error( $result ) ) {
-				WC_Admin_Settings::add_error( sprintf( __( 'An error occurred while trying to validate your REST API credentials: %s.', 'woocommerce-gateway-paypal-express-checkout' ), $result->get_error_message() ) );
 			}
 		}
 	}
