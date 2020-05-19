@@ -38,6 +38,11 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 		add_action( 'wc_ajax_wc_ppec_update_shipping_costs', array( $this, 'wc_ajax_update_shipping_costs' ) );
 		add_action( 'wc_ajax_wc_ppec_start_checkout', array( $this, 'wc_ajax_start_checkout' ) );
+
+		// Load callbacks specific to Subscriptions integration.
+		if ( class_exists( 'WC_Subscriptions_Order' ) ) {
+			add_filter( 'woocommerce_paypal_express_checkout_payment_button_data', array( $this, 'hide_card_payment_buttons_for_subscriptions' ), 10, 2 );
+		}
 	}
 
 	/**
@@ -411,7 +416,6 @@ class WC_Gateway_PPEC_Cart_Handler {
 	/**
 	 * Convert from settings to values expected by PayPal Button API:
 	 *   - 'small' button size only allowed if layout is 'vertical'.
-	 *   - 'label' only allowed if layout is 'vertical'.
 	 *   - 'disallowed' funding methods if layout is 'vertical'.
 	 *   - 'allowed' funding methods if layout is 'horizontal'.
 	 *   - Only allow PayPal Credit if supported.
@@ -427,12 +431,12 @@ class WC_Gateway_PPEC_Cart_Handler {
 		$data = array(
 			'button_layout'        => $settings->{ $prefix . 'button_layout' },
 			'button_size'          => $settings->{ $prefix . 'button_size' },
+			'button_label'         => $settings->{ $prefix . 'button_label' },
 			'hide_funding_methods' => $settings->{ $prefix . 'hide_funding_methods' },
 			'credit_enabled'       => $settings->{ $prefix . 'credit_enabled' },
 		);
 
 		$button_layout        = $data['button_layout'];
-		$data['button_label'] = 'horizontal' === $button_layout ? 'buynow' : null;
 		$data['button_size']  = 'vertical' === $button_layout && 'small' === $data['button_size']
 			? 'medium'
 			: $data['button_size'];
@@ -449,7 +453,8 @@ class WC_Gateway_PPEC_Cart_Handler {
 		if ( 'vertical' === $button_layout ) {
 			$data['disallowed_methods'] = $data['hide_funding_methods'];
 		} else {
-			$data['allowed_methods'] = 'yes' === $data['credit_enabled'] ? array( 'CREDIT' ) : array();
+			$data['allowed_methods']    = 'yes' === $data['credit_enabled'] ? array( 'CREDIT' ) : array();
+			$data['disallowed_methods'] = 'yes' !== $data['credit_enabled'] ? array( 'CREDIT' ) : array();
 		}
 		unset( $data['hide_funding_methods'], $data['credit_enabled'] );
 
@@ -460,6 +465,8 @@ class WC_Gateway_PPEC_Cart_Handler {
 	 * Frontend scripts
 	 */
 	public function enqueue_scripts() {
+		global $is_IE;
+
 		$settings = wc_gateway_ppec()->settings;
 		$client   = wc_gateway_ppec()->client;
 
@@ -486,20 +493,23 @@ class WC_Gateway_PPEC_Cart_Handler {
 			);
 
 		} elseif ( 'yes' === $settings->use_spb ) {
-			wp_register_script( 'paypal-checkout-js', 'https://www.paypalobjects.com/api/checkout.js', array(), null, true );
-			wp_register_script( 'wc-gateway-ppec-smart-payment-buttons', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-smart-payment-buttons.js', array( 'jquery', 'paypal-checkout-js' ), wc_gateway_ppec()->version, true );
-
-			$data = array(
+			$spb_script_dependencies = array( 'jquery', 'paypal-checkout-js' );
+			$data                    = array(
+				'use_checkout_js'      => $settings->use_legacy_checkout_js(),
 				'environment'          => 'sandbox' === $settings->get_environment() ? 'sandbox' : 'production',
 				'locale'               => $settings->get_paypal_locale(),
 				'page'                 => $page,
 				'button_color'         => $settings->button_color,
 				'button_shape'         => $settings->button_shape,
+				'button_label'         => $settings->button_label,
 				'start_checkout_nonce' => wp_create_nonce( '_wc_ppec_start_checkout_nonce' ),
 				'start_checkout_url'   => WC_AJAX::get_endpoint( 'wc_ppec_start_checkout' ),
+				'return_url'           => wc_get_checkout_url(),
+				'cancel_url'           => wc_get_cart_url(),
+				'generic_error_msg'    => wp_kses( __( 'An error occurred while processing your PayPal payment. Please contact the store owner for assistance.', 'woocommerce-gateway-paypal-express-checkout' ), array() ),
 			);
 
-			if ( ! is_null(  $page ) ) {
+			if ( ! is_null( $page ) ) {
 				if ( 'product' === $page && 'yes' === $settings->single_product_settings_toggle ) {
 					$button_settings = $this->get_button_settings( $settings, 'single_product' );
 				} elseif ( 'checkout' === $page && 'yes' === $settings->mark_settings_toggle ) {
@@ -513,12 +523,39 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 			$settings_toggle = 'yes' === $settings->mini_cart_settings_toggle;
 			$mini_cart_data  = $this->get_button_settings( $settings, $settings_toggle ? 'mini_cart' : '' );
+
 			foreach( $mini_cart_data as $key => $value ) {
 				unset( $mini_cart_data[ $key ] );
 				$mini_cart_data[ 'mini_cart_' . $key ] = $value;
 			}
-			$data = array_merge( $data, $mini_cart_data );
 
+			$data = array_merge( $data, $mini_cart_data );
+			$data = apply_filters( 'woocommerce_paypal_express_checkout_payment_button_data', $data, $page );
+
+			if ( ! $settings->use_legacy_checkout_js() ) {
+				$script_args = array(
+					'client-id'   => $settings->get_active_rest_client_id(),
+					'merchant-id' => $client->get_payer_id(),
+					'locale'      => $settings->get_paypal_locale(),
+					'components'  => 'buttons,funding-eligibility',
+					'commit'      => 'checkout' === $page ? 'true' : 'false',
+					'currency'    => get_woocommerce_currency(),
+				);
+
+				wp_register_script( 'paypal-checkout-js', add_query_arg( $script_args, 'https://www.paypal.com/sdk/js' ), array(), null, true );
+
+				// register the fetch/promise polyfills files so the new PayPal Checkout SDK works with IE
+				if ( $is_IE ) {
+					wp_register_script( 'wc-gateway-ppec-promise-polyfill', wc_gateway_ppec()->plugin_url . 'assets/js/dist/promise-polyfill.min.js', array(), null, true );
+					wp_register_script( 'wc-gateway-ppec-fetch-polyfill',   wc_gateway_ppec()->plugin_url . 'assets/js/dist/fetch-polyfill.min.js', array(), null, true );
+
+					$spb_script_dependencies = array_merge( $spb_script_dependencies, array( 'wc-gateway-ppec-fetch-polyfill', 'wc-gateway-ppec-promise-polyfill' ) );
+				}
+			} else {
+				wp_register_script( 'paypal-checkout-js', 'https://www.paypalobjects.com/api/checkout.js', array(), null, true );
+			}
+
+			wp_register_script( 'wc-gateway-ppec-smart-payment-buttons', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-smart-payment-buttons.js', $spb_script_dependencies, wc_gateway_ppec()->version, true );
 			wp_localize_script( 'wc-gateway-ppec-smart-payment-buttons', 'wc_ppec_context', $data );
 		}
 	}
@@ -538,6 +575,51 @@ class WC_Gateway_PPEC_Cart_Handler {
 		if ( ! empty( WC()->session ) && ! WC()->session->has_session() ) {
 			WC()->session->set_customer_session_cookie( true );
 		}
+	}
+
+
+	/**
+	 * Removes card payment method buttons from carts or pages which require a billing agreement.
+	 *
+	 * When the payment requires a billing agreement, we need a PayPal account and so require the customer to login. This means
+	 * card payment buttons cannot be used to make these purchases.
+	 *
+	 * @since 1.7.0
+	 *
+	 * @param array       $payment_button_data PayPal Smart Payment Button settings.
+	 * @param string|null $page The specific page the customer is viewing. Can be 'product', 'cart' or 'checkout'. Otherwise null.
+	 * @return array      $payment_button_data
+	 */
+	public function hide_card_payment_buttons_for_subscriptions( $payment_button_data, $page ) {
+		if ( ! class_exists( 'WC_Subscriptions_Product' ) ) {
+			return $payment_button_data;
+		}
+
+		$needs_billing_agreement = wc_gateway_ppec()->checkout->needs_billing_agreement_creation( array() );
+
+		// Mini-cart handling. By default an empty string is passed if no methods are disallowed, therefore we need to check for non array formats too.
+		if ( $needs_billing_agreement && ( ! is_array( $payment_button_data['mini_cart_disallowed_methods'] ) || ! in_array( 'CARD', $payment_button_data['mini_cart_disallowed_methods'] ) ) ) {
+			$payment_button_data['mini_cart_disallowed_methods']   = ! is_array( $payment_button_data['mini_cart_disallowed_methods'] ) ? array() : $payment_button_data['mini_cart_disallowed_methods'];
+			$payment_button_data['mini_cart_disallowed_methods'][] = 'CARD';
+		}
+
+		// Specific Page handling.
+		if ( ! $page ) {
+			return $payment_button_data;
+		}
+
+		// Add special handling for the product page where we need to use the product to test eligibility.
+		if ( 'product' === $page ) {
+			$needs_billing_agreement = WC_Subscriptions_Product::is_subscription( $GLOBALS['post']->ID );
+		}
+
+		// By default an empty string is passed if no methods are disallowed, therefore we need to check for non array formats too.
+		if ( $needs_billing_agreement && ( ! isset( $payment_button_data['disallowed_methods'] ) || ! is_array( $payment_button_data['disallowed_methods'] ) || ! in_array( 'CARD', $payment_button_data['disallowed_methods'] ) ) ) {
+			$payment_button_data['disallowed_methods']   = ( ! isset( $payment_button_data['disallowed_methods'] ) || ! is_array( $payment_button_data['disallowed_methods'] ) ) ? array() : $payment_button_data['disallowed_methods'];
+			$payment_button_data['disallowed_methods'][] = 'CARD';
+		}
+
+		return $payment_button_data;
 	}
 
 	/**

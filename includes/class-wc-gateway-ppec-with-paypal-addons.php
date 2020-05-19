@@ -196,6 +196,8 @@ class WC_Gateway_PPEC_With_PayPal_Addons extends WC_Gateway_PPEC_With_PayPal {
 				throw new Exception( __( 'PayPal API error', 'woocommerce-gateway-paypal-express-checkout' ) );
 			}
 
+			wc_gateway_ppec_save_transaction_data( $order, $response );
+
 			$status = ! empty( $response['PAYMENTSTATUS'] ) ? $response['PAYMENTSTATUS'] : '';
 
 			switch ( $status ) {

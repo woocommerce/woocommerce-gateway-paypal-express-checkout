@@ -334,6 +334,10 @@ class WC_Gateway_PPEC_Client {
 					'L_PAYMENTREQUEST_0_AMT' . $count  => $values['amount'],
 				);
 
+				if ( isset( $values['sku'] ) ) {
+					$line_item_params[ 'L_PAYMENTREQUEST_0_NUMBER' . $count ] = $values['sku'];
+				}
+
 				$params = array_merge( $params, $line_item_params );
 				$count++;
 			}
@@ -493,19 +497,20 @@ class WC_Gateway_PPEC_Client {
 			$amount = round( $values['line_subtotal'] / $values['quantity'] , $decimals );
 
 			if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
-				$name = $values['data']->post->post_title;
+				$name        = $values['data']->post->post_title;
 				$description = $values['data']->post->post_content;
 			} else {
-				$product = $values['data'];
-				$name = $product->get_name();
+				$product     = $values['data'];
+				$name        = $product->get_name();
 				$description = $product->get_description();
 			}
 
-			$item   = array(
+			$item = array(
 				'name'        => $name,
 				'description' => $description,
 				'quantity'    => $values['quantity'],
 				'amount'      => $amount,
+				'sku'         => $values['data']->get_sku(),
 			);
 
 			$items[] = $item;
@@ -811,25 +816,24 @@ class WC_Gateway_PPEC_Client {
 		$order    = wc_get_order( $order );
 
 		$items = array();
-		foreach ( $order->get_items( array( 'line_item', 'fee' ) ) as $cart_item_key => $values ) {
+		foreach ( $order->get_items( array( 'line_item', 'fee' ) ) as $cart_item_key => $order_item ) {
 
-
-			if( 'fee' === $values['type']) {
+			if( 'fee' === $order_item['type']) {
 				$item   = array(
-					'name'     => $values['name'],
+					'name'     => $order_item['name'],
 					'quantity' => 1,
-					'amount'   => round( $values['line_total'], $decimals),
+					'amount'   => round( $order_item['line_total'], $decimals ),
 				);
 			} else {
-				$amount = round( $values['line_subtotal'] / $values['qty'] , $decimals );
-				$item   = array(
-					'name'     => $values['name'],
-					'quantity' => $values['qty'],
+				$amount  = round( $order_item['line_subtotal'] / $order_item['qty'] , $decimals );
+				$product = version_compare( WC_VERSION, '3.0', '<' ) ? $order->get_product_from_item( $order_item ) : $order_item->get_product();
+				$item    = array(
+					'name'     => $order_item['name'],
+					'quantity' => $order_item['qty'],
 					'amount'   => $amount,
+					'sku'      => $product->get_sku(),
 				);
-
 			}
-
 
 			$items[] = $item;
 		}
@@ -964,6 +968,10 @@ class WC_Gateway_PPEC_Client {
 					'L_PAYMENTREQUEST_0_AMT' . $count  => $values['amount'],
 				);
 
+				if ( isset( $values['sku'] ) ) {
+					$line_item_params[ 'L_PAYMENTREQUEST_0_NUMBER' . $count ] = $values['sku'];
+				}
+
 				$params = array_merge( $params, $line_item_params );
 				$count++;
 			}
@@ -991,23 +999,6 @@ class WC_Gateway_PPEC_Client {
 		);
 
 		return $this->_request( $params );
-	}
-
-	/**
-	 * Updates or deletes a billing agreement.
-	 *
-	 * @see https://developer.paypal.com/docs/classic/api/merchant/BAUpdate_API_Operation_NVP/
-	 *
-	 * @since 1.2.0
-	 *
-	 * @param string $billing_agreement_id Billing agreement ID
-	 */
-	public function update_billing_agreement( $billing_agreement_id ) {
-		$params = array(
-			'METHOD'      => 'BillAgreementUpdate',
-			'VERSION'     => self::API_VERSION,
-			'REFERENCEID' => $billing_agreement_id,
-		);
 	}
 
 	/**
@@ -1087,10 +1078,11 @@ class WC_Gateway_PPEC_Client {
 			$count = 0;
 			foreach ( $details['items'] as $line_item_key => $values ) {
 				$line_item_params = array(
-					'L_NAME' . $count => $values['name'],
-					'L_DESC' . $count => ! empty( $values['description'] ) ? strip_tags( $values['description'] ) : '',
-					'L_QTY' . $count  => $values['quantity'],
-					'L_AMT' . $count  => $values['amount'],
+					'L_NAME' . $count   => $values['name'],
+					'L_DESC' . $count   => ! empty( $values['description'] ) ? strip_tags( $values['description'] ) : '',
+					'L_QTY' . $count    => $values['quantity'],
+					'L_AMT' . $count    => $values['amount'],
+					'L_NUMBER' . $count => $values['sku'],
 				);
 
 				$params = array_merge( $params, $line_item_params );
@@ -1232,6 +1224,27 @@ class WC_Gateway_PPEC_Client {
 			isset( $response['ACK'] )
 			&&
 			in_array( $response['ACK'], array( 'Success', 'SuccessWithWarning' ) )
+		);
+	}
+
+	/** Deprecated Functions */
+
+	/**
+	 * Updates or deletes a billing agreement.
+	 *
+	 * @see https://developer.paypal.com/docs/classic/api/merchant/BAUpdate_API_Operation_NVP/
+	 *
+	 * @since 1.2.0
+	 * @deprecated 1.7.0
+	 *
+	 * @param string $billing_agreement_id Billing agreement ID
+	 */
+	public function update_billing_agreement( $billing_agreement_id ) {
+		_deprecated_function( __METHOD__, '1.7.0' );
+		$params = array(
+			'METHOD'      => 'BillAgreementUpdate',
+			'VERSION'     => self::API_VERSION,
+			'REFERENCEID' => $billing_agreement_id,
 		);
 	}
 }

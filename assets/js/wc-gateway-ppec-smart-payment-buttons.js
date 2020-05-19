@@ -35,7 +35,7 @@
 		$( document.body ).trigger( 'checkout_error' );
 	}
 
-	// Map funding method settings to enumerated options provided by PayPal.
+	// Map funding method settings to enumerated options provided by PayPal (checkout.js).
 	var getFundingMethods = function( methods ) {
 		if ( ! methods ) {
 			return undefined;
@@ -43,7 +43,7 @@
 
 		var paypal_funding_methods = [];
 		for ( var i = 0; i < methods.length; i++ ) {
-			var method = paypal.FUNDING[ methods[ i ] ];
+			var method = paypal.FUNDING[ methods[ i ].toUpperCase() ];
 			if ( method ) {
 				paypal_funding_methods.push( method );
 			}
@@ -55,19 +55,21 @@
 		var prefix        = isMiniCart ? 'mini_cart_' : '';
 		var button_size   = wc_ppec_context[ prefix + 'button_size' ];
 		var button_layout = wc_ppec_context[ prefix + 'button_layout' ];
-		var button_label  = wc_ppec_context[ prefix + 'button_label' ];
+		var button_label  = ( 'undefined' !== wc_ppec_context[ prefix + 'button_label' ] ) ? wc_ppec_context[ prefix + 'button_label' ] : wc_ppec_context['button_label'];
 		var allowed       = wc_ppec_context[ prefix + 'allowed_methods' ];
 		var disallowed    = wc_ppec_context[ prefix + 'disallowed_methods' ];
 
 		var selector     = isMiniCart ? '#woo_pp_ec_button_mini_cart' : '#woo_pp_ec_button_' + wc_ppec_context.page;
 		var fromCheckout = 'checkout' === wc_ppec_context.page && ! isMiniCart;
+		const return_url = wc_ppec_context['return_url'];
+		const cancel_url = wc_ppec_context['cancel_url'];
 
 		// Don't render if selector doesn't exist or is already rendered in DOM.
 		if ( ! $( selector ).length || $( selector ).children().length ) {
 			return;
 		}
 
-		paypal.Button.render( {
+		var button_args = {
 			env: wc_ppec_context.environment,
 			locale: wc_ppec_context.locale,
 			commit: fromCheckout,
@@ -80,9 +82,9 @@
 			style: {
 				color: wc_ppec_context.button_color,
 				shape: wc_ppec_context.button_shape,
+				label: button_label,
 				layout: button_layout,
 				size: button_size,
-				label: button_label,
 				branding: true,
 				tagline: false,
 			},
@@ -98,7 +100,7 @@
 				// Clear any errors from previous attempt.
 				$( '.woocommerce-error', selector ).remove();
 
-				return new paypal.Promise( function( resolve, reject ) {
+				return new Promise( function( resolve, reject ) {
 					// First, generate cart if triggered from single product.
 					if ( 'product' === wc_ppec_context.page && ! isMiniCart ) {
 						window.wc_ppec_generate_cart( resolve );
@@ -116,11 +118,7 @@
 						)
 						.serialize();
 
-					return paypal.request( {
-						method: 'post',
-						url: wc_ppec_context.start_checkout_url,
-						body: data,
-					} ).then( function( response ) {
+					var request_callback = function( response ) {
 						if ( ! response.success ) {
 							// Error messages may be preformatted in which case response structure will differ
 							var messages = response.data ? response.data.messages : response.messages;
@@ -135,7 +133,25 @@
 							return null;
 						}
 						return response.data.token;
-					} );
+					};
+
+					if ( ! wc_ppec_context.use_checkout_js ) {
+						return fetch( wc_ppec_context.start_checkout_url, {
+							method: 'post',
+							headers: {
+								'Content-Type': 'application/x-www-form-urlencoded',
+							},
+							body: data,
+						} ).then( function ( response ) {
+							return response.json();
+						} ).then( request_callback );
+					} else {
+						return paypal.request( {
+							method: 'post',
+							url: wc_ppec_context.start_checkout_url,
+							body: data,
+						} ).then( request_callback );
+					}
 				} );
 			},
 
@@ -143,16 +159,76 @@
 				if ( fromCheckout ) {
 					// Pass data necessary for authorizing payment to back-end.
 					$( 'form.checkout' )
-						.append( $( '<input type="hidden" name="paymentToken" /> ' ).attr( 'value', data.paymentToken ) )
+						.append( $( '<input type="hidden" name="paymentToken" /> ' ).attr( 'value', ! wc_ppec_context.use_checkout_js ? data.orderID : data.paymentToken ) )
 						.append( $( '<input type="hidden" name="payerID" /> ' ).attr( 'value', data.payerID ) )
 						.submit();
 				} else {
 					// Navigate to order confirmation URL specified in original request to PayPal from back-end.
+					if ( ! wc_ppec_context.use_checkout_js ) {
+						const query_args = '?woo-paypal-return=true&token=' + data.orderID + '&PayerID=' + data.payerID;
+						return actions.redirect( return_url + query_args );
+					}
+
 					return actions.redirect();
 				}
 			},
 
-		}, selector );
+			onCancel: function( data, actions ) {
+				if ( 'orderID' in data ) {
+					const query_args = '?woo-paypal-cancel=true&token=' + data.orderID;
+					return actions.redirect( cancel_url + query_args );
+				}
+			},
+
+			onError: function() {
+				jQuery( selector ).empty();
+				render();
+			},
+		};
+
+		if ( ! wc_ppec_context.use_checkout_js ) {
+			// 'payment()' and 'onAuthorize()' callbacks from checkout.js are now 'createOrder()' and 'onApprove()'.
+			Object.defineProperty( button_args, 'createOrder', Object.getOwnPropertyDescriptor( button_args, 'payment' ) );
+			Object.defineProperty( button_args, 'onApprove', Object.getOwnPropertyDescriptor( button_args, 'onAuthorize' ) );
+
+			// 'style.size' is no longer supported in the JS SDK. See https://developer.paypal.com/docs/checkout/integration-features/customize-button/#size.
+			delete button_args['style']['size'];
+
+			// Drop other args no longer needed in the JS SDK.
+			var args_to_remove = [ 'env', 'locale', 'commit', 'funding', 'payment', 'onAuthorize' ];
+			args_to_remove.forEach( function( arg ) {
+				delete button_args[ arg ]
+			});
+
+			var disabledFundingSources = getFundingMethods( disallowed );
+			if ( 'undefined' === typeof( disabledFundingSources ) || ! disabledFundingSources || 0 === disabledFundingSources.length ) {
+				paypal.Buttons( button_args ).render( selector );
+			} else {
+				// Render context specific buttons.
+				paypal.getFundingSources().forEach( function( fundingSource ) {
+					if ( -1 !== disabledFundingSources.indexOf( fundingSource ) ) {
+						return;
+					}
+
+					var buttonSettings = {
+						createOrder:   button_args.createOrder,
+						onApprove:     button_args.onApprove,
+						onError:       button_args.onError,
+						onCancel:      button_args.onCancel,
+						fundingSource: fundingSource,
+						style:         ( paypal.FUNDING.PAYPAL === fundingSource ) ? button_args.style : {}
+					};
+
+					var button = paypal.Buttons( buttonSettings );
+
+					if ( button.isEligible() ) {
+						button.render( selector );
+					}
+				} );
+			}
+		} else {
+			paypal.Button.render( button_args, selector );
+		}
 	};
 
 	// Render cart, single product, or checkout buttons.
