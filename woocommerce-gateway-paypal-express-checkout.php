@@ -11,7 +11,7 @@
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain: woocommerce-gateway-paypal-express-checkout
  * Domain Path: /languages
- * WC tested up to: 4.0
+ * WC tested up to: 4.1
  * WC requires at least: 2.6
  */
 /**
