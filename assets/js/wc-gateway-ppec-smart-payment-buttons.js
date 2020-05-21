@@ -43,7 +43,7 @@
 
 		var paypal_funding_methods = [];
 		for ( var i = 0; i < methods.length; i++ ) {
-			var method = paypal.FUNDING[ methods[ i ].toUpperCase() ];
+			var method = ( wc_ppec_context.use_checkout_js ? paypal : paypal_sdk ).FUNDING[ methods[ i ].toUpperCase() ];
 			if ( method ) {
 				paypal_funding_methods.push( method );
 			}
@@ -202,10 +202,10 @@
 
 			var disabledFundingSources = getFundingMethods( disallowed );
 			if ( 'undefined' === typeof( disabledFundingSources ) || ! disabledFundingSources || 0 === disabledFundingSources.length ) {
-				paypal.Buttons( button_args ).render( selector );
+				paypal_sdk.Buttons( button_args ).render( selector );
 			} else {
 				// Render context specific buttons.
-				paypal.getFundingSources().forEach( function( fundingSource ) {
+				paypal_sdk.getFundingSources().forEach( function( fundingSource ) {
 					if ( -1 !== disabledFundingSources.indexOf( fundingSource ) ) {
 						return;
 					}
@@ -216,10 +216,10 @@
 						onError:       button_args.onError,
 						onCancel:      button_args.onCancel,
 						fundingSource: fundingSource,
-						style:         ( paypal.FUNDING.PAYPAL === fundingSource ) ? button_args.style : {}
+						style:         ( paypal_sdk.FUNDING.PAYPAL === fundingSource ) ? button_args.style : {}
 					};
 
-					var button = paypal.Buttons( buttonSettings );
+					var button = paypal_sdk.Buttons( buttonSettings );
 
 					if ( button.isEligible() ) {
 						button.render( selector );
