@@ -22,6 +22,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 		add_action( 'woocommerce_before_cart_totals', array( $this, 'before_cart_totals' ) );
 		add_action( 'woocommerce_proceed_to_checkout', array( $this, 'display_paypal_button' ), 20 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		add_filter( 'script_loader_tag', array( $this, 'add_paypal_sdk_namespace_attribute' ), 10, 2 );
 
 		if ( 'yes' === wc_gateway_ppec()->settings->use_spb ) {
 			add_action( 'woocommerce_after_mini_cart', array( $this, 'display_mini_paypal_button' ), 20 );
@@ -558,6 +559,18 @@ class WC_Gateway_PPEC_Cart_Handler {
 			wp_register_script( 'wc-gateway-ppec-smart-payment-buttons', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-smart-payment-buttons.js', $spb_script_dependencies, wc_gateway_ppec()->version, true );
 			wp_localize_script( 'wc-gateway-ppec-smart-payment-buttons', 'wc_ppec_context', $data );
 		}
+	}
+
+	/**
+	 * Adds the data-namespace attribute when enqueuing the PayPal SDK script
+	 *
+	 * @since 2.0
+	 * @param string  $tag
+	 * @param string  $handle
+	 * @return string
+	 */
+	public function add_paypal_sdk_namespace_attribute( $tag, $handle ) {
+		return ( 'paypal-checkout-sdk' === $handle ) ? str_replace( ' src', ' data-namespace="paypal_sdk" src', $tag ) : $tag;
 	}
 
 	/**
