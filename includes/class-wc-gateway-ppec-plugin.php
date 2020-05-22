@@ -148,6 +148,7 @@ class WC_Gateway_PPEC_Plugin {
 		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
 
 		add_filter( 'plugin_action_links_' . plugin_basename( $this->file ), array( $this, 'plugin_action_links' ) );
+		add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 2 );
 		add_action( 'wp_ajax_ppec_dismiss_notice_message', array( $this, 'ajax_dismiss_notice' ) );
 	}
 
@@ -427,9 +428,27 @@ class WC_Gateway_PPEC_Plugin {
 			$plugin_links[] = '<a href="' . esc_url( $setting_url ) . '">' . esc_html__( 'Settings', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>';
 		}
 
-		$plugin_links[] = '<a href="https://docs.woocommerce.com/document/paypal-express-checkout/">' . esc_html__( 'Docs', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>';
-
 		return array_merge( $plugin_links, $links );
+	}
+
+	/**
+	 * Plugin page links to support and documentation
+	 *
+	 * @since 1.6.22
+	 * @param  array  $links List of plugin links.
+	 * @param  string $file Current file.
+	 * @return array
+	 */
+	public function plugin_row_meta( $links, $file ) {
+
+		if ( false !== strpos( $file, plugin_basename( dirname( __DIR__ ) ) ) ) {
+			$row_meta = array(
+				'docs'    => '<a href="' . esc_url( apply_filters( 'woocommerce_gateway_paypal_express_checkout_docs_url', 'https://docs.woocommerce.com/document/paypal-express-checkout/' ) ) . '" title="' . esc_attr( __( 'View Documentation', 'woocommerce-gateway-paypal-express-checkout' ) ) . '">' . __( 'Docs', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>',
+				'support' => '<a href="' . esc_url( apply_filters( 'woocommerce_gateway_paypal_express_checkout_support_url', 'https://woocommerce.com/my-account/create-a-ticket?select=woocommerce-gateway-paypal-checkout' ) ) . '" title="' . esc_attr( __( 'Open a support request at WooCommerce.com', 'woocommerce-gateway-paypal-express-checkout' ) ) . '">' . __( 'Support', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>',
+			);
+			return array_merge( $links, $row_meta );
+		}
+		return (array) $links;
 	}
 
 	/**
