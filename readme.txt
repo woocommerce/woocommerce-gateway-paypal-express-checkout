@@ -2,7 +2,8 @@
 Contributors: automattic, woothemes, akeda, dwainm, royho, allendav, slash1andy, woosteve, spraveenitpro, mikedmoore, fernashes, shellbeezy, danieldudzic, mikaey, fullysupportedphil, dsmithweb, corsonr, bor0, zandyring, pauldechov, robobot3000
 Tags: ecommerce, e-commerce, commerce, woothemes, wordpress ecommerce, store, sales, sell, shop, shopping, cart, checkout, configurable, paypal
 Requires at least: 4.4
-Tested up to: 5.3
+Tested up to: 5.4
+Requires PHP: 5.5
 Stable tag: 1.6.21
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
