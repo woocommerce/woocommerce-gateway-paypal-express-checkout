@@ -443,8 +443,8 @@ class WC_Gateway_PPEC_Plugin {
 
 		if ( false !== strpos( $file, plugin_basename( dirname( __DIR__ ) ) ) ) {
 			$row_meta = array(
-				'docs'    => '<a href="' . esc_url( apply_filters( 'woocommerce_gateway_paypal_express_checkout_docs_url', 'https://docs.woocommerce.com/document/paypal-express-checkout/' ) ) . '" title="' . esc_attr( __( 'View Documentation', 'woocommerce-gateway-paypal-express-checkout' ) ) . '">' . __( 'Docs', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>',
-				'support' => '<a href="' . esc_url( apply_filters( 'woocommerce_gateway_paypal_express_checkout_support_url', 'https://woocommerce.com/my-account/create-a-ticket?select=woocommerce-gateway-paypal-checkout' ) ) . '" title="' . esc_attr( __( 'Open a support request at WooCommerce.com', 'woocommerce-gateway-paypal-express-checkout' ) ) . '">' . __( 'Support', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>',
+				'docs'    => '<a href="' . esc_url( apply_filters( 'woocommerce_gateway_paypal_express_checkout_docs_url', 'https://docs.woocommerce.com/document/paypal-express-checkout/' ) ) . '" title="' . esc_attr__( 'View Documentation', 'woocommerce-gateway-paypal-express-checkout' ) . '">' . esc_html__( 'Docs', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>',
+				'support' => '<a href="' . esc_url( apply_filters( 'woocommerce_gateway_paypal_express_checkout_support_url', 'https://woocommerce.com/my-account/create-a-ticket?select=woocommerce-gateway-paypal-checkout' ) ) . '" title="' . esc_attr__( 'Open a support request at WooCommerce.com', 'woocommerce-gateway-paypal-express-checkout' ) . '">' . esc_html__( 'Support', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>',
 			);
 			return array_merge( $links, $row_meta );
 		}
