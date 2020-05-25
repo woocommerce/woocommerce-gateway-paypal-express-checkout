@@ -2,6 +2,9 @@
 ;( function ( $, window, document ) {
 	'use strict';
 
+	// Use global 'paypal' object or namespaced 'paypal_sdk' as PayPal API (depends on legacy/SDK mode).
+	var paypal = wc_ppec_context.use_checkout_js ? window.paypal : window.paypal_sdk;
+
 	// Show error notice at top of checkout form, or else within button container
 	var showError = function( errorMessage, selector ) {
 		var $container = $( '.woocommerce-notices-wrapper, form.checkout' );
