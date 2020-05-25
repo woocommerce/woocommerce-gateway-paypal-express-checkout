@@ -494,7 +494,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 			);
 
 		} elseif ( 'yes' === $settings->use_spb ) {
-			$spb_script_dependencies = array( 'jquery', 'paypal-checkout-js' );
+			$spb_script_dependencies = array( 'jquery' );
 			$data                    = array(
 				'use_checkout_js'      => $settings->use_legacy_checkout_js(),
 				'environment'          => 'sandbox' === $settings->get_environment() ? 'sandbox' : 'production',
@@ -543,7 +543,8 @@ class WC_Gateway_PPEC_Cart_Handler {
 					'currency'    => get_woocommerce_currency(),
 				);
 
-				wp_register_script( 'paypal-checkout-js', add_query_arg( $script_args, 'https://www.paypal.com/sdk/js' ), array(), null, true );
+				wp_register_script( 'paypal-checkout-sdk', add_query_arg( $script_args, 'https://www.paypal.com/sdk/js' ), array(), null, true );
+				$spb_script_dependencies[] = 'paypal-checkout-sdk';
 
 				// register the fetch/promise polyfills files so the new PayPal Checkout SDK works with IE
 				if ( $is_IE ) {
@@ -554,6 +555,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 				}
 			} else {
 				wp_register_script( 'paypal-checkout-js', 'https://www.paypalobjects.com/api/checkout.js', array(), null, true );
+				$spb_script_dependencies[] = 'paypal-checkout-js';
 			}
 
 			wp_register_script( 'wc-gateway-ppec-smart-payment-buttons', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-smart-payment-buttons.js', $spb_script_dependencies, wc_gateway_ppec()->version, true );
@@ -564,7 +566,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 	/**
 	 * Adds the data-namespace attribute when enqueuing the PayPal SDK script
 	 *
-	 * @since 2.0
+	 * @since 2.0.1
 	 * @param string  $tag
 	 * @param string  $handle
 	 * @return string
