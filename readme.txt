@@ -4,7 +4,7 @@ Tags: ecommerce, e-commerce, commerce, woothemes, wordpress ecommerce, store, sa
 Requires at least: 4.4
 Tested up to: 5.4
 Requires PHP: 5.5
-Stable tag: 1.6.21
+Stable tag: 2.0.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -101,6 +101,23 @@ Please use this to inform us about bugs, or make contributions via PRs.
 9. Initiate checkout from mini-cart.
 
 == Changelog ==
+
+= 2.0.0 - 2020-05-25 =
+* New - Upgrade to the latest PayPal Checkout Javascript SDK. PR#668
+* Add - New setting found under Button Styles for choosing a Smart Payment Button label. PR#666
+* Add - Support for more locales. PR#658
+* Fix - Display Smart Payment Buttons on Product pages built from a shortcode. PR#665
+* Fix - Send the product SKU to PayPal so it's displayed in the order/transaction details and reports on PayPal. PR#664
+* Fix - Show an error when saving incomplete/missing API credentials. PR#712
+* Fix - Remove PHP warnings in later versions of PHP when a PayPal Session doesn't exist. PR#727
+* Fix - Error when processing refunds (Already Refunded. No Amount to Refund). PR#710
+* Fix - Required state field errors on the "Confirm your PayPal Order" page when returning from PayPal. PR#725
+* Fix - Display WC Add To Cart validation errors on the product page when clicking the PayPal Smart Payment Buttons. PR#707
+* Update - Smart Payment Buttons are enabled by default and settings to toggle these on/off have been removed and replaced with a filter. PR#660
+* Update - Deprecate unused/incomplete function `WC_Gateway_PPEC_Client::update_billing_agreement()`. PR#602
+* Update - Move inline javascript found in `settings-ppec.php` to `ppec-settings.js`. PR#676
+* Update - Move Support and Documentation links from the plugin actions to plugin meta section on the Plugin activation/deactivation page. PR#735
+* Update - WooCommerce 4.1 and WordPress 5.4 compatibility. PR#732
 
 = 1.6.21 - 2020-04-14 =
 * Fix - Ensure Puerto Rico and supported Locales are eligible for PayPal Credit. PR#693
