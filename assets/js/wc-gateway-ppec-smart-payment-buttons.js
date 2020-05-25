@@ -2,6 +2,9 @@
 ;( function ( $, window, document ) {
 	'use strict';
 
+	// Use global 'paypal' object or namespaced 'paypal_sdk' as PayPal API (depends on legacy/SDK mode).
+	var paypal = wc_ppec_context.use_checkout_js ? window.paypal : window.paypal_sdk;
+
 	// Show error notice at top of checkout form, or else within button container
 	var showError = function( errorMessage, selector ) {
 		var $container = $( '.woocommerce-notices-wrapper, form.checkout' );
@@ -43,7 +46,7 @@
 
 		var paypal_funding_methods = [];
 		for ( var i = 0; i < methods.length; i++ ) {
-			var method = ( wc_ppec_context.use_checkout_js ? paypal : paypal_sdk ).FUNDING[ methods[ i ].toUpperCase() ];
+			var method = paypal.FUNDING[ methods[ i ].toUpperCase() ];
 			if ( method ) {
 				paypal_funding_methods.push( method );
 			}
@@ -202,10 +205,10 @@
 
 			var disabledFundingSources = getFundingMethods( disallowed );
 			if ( 'undefined' === typeof( disabledFundingSources ) || ! disabledFundingSources || 0 === disabledFundingSources.length ) {
-				paypal_sdk.Buttons( button_args ).render( selector );
+				paypal.Buttons( button_args ).render( selector );
 			} else {
 				// Render context specific buttons.
-				paypal_sdk.getFundingSources().forEach( function( fundingSource ) {
+				paypal.getFundingSources().forEach( function( fundingSource ) {
 					if ( -1 !== disabledFundingSources.indexOf( fundingSource ) ) {
 						return;
 					}
@@ -216,10 +219,10 @@
 						onError:       button_args.onError,
 						onCancel:      button_args.onCancel,
 						fundingSource: fundingSource,
-						style:         ( paypal_sdk.FUNDING.PAYPAL === fundingSource ) ? button_args.style : {}
+						style:         ( paypal.FUNDING.PAYPAL === fundingSource ) ? button_args.style : {}
 					};
 
-					var button = paypal_sdk.Buttons( buttonSettings );
+					var button = paypal.Buttons( buttonSettings );
 
 					if ( button.isEligible() ) {
 						button.render( selector );
