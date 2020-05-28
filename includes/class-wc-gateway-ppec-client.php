@@ -950,11 +950,13 @@ class WC_Gateway_PPEC_Client {
 			'PAYMENTREQUEST_0_NOTIFYURL'     => WC()->api_request_url( 'WC_Gateway_PPEC' ),
 			'PAYMENTREQUEST_0_PAYMENTACTION' => $settings->get_paymentaction(),
 			'PAYMENTREQUEST_0_INVNUM'        => $settings->invoice_prefix . $order->get_order_number(),
-			'PAYMENTREQUEST_0_CUSTOM'        => wp_json_encode( array(
-				'order_id'     => $order_id,
-				'order_number' => $order_number,
-				'order_key'    => $order_key,
-			) ),
+			'PAYMENTREQUEST_0_CUSTOM'        => wp_json_encode(
+				array(
+					'order_id'     => $order_id,
+					'order_number' => $order_number,
+					'order_key'    => $order_key,
+				)
+			),
 			'NOSHIPPING'                     => WC_Gateway_PPEC_Plugin::needs_shipping() ? 0 : 1,
 		);
 
@@ -1058,10 +1060,12 @@ class WC_Gateway_PPEC_Client {
 			'NOTIFYURL'     => WC()->api_request_url( 'WC_Gateway_PPEC' ),
 			'PAYMENTACTION' => $settings->get_paymentaction(),
 			'INVNUM'        => $settings->invoice_prefix . $order->get_order_number(),
-			'CUSTOM'        => wp_json_encode( array(
-				'order_id'  => $order_id,
-				'order_key' => $order_key,
-			) ),
+			'CUSTOM'        => wp_json_encode(
+				array(
+					'order_id'  => $order_id,
+					'order_key' => $order_key,
+				)
+			),
 		);
 
 		// We want to add the shipping parameters only if we have all of the required

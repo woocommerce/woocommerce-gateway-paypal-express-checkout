@@ -908,11 +908,13 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		$client = wc_gateway_ppec()->client;
 		$old_wc = version_compare( WC_VERSION, '3.0', '<' );
 		$order_id = $old_wc ? $order->id : $order->get_id();
-		$params = $client->get_do_express_checkout_params( array(
-			'order_id' => $order_id,
-			'token'    => $token,
-			'payer_id' => $payer_id,
-		) );
+		$params = $client->get_do_express_checkout_params(
+			array(
+				'order_id' => $order_id,
+				'token'    => $token,
+				'payer_id' => $payer_id,
+			)
+		);
 
 		$response = $client->do_express_checkout_payment( $params );
 

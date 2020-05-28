@@ -263,9 +263,11 @@ class WC_Gateway_PPEC_Settings {
 		_deprecated_function( __METHOD__, '1.2.0', 'WC_Gateway_PPEC_Client::get_set_express_checkout_params' );
 
 		// Still missing order_id in args.
-		return wc_gateway_ppec()->client->get_set_express_checkout_params( array(
-			'skip_checkout' => false,
-		) );
+		return wc_gateway_ppec()->client->get_set_express_checkout_params(
+			array(
+				'skip_checkout' => false,
+			)
+		);
 	}
 
 	/**
