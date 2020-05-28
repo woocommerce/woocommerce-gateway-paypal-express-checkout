@@ -825,7 +825,7 @@ class WC_Gateway_PPEC_Client {
 		$items = array();
 		foreach ( $order->get_items( array( 'line_item', 'fee' ) ) as $cart_item_key => $order_item ) {
 
-			if( 'fee' === $order_item['type']) {
+			if ( 'fee' === $order_item['type'] ) {
 				$item   = array(
 					'name'     => $order_item['name'],
 					'quantity' => 1,
