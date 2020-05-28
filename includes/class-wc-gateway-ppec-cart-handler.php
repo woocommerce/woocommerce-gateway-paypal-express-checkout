@@ -352,7 +352,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 			<?php if ( has_action( 'woocommerce_proceed_to_checkout', 'woocommerce_button_proceed_to_checkout' ) ) : ?>
 				<div class="wcppec-checkout-buttons__separator">
-					<?php _e( '&mdash; or &mdash;', 'woocommerce-gateway-paypal-express-checkout' ); ?>
+					<?php _e( '&mdash; OR &mdash;', 'woocommerce-gateway-paypal-express-checkout' ); ?>
 				</div>
 			<?php endif; ?>
 
