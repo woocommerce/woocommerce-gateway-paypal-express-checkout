@@ -23,6 +23,8 @@
 		<exclude name="Generic.Files.OneObjectStructurePerFile.MultipleFound" />
 		<exclude name="Squiz.Commenting" />
 		<exclude name="Generic.Commenting" />
+		<exclude name="PSR2.Methods.MethodDeclaration.Underscore" />
+		<exclude name="PSR2.Classes.PropertyDeclaration.Underscore" />
 	</rule>
 
 	<!-- Files to check -->
