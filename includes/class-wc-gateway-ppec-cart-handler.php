@@ -475,7 +475,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 		$settings = wc_gateway_ppec()->settings;
 		$client   = wc_gateway_ppec()->client;
 
-		wp_enqueue_style( 'wc-gateway-ppec-frontend', wc_gateway_ppec()->plugin_url . 'assets/css/wc-gateway-ppec-frontend.css' );
+		wp_enqueue_style( 'wc-gateway-ppec-frontend', wc_gateway_ppec()->plugin_url . 'assets/css/wc-gateway-ppec-frontend.css', array(), wc_gateway_ppec()->version );
 
 		$is_cart     = is_cart() && ! WC()->cart->is_empty() && 'yes' === $settings->cart_checkout_enabled;
 		$is_product  = ( is_product() || wc_post_content_has_shortcode( 'product_page' ) ) && 'yes' === $settings->checkout_on_single_product_enabled;
@@ -483,7 +483,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 		$page        = $is_cart ? 'cart' : ( $is_product ? 'product' : ( $is_checkout ? 'checkout' : null ) );
 
 		if ( 'yes' !== $settings->use_spb && $is_cart ) {
-			wp_enqueue_script( 'paypal-checkout-js', 'https://www.paypalobjects.com/api/checkout.js', array(), null, true );
+			wp_enqueue_script( 'paypal-checkout-js', 'https://www.paypalobjects.com/api/checkout.js', array(), null, true ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
 			wp_enqueue_script( 'wc-gateway-ppec-frontend-in-context-checkout', wc_gateway_ppec()->plugin_url . 'assets/js/wc-gateway-ppec-frontend-in-context-checkout.js', array( 'jquery' ), wc_gateway_ppec()->version, true );
 			wp_localize_script(
 				'wc-gateway-ppec-frontend-in-context-checkout',
@@ -549,18 +549,18 @@ class WC_Gateway_PPEC_Cart_Handler {
 					'currency'    => get_woocommerce_currency(),
 				);
 
-				wp_register_script( 'paypal-checkout-sdk', add_query_arg( $script_args, 'https://www.paypal.com/sdk/js' ), array(), null, true );
+				wp_register_script( 'paypal-checkout-sdk', add_query_arg( $script_args, 'https://www.paypal.com/sdk/js' ), array(), null, true ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
 				$spb_script_dependencies[] = 'paypal-checkout-sdk';
 
 				// register the fetch/promise polyfills files so the new PayPal Checkout SDK works with IE
 				if ( $is_IE ) {
-					wp_register_script( 'wc-gateway-ppec-promise-polyfill', wc_gateway_ppec()->plugin_url . 'assets/js/dist/promise-polyfill.min.js', array(), null, true );
-					wp_register_script( 'wc-gateway-ppec-fetch-polyfill', wc_gateway_ppec()->plugin_url . 'assets/js/dist/fetch-polyfill.min.js', array(), null, true );
+					wp_register_script( 'wc-gateway-ppec-promise-polyfill', wc_gateway_ppec()->plugin_url . 'assets/js/dist/promise-polyfill.min.js', array(), wc_gateway_ppec()->version, true );
+					wp_register_script( 'wc-gateway-ppec-fetch-polyfill', wc_gateway_ppec()->plugin_url . 'assets/js/dist/fetch-polyfill.min.js', array(), wc_gateway_ppec()->version, true );
 
 					$spb_script_dependencies = array_merge( $spb_script_dependencies, array( 'wc-gateway-ppec-fetch-polyfill', 'wc-gateway-ppec-promise-polyfill' ) );
 				}
 			} else {
-				wp_register_script( 'paypal-checkout-js', 'https://www.paypalobjects.com/api/checkout.js', array(), null, true );
+				wp_register_script( 'paypal-checkout-js', 'https://www.paypalobjects.com/api/checkout.js', array(), null, true ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
 				$spb_script_dependencies[] = 'paypal-checkout-js';
 			}
 
