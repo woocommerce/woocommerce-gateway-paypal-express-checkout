@@ -258,19 +258,19 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		<h3><?php esc_html_e( 'Billing details', 'woocommerce-gateway-paypal-express-checkout' ); ?></h3>
 		<ul>
 			<?php if ( ! empty( $checkout_details->payer_details->billing_address ) ) : ?>
-				<li><strong><?php esc_html_e( 'Address:', 'woocommerce-gateway-paypal-express-checkout' ) ?></strong></br><?php echo WC()->countries->get_formatted_address( $this->get_mapped_billing_address( $checkout_details ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></li>
+				<li><strong><?php esc_html_e( 'Address:', 'woocommerce-gateway-paypal-express-checkout' ); ?></strong></br><?php echo WC()->countries->get_formatted_address( $this->get_mapped_billing_address( $checkout_details ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></li>
 			<?php elseif ( ! empty( $checkout_details->payer_details->first_name ) && ! empty( $checkout_details->payer_details->last_name ) ) : ?>
-				<li><strong><?php esc_html_e( 'Name:', 'woocommerce-gateway-paypal-express-checkout' ) ?></strong> <?php echo esc_html( $checkout_details->payer_details->first_name . ' ' . $checkout_details->payer_details->last_name ); ?></li>
+				<li><strong><?php esc_html_e( 'Name:', 'woocommerce-gateway-paypal-express-checkout' ); ?></strong> <?php echo esc_html( $checkout_details->payer_details->first_name . ' ' . $checkout_details->payer_details->last_name ); ?></li>
 			<?php endif; ?>
 
 			<?php if ( ! empty( $checkout_details->payer_details->email ) ) : ?>
-				<li><strong><?php esc_html_e( 'Email:', 'woocommerce-gateway-paypal-express-checkout' ) ?></strong> <?php echo esc_html( $checkout_details->payer_details->email ); ?></li>
+				<li><strong><?php esc_html_e( 'Email:', 'woocommerce-gateway-paypal-express-checkout' ); ?></strong> <?php echo esc_html( $checkout_details->payer_details->email ); ?></li>
 			<?php else : ?>
 				<li><?php woocommerce_form_field( 'billing_email', $fields['billing_email'], WC()->checkout->get_value( 'billing_email' ) ); ?></li>
 			<?php endif; ?>
 
 			<?php if ( ! empty( $checkout_details->payer_details->phone_number ) ) : ?>
-				<li><strong><?php esc_html_e( 'Phone:', 'woocommerce-gateway-paypal-express-checkout' ) ?></strong> <?php echo esc_html( $checkout_details->payer_details->phone_number ); ?></li>
+				<li><strong><?php esc_html_e( 'Phone:', 'woocommerce-gateway-paypal-express-checkout' ); ?></strong> <?php echo esc_html( $checkout_details->payer_details->phone_number ); ?></li>
 			<?php elseif ( 'yes' === wc_gateway_ppec()->settings->require_phone_number ) : ?>
 				<li><?php woocommerce_form_field( 'billing_phone', $fields['billing_phone'], WC()->checkout->get_value( 'billing_phone' ) ); ?></li>
 			<?php endif; ?>
