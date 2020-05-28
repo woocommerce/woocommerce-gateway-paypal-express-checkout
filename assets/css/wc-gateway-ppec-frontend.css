@@ -56,3 +56,22 @@
 #payment .place-order .button {
 	display: block;
 }
+/**
+ * PayPal Payment buttons generated via the SDK need to be styled via CSS.
+ * To be backwards compatible, these rules are inline with the widths used by PayPal JS.
+ *
+ * @see https://developer.paypal.com/docs/archive/checkout/how-to/customize-button/#size
+ * @see https://developer.paypal.com/docs/checkout/integration-features/customize-button/#size
+ */
+.wc_ppec_small_payment_buttons {
+	width: 150px;
+	display: inline-block;
+}
+.wc_ppec_medium_payment_buttons {
+	width: 250px;
+	display: inline-block;
+}
+.wc_ppec_large_payment_buttons {
+	width: 350px;
+	display: inline-block;
+}
