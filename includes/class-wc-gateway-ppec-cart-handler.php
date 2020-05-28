@@ -315,8 +315,10 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 		?>
 		<div class="wcppec-checkout-buttons woo_pp_cart_buttons_div">
-			<?php if ( 'yes' === $settings->use_spb ) :
-				wp_enqueue_script( 'wc-gateway-ppec-smart-payment-buttons' ); ?>
+			<?php
+			if ( 'yes' === $settings->use_spb ) :
+				wp_enqueue_script( 'wc-gateway-ppec-smart-payment-buttons' );
+				?>
 			<div id="woo_pp_ec_button_product"></div>
 			<?php else : ?>
 
@@ -360,8 +362,10 @@ class WC_Gateway_PPEC_Cart_Handler {
 				<div class="wcppec-checkout-buttons__separator">&mdash; <?php esc_html_e( 'OR', 'woocommerce-gateway-paypal-express-checkout' ); ?> &mdash;</div>
 			<?php endif; ?>
 
-			<?php if ( 'yes' === $settings->use_spb ) :
-				wp_enqueue_script( 'wc-gateway-ppec-smart-payment-buttons' ); ?>
+			<?php
+			if ( 'yes' === $settings->use_spb ) :
+				wp_enqueue_script( 'wc-gateway-ppec-smart-payment-buttons' );
+				?>
 			<div id="woo_pp_ec_button_cart"></div>
 			<?php else : ?>
 
