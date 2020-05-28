@@ -1,5 +1,10 @@
 *** Changelog ***
 
+= 2.0.2 - 2020-05-28 =
+* Fix - Javascript errors during checkout when the Payment Action is set to Authorize. PR#754
+* Fix - Style the Smart Payment Buttons according to the chosen button size setting. PR#753
+* Tweak - Change the "or" separator used on the cart page to be consistent with other payment gateways (uppercase and 100% opacity). PR#755
+
 = 2.0.1 - 2020-05-26 =
 * Fix - PayPal buttons not loading on the page, accompanied with the javascript/console error: "paypal.getFundingSources (or paypal.Buttons) is not a function". PR#740
 
