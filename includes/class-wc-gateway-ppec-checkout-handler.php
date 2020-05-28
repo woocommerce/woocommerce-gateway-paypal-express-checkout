@@ -294,7 +294,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			if ( $checkout->enable_guest_checkout ) {
 				?>
 				<p class="form-row form-row-wide create-account">
-					<input class="input-checkbox" id="createaccount" <?php checked( ( true === $checkout->get_value( 'createaccount' ) || ( true === apply_filters( 'woocommerce_create_account_default_checked', false ) ) ), true) ?> type="checkbox" name="createaccount" value="1" /> <label for="createaccount" class="checkbox"><?php esc_html_e( 'Create an account?', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
+					<input class="input-checkbox" id="createaccount" <?php checked( ( true === $checkout->get_value( 'createaccount' ) || ( true === apply_filters( 'woocommerce_create_account_default_checked', false ) ) ), true ); ?> type="checkbox" name="createaccount" value="1" /> <label for="createaccount" class="checkbox"><?php esc_html_e( 'Create an account?', 'woocommerce-gateway-paypal-express-checkout' ); ?></label>
 				</p>
 				<?php
 			}

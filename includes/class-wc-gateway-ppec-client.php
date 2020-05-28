@@ -373,7 +373,7 @@ class WC_Gateway_PPEC_Client {
 
 		$url = add_query_arg( $query_args, wc_get_checkout_url() );
 		$order_id = $context_args['order_id'];
-		return apply_filters( 'woocommerce_paypal_express_checkout_set_express_checkout_params_get_return_url', $url, $order_id);
+		return apply_filters( 'woocommerce_paypal_express_checkout_set_express_checkout_params_get_return_url', $url, $order_id );
 	}
 
 	/**
@@ -400,10 +400,10 @@ class WC_Gateway_PPEC_Client {
 	 */
 	protected function _get_billing_agreement_description() {
 		/* Translators: placeholder is blogname. */
-		$description = sprintf( _x( 'Orders with %s', 'data sent to PayPal', 'woocommerce-gateway-paypal-express-checkout'  ), get_bloginfo( 'name' ) );
+		$description = sprintf( _x( 'Orders with %s', 'data sent to PayPal', 'woocommerce-gateway-paypal-express-checkout' ), get_bloginfo( 'name' ) );
 
-		if ( strlen( $description  ) > 127 ) {
-			$description = substr( $description, 0, 124  ) . '...';
+		if ( strlen( $description ) > 127 ) {
+			$description = substr( $description, 0, 124 ) . '...';
 		}
 
 		return html_entity_decode( $description, ENT_NOQUOTES, 'UTF-8' );
@@ -606,7 +606,7 @@ class WC_Gateway_PPEC_Client {
 			unset( $details['items'] );
 		} elseif ( $discounts > 0 && 0 < $details['total_item_amount'] && ! empty( $details['items'] ) ) {
 			// Else if there is discount, add them to the line-items
-			$details['items'][] = $this->_get_extra_discount_line_item($discounts);
+			$details['items'][] = $this->_get_extra_discount_line_item( $discounts );
 		}
 
 		$details['ship_discount_amount'] = 0;
@@ -865,12 +865,12 @@ class WC_Gateway_PPEC_Client {
 		$rounded_total = 0;
 		foreach ( $order->get_items( array( 'line_item', 'fee', 'coupon' ) ) as $cart_item_key => $values ) {
 			if ( 'coupon' === $values['type'] ) {
-				$amount = round($values['line_total'], $decimals);
+				$amount = round( $values['line_total'], $decimals );
 				$rounded_total -= $amount;
 				continue;
 			}
 			if ( 'fee' === $values['type'] ) {
-				$amount = round( $values['line_total'], $decimals);
+				$amount = round( $values['line_total'], $decimals );
 			} else {
 				$amount = round( $values['line_subtotal'] / $values['qty'] , $decimals );
 				$amount = round( $amount * $values['qty'], $decimals );
