@@ -586,7 +586,6 @@ class PayPal_Address {
 			$translation_table = array(
 				'andaman and nicobar islands' => 'AN',
 				'andhra pradesh'              => 'AP',
-				//'apo'                         => '',
 				'arunachal pradesh'           => 'AR',
 				'assam'                       => 'AS',
 				'bihar'                       => 'BR',
@@ -914,7 +913,6 @@ class PayPal_Address {
 				'uttaradit'                => 'TH-53',
 				'yala'                     => 'TH-95',
 				'yasothon'                 => 'TH-35',
-				//'phatthaya'              => '',
 			);
 		} elseif ( 'US' === $this->_country ) {
 			$translation_table = array(
