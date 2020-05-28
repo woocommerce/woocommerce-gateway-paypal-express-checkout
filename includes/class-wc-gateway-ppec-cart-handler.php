@@ -537,6 +537,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 				$script_args = array(
 					'client-id'   => $settings->get_active_rest_client_id(),
 					'merchant-id' => $client->get_payer_id(),
+					'intent'      => 'authorization' === $settings->get_paymentaction() ? 'authorize' : 'capture',
 					'locale'      => $settings->get_paypal_locale(),
 					'components'  => 'buttons,funding-eligibility',
 					'commit'      => 'checkout' === $page ? 'true' : 'false',
