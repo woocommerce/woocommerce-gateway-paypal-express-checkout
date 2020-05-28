@@ -189,17 +189,17 @@ function wc_gateway_ppec_save_transaction_data( $order, $transaction_response, $
 	}
 
 	$txn = array(
-		'txnID'           => $transaction_response[$prefix . 'TRANSACTIONID'],
-		'amount'          => $transaction_response[$prefix . 'AMT'],
+		'txnID'           => $transaction_response[ $prefix . 'TRANSACTIONID' ],
+		'amount'          => $transaction_response[ $prefix . 'AMT' ],
 		'refunded_amount' => 0
 	);
 
-	$status = ! empty( $transaction_response[$prefix . 'PAYMENTSTATUS'] ) ? $transaction_response[$prefix . 'PAYMENTSTATUS'] : '';
+	$status = ! empty( $transaction_response[ $prefix . 'PAYMENTSTATUS' ] ) ? $transaction_response[ $prefix . 'PAYMENTSTATUS' ] : '';
 
 	if ( 'Completed' == $status ) {
 		$txn['status'] = 'Completed';
 	} else {
-		$txn['status'] = $status . '_' . $transaction_response[$prefix . 'REASONCODE'];
+		$txn['status'] = $status . '_' . $transaction_response[ $prefix . 'REASONCODE' ];
 	}
 	$txnData['refundable_txns'][] = $txn;
 
