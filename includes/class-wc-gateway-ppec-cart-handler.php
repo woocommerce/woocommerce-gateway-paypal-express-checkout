@@ -489,13 +489,13 @@ class WC_Gateway_PPEC_Cart_Handler {
 				'wc-gateway-ppec-frontend-in-context-checkout',
 				'wc_ppec_context',
 				array(
-					'payer_id'    => $client->get_payer_id(),
-					'environment' => $settings->get_environment(),
-					'locale'      => $settings->get_paypal_locale(),
-					'start_flow'  => esc_url( add_query_arg( array( 'startcheckout' => 'true' ), wc_get_page_permalink( 'cart' ) ) ),
-					'show_modal'  => apply_filters( 'woocommerce_paypal_express_checkout_show_cart_modal', true ),
+					'payer_id'                    => $client->get_payer_id(),
+					'environment'                 => $settings->get_environment(),
+					'locale'                      => $settings->get_paypal_locale(),
+					'start_flow'                  => esc_url( add_query_arg( array( 'startcheckout' => 'true' ), wc_get_page_permalink( 'cart' ) ) ),
+					'show_modal'                  => apply_filters( 'woocommerce_paypal_express_checkout_show_cart_modal', true ),
 					'update_shipping_costs_nonce' => wp_create_nonce( '_wc_ppec_update_shipping_costs_nonce' ),
-					'ajaxurl'     => WC_AJAX::get_endpoint( 'wc_ppec_update_shipping_costs' ),
+					'ajaxurl'                     => WC_AJAX::get_endpoint( 'wc_ppec_update_shipping_costs' ),
 				)
 			);
 

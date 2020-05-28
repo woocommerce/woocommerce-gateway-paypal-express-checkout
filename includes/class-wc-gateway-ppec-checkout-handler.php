@@ -403,14 +403,14 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		$first_name = array_shift( $name );
 		$last_name  = implode( ' ', $name );
 		$result     = array(
-			'first_name'    => $first_name,
-			'last_name'     => $last_name,
-			'address_1'     => $checkout_details->payments[0]->shipping_address->getStreet1(),
-			'address_2'     => $checkout_details->payments[0]->shipping_address->getStreet2(),
-			'city'          => $checkout_details->payments[0]->shipping_address->getCity(),
-			'state'         => $checkout_details->payments[0]->shipping_address->getState(),
-			'postcode'      => $checkout_details->payments[0]->shipping_address->getZip(),
-			'country'       => $checkout_details->payments[0]->shipping_address->getCountry(),
+			'first_name' => $first_name,
+			'last_name'  => $last_name,
+			'address_1'  => $checkout_details->payments[0]->shipping_address->getStreet1(),
+			'address_2'  => $checkout_details->payments[0]->shipping_address->getStreet2(),
+			'city'       => $checkout_details->payments[0]->shipping_address->getCity(),
+			'state'      => $checkout_details->payments[0]->shipping_address->getState(),
+			'postcode'   => $checkout_details->payments[0]->shipping_address->getZip(),
+			'country'    => $checkout_details->payments[0]->shipping_address->getCountry(),
 		);
 		if ( ! empty( $checkout_details->payer_details ) && property_exists( $checkout_details->payer_details, 'business_name' ) ) {
 			$result['company'] = $checkout_details->payer_details->business_name;

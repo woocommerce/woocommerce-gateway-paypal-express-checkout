@@ -300,12 +300,12 @@ class WC_Gateway_PPEC_Client {
 		$params = array_merge(
 			$params,
 			array(
-				'PAYMENTREQUEST_0_AMT'          => $details['order_total'],
-				'PAYMENTREQUEST_0_ITEMAMT'      => $details['total_item_amount'],
-				'PAYMENTREQUEST_0_SHIPPINGAMT'  => $details['shipping'],
-				'PAYMENTREQUEST_0_TAXAMT'       => $details['order_tax'],
-				'PAYMENTREQUEST_0_SHIPDISCAMT'  => $details['ship_discount_amount'],
-				'NOSHIPPING'                    => WC_Gateway_PPEC_Plugin::needs_shipping() ? 0 : 1,
+				'PAYMENTREQUEST_0_AMT'         => $details['order_total'],
+				'PAYMENTREQUEST_0_ITEMAMT'     => $details['total_item_amount'],
+				'PAYMENTREQUEST_0_SHIPPINGAMT' => $details['shipping'],
+				'PAYMENTREQUEST_0_TAXAMT'      => $details['order_tax'],
+				'PAYMENTREQUEST_0_SHIPDISCAMT' => $details['ship_discount_amount'],
+				'NOSHIPPING'                   => WC_Gateway_PPEC_Plugin::needs_shipping() ? 0 : 1,
 			)
 		);
 
@@ -445,9 +445,9 @@ class WC_Gateway_PPEC_Client {
 		$decimals = $settings->get_number_of_decimal_digits();
 
 		return array(
-			'name'        => 'Discount',
-			'quantity'    => 1,
-			'amount'      => '-' . round( $amount, $decimals ),
+			'name'     => 'Discount',
+			'quantity' => 1,
+			'amount'   => '-' . round( $amount, $decimals ),
 		);
 	}
 

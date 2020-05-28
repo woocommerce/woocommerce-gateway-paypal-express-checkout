@@ -1007,14 +1007,14 @@ class PayPal_Address {
 
 	public function getAddressParams( $prefix = '' ) {
 		$params = array(
-			$prefix . 'NAME' => $this->_name,
-			$prefix . 'STREET' => $this->_street1,
-			$prefix . 'STREET2' => $this->_street2,
-			$prefix . 'CITY' => $this->_city,
-			$prefix . 'STATE' => $this->_state,
-			$prefix . 'ZIP' => $this->_zip,
+			$prefix . 'NAME'        => $this->_name,
+			$prefix . 'STREET'      => $this->_street1,
+			$prefix . 'STREET2'     => $this->_street2,
+			$prefix . 'CITY'        => $this->_city,
+			$prefix . 'STATE'       => $this->_state,
+			$prefix . 'ZIP'         => $this->_zip,
 			$prefix . 'COUNTRYCODE' => $this->_country,
-			$prefix . 'PHONENUM' => $this->_phoneNumber,
+			$prefix . 'PHONENUM'    => $this->_phoneNumber,
 		);
 
 		return $params;

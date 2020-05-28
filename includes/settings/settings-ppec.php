@@ -1,4 +1,5 @@
 <?php
+// phpcs:disable WordPress.Arrays.MultipleStatementAlignment.DoubleArrowNotAligned
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -425,18 +426,18 @@ $per_context_settings = array(
 		'desc_tip'    => true,
 		'description' => __( 'Hides the specified funding methods.', 'woocommerce-gateway-paypal-express-checkout' ),
 		'options'     => array(
-			'CREDIT'          => __( 'PayPal Credit', 'woocommerce-gateway-paypal-express-checkout' ),
-			'ELV'             => __( 'ELV', 'woocommerce-gateway-paypal-express-checkout' ),
-			'CARD'            => __( 'Credit or debit cards', 'woocommerce-gateway-paypal-express-checkout' ),
-			'VENMO'           => __( 'Venmo', 'woocommerce-gateway-paypal-express-checkout' ),
-			'SEPA'            => __( 'SEPA-Lastschrift', 'woocommerce-gateway-paypal-express-checkout' ),
-			'BANCONTACT'      => __( 'Bancontact', 'woocommerce-gateway-paypal-express-checkout' ),
-			'EPS'             => __( 'eps', 'woocommerce-gateway-paypal-express-checkout' ),
-			'GIROPAY'         => __( 'giropay', 'woocommerce-gateway-paypal-express-checkout' ),
-			'IDEAL'           => __( 'iDEAL', 'woocommerce-gateway-paypal-express-checkout' ),
-			'MYBANK'          => __( 'MyBank', 'woocommerce-gateway-paypal-express-checkout' ),
-			'P24'             => __( 'Przelewy24', 'woocommerce-gateway-paypal-express-checkout' ),
-			'SOFORT'          => __( 'Sofort', 'woocommerce-gateway-paypal-express-checkout' ),
+			'CREDIT'     => __( 'PayPal Credit', 'woocommerce-gateway-paypal-express-checkout' ),
+			'ELV'        => __( 'ELV', 'woocommerce-gateway-paypal-express-checkout' ),
+			'CARD'       => __( 'Credit or debit cards', 'woocommerce-gateway-paypal-express-checkout' ),
+			'VENMO'      => __( 'Venmo', 'woocommerce-gateway-paypal-express-checkout' ),
+			'SEPA'       => __( 'SEPA-Lastschrift', 'woocommerce-gateway-paypal-express-checkout' ),
+			'BANCONTACT' => __( 'Bancontact', 'woocommerce-gateway-paypal-express-checkout' ),
+			'EPS'        => __( 'eps', 'woocommerce-gateway-paypal-express-checkout' ),
+			'GIROPAY'    => __( 'giropay', 'woocommerce-gateway-paypal-express-checkout' ),
+			'IDEAL'      => __( 'iDEAL', 'woocommerce-gateway-paypal-express-checkout' ),
+			'MYBANK'     => __( 'MyBank', 'woocommerce-gateway-paypal-express-checkout' ),
+			'P24'        => __( 'Przelewy24', 'woocommerce-gateway-paypal-express-checkout' ),
+			'SOFORT'     => __( 'Sofort', 'woocommerce-gateway-paypal-express-checkout' ),
 		),
 	),
 	'credit_enabled' => array(
@@ -473,9 +474,9 @@ $settings['cart_checkout_enabled'] = array(
  * Mini-cart button settings.
  */
 $settings['mini_cart_settings'] = array(
-	'title'       => __( 'Mini-cart Button Settings', 'woocommerce-gateway-paypal-express-checkout' ),
-	'type'        => 'title',
-	'class'       => 'woocommerce_ppec_paypal_spb',
+	'title' => __( 'Mini-cart Button Settings', 'woocommerce-gateway-paypal-express-checkout' ),
+	'type'  => 'title',
+	'class' => 'woocommerce_ppec_paypal_spb',
 );
 
 $settings['mini_cart_settings_toggle'] = array(
@@ -496,9 +497,9 @@ foreach ( $per_context_settings as $key => $value ) {
  * Single product button settings.
  */
 $settings['single_product_settings'] = array(
-	'title'       => __( 'Single Product Button Settings', 'woocommerce-gateway-paypal-express-checkout' ),
-	'type'        => 'title',
-	'class'       => 'woocommerce_ppec_paypal_spb',
+	'title' => __( 'Single Product Button Settings', 'woocommerce-gateway-paypal-express-checkout' ),
+	'type'  => 'title',
+	'class' => 'woocommerce_ppec_paypal_spb',
 );
 
 $settings['checkout_on_single_product_enabled'] = array(
@@ -530,9 +531,9 @@ $settings['single_product_button_layout']['default'] = 'horizontal';
  * Regular checkout button settings.
  */
 $settings['mark_settings'] = array(
-	'title'       => __( 'Regular Checkout Button Settings', 'woocommerce-gateway-paypal-express-checkout' ),
-	'type'        => 'title',
-	'class'       => 'woocommerce_ppec_paypal_spb',
+	'title' => __( 'Regular Checkout Button Settings', 'woocommerce-gateway-paypal-express-checkout' ),
+	'type'  => 'title',
+	'class' => 'woocommerce_ppec_paypal_spb',
 );
 
 $settings['mark_enabled'] = array(
@@ -560,3 +561,5 @@ foreach ( $per_context_settings as $key => $value ) {
 }
 
 return apply_filters( 'woocommerce_paypal_express_checkout_settings', $settings );
+
+// phpcs:enable

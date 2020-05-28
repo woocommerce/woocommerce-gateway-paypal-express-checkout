@@ -142,7 +142,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 				$checkout_details = $checkout->get_checkout_details( $session->token );
 
 				$checkout_context = array(
-					'order_id'   => $order_id,
+					'order_id' => $order_id,
 				);
 				if ( $checkout->needs_billing_agreement_creation( $checkout_context ) ) {
 					$checkout->create_billing_agreement( $order, $checkout_details );
