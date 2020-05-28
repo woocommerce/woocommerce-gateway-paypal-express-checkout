@@ -37,7 +37,8 @@ abstract class WC_Gateway_PPEC_PayPal_Request_Handler {
 	 */
 	protected function get_paypal_order( $raw_custom ) {
 		// We have the data in the correct format, so get the order.
-		if ( ( $custom = json_decode( $raw_custom ) ) && is_object( $custom ) ) {
+		$custom = json_decode( $raw_custom );
+		if ( $custom && is_object( $custom ) ) {
 			$order_id  = $custom->order_id;
 			$order_key = $custom->order_key;
 		} else {
@@ -45,7 +46,8 @@ abstract class WC_Gateway_PPEC_PayPal_Request_Handler {
 			return false;
 		}
 
-		if ( ! $order = wc_get_order( $order_id ) ) {
+		$order = wc_get_order( $order_id );
+		if ( ! $order ) {
 			// We have an invalid $order_id, probably because invoice_prefix has changed.
 			$order_id = wc_get_order_id_by_order_key( $order_key );
 			$order    = wc_get_order( $order_id );

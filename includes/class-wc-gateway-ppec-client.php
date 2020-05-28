@@ -61,7 +61,8 @@ class WC_Gateway_PPEC_Client {
 	public function get_payer_id() {
 		$option_key = 'woocommerce_ppec_payer_id_' . $this->_environment . '_' . md5( $this->_credential->get_username() . ':' . $this->_credential->get_password() );
 
-		if ( $payer_id = get_option( $option_key ) ) {
+		$payer_id = get_option( $option_key );
+		if ( $payer_id ) {
 			return $payer_id;
 		} else {
 			$result = $this->get_pal_details();
