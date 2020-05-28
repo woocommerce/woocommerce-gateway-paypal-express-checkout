@@ -82,7 +82,7 @@ class WC_Gateway_PPEC_Client {
 	 * @param string $environment Environment. Either 'live' or 'sandbox'
 	 */
 	public function set_environment( $environment ) {
-		if ( ! in_array( $environment, array( 'live', 'sandbox' ) ) ) {
+		if ( ! in_array( $environment, array( 'live', 'sandbox' ), true ) ) {
 			$environment = 'live';
 		}
 
@@ -171,7 +171,7 @@ class WC_Gateway_PPEC_Client {
 			throw new Exception( __( 'Invalid credential object', 'woocommerce-gateway-paypal-express-checkout' ), self::INVALID_CREDENTIAL_ERROR );
 		}
 
-		if ( ! in_array( $this->_environment, array( 'live', 'sandbox' ) ) ) {
+		if ( ! in_array( $this->_environment, array( 'live', 'sandbox' ), true ) ) {
 			throw new Exception( __( 'Invalid environment', 'woocommerce-gateway-paypal-express-checkout' ), self::INVALID_ENVIRONMENT_ERROR );
 		}
 	}
@@ -268,7 +268,7 @@ class WC_Gateway_PPEC_Client {
 			$params['ADDROVERRIDE'] = '1';
 		}
 
-		if ( in_array( $settings->landing_page, array( 'Billing', 'Login' ) ) ) {
+		if ( in_array( $settings->landing_page, array( 'Billing', 'Login' ), true ) ) {
 			$params['LANDINGPAGE'] = $settings->landing_page;
 		}
 
@@ -1235,7 +1235,7 @@ class WC_Gateway_PPEC_Client {
 		return (
 			isset( $response['ACK'] )
 			&&
-			in_array( $response['ACK'], array( 'Success', 'SuccessWithWarning' ) )
+			in_array( $response['ACK'], array( 'Success', 'SuccessWithWarning' ), true )
 		);
 	}
 

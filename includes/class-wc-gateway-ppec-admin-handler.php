@@ -113,7 +113,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 
 		// If the current section is a paypal section, remove the card section,
 		// otherwise, remove the paypal section
-		$sections_to_remove = in_array( $current_section, $paypal_sections ) ? $card_sections : $paypal_sections;
+		$sections_to_remove = in_array( $current_section, $paypal_sections, true ) ? $card_sections : $paypal_sections;
 
 		// And, let's also remove simplify commerce from the sections if it is not enabled and it is not the
 		// current section. (Note: The option will be empty if it has never been enabled)

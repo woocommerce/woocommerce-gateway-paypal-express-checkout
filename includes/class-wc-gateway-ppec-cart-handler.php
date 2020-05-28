@@ -454,7 +454,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 			$data['credit_enabled'] = 'no';
 			if ( ! is_array( $data['hide_funding_methods'] ) ) {
 				$data['hide_funding_methods'] = array( 'CREDIT' );
-			} elseif ( ! in_array( 'CREDIT', $data['hide_funding_methods'] ) ) {
+			} elseif ( ! in_array( 'CREDIT', $data['hide_funding_methods'], true ) ) {
 				$data['hide_funding_methods'][] = 'CREDIT';
 			}
 		}
@@ -623,7 +623,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 		$needs_billing_agreement = wc_gateway_ppec()->checkout->needs_billing_agreement_creation( array() );
 
 		// Mini-cart handling. By default an empty string is passed if no methods are disallowed, therefore we need to check for non array formats too.
-		if ( $needs_billing_agreement && ( ! is_array( $payment_button_data['mini_cart_disallowed_methods'] ) || ! in_array( 'CARD', $payment_button_data['mini_cart_disallowed_methods'] ) ) ) {
+		if ( $needs_billing_agreement && ( ! is_array( $payment_button_data['mini_cart_disallowed_methods'] ) || ! in_array( 'CARD', $payment_button_data['mini_cart_disallowed_methods'], true ) ) ) {
 			$payment_button_data['mini_cart_disallowed_methods']   = ! is_array( $payment_button_data['mini_cart_disallowed_methods'] ) ? array() : $payment_button_data['mini_cart_disallowed_methods'];
 			$payment_button_data['mini_cart_disallowed_methods'][] = 'CARD';
 		}
@@ -639,7 +639,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 		}
 
 		// By default an empty string is passed if no methods are disallowed, therefore we need to check for non array formats too.
-		if ( $needs_billing_agreement && ( ! isset( $payment_button_data['disallowed_methods'] ) || ! is_array( $payment_button_data['disallowed_methods'] ) || ! in_array( 'CARD', $payment_button_data['disallowed_methods'] ) ) ) {
+		if ( $needs_billing_agreement && ( ! isset( $payment_button_data['disallowed_methods'] ) || ! is_array( $payment_button_data['disallowed_methods'] ) || ! in_array( 'CARD', $payment_button_data['disallowed_methods'], true ) ) ) {
 			$payment_button_data['disallowed_methods']   = ( ! isset( $payment_button_data['disallowed_methods'] ) || ! is_array( $payment_button_data['disallowed_methods'] ) ) ? array() : $payment_button_data['disallowed_methods'];
 			$payment_button_data['disallowed_methods'][] = 'CARD';
 		}

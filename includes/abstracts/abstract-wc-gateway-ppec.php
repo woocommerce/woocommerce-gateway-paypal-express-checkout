@@ -174,7 +174,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 				// them pick out a new funding method.
 				$error_codes = wp_list_pluck( $e->errors, 'error_code' );
 
-				if ( in_array( '10486', $error_codes ) || in_array( '10422', $error_codes ) ) {
+				if ( in_array( '10486', $error_codes ) || in_array( '10422', $error_codes ) ) { // phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
 					$session->checkout_completed = false;
 					$session->source             = 'order';
 					$session->order_id           = $order_id;

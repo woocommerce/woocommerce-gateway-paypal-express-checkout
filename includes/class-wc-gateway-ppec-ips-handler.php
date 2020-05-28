@@ -47,7 +47,7 @@ class WC_Gateway_PPEC_IPS_Handler {
 	 * @return string Redirect URL
 	 */
 	public function get_redirect_url( $env ) {
-		if ( ! in_array( $env, array( 'live', 'sandbox' ) ) ) {
+		if ( ! in_array( $env, array( 'live', 'sandbox' ), true ) ) {
 			$env = 'live';
 		}
 
@@ -99,7 +99,7 @@ class WC_Gateway_PPEC_IPS_Handler {
 	 * @return bool Returns true of base country in supported countries
 	 */
 	public function is_supported() {
-		return in_array( WC()->countries->get_base_country(), $this->_supported_countries );
+		return in_array( WC()->countries->get_base_country(), $this->_supported_countries, true );
 	}
 
 	/**
@@ -133,7 +133,7 @@ class WC_Gateway_PPEC_IPS_Handler {
 		if ( empty( $_GET['wc_ppec_ips_admin_nonce'] ) || empty( $_GET['env'] ) ) {
 			return false;
 		}
-		$env = in_array( $_GET['env'], array( 'live', 'sandbox' ) ) ? $_GET['env'] : 'live'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+		$env = in_array( $_GET['env'], array( 'live', 'sandbox' ), true ) ? $_GET['env'] : 'live'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 
 		// Verify the nonce.
 		if ( ! wp_verify_nonce( $_GET['wc_ppec_ips_admin_nonce'], 'wc_ppec_ips' ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash

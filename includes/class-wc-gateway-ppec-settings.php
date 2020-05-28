@@ -370,7 +370,7 @@ class WC_Gateway_PPEC_Settings {
 		return (
 			'yes' === $this->enabled
 			&&
-			in_array( get_woocommerce_currency(), array( 'HUF', 'TWD', 'JPY' ) )
+			in_array( get_woocommerce_currency(), array( 'HUF', 'TWD', 'JPY' ), true )
 			&&
 			0 !== absint( get_option( 'woocommerce_price_num_decimals', 2 ) )
 		);
@@ -394,7 +394,7 @@ class WC_Gateway_PPEC_Settings {
 			} else {
 				$locale = 'en_US';
 			}
-		} elseif ( ! in_array( $locale, $this->_supported_locales ) ) {
+		} elseif ( ! in_array( $locale, $this->_supported_locales, true ) ) {
 			// Mapping some WP locales to PayPal locales.
 			if ( isset( $this->_locales_mapping[ $locale ] ) ) {
 				$locale = $this->_locales_mapping[ $locale ];
@@ -457,7 +457,7 @@ class WC_Gateway_PPEC_Settings {
 	 * @return bool Returns true if currency supports 0 decimal places
 	 */
 	public function is_currency_supports_zero_decimal() {
-		return in_array( get_woocommerce_currency(), array( 'HUF', 'JPY', 'TWD' ) );
+		return in_array( get_woocommerce_currency(), array( 'HUF', 'JPY', 'TWD' ), true );
 	}
 
 	/**

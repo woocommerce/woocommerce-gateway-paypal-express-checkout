@@ -120,7 +120,7 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 	 */
 	protected function validate_transaction_type( $txn_type ) {
 		$accepted_types = array( 'cart', 'instant', 'express_checkout', 'web_accept', 'masspay', 'send_money' );
-		if ( ! in_array( strtolower( $txn_type ), $accepted_types ) ) {
+		if ( ! in_array( strtolower( $txn_type ), $accepted_types, true ) ) {
 			wc_gateway_ppec_log( 'Aborting, Invalid type:' . $txn_type );
 			exit;
 		}

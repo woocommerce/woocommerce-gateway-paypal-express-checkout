@@ -98,7 +98,7 @@ class WC_Gateway_PPEC_Plugin {
 			$settings_array['debug']                      = get_option( 'pp_woo_logging_enabled' ) ? 'yes' : 'no';
 
 			// Make sure button size is correct.
-			if ( ! in_array( $settings_array['button_size'], array( 'small', 'medium', 'large' ) ) ) {
+			if ( ! in_array( $settings_array['button_size'], array( 'small', 'medium', 'large' ), true ) ) {
 				$settings_array['button_size'] = 'medium';
 			}
 
@@ -169,7 +169,7 @@ class WC_Gateway_PPEC_Plugin {
 
 			$this->_bootstrapped = true;
 		} catch ( Exception $e ) {
-			if ( in_array( $e->getCode(), array( self::ALREADY_BOOTSTRAPED, self::DEPENDENCIES_UNSATISFIED ) ) ) {
+			if ( in_array( $e->getCode(), array( self::ALREADY_BOOTSTRAPED, self::DEPENDENCIES_UNSATISFIED ) ) ) { // phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
 				$this->bootstrap_warning_message = $e->getMessage();
 			}
 
