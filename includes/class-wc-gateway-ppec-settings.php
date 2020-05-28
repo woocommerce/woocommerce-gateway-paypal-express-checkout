@@ -294,7 +294,12 @@ class WC_Gateway_PPEC_Settings {
 			$params[ 'PAYMENTREQUEST_' . $bucket_num . '_NOTIFYURL' ]     = WC()->api_request_url( 'WC_Gateway_PPEC' );
 			$params[ 'PAYMENTREQUEST_' . $bucket_num . '_PAYMENTACTION' ] = $this->get_paymentaction();
 			$params[ 'PAYMENTREQUEST_' . $bucket_num . '_INVNUM' ]        = $this->invoice_prefix . $order->get_order_number();
-			$params[ 'PAYMENTREQUEST_' . $bucket_num . '_CUSTOM' ]        = wp_json_encode( array( 'order_id' => $order->id, 'order_key' => $order->order_key ) );
+			$params[ 'PAYMENTREQUEST_' . $bucket_num . '_CUSTOM' ]        = wp_json_encode(
+				array(
+					'order_id'  => $order->id,
+					'order_key' => $order->order_key,
+				)
+			);
 		}
 
 		return $params;

@@ -370,7 +370,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 			</a>
 
 				<?php if ( $settings->is_credit_enabled() ) : ?>
-				<a href="<?php echo esc_url( add_query_arg( array( 'startcheckout' => 'true', 'use-ppc' => 'true' ), wc_get_page_permalink( 'cart' ) ) ); ?>" id="woo_pp_ppc_button" class="wcppec-checkout-buttons__button">
+				<a href="<?php echo esc_url( add_query_arg( array( 'startcheckout' => 'true', 'use-ppc' => 'true' ), wc_get_page_permalink( 'cart' ) ) ); // phpcs:ignore WordPress.Arrays.ArrayDeclarationSpacing.AssociativeArrayFound ?>" id="woo_pp_ppc_button" class="wcppec-checkout-buttons__button">
 				<img src="<?php echo esc_url( $paypal_credit_img_url ); ?>" alt="<?php esc_attr_e( 'Pay with PayPal Credit', 'woocommerce-gateway-paypal-express-checkout' ); ?>" style="width: auto; height: auto;">
 				</a>
 				<?php endif; ?>
