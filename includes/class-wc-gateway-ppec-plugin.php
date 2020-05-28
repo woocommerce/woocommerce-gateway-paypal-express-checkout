@@ -9,9 +9,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class WC_Gateway_PPEC_Plugin {
 
-	const ALREADY_BOOTSTRAPED = 1;
+	const ALREADY_BOOTSTRAPED      = 1;
 	const DEPENDENCIES_UNSATISFIED = 2;
-	const NOT_CONNECTED = 3;
+	const NOT_CONNECTED            = 3;
 
 	/**
 	 * Filepath of main plugin file.
@@ -425,7 +425,7 @@ class WC_Gateway_PPEC_Plugin {
 		$plugin_links = array();
 
 		if ( function_exists( 'WC' ) ) {
-			$setting_url = $this->get_admin_setting_link();
+			$setting_url    = $this->get_admin_setting_link();
 			$plugin_links[] = '<a href="' . esc_url( $setting_url ) . '">' . esc_html__( 'Settings', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>';
 		}
 

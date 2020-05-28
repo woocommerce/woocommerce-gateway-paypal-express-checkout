@@ -57,7 +57,7 @@ class PayPal_API_Exception extends Exception {
 		$this->errors   = array();
 		$error_messages = array();
 		foreach ( $errors as $value ) {
-			$error = new PayPal_API_Error( $value['code'], $value['message'], $value['long'], $value['severity'] );
+			$error          = new PayPal_API_Error( $value['code'], $value['message'], $value['long'], $value['severity'] );
 			$this->errors[] = $error;
 
 			/* translators: placeholders are error code and message from PayPal */

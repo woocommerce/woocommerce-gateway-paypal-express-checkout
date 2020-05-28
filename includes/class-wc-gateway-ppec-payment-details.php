@@ -9,13 +9,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class PayPal_Payment_Details {
-	public $token                   = false;
-	public $billing_agreement_id    = false;
-	public $redirect_required       = false;
-	public $redirect_requested      = false;
-	public $note                    = false;
+	public $token                = false;
+	public $billing_agreement_id = false;
+	public $redirect_required    = false;
+	public $redirect_requested   = false;
+	public $note                 = false;
 
-	public $payments                = false;
+	public $payments = false;
 
 	public $shipping_option_details = false;
 
@@ -32,7 +32,7 @@ class PayPal_Payment_Details {
 
 		foreach ( $doECResponse as $index => $value ) {
 			if ( array_key_exists( $index, $map ) ) {
-				$key = $map[ $index ];
+				$key        = $map[ $index ];
 				$this->$key = $value;
 			}
 			// Figure out the highest payment number
@@ -117,11 +117,11 @@ class PayPal_Payment_Fraud_Management_Filter {
 }
 
 class PayPal_Payment_Shipping_Option_Details {
-	public $calculation_mode = false;
-	public $insurance_option_selected = false;
+	public $calculation_mode           = false;
+	public $insurance_option_selected  = false;
 	public $shipping_option_is_default = false;
-	public $shipping_option_amount = false;
-	public $shipping_option_name = false;
+	public $shipping_option_amount     = false;
+	public $shipping_option_name       = false;
 
 	public function loadFromDoECResponse( $doECResponse ) {
 		$map = array(
@@ -136,7 +136,7 @@ class PayPal_Payment_Shipping_Option_Details {
 		foreach ( $map as $index => $value ) {
 			if ( array_key_exists( $index, $doECResponse ) ) {
 				$this->$value = $doECResponse[ $index ];
-				$found_any = true;
+				$found_any    = true;
 			}
 		}
 
@@ -151,84 +151,84 @@ class PayPal_Payment_Payment_Details {
 	public $receipt_id                       = false;
 	public $transaction_type                 = false;
 
-	const TransactionTypeCart                = 'cart';
-	const TransactionTypeExpressCheckout     = 'express-checkout';
+	const TransactionTypeCart            = 'cart';
+	const TransactionTypeExpressCheckout = 'express-checkout';
 
-	public $payment_type                     = false;
+	public $payment_type = false;
 
-	const PaymentTypeNone                    = 'none';
-	const PaymentTypeEcheck                  = 'echeck';
-	const PaymentTypeInstant                 = 'instant';
+	const PaymentTypeNone    = 'none';
+	const PaymentTypeEcheck  = 'echeck';
+	const PaymentTypeInstant = 'instant';
 
-	public $expected_echeck_clear_date       = false;
-	public $order_time                       = false;
-	public $amount                           = false;
-	public $currency_code                    = false;
-	public $fee_amount                       = false;
-	public $settlement_amount                = false;
-	public $tax_amount                       = false;
-	public $exchange_rate                    = false;
-	public $payment_status = false;
+	public $expected_echeck_clear_date = false;
+	public $order_time                 = false;
+	public $amount                     = false;
+	public $currency_code              = false;
+	public $fee_amount                 = false;
+	public $settlement_amount          = false;
+	public $tax_amount                 = false;
+	public $exchange_rate              = false;
+	public $payment_status             = false;
 
-	const PaymentStatusNone                  = 'None';
-	const PaymentStatusCanceledReversal      = 'Canceled-Reversal';
-	const PaymentStatusCompleted             = 'Completed';
-	const PaymentStatusDenied                = 'Denied';
-	const PaymentStatusExpired               = 'Expired';
-	const PaymentStatusFailed                = 'Failed';
-	const PaymentStatusInProgress            = 'In-Progress';
-	const PaymentStatusPartiallyRefunded     = 'Partially-Refunded';
-	const PaymentStatusPending               = 'Pending';
-	const PaymentStatusRefunded              = 'Refunded';
-	const PaymentStatusReversed              = 'Reversed';
-	const PaymentStatusProcessed             = 'Processed';
-	const PaymentStatusVoided                = 'Voided';
-	const PaymentStatusCompletedFundsHeld    = 'Completed-Funds-Held';
+	const PaymentStatusNone               = 'None';
+	const PaymentStatusCanceledReversal   = 'Canceled-Reversal';
+	const PaymentStatusCompleted          = 'Completed';
+	const PaymentStatusDenied             = 'Denied';
+	const PaymentStatusExpired            = 'Expired';
+	const PaymentStatusFailed             = 'Failed';
+	const PaymentStatusInProgress         = 'In-Progress';
+	const PaymentStatusPartiallyRefunded  = 'Partially-Refunded';
+	const PaymentStatusPending            = 'Pending';
+	const PaymentStatusRefunded           = 'Refunded';
+	const PaymentStatusReversed           = 'Reversed';
+	const PaymentStatusProcessed          = 'Processed';
+	const PaymentStatusVoided             = 'Voided';
+	const PaymentStatusCompletedFundsHeld = 'Completed-Funds-Held';
 
-	public $pending_reason                   = false;
+	public $pending_reason = false;
 
-	const PendingReasonNone                  = 'none';
-	const PendingReasonAddress               = 'address';
-	const PendingReasonAuthorization         = 'authorization';
-	const PendingReasonEcheck                = 'echeck';
-	const PendingReasonInternational         = 'intl';
-	const PendingReasonMultiCurrency         = 'multi-currency';
-	const PendingReasonOrder                 = 'order';
-	const PendingReasonPaymentReview         = 'payment-review';
-	const PendingReasonRegulatoryReview      = 'regulatory-review';
-	const PendingReasonUnilateral            = 'unilateral';
-	const PendingReasonVerify                = 'verify';
-	const PendingReasonOther                 = 'other';
+	const PendingReasonNone             = 'none';
+	const PendingReasonAddress          = 'address';
+	const PendingReasonAuthorization    = 'authorization';
+	const PendingReasonEcheck           = 'echeck';
+	const PendingReasonInternational    = 'intl';
+	const PendingReasonMultiCurrency    = 'multi-currency';
+	const PendingReasonOrder            = 'order';
+	const PendingReasonPaymentReview    = 'payment-review';
+	const PendingReasonRegulatoryReview = 'regulatory-review';
+	const PendingReasonUnilateral       = 'unilateral';
+	const PendingReasonVerify           = 'verify';
+	const PendingReasonOther            = 'other';
 
-	public $reason_code                      = false;
+	public $reason_code = false;
 
-	const ReasonCodeNone                     = 'none';
-	const ReasonCodeChargeback               = 'chargeback';
-	const ReasonCodeGuarantee                = 'guarantee';
-	const ReasonCodeBuyerComplaint           = 'buyer-complaint';
-	const ReasonCodeRefund                   = 'refund';
-	const ReasonCodeOther                    = 'other';
+	const ReasonCodeNone           = 'none';
+	const ReasonCodeChargeback     = 'chargeback';
+	const ReasonCodeGuarantee      = 'guarantee';
+	const ReasonCodeBuyerComplaint = 'buyer-complaint';
+	const ReasonCodeRefund         = 'refund';
+	const ReasonCodeOther          = 'other';
 
 	public $hold_decision = false;
 
-	const HoldDecisionNewSellerPaymentHold   = 'newsellerpaymenthold';
-	const HoldDecisionPaymentHold            = 'paymenthold';
+	const HoldDecisionNewSellerPaymentHold = 'newsellerpaymenthold';
+	const HoldDecisionPaymentHold          = 'paymenthold';
 
-	public $shipping_method                  = false;
+	public $shipping_method = false;
 
-	public $protection_eligibility_details   = false;
-	public $receipt_reference_number         = false;
-	public $shipping_amount                  = false;
+	public $protection_eligibility_details = false;
+	public $receipt_reference_number       = false;
+	public $shipping_amount                = false;
 
-	public $handling_amount                  = false;
+	public $handling_amount = false;
 
-	public $payment_request_id               = false;
-	public $instrument_details               = false;
+	public $payment_request_id = false;
+	public $instrument_details = false;
 
-	public $offer_details                    = false;
-	public $error_details                    = false;
-	public $seller_details                   = false;
-	public $fmf_details                      = false;
+	public $offer_details  = false;
+	public $error_details  = false;
+	public $seller_details = false;
+	public $fmf_details    = false;
 
 	public function loadFromDoECResponse( $doECResponse, $bucketNum ) {
 		$map = array(
@@ -262,7 +262,7 @@ class PayPal_Payment_Payment_Details {
 			$var_name = 'PAYMENTINFO_' . $bucketNum . '_' . $index;
 			if ( array_key_exists( $var_name, $doECResponse ) ) {
 				$this->$value = $doECResponse[ $var_name ];
-				$found_any = true;
+				$found_any    = true;
 			}
 		}
 
@@ -300,13 +300,13 @@ class PayPal_Payment_Payment_Details {
 }
 
 class PayPal_Payment_Payment_Protection_Eligibility_Details {
-	public $protection_eligibility                             = false;
+	public $protection_eligibility = false;
 
-	const ProtectionEligibilityEligible                        = 'Eligible';
-	const ProtectionEligibilityPartiallyEligible               = 'PartiallyEligible';
-	const ProtectionEligibilityIneligible                      = 'Ineligible';
+	const ProtectionEligibilityEligible          = 'Eligible';
+	const ProtectionEligibilityPartiallyEligible = 'PartiallyEligible';
+	const ProtectionEligibilityIneligible        = 'Ineligible';
 
-	public $protection_eligibility_type                        = false;
+	public $protection_eligibility_type = false;
 
 	const ProtectionEligibilityTypeItemNotReceivedEligible     = 'ItemNotReceivedEligible';
 	const ProtectionEligibilityTypeUnauthorizedPaymentEligible = 'UnauthorizedPaymentEligible';
@@ -344,7 +344,7 @@ class PayPal_Payment_Payment_Protection_Eligibility_Details {
 			$var_name = 'PAYMENTINFO_' . $bucketNum . '_' . $index;
 			if ( array_key_exists( $var_name, $doECResponse ) ) {
 				$this->$value = $doECResponse[ $var_name ];
-				$found_any = true;
+				$found_any    = true;
 			}
 		}
 
@@ -353,17 +353,17 @@ class PayPal_Payment_Payment_Protection_Eligibility_Details {
 }
 
 class PayPal_Payment_Payment_Instrument_Details {
-	public $instrument_category          = false;
+	public $instrument_category = false;
 
 	const InstrumentCategoryPayPalCredit = '1';
 	const InstrumentCategoryPrivateCard  = '2';
 
-	public $instrument_id                = false;
+	public $instrument_id = false;
 
 	// Returns true to indicate that the getECResponse array contained variables that were pertinent to this object.
 	// If not, it returns false to indicate that the caller can destroy this object.
 	public function loadFromDoECResponse( $doECResponse, $bucketNum ) {
-		$map = array(
+		$map       = array(
 			'INSTRUMENTCATEGORY' => 'instrument_category',
 			'INSTRUMENTID'       => 'instrument_id',
 		);
@@ -373,7 +373,7 @@ class PayPal_Payment_Payment_Instrument_Details {
 			$var_name = 'PAYMENTINFO_' . $bucketNum . '_' . $index;
 			if ( array_key_exists( $var_name, $doECResponse ) ) {
 				$this->$value = $doECResponse[ $var_name ];
-				$found_any = true;
+				$found_any    = true;
 			}
 		}
 
@@ -414,7 +414,7 @@ class PayPal_Payment_Payment_Error_Details {
 			$var_name = 'PAYMENTINFO_' . $bucketNum . '_' . $index;
 			if ( array_key_exists( $var_name, $doECResponse ) ) {
 				$this->$value = $doECResponse[ $var_name ];
-				$found_any = true;
+				$found_any    = true;
 			}
 		}
 
@@ -443,7 +443,7 @@ class PayPal_Payment_Payment_Seller_Details {
 			$var_name = 'PAYMENTINFO_' . $bucketNum . '_' . $index;
 			if ( array_key_exists( $var_name, $doECResponse ) ) {
 				$this->$value = $doECResponse[ $var_name ];
-				$found_any = true;
+				$found_any    = true;
 			}
 		}
 

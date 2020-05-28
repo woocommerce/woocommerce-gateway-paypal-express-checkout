@@ -284,7 +284,7 @@ class WC_Gateway_PPEC_Settings {
 		$params = array();
 		if ( ! is_array( $buckets ) ) {
 			$num_buckets = $buckets;
-			$buckets = array();
+			$buckets     = array();
 			for ( $i = 0; $i < $num_buckets; $i++ ) {
 				$buckets[] = $i;
 			}

@@ -53,7 +53,7 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 	public function is_valid_ipn_request( array $posted_data ) {
 		wc_gateway_ppec_log( sprintf( '%s: %s', __FUNCTION__, 'Checking IPN request validity' ) );
 
-		$ipn_request = array(
+		$ipn_request  = array(
 			'cmd' => '_notify-validate',
 		);
 		$ipn_request += wp_unslash( $posted_data );
@@ -133,7 +133,7 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 	 * @param string $currency Currency
 	 */
 	protected function validate_currency( $order, $currency ) {
-		$old_wc = version_compare( WC_VERSION, '3.0', '<' );
+		$old_wc         = version_compare( WC_VERSION, '3.0', '<' );
 		$order_currency = $old_wc ? $order->order_currency : $order->get_currency();
 
 		if ( $order_currency !== $currency ) {

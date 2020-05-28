@@ -14,7 +14,7 @@ $needs_sandbox_creds = ! $has_sandbox_credential && ! (bool) $sandbox_credential
 $enable_ips          = wc_gateway_ppec()->ips->is_supported();
 
 if ( $enable_ips && $needs_creds ) {
-	$ips_button         = '<a href="' . esc_url( wc_gateway_ppec()->ips->get_signup_url( 'live' ) ) . '" class="button button-primary">' . __( 'Setup or link an existing PayPal account', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>';
+	$ips_button = '<a href="' . esc_url( wc_gateway_ppec()->ips->get_signup_url( 'live' ) ) . '" class="button button-primary">' . __( 'Setup or link an existing PayPal account', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>';
 	// Translators: placeholder is the button "Setup or link an existing PayPal account".
 	$api_creds_text = sprintf( __( '%s or <a href="#" class="ppec-toggle-settings">click here to toggle manual API credential input</a>.', 'woocommerce-gateway-paypal-express-checkout' ), $ips_button );
 } else {
@@ -64,7 +64,7 @@ if ( ! wc_gateway_ppec_is_credit_supported() ) {
 	$credit_enabled_label .= '<p><em>' . __( 'This option is disabled. Currently PayPal Credit only available for U.S. merchants using USD currency.', 'woocommerce-gateway-paypal-express-checkout' ) . '</em></p>';
 }
 
-$credit_enabled_description  = __( 'This enables PayPal Credit, which displays a PayPal Credit button next to the primary PayPal Checkout button. PayPal Checkout lets you give customers access to financing through PayPal Credit® - at no additional cost to you. You get paid up front, even though customers have more time to pay. A pre-integrated payment button shows up next to the PayPal Button, and lets customers pay quickly with PayPal Credit®. (Should be unchecked for stores involved in Real Money Gaming.)', 'woocommerce-gateway-paypal-express-checkout' );
+$credit_enabled_description = __( 'This enables PayPal Credit, which displays a PayPal Credit button next to the primary PayPal Checkout button. PayPal Checkout lets you give customers access to financing through PayPal Credit® - at no additional cost to you. You get paid up front, even though customers have more time to pay. A pre-integrated payment button shows up next to the PayPal Button, and lets customers pay quickly with PayPal Credit®. (Should be unchecked for stores involved in Real Money Gaming.)', 'woocommerce-gateway-paypal-express-checkout' );
 
 /**
  * Settings for PayPal Gateway.
@@ -455,7 +455,8 @@ $per_context_settings = array(
  * Cart / global button settings.
  */
 $settings = array_merge( $settings, $per_context_settings );
-$per_context_settings['button_size']['class'] .= ' woocommerce_ppec_paypal_spb';
+
+$per_context_settings['button_size']['class']    .= ' woocommerce_ppec_paypal_spb';
 $per_context_settings['credit_enabled']['class'] .= ' woocommerce_ppec_paypal_spb';
 
 $settings['cart_checkout_enabled'] = array(
@@ -476,6 +477,7 @@ $settings['mini_cart_settings'] = array(
 	'type'        => 'title',
 	'class'       => 'woocommerce_ppec_paypal_spb',
 );
+
 $settings['mini_cart_settings_toggle'] = array(
 	'title'       => __( 'Configure Settings', 'woocommerce-gateway-paypal-express-checkout' ),
 	'label'       => __( 'Configure settings specific to mini-cart', 'woocommerce-gateway-paypal-express-checkout' ),
@@ -486,7 +488,7 @@ $settings['mini_cart_settings_toggle'] = array(
 	'description' => __( 'Optionally override global button settings above and configure buttons for this context.', 'woocommerce-gateway-paypal-express-checkout' ),
 );
 foreach ( $per_context_settings as $key => $value ) {
-	$value['class'] .= ' woocommerce_ppec_paypal_mini_cart';
+	$value['class']                 .= ' woocommerce_ppec_paypal_mini_cart';
 	$settings[ 'mini_cart_' . $key ] = $value;
 }
 
@@ -498,6 +500,7 @@ $settings['single_product_settings'] = array(
 	'type'        => 'title',
 	'class'       => 'woocommerce_ppec_paypal_spb',
 );
+
 $settings['checkout_on_single_product_enabled'] = array(
 	'title'       => __( 'Checkout on Single Product', 'woocommerce-gateway-paypal-express-checkout' ),
 	'type'        => 'checkbox',
@@ -507,6 +510,7 @@ $settings['checkout_on_single_product_enabled'] = array(
 	'desc_tip'    => true,
 	'description' => __( 'Enable PayPal Checkout on Single Product view.', 'woocommerce-gateway-paypal-express-checkout' ),
 );
+
 $settings['single_product_settings_toggle'] = array(
 	'title'       => __( 'Configure Settings', 'woocommerce-gateway-paypal-express-checkout' ),
 	'label'       => __( 'Configure settings specific to Single Product view', 'woocommerce-gateway-paypal-express-checkout' ),
@@ -517,7 +521,7 @@ $settings['single_product_settings_toggle'] = array(
 	'description' => __( 'Optionally override global button settings above and configure buttons for this context.', 'woocommerce-gateway-paypal-express-checkout' ),
 );
 foreach ( $per_context_settings as $key => $value ) {
-	$value['class'] .= ' woocommerce_ppec_paypal_single_product';
+	$value['class']                      .= ' woocommerce_ppec_paypal_single_product';
 	$settings[ 'single_product_' . $key ] = $value;
 }
 $settings['single_product_button_layout']['default'] = 'horizontal';
@@ -530,6 +534,7 @@ $settings['mark_settings'] = array(
 	'type'        => 'title',
 	'class'       => 'woocommerce_ppec_paypal_spb',
 );
+
 $settings['mark_enabled'] = array(
 	'title'       => __( 'PayPal Mark', 'woocommerce-gateway-paypal-express-checkout' ),
 	'type'        => 'checkbox',
@@ -539,6 +544,7 @@ $settings['mark_enabled'] = array(
 	'desc_tip'    => true,
 	'default'     => 'yes',
 );
+
 $settings['mark_settings_toggle'] = array(
 	'title'       => __( 'Configure Settings', 'woocommerce-gateway-paypal-express-checkout' ),
 	'label'       => __( 'Configure settings specific to regular checkout', 'woocommerce-gateway-paypal-express-checkout' ),
@@ -549,7 +555,7 @@ $settings['mark_settings_toggle'] = array(
 	'description' => __( 'Optionally override global button settings above and configure buttons for this context.', 'woocommerce-gateway-paypal-express-checkout' ),
 );
 foreach ( $per_context_settings as $key => $value ) {
-	$value['class'] .= ' woocommerce_ppec_paypal_mark';
+	$value['class']            .= ' woocommerce_ppec_paypal_mark';
 	$settings[ 'mark_' . $key ] = $value;
 }
 

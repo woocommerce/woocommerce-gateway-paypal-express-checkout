@@ -64,8 +64,8 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		// Change gateway name if session is active
 		if ( ! is_admin() ) {
 			if ( wc_gateway_ppec()->checkout->is_started_from_checkout_page() ) {
-				$this->title        = $this->get_option( 'title' );
-				$this->description  = $this->get_option( 'description' );
+				$this->title       = $this->get_option( 'title' );
+				$this->description = $this->get_option( 'description' );
 			}
 		} else {
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
@@ -209,7 +209,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		if ( $cert_info ) {
 			$valid_until = $cert_info['validTo_time_t'];
 			// Translators: placeholders are a date in local format and its timezone.
-			$expires     = __( 'expires on %1$s (%2$s)', 'woocommerce-gateway-paypal-express-checkout' );
+			$expires = __( 'expires on %1$s (%2$s)', 'woocommerce-gateway-paypal-express-checkout' );
 
 			if ( $valid_until < time() ) {
 				// Display in red if the cert is already expired
@@ -225,7 +225,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 
 			$expires = sprintf( $expires, date_i18n( get_option( 'date_format' ), $expiry_date->getTimestamp() + $expiry_date->getOffset() ), $expiry_date->format( 'T' ) );
 			// Translators: 1) is a certificate's CN, 2) is the expiration date.
-			$output  = sprintf( __( 'Certificate belongs to API username %1$s; %2$s.', 'woocommerce-gateway-paypal-express-checkout' ), $cert_info['subject']['CN'], $expires );
+			$output = sprintf( __( 'Certificate belongs to API username %1$s; %2$s.', 'woocommerce-gateway-paypal-express-checkout' ), $cert_info['subject']['CN'], $expires );
 		} else {
 			$output = __( 'The certificate on file is not valid.', 'woocommerce-gateway-paypal-express-checkout' );
 		}
@@ -391,8 +391,8 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		// loop through each transaction to compile list of txns that are able to be refunded
 		// process refunds against each txn in the list until full amount of refund is reached
 		// first loop through, try to find a transaction that equals the refund amount being requested
-		$old_wc = version_compare( WC_VERSION, '3.0', '<' );
-		$txn_data = $old_wc ? get_post_meta( $order_id, '_woo_pp_txnData', true ) : $order->get_meta( '_woo_pp_txnData', true );
+		$old_wc         = version_compare( WC_VERSION, '3.0', '<' );
+		$txn_data       = $old_wc ? get_post_meta( $order_id, '_woo_pp_txnData', true ) : $order->get_meta( '_woo_pp_txnData', true );
 		$order_currency = $old_wc ? $order->order_currency : $order->get_currency();
 
 		if ( ! isset( $txn_data['refundable_txns'] ) ) {
@@ -450,7 +450,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 
 		$total_refundable_amount = 0;
 		foreach ( $txn_data['refundable_txns'] as $key => $value ) {
-			$refundable_amount = $value['amount'] - $value['refunded_amount'];
+			$refundable_amount        = $value['amount'] - $value['refunded_amount'];
 			$total_refundable_amount += $refundable_amount;
 		}
 
@@ -480,7 +480,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 					}
 
 					try {
-						$refund_txn_id = WC_Gateway_PPEC_Refund::refund_order( $order, $amount_to_refund, $refund_type, $reason, $order_currency );
+						$refund_txn_id    = WC_Gateway_PPEC_Refund::refund_order( $order, $amount_to_refund, $refund_type, $reason, $order_currency );
 						$total_to_refund -= $amount_to_refund;
 						$txn_data['refundable_txns'][ $key ]['refunded_amount'] += $amount_to_refund;
 						// Translators: placeholder is a transaction ID.
@@ -554,7 +554,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		$maybe_hide_remove_style = '';
 
 		// For backwards compatibility (customers that already have set a url)
-		$value_is_url            = filter_var( $value, FILTER_VALIDATE_URL ) !== false;
+		$value_is_url = filter_var( $value, FILTER_VALIDATE_URL ) !== false;
 
 		if ( empty( $value ) || $value_is_url ) {
 			$maybe_hide_remove_style = 'display: none;';

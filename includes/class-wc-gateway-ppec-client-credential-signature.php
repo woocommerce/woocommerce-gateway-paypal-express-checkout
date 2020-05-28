@@ -32,7 +32,7 @@ class WC_Gateway_PPEC_Client_Credential_Signature extends WC_Gateway_PPEC_Client
 	 * {@inheritdoc}
 	 */
 	public function get_request_params() {
-		$params = parent::get_request_params();
+		$params              = parent::get_request_params();
 		$params['SIGNATURE'] = $this->_signature;
 
 		return $params;

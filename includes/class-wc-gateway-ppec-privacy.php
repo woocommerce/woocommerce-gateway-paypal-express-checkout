@@ -30,7 +30,7 @@ class WC_Gateway_PPEC_Privacy extends WC_Abstract_Privacy {
 	protected function get_ppec_orders( $email_address, $page ) {
 		$user = get_user_by( 'email', $email_address ); // Check if user has an ID in the DB to load stored personal data.
 
-		$order_query    = array(
+		$order_query = array(
 			'payment_method' => array( 'ppec_paypal' ),
 			'limit'          => 10,
 			'page'           => $page,
@@ -125,7 +125,7 @@ class WC_Gateway_PPEC_Privacy extends WC_Abstract_Privacy {
 			),
 		);
 
-		$subscription_query    = array(
+		$subscription_query = array(
 			'posts_per_page'  => 10,
 			'page'            => $page,
 			'meta_query'      => $meta_query, /* phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query */
@@ -182,11 +182,13 @@ class WC_Gateway_PPEC_Privacy extends WC_Abstract_Privacy {
 			$order = wc_get_order( $order->get_id() );
 
 			list( $removed, $retained, $msgs ) = $this->maybe_handle_order( $order );
+
 			$items_removed  |= $removed;
 			$items_retained |= $retained;
 			$messages        = array_merge( $messages, $msgs );
 
 			list( $removed, $retained, $msgs ) = $this->maybe_handle_subscription( $order );
+
 			$items_removed  |= $removed;
 			$items_retained |= $retained;
 			$messages        = array_merge( $messages, $msgs );
@@ -221,7 +223,7 @@ class WC_Gateway_PPEC_Privacy extends WC_Abstract_Privacy {
 		$subscription    = current( wcs_get_subscriptions_for_order( $order->get_id() ) );
 		$subscription_id = $subscription->get_id();
 
-		$ppec_billing    = get_post_meta( $subscription_id, '_ppec_billing_agreement_id', true );
+		$ppec_billing = get_post_meta( $subscription_id, '_ppec_billing_agreement_id', true );
 
 		if ( empty( $ppec_billing ) ) {
 			return array( false, false, array() );

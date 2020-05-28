@@ -240,8 +240,8 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 * Is hooked to woocommerce_checkout_billing action by checkout_init
 	 */
 	public function paypal_billing_details() {
-		$session          = WC()->session->get( 'paypal' );
-		$token            = isset( $_GET['token'] ) ? $_GET['token'] : $session->token; // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+		$session = WC()->session->get( 'paypal' );
+		$token   = isset( $_GET['token'] ) ? $_GET['token'] : $session->token; // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 		try {
 			$checkout_details = $this->get_checkout_details( $token );
 		} catch ( PayPal_API_Exception $e ) {
@@ -327,8 +327,8 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 * Is hooked to woocommerce_checkout_shipping action by checkout_init
 	 */
 	public function paypal_shipping_details() {
-		$session          = WC()->session->get( 'paypal' );
-		$token            = isset( $_GET['token'] ) ? $_GET['token'] : $session->token; // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+		$session = WC()->session->get( 'paypal' );
+		$token   = isset( $_GET['token'] ) ? $_GET['token'] : $session->token; // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 
 		try {
 			$checkout_details = $this->get_checkout_details( $token );
@@ -402,7 +402,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		$name       = explode( ' ', $checkout_details->payments[0]->shipping_address->getName() );
 		$first_name = array_shift( $name );
 		$last_name  = implode( ' ', $name );
-		$result = array(
+		$result     = array(
 			'first_name'    => $first_name,
 			'last_name'     => $last_name,
 			'address_1'     => $checkout_details->payments[0]->shipping_address->getStreet1(),
@@ -724,8 +724,9 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 * @return string Redirect URL.
 	 */
 	protected function start_checkout( $context_args, $session_data_args ) {
-		$settings     = wc_gateway_ppec()->settings;
-		$client       = wc_gateway_ppec()->client;
+		$settings = wc_gateway_ppec()->settings;
+		$client   = wc_gateway_ppec()->client;
+
 		$context_args['create_billing_agreement'] = $this->needs_billing_agreement_creation( $context_args );
 
 		$params   = $client->get_set_express_checkout_params( $context_args );
@@ -748,7 +749,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 * @return string Redirect URL.
 	 */
 	public function start_checkout_from_cart( $skip_checkout = true ) {
-		$settings     = wc_gateway_ppec()->settings;
+		$settings = wc_gateway_ppec()->settings;
 
 		$context_args = array(
 			'skip_checkout' => $skip_checkout,
@@ -772,7 +773,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 * @return string Redirect URL.
 	 */
 	public function start_checkout_from_order( $order_id, $use_ppc ) {
-		$settings     = wc_gateway_ppec()->settings;
+		$settings = wc_gateway_ppec()->settings;
 
 		$context_args = array(
 			'skip_checkout' => false,
@@ -873,7 +874,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			throw new PayPal_API_Exception( $resp );
 		}
 
-		$old_wc = version_compare( WC_VERSION, '3.0', '<' );
+		$old_wc   = version_compare( WC_VERSION, '3.0', '<' );
 		$order_id = $old_wc ? $order->id : $order->get_id();
 		if ( $old_wc ) {
 			update_post_meta( $order_id, '_ppec_billing_agreement_id', $resp['BILLINGAGREEMENTID'] );
@@ -905,10 +906,10 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			throw new PayPal_Missing_Session_Exception();
 		}
 
-		$client = wc_gateway_ppec()->client;
-		$old_wc = version_compare( WC_VERSION, '3.0', '<' );
+		$client   = wc_gateway_ppec()->client;
+		$old_wc   = version_compare( WC_VERSION, '3.0', '<' );
 		$order_id = $old_wc ? $order->id : $order->get_id();
-		$params = $client->get_do_express_checkout_params(
+		$params   = $client->get_do_express_checkout_params(
 			array(
 				'order_id' => $order_id,
 				'token'    => $token,

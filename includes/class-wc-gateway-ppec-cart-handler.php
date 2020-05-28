@@ -88,7 +88,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 		 * simple or variable product.
 		 */
 		if ( $product ) {
-			$qty     = ! isset( $_POST['quantity'] ) ? 1 : absint( $_POST['quantity'] );
+			$qty = ! isset( $_POST['quantity'] ) ? 1 : absint( $_POST['quantity'] );
 			wc_empty_cart();
 
 			if ( $product->is_type( 'variable' ) ) {
@@ -116,7 +116,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 				if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
 					$variation_id = $product->get_matching_variation( $attributes );
 				} else {
-					$data_store = WC_Data_Store::load( 'product' );
+					$data_store   = WC_Data_Store::load( 'product' );
 					$variation_id = $data_store->find_matching_product_variation( $product, $attributes );
 				}
 
@@ -262,9 +262,9 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 		if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
 			$customer->shipping_first_name = $shipping_first_name;
-			$customer->shipping_last_name = $shipping_last_name;
-			$customer->billing_first_name = $billing_first_name;
-			$customer->billing_last_name = $billing_last_name;
+			$customer->shipping_last_name  = $shipping_last_name;
+			$customer->billing_first_name  = $billing_first_name;
+			$customer->billing_last_name   = $billing_last_name;
 
 			$customer->set_country( $billing_country );
 			$customer->set_address( $billing_address_1 );
@@ -433,7 +433,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 	 */
 	protected function get_button_settings( $settings, $context = '' ) {
 		$prefix = $context ? $context . '_' : $context;
-		$data = array(
+		$data   = array(
 			'button_layout'        => $settings->{ $prefix . 'button_layout' },
 			'button_size'          => $settings->{ $prefix . 'button_size' },
 			'button_label'         => $settings->{ $prefix . 'button_label' },
@@ -441,8 +441,8 @@ class WC_Gateway_PPEC_Cart_Handler {
 			'credit_enabled'       => $settings->{ $prefix . 'credit_enabled' },
 		);
 
-		$button_layout        = $data['button_layout'];
-		$data['button_size']  = 'vertical' === $button_layout && 'small' === $data['button_size']
+		$button_layout       = $data['button_layout'];
+		$data['button_size'] = 'vertical' === $button_layout && 'small' === $data['button_size']
 			? 'medium'
 			: $data['button_size'];
 

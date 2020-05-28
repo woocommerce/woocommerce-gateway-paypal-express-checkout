@@ -16,9 +16,9 @@ class PayPal_Address {
 	protected $_addressOwner;
 	protected $_addressStatus;
 
-	const AddressStatusNone                      = 'none';
-	const AddressStatusConfirmed                 = 'Confirmed';
-	const AddressStatusUnconfirmed               = 'Unconfirmed';
+	const AddressStatusNone        = 'none';
+	const AddressStatusConfirmed   = 'Confirmed';
+	const AddressStatusUnconfirmed = 'Unconfirmed';
 
 	public function setName( $name ) {
 		$this->_name = $name;

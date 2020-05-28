@@ -371,7 +371,7 @@ class WC_Gateway_PPEC_Client {
 			$query_args['create-billing-agreement'] = 'true';
 		}
 
-		$url = add_query_arg( $query_args, wc_get_checkout_url() );
+		$url      = add_query_arg( $query_args, wc_get_checkout_url() );
 		$order_id = $context_args['order_id'];
 		return apply_filters( 'woocommerce_paypal_express_checkout_set_express_checkout_params_get_return_url', $url, $order_id );
 	}
@@ -386,7 +386,7 @@ class WC_Gateway_PPEC_Client {
 	 * @return string Cancel URL
 	 */
 	protected function _get_cancel_url( $context_args ) {
-		$url = add_query_arg( 'woo-paypal-cancel', 'true', wc_get_cart_url() );
+		$url      = add_query_arg( 'woo-paypal-cancel', 'true', wc_get_cart_url() );
 		$order_id = $context_args['order_id'];
 		return apply_filters( 'woocommerce_paypal_express_checkout_set_express_checkout_params_get_cancel_url', $url, $order_id );
 	}
@@ -462,7 +462,7 @@ class WC_Gateway_PPEC_Client {
 	 */
 	protected function _get_details_from_cart() {
 		$settings = wc_gateway_ppec()->settings;
-		$old_wc = version_compare( WC_VERSION, '3.0', '<' );
+		$old_wc   = version_compare( WC_VERSION, '3.0', '<' );
 
 		WC()->cart->calculate_totals();
 
@@ -518,7 +518,7 @@ class WC_Gateway_PPEC_Client {
 		}
 
 		foreach ( WC()->cart->get_fees() as $fee_key => $fee_values ) {
-			$item   = array(
+			$item = array(
 				'name'        => $fee_values->name,
 				'description' => '',
 				'quantity'    => 1,
@@ -612,24 +612,24 @@ class WC_Gateway_PPEC_Client {
 		$details['ship_discount_amount'] = 0;
 
 		// AMT
-		$details['order_total']       = round( $details['order_total'], $decimals );
+		$details['order_total'] = round( $details['order_total'], $decimals );
 
 		// ITEMAMT
 		$details['total_item_amount'] = round( $details['total_item_amount'], $decimals );
 
 		// If the totals don't line up, adjust the tax to make it work (it's
 		// probably a tax mismatch).
-		$wc_order_total = round( $total, $decimals );
+		$wc_order_total   = round( $total, $decimals );
 		$discounted_total = $details['order_total'];
 
 		if ( $wc_order_total != $discounted_total ) { // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
 			// tax cannot be negative
 			if ( $discounted_total < $wc_order_total ) {
 				$details['order_tax'] += $wc_order_total - $discounted_total;
-				$details['order_tax'] = round( $details['order_tax'], $decimals );
+				$details['order_tax']  = round( $details['order_tax'], $decimals );
 			} else {
 				$details['ship_discount_amount'] += $wc_order_total - $discounted_total;
-				$details['ship_discount_amount'] = round( $details['ship_discount_amount'], $decimals );
+				$details['ship_discount_amount']  = round( $details['ship_discount_amount'], $decimals );
 			}
 
 			$details['order_total'] = $wc_order_total;
@@ -667,7 +667,7 @@ class WC_Gateway_PPEC_Client {
 
 	protected function _get_total_order_fees( $order ) {
 		$total = 0;
-		$fees = $order->get_fees();
+		$fees  = $order->get_fees();
 		foreach ( $fees as $fee ) {
 			$total = $total + $fee->get_amount();
 		}
@@ -826,7 +826,7 @@ class WC_Gateway_PPEC_Client {
 		foreach ( $order->get_items( array( 'line_item', 'fee' ) ) as $cart_item_key => $order_item ) {
 
 			if ( 'fee' === $order_item['type'] ) {
-				$item   = array(
+				$item = array(
 					'name'     => $order_item['name'],
 					'quantity' => 1,
 					'amount'   => round( $order_item['line_total'], $decimals ),
@@ -865,7 +865,7 @@ class WC_Gateway_PPEC_Client {
 		$rounded_total = 0;
 		foreach ( $order->get_items( array( 'line_item', 'fee', 'coupon' ) ) as $cart_item_key => $values ) {
 			if ( 'coupon' === $values['type'] ) {
-				$amount = round( $values['line_total'], $decimals );
+				$amount         = round( $values['line_total'], $decimals );
 				$rounded_total -= $amount;
 				continue;
 			}
@@ -927,8 +927,8 @@ class WC_Gateway_PPEC_Client {
 	 * @return array Params for DoExpressCheckoutPayment call
 	 */
 	public function get_do_express_checkout_params( array $args ) {
-		$settings     = wc_gateway_ppec()->settings;
-		$order        = wc_get_order( $args['order_id'] );
+		$settings = wc_gateway_ppec()->settings;
+		$order    = wc_get_order( $args['order_id'] );
 
 		$old_wc       = version_compare( WC_VERSION, '3.0', '<' );
 		$order_id     = $old_wc ? $order->id : $order->get_id();
@@ -1040,7 +1040,7 @@ class WC_Gateway_PPEC_Client {
 	 */
 	public function get_do_reference_transaction_params( array $args ) {
 		$settings = wc_gateway_ppec()->settings;
-		$order     = wc_get_order( $args['order_id'] );
+		$order    = wc_get_order( $args['order_id'] );
 
 		$old_wc    = version_compare( WC_VERSION, '3.0', '<' );
 		$order_id  = $old_wc ? $order->id : $order->get_id();
@@ -1193,7 +1193,7 @@ class WC_Gateway_PPEC_Client {
 		$this->set_credential( $credentials );
 		$this->set_environment( $environment );
 
-		$req = array(
+		$req    = array(
 			'RETURNURL'         => home_url( '/' ),
 			'CANCELURL'         => home_url( '/' ),
 			'REQBILLINGADDRESS' => '1',

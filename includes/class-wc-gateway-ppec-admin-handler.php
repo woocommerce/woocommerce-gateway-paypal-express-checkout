@@ -214,13 +214,13 @@ class WC_Gateway_PPEC_Admin_Handler {
 	 * @param  int $order_id
 	 */
 	public function cancel_authorization( $order_id ) {
-		$order = wc_get_order( $order_id );
-		$old_wc = version_compare( WC_VERSION, '3.0', '<' );
+		$order          = wc_get_order( $order_id );
+		$old_wc         = version_compare( WC_VERSION, '3.0', '<' );
 		$payment_method = $old_wc ? $order->payment_method : $order->get_payment_method();
 
 		if ( 'ppec_paypal' === $payment_method ) {
 
-			$trans_id = get_post_meta( $order_id, '_transaction_id', true );
+			$trans_id      = get_post_meta( $order_id, '_transaction_id', true );
 			$trans_details = wc_gateway_ppec()->client->get_transaction_details( array( 'TRANSACTIONID' => $trans_id ) );
 
 			if ( $trans_id && $this->is_authorized_only( $trans_details ) ) {
@@ -300,7 +300,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 		$prefix = 'sandbox' === $env ? 'sandbox_' : '';
 
 		foreach ( array( 'api_username', 'api_password', 'api_signature', 'api_certificate' ) as $key ) {
-			$key = $prefix . $key;
+			$key              = $prefix . $key;
 			$settings->{$key} = '';
 		}
 

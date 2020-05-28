@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class WC_Gateway_PPEC_With_PayPal_Credit extends WC_Gateway_PPEC_With_PayPal {
 	public function __construct() {
-		$this->icon    = 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/ppc-acceptance-small.png';
+		$this->icon = 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/ppc-acceptance-small.png';
 
 		parent::__construct();
 
