@@ -333,7 +333,7 @@ class PayPal_Address {
 			'yemen'                            => 'YE',
 			'zambia'                           => 'ZM',
 			// This one is here because some carts will make the mistake of using 'uk' instead of 'gb'.
-			'uk'                               => 'GB'
+			'uk'                               => 'GB',
 		);
 
 		// And now, the actual translation is as simple as...
@@ -400,7 +400,7 @@ class PayPal_Address {
 				'saskatchewan'          => 'SK',
 				'yukon'                 => 'YT',
 				// This derivation doesn't show up on the list, but seems obvious
-				'yukon territory'       => 'YT'
+				'yukon territory'       => 'YT',
 			);
 		} elseif ( 'CN' === $this->_country ) {
 			$translation_table = array(
@@ -442,17 +442,17 @@ class PayPal_Address {
 				'a coruÑa'               => 'C',
 				'araba/Álava'            => 'VI',
 				'albacete'               => 'AB',
-				'alicante'               => 'A' ,
+				'alicante'               => 'A',
 				'almerÍa'                => 'AL',
-				'asturias'               => 'O' ,
+				'asturias'               => 'O',
 				'Ávila'                  => 'AV',
 				'badajoz'                => 'BA',
 				'baleares'               => 'PM',
-				'barcelona'              => 'B' ,
+				'barcelona'              => 'B',
 				'burgos'                 => 'BU',
 				'cÁceres'                => 'CC',
 				'cÁdiz'                  => 'CA',
-				'cantabria'              => 'S' ,
+				'cantabria'              => 'S',
 				'castellÓn'              => 'CS',
 				'ceuta'                  => 'CE',
 				'ciudad real'            => 'CR',
@@ -462,35 +462,35 @@ class PayPal_Address {
 				'granada'                => 'GR',
 				'guadalajara'            => 'GU',
 				'gipuzkoa'               => 'SS',
-				'huelva'                 => 'H' ,
+				'huelva'                 => 'H',
 				'huesca'                 => 'HU',
 				'jaÉn'                   => 'J',
 				'la rioja'               => 'LO',
 				'las palmas'             => 'GC',
 				'leÓn'                   => 'LE',
-				'lleida'                 => 'L' ,
+				'lleida'                 => 'L',
 				'lugo'                   => 'LU',
-				'madrid'                 => 'M' ,
+				'madrid'                 => 'M',
 				'mÁlaga'                 => 'MA',
 				'melilla'                => 'ML',
 				'murcia'                 => 'MU',
 				'navarra'                => 'NA',
 				'ourense'                => 'OR',
-				'palencia'               => 'P' ,
+				'palencia'               => 'P',
 				'pontevedra'             => 'PO',
 				'salamanca'              => 'SA',
 				'santa cruz de tenerife' => 'TF',
 				'segovia'                => 'SG',
 				'sevilla'                => 'SE',
 				'soria'                  => 'SO',
-				'tarragona'              => 'T' ,
+				'tarragona'              => 'T',
 				'teruel'                 => 'TE',
 				'toledo'                 => 'TO',
-				'valencia'               => 'V' ,
+				'valencia'               => 'V',
 				'valladolid'             => 'VA',
 				'bizkaia'                => 'BI',
 				'zamora'                 => 'ZA',
-				'zaragoza'               => 'Z' ,
+				'zaragoza'               => 'Z',
 			);
 		} elseif ( 'IE' === $this->_country ) {
 			$translation_table = array(
@@ -732,7 +732,7 @@ class PayPal_Address {
 				'verona'                => 'VR',
 				'vibo valentia'         => 'VV',
 				'vicenza'               => 'VI',
-				'viterbo'               => 'VT'
+				'viterbo'               => 'VT',
 			);
 		} elseif ( 'JP' === $this->_country ) {
 			$translation_table = array(
@@ -833,7 +833,7 @@ class PayPal_Address {
 				'overijssel'    => 'OV',
 				'utrecht'       => 'UT',
 				'zeeland'       => 'ZE',
-				'zuid-holland'  => 'ZH'
+				'zuid-holland'  => 'ZH',
 			);
 		} elseif ( 'TH' === $this->_country ) {
 			$translation_table = array(
@@ -993,7 +993,7 @@ class PayPal_Address {
 				'us virgin islands'                       => 'VI',
 				'u.s. virgin islands'                     => 'VI',
 				'u s virgin islands'                      => 'VI',
-				'u. s. virgin islands'                    => 'VI'
+				'u. s. virgin islands'                    => 'VI',
 			);
 		}
 
@@ -1032,7 +1032,7 @@ class PayPal_Address {
 			'ZIP'           => '_zip',
 			'PHONENUM'      => '_phoneNumber',
 			'ADDRESSSTATUS' => '_addressStatus',
-			'ADDRESSOWNER'  => '_addressOwner'
+			'ADDRESSOWNER'  => '_addressOwner',
 		);
 
 		if ( $isBillingAddress ) {

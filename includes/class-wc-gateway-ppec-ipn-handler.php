@@ -318,7 +318,7 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 			'first_name'     => 'Payer first name',
 			'last_name'      => 'Payer last name',
 			'payment_type'   => 'Payment type',
-			'payment_status' => '_paypal_status'
+			'payment_status' => '_paypal_status',
 		);
 
 		$old_wc = version_compare( WC_VERSION, '3.0', '<' );

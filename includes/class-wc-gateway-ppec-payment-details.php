@@ -25,7 +25,7 @@ class PayPal_Payment_Details {
 			'BILLINGAGREEMENTID'           => 'billing_agreement_id',
 			'REDIRECTREQUIRED'             => 'redirect_required',
 			'SUCCESSPAGEREDIRECTREQUESTED' => 'redirect_requested',
-			'NOTE'                         => 'note'
+			'NOTE'                         => 'note',
 		);
 
 		$max_payment_num = -1;
@@ -67,7 +67,7 @@ class PayPal_Payment_Payment_FMF_Details {
 			'PENDING' => -1,
 			'REPORT'  => -1,
 			'DENY'    => -1,
-			'ACCEPT'  => -1
+			'ACCEPT'  => -1,
 		);
 
 		$found_any = false;
@@ -129,7 +129,7 @@ class PayPal_Payment_Shipping_Option_Details {
 			'INSURANCEOPTIONSELECTED' => 'insurance_option_selected',
 			'SHIPPINGOPTIONISDEFAULT' => 'shipping_option_is_default',
 			'SHIPPINGOPTIONAMOUNT'    => 'shipping_option_amount',
-			'SHIPPINGOPTIONNAME'      => 'shipping_option_name'
+			'SHIPPINGOPTIONNAME'      => 'shipping_option_name',
 		);
 
 		$found_any = false;
@@ -254,7 +254,7 @@ class PayPal_Payment_Payment_Details {
 			'RECEIPTREFERENCENUMBER'  => 'receipt_reference_number',
 			'SHIPPINGAMT'             => 'shipping_amount',
 			'HANDLINGAMT'             => 'handling_amount',
-			'PAYMENTREQUESTID'        => 'payment_request_id'
+			'PAYMENTREQUESTID'        => 'payment_request_id',
 		);
 
 		$found_any = false;
@@ -335,7 +335,7 @@ class PayPal_Payment_Payment_Protection_Eligibility_Details {
 	public function loadFromDoECResponse( $doECResponse, $bucketNum ) {
 		$map = array(
 			'PROTECTIONELIGIBILITY'     => 'protection_eligibility',
-			'PROTECTIONELIGIBILITYTYPE' => 'protection_eligibility_type'
+			'PROTECTIONELIGIBILITYTYPE' => 'protection_eligibility_type',
 		);
 
 		$found_any = false;
@@ -365,7 +365,7 @@ class PayPal_Payment_Payment_Instrument_Details {
 	public function loadFromDoECResponse( $doECResponse, $bucketNum ) {
 		$map = array(
 			'INSTRUMENTCATEGORY' => 'instrument_category',
-			'INSTRUMENTID'       => 'instrument_id'
+			'INSTRUMENTID'       => 'instrument_id',
 		);
 		$found_any = false;
 
@@ -388,7 +388,7 @@ class PayPal_Payment_Payment_Offer_Details {
 	public function loadFromDoECResponse( $doECResponse, $bucketNum ) {
 		$map = array(
 			'OFFERCODE'       => 'offer_code',
-			'OFFERTRACKINGID' => 'offer_tracking_id'
+			'OFFERTRACKINGID' => 'offer_tracking_id',
 		);
 	}
 }
@@ -406,7 +406,7 @@ class PayPal_Payment_Payment_Error_Details {
 			'LONGMESSAGE'  => 'long_message',
 			'ERRORCODE'    => 'error_code',
 			'SEVERITYCODE' => 'severity_code',
-			'ACK'          => 'ack'
+			'ACK'          => 'ack',
 		);
 
 		$found_any = false;
@@ -435,7 +435,7 @@ class PayPal_Payment_Payment_Seller_Details {
 			'SECUREMERCHANTACCOUNTID' => 'secure_merchant_account_id',
 			'SELLERID'                => 'seller_id',
 			'SELLERUSERNAME'          => 'user_name',
-			'SELLERREGISTRATIONDATE'  => 'registration_date'
+			'SELLERREGISTRATIONDATE'  => 'registration_date',
 		);
 
 		$found_any = false;

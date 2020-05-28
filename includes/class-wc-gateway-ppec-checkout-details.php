@@ -61,7 +61,7 @@ class PayPal_Checkout_Details {
 			'CHECKOUTSTATUS'                 => 'checkout_status',
 			'BUYERMARKETINGEMAIL'            => 'buyer_marketing_email',
 			'SURVEYQUESTION'                 => 'survey_question',
-			'SURVEYCHOICESELECTED'           => 'survey_choice_selected'
+			'SURVEYCHOICESELECTED'           => 'survey_choice_selected',
 		);
 
 		foreach ( $getECResponse as $index => $value ) {
@@ -185,7 +185,7 @@ class PayPal_Checkout_Payment_Details {
 			'ALLOWEDPAYMENTMETHOD'       => 'allowed_payment_method',
 			'PAYMENTREQUESTID'           => 'payment_request_id',
 			'BUCKETCATEGORYTYPE'         => 'bucket_category_type',
-			'ADDRESSNORMALIZATIONSTATUS' => 'shipping_address_normalization_status'
+			'ADDRESSNORMALIZATIONSTATUS' => 'shipping_address_normalization_status',
 		);
 
 		$found_any = false;
@@ -289,7 +289,7 @@ class PayPal_Checkout_Payment_Item_Physical_Details {
 			'WIDTHVALUE'  => 'width',
 			'WIDTHUNIT'   => 'width_units',
 			'HEIGHTVALUE' => 'height',
-			'HEIGHTUNIT'  => 'height_units'
+			'HEIGHTUNIT'  => 'height_units',
 		);
 		$found_any = false;
 
@@ -316,7 +316,7 @@ class PayPal_Checkout_Payment_Item_Ebay_Item_Details {
 			'ITEMNUMBER'   => 'item_number',
 			'AUCTIONTXNID' => 'auction_transaction_id',
 			'ORDERID'      => 'order_id',
-			'CARTID'       => 'cart_id'
+			'CARTID'       => 'cart_id',
 		);
 
 		$found_any = false;
@@ -351,7 +351,7 @@ class PayPal_Checkout_Shipping_Option_Details {
 			'INSURANCEOPTIONSELECTED' => 'insurance_option_selected',
 			'SHIPPINGOPTIONISDEFAULT' => 'shipping_option_is_default',
 			'SHIPPINGOPTIONAMOUNT'    => 'shipping_option_amount',
-			'SHIPPINGOPTIONNAME'      => 'shipping_option_name'
+			'SHIPPINGOPTIONNAME'      => 'shipping_option_name',
 		);
 		$found_any = false;
 		foreach ( $getECResponse as $index => $value ) {
@@ -378,7 +378,7 @@ class PayPal_Checkout_Instrument_Details {
 	public function loadFromGetECResponse( $getECResponse ) {
 		$map = array(
 			'INSTRUMENTCATEGORY' => 'instrument_category',
-			'INSTRUMENTID'       => 'instrument_id'
+			'INSTRUMENTID'       => 'instrument_id',
 		);
 		$found_any = false;
 
@@ -461,7 +461,7 @@ class PayPal_Checkout_Payer_Details {
 			'FIRSTNAME'   => 'first_name',
 			'MIDDLENAME'  => 'middle_name',
 			'LASTNAME'    => 'last_name',
-			'SUFFIX'      => 'suffix'
+			'SUFFIX'      => 'suffix',
 		);
 		$found_any = false;
 
@@ -505,7 +505,7 @@ class PayPal_Checkout_Gift_Details {
 			'GIFTMESSAGE'       => 'gift_message',
 			'GIFTWRAPNAME'      => 'gift_wrap_name',
 			'GIFTRECEIPTENABLE' => 'gift_receipt_enabled',
-			'GIFTWRAPAMOUNT'    => 'gift_wrap_amount'
+			'GIFTWRAPAMOUNT'    => 'gift_wrap_amount',
 		);
 		$found_any = false;
 
