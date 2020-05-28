@@ -197,6 +197,9 @@
 			// 'style.size' is no longer supported in the JS SDK. See https://developer.paypal.com/docs/checkout/integration-features/customize-button/#size.
 			delete button_args['style']['size'];
 
+			// Add a class selector so the buttons can be styled via css.
+			$( selector ).addClass( 'wc_ppec_' + button_size + '_payment_buttons' );
+
 			// Drop other args no longer needed in the JS SDK.
 			var args_to_remove = [ 'env', 'locale', 'commit', 'funding', 'payment', 'onAuthorize' ];
 			args_to_remove.forEach( function( arg ) {
