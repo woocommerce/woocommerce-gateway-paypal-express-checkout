@@ -393,9 +393,11 @@ class WC_Gateway_PPEC_Admin_Handler {
 					'%1$sWarning!%2$s PayPal Checkout will drop support for WooCommerce %3$s in a soon to be released update. To continue using PayPal Checkout please %4$supdate to %1$sWooCommerce 3.0%2$s or greater%5$s.',
 					'woocommerce-gateway-paypal-express-checkout'
 				),
-				'<strong>', '</strong>',
+				'<strong>',
+				'</strong>',
 				WC_VERSION,
-				'<a href="' . admin_url( 'plugins.php' ) . '">', '</a>'
+				'<a href="' . admin_url( 'plugins.php' ) . '">',
+				'</a>'
 			);
 			// phpcs:enable
 			?>
