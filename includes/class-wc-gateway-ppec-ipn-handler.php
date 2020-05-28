@@ -92,7 +92,7 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 	 * @param array $posted_data Posted data
 	 */
 	public function handle_valid_ipn( $posted_data ) {
-		if ( ! empty( $posted_data['custom'] ) && ( $order = $this->get_paypal_order( $posted_data['custom'] ) ) ) { // phpcs:ignore Squiz.PHP.DisallowMultipleAssignments.FoundInControlStructure
+		if ( ! empty( $posted_data['custom'] ) && ( $order = $this->get_paypal_order( $posted_data['custom'] ) ) ) { // phpcs:ignore Squiz.PHP.DisallowMultipleAssignments.FoundInControlStructure,WordPress.CodeAnalysis.AssignmentInCondition.Found
 			// Lowercase returned variables.
 			$posted_data['payment_status'] = strtolower( $posted_data['payment_status'] );
 
