@@ -196,7 +196,7 @@ function wc_gateway_ppec_save_transaction_data( $order, $transaction_response, $
 
 	$status = ! empty( $transaction_response[ $prefix . 'PAYMENTSTATUS' ] ) ? $transaction_response[ $prefix . 'PAYMENTSTATUS' ] : '';
 
-	if ( 'Completed' == $status ) {
+	if ( 'Completed' === $status ) {
 		$txn['status'] = 'Completed';
 	} else {
 		$txn['status'] = $status . '_' . $transaction_response[ $prefix . 'REASONCODE' ];
@@ -205,7 +205,7 @@ function wc_gateway_ppec_save_transaction_data( $order, $transaction_response, $
 
 	$paymentAction = $settings->get_paymentaction();
 
-	if ( 'authorization' == $paymentAction ) {
+	if ( 'authorization' === $paymentAction ) {
 		$txnData['auth_status'] = 'NotCompleted';
 	}
 
