@@ -144,7 +144,7 @@ class WC_Gateway_PPEC_Plugin {
 		register_activation_hook( $this->file, array( $this, 'activate' ) );
 
 		add_action( 'plugins_loaded', array( $this, 'bootstrap' ) );
-		add_filter( 'allowed_redirect_hosts' , array( $this, 'whitelist_paypal_domains_for_redirect' ) );
+		add_filter( 'allowed_redirect_hosts', array( $this, 'whitelist_paypal_domains_for_redirect' ) );
 		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
 
 		add_filter( 'plugin_action_links_' . plugin_basename( $this->file ), array( $this, 'plugin_action_links' ) );

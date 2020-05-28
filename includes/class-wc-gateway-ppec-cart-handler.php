@@ -555,7 +555,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 				// register the fetch/promise polyfills files so the new PayPal Checkout SDK works with IE
 				if ( $is_IE ) {
 					wp_register_script( 'wc-gateway-ppec-promise-polyfill', wc_gateway_ppec()->plugin_url . 'assets/js/dist/promise-polyfill.min.js', array(), null, true );
-					wp_register_script( 'wc-gateway-ppec-fetch-polyfill',   wc_gateway_ppec()->plugin_url . 'assets/js/dist/fetch-polyfill.min.js', array(), null, true );
+					wp_register_script( 'wc-gateway-ppec-fetch-polyfill', wc_gateway_ppec()->plugin_url . 'assets/js/dist/fetch-polyfill.min.js', array(), null, true );
 
 					$spb_script_dependencies = array_merge( $spb_script_dependencies, array( 'wc-gateway-ppec-fetch-polyfill', 'wc-gateway-ppec-promise-polyfill' ) );
 				}

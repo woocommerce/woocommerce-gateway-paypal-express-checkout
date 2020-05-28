@@ -495,7 +495,7 @@ class WC_Gateway_PPEC_Client {
 
 		$items = array();
 		foreach ( WC()->cart->cart_contents as $cart_item_key => $values ) {
-			$amount = round( $values['line_subtotal'] / $values['quantity'] , $decimals );
+			$amount = round( $values['line_subtotal'] / $values['quantity'], $decimals );
 
 			if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
 				$name        = $values['data']->post->post_title;
@@ -544,7 +544,7 @@ class WC_Gateway_PPEC_Client {
 
 		$rounded_total = 0;
 		foreach ( WC()->cart->cart_contents as $cart_item_key => $values ) {
-			$amount         = round( $values['line_subtotal'] / $values['quantity'] , $decimals );
+			$amount         = round( $values['line_subtotal'] / $values['quantity'], $decimals );
 			$rounded_total += round( $amount * $values['quantity'], $decimals );
 		}
 
@@ -832,7 +832,7 @@ class WC_Gateway_PPEC_Client {
 					'amount'   => round( $order_item['line_total'], $decimals ),
 				);
 			} else {
-				$amount  = round( $order_item['line_subtotal'] / $order_item['qty'] , $decimals );
+				$amount  = round( $order_item['line_subtotal'] / $order_item['qty'], $decimals );
 				$product = version_compare( WC_VERSION, '3.0', '<' ) ? $order->get_product_from_item( $order_item ) : $order_item->get_product();
 				$item    = array(
 					'name'     => $order_item['name'],
@@ -872,7 +872,7 @@ class WC_Gateway_PPEC_Client {
 			if ( 'fee' === $values['type'] ) {
 				$amount = round( $values['line_total'], $decimals );
 			} else {
-				$amount = round( $values['line_subtotal'] / $values['qty'] , $decimals );
+				$amount = round( $values['line_subtotal'] / $values['qty'], $decimals );
 				$amount = round( $amount * $values['qty'], $decimals );
 			}
 			$rounded_total += $amount;

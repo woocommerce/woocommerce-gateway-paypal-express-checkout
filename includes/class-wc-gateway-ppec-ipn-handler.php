@@ -35,7 +35,7 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 				exit;
 			} else {
 				wc_gateway_ppec_log( 'IPN request is NOT valid according to PayPal.' );
-				throw new Exception( esc_html__( 'Invalid IPN request.' , 'woocommerce-gateway-paypal-express-checkout' ) );
+				throw new Exception( esc_html__( 'Invalid IPN request.', 'woocommerce-gateway-paypal-express-checkout' ) );
 			}
 		} catch ( Exception $e ) {
 			wp_die( $e->getMessage(), esc_html__( 'PayPal IPN Request Failure', 'woocommerce-gateway-paypal-express-checkout' ), array( 'response' => 500 ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
