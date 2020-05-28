@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 $includes_path = wc_gateway_ppec()->includes_path;
 
-require_once( $includes_path . 'class-wc-gateway-ppec-address.php' );
+require_once $includes_path . 'class-wc-gateway-ppec-address.php';
 
 class PayPal_Checkout_Details {
 	public $raw_response                    = array();

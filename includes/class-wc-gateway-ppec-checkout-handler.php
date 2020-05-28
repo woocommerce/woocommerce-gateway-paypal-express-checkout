@@ -11,16 +11,16 @@ $includes_path = wc_gateway_ppec()->includes_path;
 
 // TODO: Use spl autoload to require on-demand maybe?
 
-require_once( $includes_path . 'class-wc-gateway-ppec-settings.php' );
-require_once( $includes_path . 'class-wc-gateway-ppec-session-data.php' );
-require_once( $includes_path . 'class-wc-gateway-ppec-checkout-details.php' );
+require_once $includes_path . 'class-wc-gateway-ppec-settings.php';
+require_once $includes_path . 'class-wc-gateway-ppec-session-data.php';
+require_once $includes_path . 'class-wc-gateway-ppec-checkout-details.php';
 
-require_once( $includes_path . 'class-wc-gateway-ppec-api-error.php' );
-require_once( $includes_path . 'exceptions/class-wc-gateway-ppec-api-exception.php' );
-require_once( $includes_path . 'exceptions/class-wc-gateway-ppec-missing-session-exception.php' );
+require_once $includes_path . 'class-wc-gateway-ppec-api-error.php';
+require_once $includes_path . 'exceptions/class-wc-gateway-ppec-api-exception.php';
+require_once $includes_path . 'exceptions/class-wc-gateway-ppec-missing-session-exception.php';
 
-require_once( $includes_path . 'class-wc-gateway-ppec-payment-details.php' );
-require_once( $includes_path . 'class-wc-gateway-ppec-address.php' );
+require_once $includes_path . 'class-wc-gateway-ppec-payment-details.php';
+require_once $includes_path . 'class-wc-gateway-ppec-address.php';
 
 class WC_Gateway_PPEC_Checkout_Handler {
 

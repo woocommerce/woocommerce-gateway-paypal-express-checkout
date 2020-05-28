@@ -110,7 +110,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 	 * Initialise Gateway Settings Form Fields.
 	 */
 	public function init_form_fields() {
-		$this->form_fields = include( dirname( dirname( __FILE__ ) ) . '/settings/settings-ppec.php' );
+		$this->form_fields = include dirname( dirname( __FILE__ ) ) . '/settings/settings-ppec.php';
 	}
 
 	/**

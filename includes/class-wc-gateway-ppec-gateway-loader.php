@@ -15,14 +15,14 @@ class WC_Gateway_PPEC_Gateway_Loader {
 	public function __construct() {
 		$includes_path = wc_gateway_ppec()->includes_path;
 
-		require_once( $includes_path . 'class-wc-gateway-ppec-refund.php' );
-		require_once( $includes_path . 'abstracts/abstract-wc-gateway-ppec.php' );
+		require_once $includes_path . 'class-wc-gateway-ppec-refund.php';
+		require_once $includes_path . 'abstracts/abstract-wc-gateway-ppec.php';
 
-		require_once( $includes_path . 'class-wc-gateway-ppec-with-paypal.php' );
-		require_once( $includes_path . 'class-wc-gateway-ppec-with-paypal-credit.php' );
-		require_once( $includes_path . 'class-wc-gateway-ppec-with-paypal-addons.php' );
-		require_once( $includes_path . 'class-wc-gateway-ppec-with-spb.php' );
-		require_once( $includes_path . 'class-wc-gateway-ppec-with-spb-addons.php' );
+		require_once $includes_path . 'class-wc-gateway-ppec-with-paypal.php';
+		require_once $includes_path . 'class-wc-gateway-ppec-with-paypal-credit.php';
+		require_once $includes_path . 'class-wc-gateway-ppec-with-paypal-addons.php';
+		require_once $includes_path . 'class-wc-gateway-ppec-with-spb.php';
+		require_once $includes_path . 'class-wc-gateway-ppec-with-spb-addons.php';
 
 		add_filter( 'woocommerce_payment_gateways', array( $this, 'payment_gateways' ) );
 	}

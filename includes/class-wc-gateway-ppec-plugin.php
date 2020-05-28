@@ -304,7 +304,7 @@ class WC_Gateway_PPEC_Plugin {
 	 * Run the plugin.
 	 */
 	protected function _run() {
-		require_once( $this->includes_path . 'functions.php' );
+		require_once $this->includes_path . 'functions.php';
 		$this->_load_handlers();
 	}
 
@@ -313,7 +313,7 @@ class WC_Gateway_PPEC_Plugin {
 	 */
 	public function activate() {
 		if ( ! isset( $this->settings ) ) {
-			require_once( $this->includes_path . 'class-wc-gateway-ppec-settings.php' );
+			require_once $this->includes_path . 'class-wc-gateway-ppec-settings.php';
 			$settings = new WC_Gateway_PPEC_Settings();
 		} else {
 			$settings = $this->settings;
@@ -334,15 +334,15 @@ class WC_Gateway_PPEC_Plugin {
 		$this->_load_client();
 
 		// Load handlers.
-		require_once( $this->includes_path . 'class-wc-gateway-ppec-privacy.php' );
-		require_once( $this->includes_path . 'class-wc-gateway-ppec-settings.php' );
-		require_once( $this->includes_path . 'class-wc-gateway-ppec-gateway-loader.php' );
-		require_once( $this->includes_path . 'class-wc-gateway-ppec-admin-handler.php' );
-		require_once( $this->includes_path . 'class-wc-gateway-ppec-checkout-handler.php' );
-		require_once( $this->includes_path . 'class-wc-gateway-ppec-cart-handler.php' );
-		require_once( $this->includes_path . 'class-wc-gateway-ppec-ips-handler.php' );
-		require_once( $this->includes_path . 'abstracts/abstract-wc-gateway-ppec-paypal-request-handler.php' );
-		require_once( $this->includes_path . 'class-wc-gateway-ppec-ipn-handler.php' );
+		require_once $this->includes_path . 'class-wc-gateway-ppec-settings.php';
+		require_once $this->includes_path . 'class-wc-gateway-ppec-privacy.php';
+		require_once $this->includes_path . 'class-wc-gateway-ppec-gateway-loader.php';
+		require_once $this->includes_path . 'class-wc-gateway-ppec-admin-handler.php';
+		require_once $this->includes_path . 'class-wc-gateway-ppec-checkout-handler.php';
+		require_once $this->includes_path . 'class-wc-gateway-ppec-cart-handler.php';
+		require_once $this->includes_path . 'class-wc-gateway-ppec-ips-handler.php';
+		require_once $this->includes_path . 'abstracts/abstract-wc-gateway-ppec-paypal-request-handler.php';
+		require_once $this->includes_path . 'class-wc-gateway-ppec-ipn-handler.php';
 
 		$this->settings       = new WC_Gateway_PPEC_Settings();
 		$this->gateway_loader = new WC_Gateway_PPEC_Gateway_Loader();
@@ -359,10 +359,10 @@ class WC_Gateway_PPEC_Plugin {
 	 * @since 1.1.0
 	 */
 	protected function _load_client() {
-		require_once( $this->includes_path . 'abstracts/abstract-wc-gateway-ppec-client-credential.php' );
-		require_once( $this->includes_path . 'class-wc-gateway-ppec-client-credential-certificate.php' );
-		require_once( $this->includes_path . 'class-wc-gateway-ppec-client-credential-signature.php' );
-		require_once( $this->includes_path . 'class-wc-gateway-ppec-client.php' );
+		require_once $this->includes_path . 'abstracts/abstract-wc-gateway-ppec-client-credential.php';
+		require_once $this->includes_path . 'class-wc-gateway-ppec-client-credential-certificate.php';
+		require_once $this->includes_path . 'class-wc-gateway-ppec-client-credential-signature.php';
+		require_once $this->includes_path . 'class-wc-gateway-ppec-client.php';
 	}
 
 	/**
