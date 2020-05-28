@@ -55,7 +55,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		$this->subtotal_mismatch_behavior = $this->get_option( 'subtotal_mismatch_behavior', 'add' );
 		$this->use_ppc                    = false;
 
-		if ( empty( $_GET['woo-paypal-return'] ) && 'yes' !== $this->get_option( 'use_spb', 'yes' ) ) {
+		if ( empty( $_GET['woo-paypal-return'] ) && 'yes' !== $this->get_option( 'use_spb', 'yes' ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$this->order_button_text = __( 'Continue to payment', 'woocommerce-gateway-paypal-express-checkout' );
 		}
 
