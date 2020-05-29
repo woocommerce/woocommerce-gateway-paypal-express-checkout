@@ -463,7 +463,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 			$data['disallowed_methods'] = $data['hide_funding_methods'];
 		} else {
 			$data['allowed_methods']    = 'yes' === $data['credit_enabled'] ? array( 'CREDIT' ) : array();
-			$data['disallowed_methods'] = 'yes' !== $data['credit_enabled'] ? array( 'CREDIT' ) : array();
+			$data['disallowed_methods'] = 'yes' !== $data['credit_enabled'] ? array( 'CARD', 'CREDIT' ) : array( 'CARD' );
 		}
 		unset( $data['hide_funding_methods'], $data['credit_enabled'] );
 
