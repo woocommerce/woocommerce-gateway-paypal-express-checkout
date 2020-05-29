@@ -38,7 +38,7 @@ function wc_gateway_ppec() {
 	static $plugin;
 
 	if ( ! isset( $plugin ) ) {
-		require_once( 'includes/class-wc-gateway-ppec-plugin.php' );
+		require_once 'includes/class-wc-gateway-ppec-plugin.php';
 
 		$plugin = new WC_Gateway_PPEC_Plugin( __FILE__, WC_GATEWAY_PPEC_VERSION );
 	}

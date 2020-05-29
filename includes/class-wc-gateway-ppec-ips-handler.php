@@ -47,7 +47,7 @@ class WC_Gateway_PPEC_IPS_Handler {
 	 * @return string Redirect URL
 	 */
 	public function get_redirect_url( $env ) {
-		if ( ! in_array( $env, array( 'live', 'sandbox' ) ) ) {
+		if ( ! in_array( $env, array( 'live', 'sandbox' ), true ) ) {
 			$env = 'live';
 		}
 
@@ -85,7 +85,7 @@ class WC_Gateway_PPEC_IPS_Handler {
 	 */
 	public function get_signup_url( $env ) {
 		$query_args = array(
-			'redirect'    => urlencode( $this->get_redirect_url( $env ) ),
+			'redirect'    => urlencode( $this->get_redirect_url( $env ) ), /* phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.urlencode_urlencode */
 			'countryCode' => WC()->countries->get_base_country(),
 			'merchantId'  => md5( site_url( '/' ) . time() ),
 		);
@@ -99,7 +99,7 @@ class WC_Gateway_PPEC_IPS_Handler {
 	 * @return bool Returns true of base country in supported countries
 	 */
 	public function is_supported() {
-		return in_array( WC()->countries->get_base_country(), $this->_supported_countries );
+		return in_array( WC()->countries->get_base_country(), $this->_supported_countries, true );
 	}
 
 	/**
@@ -133,18 +133,18 @@ class WC_Gateway_PPEC_IPS_Handler {
 		if ( empty( $_GET['wc_ppec_ips_admin_nonce'] ) || empty( $_GET['env'] ) ) {
 			return false;
 		}
-		$env = in_array( $_GET['env'], array( 'live', 'sandbox' ) ) ? $_GET['env'] : 'live';
+		$env = in_array( $_GET['env'], array( 'live', 'sandbox' ), true ) ? $_GET['env'] : 'live'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 
 		// Verify the nonce.
-		if ( ! wp_verify_nonce( $_GET['wc_ppec_ips_admin_nonce'], 'wc_ppec_ips' ) ) {
-			wp_die( __( 'Invalid connection request', 'woocommerce-gateway-paypal-express-checkout' ) );
+		if ( ! wp_verify_nonce( $_GET['wc_ppec_ips_admin_nonce'], 'wc_ppec_ips' ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+			wp_die( __( 'Invalid connection request', 'woocommerce-gateway-paypal-express-checkout' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 
-		wc_gateway_ppec_log( sprintf( '%s: returned back from IPS flow with parameters: %s', __METHOD__, print_r( $_GET, true ) ) );
+		wc_gateway_ppec_log( sprintf( '%s: returned back from IPS flow with parameters: %s', __METHOD__, print_r( $_GET, true ) ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
 
 		// Check if error.
 		if ( ! empty( $_GET['error'] ) ) {
-			$error_message = ! empty( $_GET['error_message'] ) ? $_GET['error_message'] : '';
+			$error_message = ! empty( $_GET['error_message'] ) ? $_GET['error_message'] : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 			wc_gateway_ppec_log( sprintf( '%s: returned back from IPS flow with error: %s', __METHOD__, $error_message ) );
 
 			$this->_redirect_with_messages( __( 'Sorry, Easy Setup encountered an error.  Please try again.', 'woocommerce-gateway-paypal-express-checkout' ) );
@@ -159,11 +159,7 @@ class WC_Gateway_PPEC_IPS_Handler {
 			}
 		}
 
-		$creds = new WC_Gateway_PPEC_Client_Credential_Signature(
-			$_GET['api_username'],
-			$_GET['api_password'],
-			$_GET['signature']
-		);
+		$creds = new WC_Gateway_PPEC_Client_Credential_Signature( $_GET['api_username'], $_GET['api_password'], $_GET['signature'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 
 		$error_msgs = array();
 		try {
@@ -183,7 +179,7 @@ class WC_Gateway_PPEC_IPS_Handler {
 		);
 
 		if ( ! empty( $error_msgs ) ) {
-			wc_gateway_ppec_log( sprintf( '%s: returned back from IPS flow: %s', __METHOD__, print_r( $error_msgs, true ) ) );
+			wc_gateway_ppec_log( sprintf( '%s: returned back from IPS flow: %s', __METHOD__, print_r( $error_msgs, true ) ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
 		}
 
 		// Save credentials to settings API

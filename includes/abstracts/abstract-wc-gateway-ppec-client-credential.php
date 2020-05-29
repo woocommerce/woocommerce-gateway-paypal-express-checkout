@@ -96,6 +96,6 @@ abstract class WC_Gateway_PPEC_Client_Credential {
 	 * @return void
 	 */
 	public function configure_curl( $handle, $r, $url ) {
-		curl_setopt( $handle, CURLOPT_CAINFO, wc_gateway_ppec()->includes_path . 'pem/bundle.pem' );
+		curl_setopt( $handle, CURLOPT_CAINFO, wc_gateway_ppec()->includes_path . 'pem/bundle.pem' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
 	}
 }

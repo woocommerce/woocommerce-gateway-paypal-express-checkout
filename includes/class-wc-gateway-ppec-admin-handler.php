@@ -35,11 +35,11 @@ class WC_Gateway_PPEC_Admin_Handler {
 	}
 
 	public function add_capture_charge_order_action( $actions ) {
-		if ( ! isset( $_REQUEST['post'] ) ) {
+		if ( ! isset( $_REQUEST['post'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			return $actions;
 		}
 
-		$order = wc_get_order( $_REQUEST['post'] );
+		$order = wc_get_order( $_REQUEST['post'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 
 		if ( empty( $order ) ) {
 			return $actions;
@@ -83,7 +83,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 			?>
 			<div class="updated fade">
 				<p>
-					<strong><?php _e( 'NOTE: PayPal does not accept decimal places for the currency in which you are transacting.  The "Number of Decimals" option in WooCommerce has automatically been set to 0 for you.', 'woocommerce-gateway-paypal-express-checkout' ); ?></strong>
+					<strong><?php esc_html_e( 'NOTE: PayPal does not accept decimal places for the currency in which you are transacting.  The "Number of Decimals" option in WooCommerce has automatically been set to 0 for you.', 'woocommerce-gateway-paypal-express-checkout' ); ?></strong>
 				</p>
 			</div>
 			<?php
@@ -109,11 +109,11 @@ class WC_Gateway_PPEC_Admin_Handler {
 			'wc_gateway_ppec_with_paypal_credit',
 		);
 
-		$current_section = isset( $_GET['section'] ) ? $_GET['section'] : '';
+		$current_section = isset( $_GET['section'] ) ? $_GET['section'] : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 
 		// If the current section is a paypal section, remove the card section,
 		// otherwise, remove the paypal section
-		$sections_to_remove = in_array( $current_section, $paypal_sections ) ? $card_sections : $paypal_sections;
+		$sections_to_remove = in_array( $current_section, $paypal_sections, true ) ? $card_sections : $paypal_sections;
 
 		// And, let's also remove simplify commerce from the sections if it is not enabled and it is not the
 		// current section. (Note: The option will be empty if it has never been enabled)
@@ -186,6 +186,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 						update_post_meta( $order_id, '_transaction_id', $result['TRANSACTIONID'] );
 					}
 
+					// Translators: %s is a transaction ID.
 					$order->add_order_note( sprintf( __( 'PayPal Checkout charge complete (Charge ID: %s)', 'woocommerce-gateway-paypal-express-checkout' ), $transaction_id ) );
 				}
 			}
@@ -213,13 +214,13 @@ class WC_Gateway_PPEC_Admin_Handler {
 	 * @param  int $order_id
 	 */
 	public function cancel_authorization( $order_id ) {
-		$order = wc_get_order( $order_id );
-		$old_wc = version_compare( WC_VERSION, '3.0', '<' );
+		$order          = wc_get_order( $order_id );
+		$old_wc         = version_compare( WC_VERSION, '3.0', '<' );
 		$payment_method = $old_wc ? $order->payment_method : $order->get_payment_method();
 
 		if ( 'ppec_paypal' === $payment_method ) {
 
-			$trans_id = get_post_meta( $order_id, '_transaction_id', true );
+			$trans_id      = get_post_meta( $order_id, '_transaction_id', true );
 			$trans_details = wc_gateway_ppec()->client->get_transaction_details( array( 'TRANSACTIONID' => $trans_id ) );
 
 			if ( $trans_id && $this->is_authorized_only( $trans_details ) ) {
@@ -230,6 +231,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 				if ( is_wp_error( $result ) ) {
 					$order->add_order_note( __( 'Unable to void charge!', 'woocommerce-gateway-paypal-express-checkout' ) . ' ' . $result->get_error_message() );
 				} else {
+					// Translators: %s is a transaction ID.
 					$order->add_order_note( sprintf( __( 'PayPal Checkout charge voided (Charge ID: %s)', 'woocommerce-gateway-paypal-express-checkout' ), $trans_id ) );
 				}
 			}
@@ -260,11 +262,11 @@ class WC_Gateway_PPEC_Admin_Handler {
 			return;
 		}
 
-		if ( empty( $_GET['tab'] ) || empty( $_GET['section'] ) ) {
+		if ( empty( $_GET['tab'] ) || empty( $_GET['section'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			return;
 		}
 
-		if ( 'checkout' === $_GET['tab'] && 'wc_gateway_paypal' === $_GET['section'] ) {
+		if ( 'checkout' === $_GET['tab'] && 'wc_gateway_paypal' === $_GET['section'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$redirect = add_query_arg( array( 'section' => 'wc_gateway_ppec_with_paypal' ) );
 			wp_safe_redirect( $redirect );
 		}
@@ -286,19 +288,19 @@ class WC_Gateway_PPEC_Admin_Handler {
 			return;
 		}
 
-		if ( empty( $_GET['reset_nonce'] ) || ! wp_verify_nonce( $_GET['reset_nonce'], 'reset_ppec_api_credentials' ) ) {
+		if ( empty( $_GET['reset_nonce'] ) || ! wp_verify_nonce( $_GET['reset_nonce'], 'reset_ppec_api_credentials' ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 			return;
 		}
 
 		$settings = wc_gateway_ppec()->settings;
 		$env      = $settings->_environment;
 		if ( ! empty( $_GET['environment'] ) ) {
-			$env = $_GET['environment'];
+			$env = $_GET['environment']; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 		}
 		$prefix = 'sandbox' === $env ? 'sandbox_' : '';
 
 		foreach ( array( 'api_username', 'api_password', 'api_signature', 'api_certificate' ) as $key ) {
-			$key = $prefix . $key;
+			$key              = $prefix . $key;
 			$settings->{$key} = '';
 		}
 
@@ -342,7 +344,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 			</td>
 			<td width="1%"></td>
 			<td class="total">
-				-&nbsp;<?php echo wc_price( $paypal_fee, array( 'currency' => $order_currency ) ); ?>
+				-&nbsp;<?php echo wc_price( $paypal_fee, array( 'currency' => $order_currency ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			</td>
 		</tr>
 		<tr>
@@ -352,7 +354,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 			</td>
 			<td width="1%"></td>
 			<td class="total">
-				<?php echo wc_price( $net, array( 'currency' => $order_currency ) ); ?>
+				<?php echo wc_price( $net, array( 'currency' => $order_currency ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			</td>
 		</tr>
 
@@ -373,7 +375,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 
 		// Check if the notice needs to be dismissed.
 		$wc_updated = version_compare( WC_VERSION, '3.0', '>=' );
-		$dismissed  = isset( $_GET['wc_ppec_hide_3_0_notice'], $_GET['_wc_ppec_notice_nonce'] ) && wp_verify_nonce( $_GET['_wc_ppec_notice_nonce'], 'wc_ppec_hide_wc_notice_nonce' );
+		$dismissed  = isset( $_GET['wc_ppec_hide_3_0_notice'], $_GET['_wc_ppec_notice_nonce'] ) && wp_verify_nonce( $_GET['_wc_ppec_notice_nonce'], 'wc_ppec_hide_wc_notice_nonce' ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 
 		if ( $wc_updated || $dismissed ) {
 			delete_option( 'wc_ppec_display_wc_3_0_warning' );
@@ -383,12 +385,22 @@ class WC_Gateway_PPEC_Admin_Handler {
 		<div class="error">
 			<a href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'wc_ppec_hide_3_0_notice', 'true' ), 'wc_ppec_hide_wc_notice_nonce', '_wc_ppec_notice_nonce' ) ); ?>" class="woocommerce-message-close notice-dismiss" style="position:relative;float:right;padding:9px 0px 9px 9px 9px;text-decoration:none;"></a>
 			<p>
-			<?php printf( __(
-				'%1$sWarning!%2$s PayPal Checkout will drop support for WooCommerce %3$s in a soon to be released update. To continue using PayPal Checkout please %4$supdate to %1$sWooCommerce 3.0%2$s or greater%5$s.', 'woocommerce-gateway-paypal-express-checkout' ),
-				'<strong>', '</strong>',
+			<?php
+			// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+			printf(
+				/* Translators: %1$ <strong> tag, %2$ </strong> closing tag, %3$ WooCommerce version, %4$ <a> tag linking to Plugins screen, %5$ </a> closing tag. */
+				__(
+					'%1$sWarning!%2$s PayPal Checkout will drop support for WooCommerce %3$s in a soon to be released update. To continue using PayPal Checkout please %4$supdate to %1$sWooCommerce 3.0%2$s or greater%5$s.',
+					'woocommerce-gateway-paypal-express-checkout'
+				),
+				'<strong>',
+				'</strong>',
 				WC_VERSION,
-				'<a href="' . admin_url( 'plugins.php' ) . '">', '</a>'
-			); ?>
+				'<a href="' . admin_url( 'plugins.php' ) . '">',
+				'</a>'
+			);
+			// phpcs:enable
+			?>
 			</p>
 		</div>
 		<?php

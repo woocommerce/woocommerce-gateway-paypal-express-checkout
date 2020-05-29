@@ -7,7 +7,7 @@ function woo_pp_start_checkout() {
 		$redirect_url = $checkout->start_checkout_from_cart();
 		wp_safe_redirect( $redirect_url );
 		exit;
-	} catch( PayPal_API_Exception $e ) {
+	} catch ( PayPal_API_Exception $e ) {
 		wc_add_notice( $e->getMessage(), 'error' );
 
 		$redirect_url = wc_get_cart_url();
@@ -21,10 +21,10 @@ function woo_pp_start_checkout() {
 				if( ( window.opener != null ) && ( window.opener !== window ) &&
 						( typeof window.opener.paypal != "undefined" ) &&
 						( typeof window.opener.paypal.checkout != "undefined" ) ) {
-					window.opener.location.assign( "<?php echo $redirect_url; ?>" );
+					window.opener.location.assign( "<?php echo $redirect_url; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" );
 					window.close();
 				} else {
-					window.location.assign( "<?php echo $redirect_url; ?>" );
+					window.location.assign( "<?php echo $redirect_url; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" );
 				}
 			</script>
 			<?php
@@ -33,7 +33,6 @@ function woo_pp_start_checkout() {
 			wp_safe_redirect( $redirect_url );
 			exit;
 		}
-
 	}
 }
 
@@ -64,7 +63,7 @@ function wc_gateway_ppec_log( $message ) {
 	$wc_ppec_logger->add( 'wc_gateway_ppec', $message );
 
 	if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-		error_log( $message );
+		error_log( $message ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 	}
 }
 
@@ -87,7 +86,7 @@ function wc_gateway_ppec_is_credit_supported() {
  * @return bool Returns true if buyer is checking out with PayPal Credit
  */
 function wc_gateway_ppec_is_using_credit() {
-	return ! empty( $_GET['use-ppc'] ) && 'true' === $_GET['use-ppc'];
+	return ! empty( $_GET['use-ppc'] ) && 'true' === $_GET['use-ppc']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 }
 
 const PPEC_FEE_META_NAME_OLD = 'PayPal Transaction Fee';
@@ -190,23 +189,23 @@ function wc_gateway_ppec_save_transaction_data( $order, $transaction_response, $
 	}
 
 	$txn = array(
-		'txnID'           => $transaction_response[$prefix . 'TRANSACTIONID'],
-		'amount'          => $transaction_response[$prefix . 'AMT'],
-		'refunded_amount' => 0
+		'txnID'           => $transaction_response[ $prefix . 'TRANSACTIONID' ],
+		'amount'          => $transaction_response[ $prefix . 'AMT' ],
+		'refunded_amount' => 0,
 	);
 
-	$status = ! empty( $transaction_response[$prefix . 'PAYMENTSTATUS'] ) ? $transaction_response[$prefix . 'PAYMENTSTATUS'] : '';
+	$status = ! empty( $transaction_response[ $prefix . 'PAYMENTSTATUS' ] ) ? $transaction_response[ $prefix . 'PAYMENTSTATUS' ] : '';
 
-	if ( 'Completed' == $status ) {
+	if ( 'Completed' === $status ) {
 		$txn['status'] = 'Completed';
 	} else {
-		$txn['status'] = $status . '_' . $transaction_response[$prefix . 'REASONCODE'];
+		$txn['status'] = $status . '_' . $transaction_response[ $prefix . 'REASONCODE' ];
 	}
 	$txnData['refundable_txns'][] = $txn;
 
 	$paymentAction = $settings->get_paymentaction();
 
-	if ( 'authorization' == $paymentAction ) {
+	if ( 'authorization' === $paymentAction ) {
 		$txnData['auth_status'] = 'NotCompleted';
 	}
 

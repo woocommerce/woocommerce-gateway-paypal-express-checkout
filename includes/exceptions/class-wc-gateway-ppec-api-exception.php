@@ -49,7 +49,7 @@ class PayPal_API_Exception extends Exception {
 				$errors[ $matches[1] ]['long'] = $value;
 			} elseif ( preg_match( '/^L_SEVERITYCODE(\d+)$/', $index, $matches ) ) {
 				$errors[ $matches[1] ]['severity'] = $value;
-			} elseif ( 'CORRELATIONID' == $index ) {
+			} elseif ( 'CORRELATIONID' === $index ) {
 				$this->correlation_id = $value;
 			}
 		}
@@ -57,7 +57,7 @@ class PayPal_API_Exception extends Exception {
 		$this->errors   = array();
 		$error_messages = array();
 		foreach ( $errors as $value ) {
-			$error = new PayPal_API_Error( $value['code'], $value['message'], $value['long'], $value['severity'] );
+			$error          = new PayPal_API_Error( $value['code'], $value['message'], $value['long'], $value['severity'] );
 			$this->errors[] = $error;
 
 			/* translators: placeholders are error code and message from PayPal */

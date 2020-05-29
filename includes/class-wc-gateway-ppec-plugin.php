@@ -9,9 +9,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class WC_Gateway_PPEC_Plugin {
 
-	const ALREADY_BOOTSTRAPED = 1;
+	const ALREADY_BOOTSTRAPED      = 1;
 	const DEPENDENCIES_UNSATISFIED = 2;
-	const NOT_CONNECTED = 3;
+	const NOT_CONNECTED            = 3;
 
 	/**
 	 * Filepath of main plugin file.
@@ -98,7 +98,7 @@ class WC_Gateway_PPEC_Plugin {
 			$settings_array['debug']                      = get_option( 'pp_woo_logging_enabled' ) ? 'yes' : 'no';
 
 			// Make sure button size is correct.
-			if ( ! in_array( $settings_array['button_size'], array( 'small', 'medium', 'large' ) ) ) {
+			if ( ! in_array( $settings_array['button_size'], array( 'small', 'medium', 'large' ), true ) ) {
 				$settings_array['button_size'] = 'medium';
 			}
 
@@ -144,7 +144,7 @@ class WC_Gateway_PPEC_Plugin {
 		register_activation_hook( $this->file, array( $this, 'activate' ) );
 
 		add_action( 'plugins_loaded', array( $this, 'bootstrap' ) );
-		add_filter( 'allowed_redirect_hosts' , array( $this, 'whitelist_paypal_domains_for_redirect' ) );
+		add_filter( 'allowed_redirect_hosts', array( $this, 'whitelist_paypal_domains_for_redirect' ) );
 		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
 
 		add_filter( 'plugin_action_links_' . plugin_basename( $this->file ), array( $this, 'plugin_action_links' ) );
@@ -155,7 +155,7 @@ class WC_Gateway_PPEC_Plugin {
 	public function bootstrap() {
 		try {
 			if ( $this->_bootstrapped ) {
-				throw new Exception( __( '%s in WooCommerce Gateway PayPal Checkout plugin can only be called once', 'woocommerce-gateway-paypal-express-checkout' ), self::ALREADY_BOOTSTRAPED );
+				throw new Exception( __( 'bootstrap() in WooCommerce Gateway PayPal Checkout plugin can only be called once', 'woocommerce-gateway-paypal-express-checkout' ), self::ALREADY_BOOTSTRAPED );
 			}
 
 			$this->_check_dependencies();
@@ -169,7 +169,7 @@ class WC_Gateway_PPEC_Plugin {
 
 			$this->_bootstrapped = true;
 		} catch ( Exception $e ) {
-			if ( in_array( $e->getCode(), array( self::ALREADY_BOOTSTRAPED, self::DEPENDENCIES_UNSATISFIED ) ) ) {
+			if ( in_array( $e->getCode(), array( self::ALREADY_BOOTSTRAPED, self::DEPENDENCIES_UNSATISFIED ) ) ) { // phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
 				$this->bootstrap_warning_message = $e->getMessage();
 			}
 
@@ -295,6 +295,7 @@ class WC_Gateway_PPEC_Plugin {
 		$credential = $this->settings->get_active_api_credentials();
 		if ( ! is_a( $credential, 'WC_Gateway_PPEC_Client_Credential' ) || '' === $credential->get_username() ) {
 			$setting_link = $this->get_admin_setting_link();
+			// Translators: placeholder is the URL of the gateway settings page.
 			throw new Exception( sprintf( __( 'PayPal Checkout is almost ready. To get started, <a href="%s">connect your PayPal account</a>.', 'woocommerce-gateway-paypal-express-checkout' ), esc_url( $setting_link ) ), self::NOT_CONNECTED );
 		}
 	}
@@ -303,7 +304,7 @@ class WC_Gateway_PPEC_Plugin {
 	 * Run the plugin.
 	 */
 	protected function _run() {
-		require_once( $this->includes_path . 'functions.php' );
+		require_once $this->includes_path . 'functions.php';
 		$this->_load_handlers();
 	}
 
@@ -312,7 +313,7 @@ class WC_Gateway_PPEC_Plugin {
 	 */
 	public function activate() {
 		if ( ! isset( $this->settings ) ) {
-			require_once( $this->includes_path . 'class-wc-gateway-ppec-settings.php' );
+			require_once $this->includes_path . 'class-wc-gateway-ppec-settings.php';
 			$settings = new WC_Gateway_PPEC_Settings();
 		} else {
 			$settings = $this->settings;
@@ -333,15 +334,15 @@ class WC_Gateway_PPEC_Plugin {
 		$this->_load_client();
 
 		// Load handlers.
-		require_once( $this->includes_path . 'class-wc-gateway-ppec-privacy.php' );
-		require_once( $this->includes_path . 'class-wc-gateway-ppec-settings.php' );
-		require_once( $this->includes_path . 'class-wc-gateway-ppec-gateway-loader.php' );
-		require_once( $this->includes_path . 'class-wc-gateway-ppec-admin-handler.php' );
-		require_once( $this->includes_path . 'class-wc-gateway-ppec-checkout-handler.php' );
-		require_once( $this->includes_path . 'class-wc-gateway-ppec-cart-handler.php' );
-		require_once( $this->includes_path . 'class-wc-gateway-ppec-ips-handler.php' );
-		require_once( $this->includes_path . 'abstracts/abstract-wc-gateway-ppec-paypal-request-handler.php' );
-		require_once( $this->includes_path . 'class-wc-gateway-ppec-ipn-handler.php' );
+		require_once $this->includes_path . 'class-wc-gateway-ppec-settings.php';
+		require_once $this->includes_path . 'class-wc-gateway-ppec-privacy.php';
+		require_once $this->includes_path . 'class-wc-gateway-ppec-gateway-loader.php';
+		require_once $this->includes_path . 'class-wc-gateway-ppec-admin-handler.php';
+		require_once $this->includes_path . 'class-wc-gateway-ppec-checkout-handler.php';
+		require_once $this->includes_path . 'class-wc-gateway-ppec-cart-handler.php';
+		require_once $this->includes_path . 'class-wc-gateway-ppec-ips-handler.php';
+		require_once $this->includes_path . 'abstracts/abstract-wc-gateway-ppec-paypal-request-handler.php';
+		require_once $this->includes_path . 'class-wc-gateway-ppec-ipn-handler.php';
 
 		$this->settings       = new WC_Gateway_PPEC_Settings();
 		$this->gateway_loader = new WC_Gateway_PPEC_Gateway_Loader();
@@ -358,10 +359,10 @@ class WC_Gateway_PPEC_Plugin {
 	 * @since 1.1.0
 	 */
 	protected function _load_client() {
-		require_once( $this->includes_path . 'abstracts/abstract-wc-gateway-ppec-client-credential.php' );
-		require_once( $this->includes_path . 'class-wc-gateway-ppec-client-credential-certificate.php' );
-		require_once( $this->includes_path . 'class-wc-gateway-ppec-client-credential-signature.php' );
-		require_once( $this->includes_path . 'class-wc-gateway-ppec-client.php' );
+		require_once $this->includes_path . 'abstracts/abstract-wc-gateway-ppec-client-credential.php';
+		require_once $this->includes_path . 'class-wc-gateway-ppec-client-credential-certificate.php';
+		require_once $this->includes_path . 'class-wc-gateway-ppec-client-credential-signature.php';
+		require_once $this->includes_path . 'class-wc-gateway-ppec-client.php';
 	}
 
 	/**
@@ -424,7 +425,7 @@ class WC_Gateway_PPEC_Plugin {
 		$plugin_links = array();
 
 		if ( function_exists( 'WC' ) ) {
-			$setting_url = $this->get_admin_setting_link();
+			$setting_url    = $this->get_admin_setting_link();
 			$plugin_links[] = '<a href="' . esc_url( $setting_url ) . '">' . esc_html__( 'Settings', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>';
 		}
 
@@ -500,10 +501,11 @@ class WC_Gateway_PPEC_Plugin {
 		}
 
 		$setting_link = $this->get_admin_setting_link();
+		// Translators: placeholder is the URL of the gateway settings page.
 		$message = sprintf( __( '<p>PayPal Checkout with new <strong>Smart Payment Buttons™</strong> gives your customers the power to pay the way they want without leaving your site.</p><p>The <strong>existing buttons will be removed</strong> in the <strong>next release</strong>. Please upgrade to Smart Payment Buttons on the <a href="%s">PayPal Checkout settings page</a>.</p>', 'woocommerce-gateway-paypal-express-checkout' ), esc_url( $setting_link ) );
 		?>
 		<div class="notice notice-error">
-			<?php echo wp_kses( $message, array( 'a' => array( 'href' => array() ), 'strong' => array(), 'p' => array() ) ); ?>
+			<?php echo wp_kses( $message, array( 'a' => array( 'href' => array() ), 'strong' => array(), 'p' => array() ) ); // phpcs:ignore WordPress.Arrays.ArrayDeclarationSpacing.AssociativeArrayFound ?>
 		</div>
 		<?php
 	}

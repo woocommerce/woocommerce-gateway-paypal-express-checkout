@@ -30,7 +30,7 @@ class WC_Gateway_PPEC_Privacy extends WC_Abstract_Privacy {
 	protected function get_ppec_orders( $email_address, $page ) {
 		$user = get_user_by( 'email', $email_address ); // Check if user has an ID in the DB to load stored personal data.
 
-		$order_query    = array(
+		$order_query = array(
 			'payment_method' => array( 'ppec_paypal' ),
 			'limit'          => 10,
 			'page'           => $page,
@@ -50,6 +50,7 @@ class WC_Gateway_PPEC_Privacy extends WC_Abstract_Privacy {
 	 *
 	 */
 	public function get_privacy_message() {
+		// Translators: placeholder is the URL of WC's privacy statement (PPEC section).
 		return wpautop( sprintf( __( 'By using this extension, you may be storing personal data or sharing data with an external service. <a href="%s" target="_blank">Learn more about how this works, including what you may want to include in your privacy policy.</a>', 'woocommerce-gateway-paypal-express-checkout' ), 'https://docs.woocommerce.com/document/privacy-payments/#woocommerce-gateway-paypal-express-checkout' ) );
 	}
 
@@ -78,7 +79,7 @@ class WC_Gateway_PPEC_Privacy extends WC_Abstract_Privacy {
 					'data'        => array(
 						array(
 							'name'  => __( 'PPEC Refundable transaction data', 'woocommerce-gateway-paypal-express-checkout' ),
-							'value' => json_encode( get_post_meta( $order->get_id(), '_woo_pp_txnData', true ) ),
+							'value' => wp_json_encode( get_post_meta( $order->get_id(), '_woo_pp_txnData', true ) ),
 						),
 						array(
 							'name'  => __( 'PPEC Billing agreement id', 'woocommerce-gateway-paypal-express-checkout' ),
@@ -111,7 +112,7 @@ class WC_Gateway_PPEC_Privacy extends WC_Abstract_Privacy {
 		$data_to_export = array();
 
 		$meta_query = array(
-			'relation'    => 'AND',
+			'relation' => 'AND',
 			array(
 				'key'     => '_payment_method',
 				'value'   => array( 'ppec_paypal' ),
@@ -124,10 +125,10 @@ class WC_Gateway_PPEC_Privacy extends WC_Abstract_Privacy {
 			),
 		);
 
-		$subscription_query    = array(
-			'posts_per_page'  => 10,
-			'page'            => $page,
-			'meta_query'      => $meta_query,
+		$subscription_query = array(
+			'posts_per_page' => 10,
+			'page'           => $page,
+			'meta_query'     => $meta_query, /* phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query */
 		);
 
 		$subscriptions = wcs_get_subscriptions( $subscription_query );
@@ -143,7 +144,7 @@ class WC_Gateway_PPEC_Privacy extends WC_Abstract_Privacy {
 					'data'        => array(
 						array(
 							'name'  => __( 'PPEC Refundable transaction data', 'woocommerce-gateway-paypal-express-checkout' ),
-							'value' => json_encode( get_post_meta( $subscription->get_id(), '_woo_pp_txnData', true ) ),
+							'value' => wp_json_encode( get_post_meta( $subscription->get_id(), '_woo_pp_txnData', true ) ),
 						),
 						array(
 							'name'  => __( 'PPEC Billing agreement id', 'woocommerce-gateway-paypal-express-checkout' ),
@@ -181,11 +182,13 @@ class WC_Gateway_PPEC_Privacy extends WC_Abstract_Privacy {
 			$order = wc_get_order( $order->get_id() );
 
 			list( $removed, $retained, $msgs ) = $this->maybe_handle_order( $order );
+
 			$items_removed  |= $removed;
 			$items_retained |= $retained;
 			$messages        = array_merge( $messages, $msgs );
 
 			list( $removed, $retained, $msgs ) = $this->maybe_handle_subscription( $order );
+
 			$items_removed  |= $removed;
 			$items_retained |= $retained;
 			$messages        = array_merge( $messages, $msgs );
@@ -220,14 +223,15 @@ class WC_Gateway_PPEC_Privacy extends WC_Abstract_Privacy {
 		$subscription    = current( wcs_get_subscriptions_for_order( $order->get_id() ) );
 		$subscription_id = $subscription->get_id();
 
-		$ppec_billing    = get_post_meta( $subscription_id, '_ppec_billing_agreement_id', true );
+		$ppec_billing = get_post_meta( $subscription_id, '_ppec_billing_agreement_id', true );
 
 		if ( empty( $ppec_billing ) ) {
 			return array( false, false, array() );
 		}
 
 		if ( $subscription->has_status( apply_filters( 'woocommerce_paypal_express_checkout_privacy_eraser_subs_statuses', array( 'on-hold', 'active' ) ) ) ) {
-			return array( false, true, array( sprintf( __( 'Order ID %d contains an active Subscription' ), $order->get_id() ) ) );
+			// Translators: placeholder is an order number.
+			return array( false, true, array( sprintf( __( 'Order ID %d contains an active Subscription', 'woocommerce-gateway-paypal-express-checkout' ), $order->get_id() ) ) );
 		}
 
 		$renewal_orders = WC_Subscriptions_Renewal_Order::get_renewal_orders( $order->get_id() );

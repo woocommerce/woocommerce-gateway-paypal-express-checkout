@@ -61,7 +61,8 @@ class WC_Gateway_PPEC_Client {
 	public function get_payer_id() {
 		$option_key = 'woocommerce_ppec_payer_id_' . $this->_environment . '_' . md5( $this->_credential->get_username() . ':' . $this->_credential->get_password() );
 
-		if ( $payer_id = get_option( $option_key ) ) {
+		$payer_id = get_option( $option_key );
+		if ( $payer_id ) {
 			return $payer_id;
 		} else {
 			$result = $this->get_pal_details();
@@ -81,7 +82,7 @@ class WC_Gateway_PPEC_Client {
 	 * @param string $environment Environment. Either 'live' or 'sandbox'
 	 */
 	public function set_environment( $environment ) {
-		if ( ! in_array( $environment, array( 'live', 'sandbox' ) ) ) {
+		if ( ! in_array( $environment, array( 'live', 'sandbox' ), true ) ) {
 			$environment = 'live';
 		}
 
@@ -128,7 +129,7 @@ class WC_Gateway_PPEC_Client {
 			// For cURL transport.
 			add_action( 'http_api_curl', array( $this->_credential, 'configure_curl' ), 10, 3 );
 
-			wc_gateway_ppec_log( sprintf( '%s: remote request to %s with params: %s', __METHOD__, $this->get_endpoint(), print_r( $body, true ) ) );
+			wc_gateway_ppec_log( sprintf( '%s: remote request to %s with params: %s', __METHOD__, $this->get_endpoint(), print_r( $body, true ) ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
 
 			$resp = wp_safe_remote_post( $this->get_endpoint(), $args );
 
@@ -147,7 +148,7 @@ class WC_Gateway_PPEC_Client {
 				'L_SEVERITYCODE0' => 'Error',
 			);
 
-			wc_gateway_ppec_log( sprintf( '%s: returns error: %s', __METHOD__, print_r( $error, true ) ) );
+			wc_gateway_ppec_log( sprintf( '%s: returns error: %s', __METHOD__, print_r( $error, true ) ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
 
 			return $error;
 		}
@@ -170,7 +171,7 @@ class WC_Gateway_PPEC_Client {
 			throw new Exception( __( 'Invalid credential object', 'woocommerce-gateway-paypal-express-checkout' ), self::INVALID_CREDENTIAL_ERROR );
 		}
 
-		if ( ! in_array( $this->_environment, array( 'live', 'sandbox' ) ) ) {
+		if ( ! in_array( $this->_environment, array( 'live', 'sandbox' ), true ) ) {
 			throw new Exception( __( 'Invalid environment', 'woocommerce-gateway-paypal-express-checkout' ), self::INVALID_ENVIRONMENT_ERROR );
 		}
 	}
@@ -188,6 +189,7 @@ class WC_Gateway_PPEC_Client {
 	 */
 	protected function _process_response( $response ) {
 		if ( is_wp_error( $response ) ) {
+			// Translators: placeholder is an error message.
 			throw new Exception( sprintf( __( 'An error occurred while trying to connect to PayPal: %s', 'woocommerce-gateway-paypal-express-checkout' ), $response->get_error_message() ), self::REQUEST_ERROR );
 		}
 
@@ -197,7 +199,7 @@ class WC_Gateway_PPEC_Client {
 			throw new Exception( __( 'Malformed response received from PayPal', 'woocommerce-gateway-paypal-express-checkout' ), self::REQUEST_ERROR );
 		}
 
-		wc_gateway_ppec_log( sprintf( '%s: acknowleged response body: %s', __METHOD__, print_r( $result, true ) ) );
+		wc_gateway_ppec_log( sprintf( '%s: acknowleged response body: %s', __METHOD__, print_r( $result, true ) ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
 
 		remove_action( 'http_api_curl', array( $this->_credential, 'configure_curl' ), 10 );
 
@@ -250,7 +252,7 @@ class WC_Gateway_PPEC_Client {
 		$params              = array();
 		$logo_url_or_id      = $settings->logo_image_url;
 		$header_url_or_id    = $settings->header_image_url;
-		$params['LOGOIMG']   = filter_var( $logo_url_or_id, FILTER_VALIDATE_URL )   ? $logo_url_or_id   : wp_get_attachment_image_url( $logo_url_or_id, 'thumbnail' );
+		$params['LOGOIMG']   = filter_var( $logo_url_or_id, FILTER_VALIDATE_URL ) ? $logo_url_or_id : wp_get_attachment_image_url( $logo_url_or_id, 'thumbnail' );
 		$params['HDRIMG']    = filter_var( $header_url_or_id, FILTER_VALIDATE_URL ) ? $header_url_or_id : wp_get_attachment_image_url( $header_url_or_id, 'thumbnail' );
 		$params['PAGESTYLE'] = $settings->page_style;
 		$params['BRANDNAME'] = $settings->get_brand_name();
@@ -266,7 +268,7 @@ class WC_Gateway_PPEC_Client {
 			$params['ADDROVERRIDE'] = '1';
 		}
 
-		if ( in_array( $settings->landing_page, array( 'Billing', 'Login' ) ) ) {
+		if ( in_array( $settings->landing_page, array( 'Billing', 'Login' ), true ) ) {
 			$params['LANDINGPAGE'] = $settings->landing_page;
 		}
 
@@ -298,12 +300,12 @@ class WC_Gateway_PPEC_Client {
 		$params = array_merge(
 			$params,
 			array(
-				'PAYMENTREQUEST_0_AMT'          => $details['order_total'],
-				'PAYMENTREQUEST_0_ITEMAMT'      => $details['total_item_amount'],
-				'PAYMENTREQUEST_0_SHIPPINGAMT'  => $details['shipping'],
-				'PAYMENTREQUEST_0_TAXAMT'       => $details['order_tax'],
-				'PAYMENTREQUEST_0_SHIPDISCAMT'  => $details['ship_discount_amount'],
-				'NOSHIPPING'                    => WC_Gateway_PPEC_Plugin::needs_shipping() ? 0 : 1,
+				'PAYMENTREQUEST_0_AMT'         => $details['order_total'],
+				'PAYMENTREQUEST_0_ITEMAMT'     => $details['total_item_amount'],
+				'PAYMENTREQUEST_0_SHIPPINGAMT' => $details['shipping'],
+				'PAYMENTREQUEST_0_TAXAMT'      => $details['order_tax'],
+				'PAYMENTREQUEST_0_SHIPDISCAMT' => $details['ship_discount_amount'],
+				'NOSHIPPING'                   => WC_Gateway_PPEC_Plugin::needs_shipping() ? 0 : 1,
 			)
 		);
 
@@ -329,7 +331,7 @@ class WC_Gateway_PPEC_Client {
 			foreach ( $details['items'] as $line_item_key => $values ) {
 				$line_item_params = array(
 					'L_PAYMENTREQUEST_0_NAME' . $count => $values['name'],
-					'L_PAYMENTREQUEST_0_DESC' . $count => ! empty( $values['description'] ) ? substr( strip_tags( $values['description'] ), 0, 127 ) : '',
+					'L_PAYMENTREQUEST_0_DESC' . $count => ! empty( $values['description'] ) ? substr( strip_tags( $values['description'] ), 0, 127 ) : '', // phpcs:ignore WordPress.WP.AlternativeFunctions.strip_tags_strip_tags
 					'L_PAYMENTREQUEST_0_QTY' . $count  => $values['quantity'],
 					'L_PAYMENTREQUEST_0_AMT' . $count  => $values['amount'],
 				);
@@ -370,9 +372,9 @@ class WC_Gateway_PPEC_Client {
 			$query_args['create-billing-agreement'] = 'true';
 		}
 
-		$url = add_query_arg( $query_args, wc_get_checkout_url() );
+		$url      = add_query_arg( $query_args, wc_get_checkout_url() );
 		$order_id = $context_args['order_id'];
-		return apply_filters( 'woocommerce_paypal_express_checkout_set_express_checkout_params_get_return_url', $url, $order_id);
+		return apply_filters( 'woocommerce_paypal_express_checkout_set_express_checkout_params_get_return_url', $url, $order_id );
 	}
 
 	/**
@@ -385,7 +387,7 @@ class WC_Gateway_PPEC_Client {
 	 * @return string Cancel URL
 	 */
 	protected function _get_cancel_url( $context_args ) {
-		$url = add_query_arg( 'woo-paypal-cancel', 'true', wc_get_cart_url() );
+		$url      = add_query_arg( 'woo-paypal-cancel', 'true', wc_get_cart_url() );
 		$order_id = $context_args['order_id'];
 		return apply_filters( 'woocommerce_paypal_express_checkout_set_express_checkout_params_get_cancel_url', $url, $order_id );
 	}
@@ -398,11 +400,11 @@ class WC_Gateway_PPEC_Client {
 	 * @return string Billing agreement description
 	 */
 	protected function _get_billing_agreement_description() {
-		/* translators: placeholder is blogname */
-		$description = sprintf( _x( 'Orders with %s', 'data sent to PayPal', 'woocommerce-subscriptions'  ), get_bloginfo( 'name' ) );
+		/* Translators: placeholder is blogname. */
+		$description = sprintf( _x( 'Orders with %s', 'data sent to PayPal', 'woocommerce-gateway-paypal-express-checkout' ), get_bloginfo( 'name' ) );
 
-		if ( strlen( $description  ) > 127  ) {
-			$description = substr( $description, 0, 124  ) . '...';
+		if ( strlen( $description ) > 127 ) {
+			$description = substr( $description, 0, 124 ) . '...';
 		}
 
 		return html_entity_decode( $description, ENT_NOQUOTES, 'UTF-8' );
@@ -442,10 +444,10 @@ class WC_Gateway_PPEC_Client {
 		$settings = wc_gateway_ppec()->settings;
 		$decimals = $settings->get_number_of_decimal_digits();
 
-		return  array(
-			'name'        => 'Discount',
-			'quantity'    => 1,
-			'amount'      => '-' . round( $amount, $decimals ),
+		return array(
+			'name'     => 'Discount',
+			'quantity' => 1,
+			'amount'   => '-' . round( $amount, $decimals ),
 		);
 	}
 
@@ -461,7 +463,7 @@ class WC_Gateway_PPEC_Client {
 	 */
 	protected function _get_details_from_cart() {
 		$settings = wc_gateway_ppec()->settings;
-		$old_wc = version_compare( WC_VERSION, '3.0', '<' );
+		$old_wc   = version_compare( WC_VERSION, '3.0', '<' );
 
 		WC()->cart->calculate_totals();
 
@@ -494,7 +496,7 @@ class WC_Gateway_PPEC_Client {
 
 		$items = array();
 		foreach ( WC()->cart->cart_contents as $cart_item_key => $values ) {
-			$amount = round( $values['line_subtotal'] / $values['quantity'] , $decimals );
+			$amount = round( $values['line_subtotal'] / $values['quantity'], $decimals );
 
 			if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
 				$name        = $values['data']->post->post_title;
@@ -517,7 +519,7 @@ class WC_Gateway_PPEC_Client {
 		}
 
 		foreach ( WC()->cart->get_fees() as $fee_key => $fee_values ) {
-			$item   = array(
+			$item = array(
 				'name'        => $fee_values->name,
 				'description' => '',
 				'quantity'    => 1,
@@ -543,7 +545,7 @@ class WC_Gateway_PPEC_Client {
 
 		$rounded_total = 0;
 		foreach ( WC()->cart->cart_contents as $cart_item_key => $values ) {
-			$amount         = round( $values['line_subtotal'] / $values['quantity'] , $decimals );
+			$amount         = round( $values['line_subtotal'] / $values['quantity'], $decimals );
 			$rounded_total += round( $amount * $values['quantity'], $decimals );
 		}
 
@@ -580,7 +582,7 @@ class WC_Gateway_PPEC_Client {
 		// the difference.
 		$diff = 0;
 
-		if ( $details['total_item_amount'] + $discounts != $rounded_total ) {
+		if ( $details['total_item_amount'] + $discounts != $rounded_total ) { // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
 			if ( 'add' === $settings->get_subtotal_mismatch_behavior() ) {
 				// Add line item to make up different between WooCommerce
 				// calculations and PayPal calculations.
@@ -600,35 +602,35 @@ class WC_Gateway_PPEC_Client {
 
 		// Enter discount shenanigans. Item total cannot be 0 so make modifications
 		// accordingly.
-		if ( $details['total_item_amount'] == 0 ) {
+		if ( 0 == $details['total_item_amount'] ) { // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
 			// Omit line items altogether.
 			unset( $details['items'] );
-		} else if ( $discounts > 0 && 0 < $details['total_item_amount'] && ! empty( $details['items'] ) ) {
+		} elseif ( $discounts > 0 && 0 < $details['total_item_amount'] && ! empty( $details['items'] ) ) {
 			// Else if there is discount, add them to the line-items
-			$details['items'][] = $this->_get_extra_discount_line_item($discounts);
+			$details['items'][] = $this->_get_extra_discount_line_item( $discounts );
 		}
 
 		$details['ship_discount_amount'] = 0;
 
 		// AMT
-		$details['order_total']       = round( $details['order_total'], $decimals );
+		$details['order_total'] = round( $details['order_total'], $decimals );
 
 		// ITEMAMT
 		$details['total_item_amount'] = round( $details['total_item_amount'], $decimals );
 
 		// If the totals don't line up, adjust the tax to make it work (it's
 		// probably a tax mismatch).
-		$wc_order_total = round( $total, $decimals );
+		$wc_order_total   = round( $total, $decimals );
 		$discounted_total = $details['order_total'];
 
-		if ( $wc_order_total != $discounted_total ) {
+		if ( $wc_order_total != $discounted_total ) { // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
 			// tax cannot be negative
 			if ( $discounted_total < $wc_order_total ) {
 				$details['order_tax'] += $wc_order_total - $discounted_total;
-				$details['order_tax'] = round( $details['order_tax'], $decimals );
+				$details['order_tax']  = round( $details['order_tax'], $decimals );
 			} else {
 				$details['ship_discount_amount'] += $wc_order_total - $discounted_total;
-				$details['ship_discount_amount'] = round( $details['ship_discount_amount'], $decimals );
+				$details['ship_discount_amount']  = round( $details['ship_discount_amount'], $decimals );
 			}
 
 			$details['order_total'] = $wc_order_total;
@@ -666,8 +668,8 @@ class WC_Gateway_PPEC_Client {
 
 	protected function _get_total_order_fees( $order ) {
 		$total = 0;
-		$fees = $order->get_fees();
-		foreach( $fees as $fee ) {
+		$fees  = $order->get_fees();
+		foreach ( $fees as $fee ) {
 			$total = $total + $fee->get_amount();
 		}
 
@@ -704,11 +706,12 @@ class WC_Gateway_PPEC_Client {
 		$details = $this->get_details( $details, $order->get_total_discount(), $rounded_total, $order->get_total() );
 
 		// PayPal shipping address from order.
-		$shipping_address = new PayPal_Address;
+		$shipping_address = new PayPal_Address();
 
 		$old_wc = version_compare( WC_VERSION, '3.0', '<' );
 
 		if ( ( $old_wc && ( $order->shipping_address_1 || $order->shipping_address_2 ) ) || ( ! $old_wc && $order->has_shipping_address() ) ) {
+			// phpcs:disable WordPress.WhiteSpace.OperatorSpacing.SpacingBefore
 			$shipping_first_name = $old_wc ? $order->shipping_first_name : $order->get_shipping_first_name();
 			$shipping_last_name  = $old_wc ? $order->shipping_last_name  : $order->get_shipping_last_name();
 			$shipping_address_1  = $old_wc ? $order->shipping_address_1  : $order->get_shipping_address_1();
@@ -717,9 +720,11 @@ class WC_Gateway_PPEC_Client {
 			$shipping_state      = $old_wc ? $order->shipping_state      : $order->get_shipping_state();
 			$shipping_postcode   = $old_wc ? $order->shipping_postcode   : $order->get_shipping_postcode();
 			$shipping_country    = $old_wc ? $order->shipping_country    : $order->get_shipping_country();
+			// phpcs:enable
 		} else {
 			// Fallback to billing in case no shipping methods are set. The address returned from PayPal
 			// will be stored in the order as billing.
+			// phpcs:disable WordPress.WhiteSpace.OperatorSpacing.SpacingBefore
 			$shipping_first_name = $old_wc ? $order->billing_first_name : $order->get_billing_first_name();
 			$shipping_last_name  = $old_wc ? $order->billing_last_name  : $order->get_billing_last_name();
 			$shipping_address_1  = $old_wc ? $order->billing_address_1  : $order->get_billing_address_1();
@@ -728,6 +733,7 @@ class WC_Gateway_PPEC_Client {
 			$shipping_state      = $old_wc ? $order->billing_state      : $order->get_billing_state();
 			$shipping_postcode   = $old_wc ? $order->billing_postcode   : $order->get_billing_postcode();
 			$shipping_country    = $old_wc ? $order->billing_country    : $order->get_billing_country();
+			// phpcs:enable
 		}
 
 		$shipping_address->setName( $shipping_first_name . ' ' . $shipping_last_name );
@@ -763,13 +769,13 @@ class WC_Gateway_PPEC_Client {
 	protected function _get_address_from_customer() {
 		$customer = WC()->customer;
 
-		$shipping_address = new PayPal_Address;
+		$shipping_address = new PayPal_Address();
 
 		$old_wc = version_compare( WC_VERSION, '3.0', '<' );
 
 		if ( $customer->get_shipping_address() || $customer->get_shipping_address_2() ) {
 			$shipping_first_name = $old_wc ? $customer->shipping_first_name : $customer->get_shipping_first_name();
-			$shipping_last_name  = $old_wc ? $customer->shipping_last_name  : $customer->get_shipping_last_name();
+			$shipping_last_name  = $old_wc ? $customer->shipping_last_name : $customer->get_shipping_last_name();
 			$shipping_address_1  = $customer->get_shipping_address();
 			$shipping_address_2  = $customer->get_shipping_address_2();
 			$shipping_city       = $customer->get_shipping_city();
@@ -779,6 +785,7 @@ class WC_Gateway_PPEC_Client {
 		} else {
 			// Fallback to billing in case no shipping methods are set. The address returned from PayPal
 			// will be stored in the order as billing.
+			// phpcs:disable WordPress.WhiteSpace.OperatorSpacing.SpacingBefore
 			$shipping_first_name = $old_wc ? $customer->billing_first_name : $customer->get_billing_first_name();
 			$shipping_last_name  = $old_wc ? $customer->billing_last_name  : $customer->get_billing_last_name();
 			$shipping_address_1  = $old_wc ? $customer->get_address()      : $customer->get_billing_address_1();
@@ -787,6 +794,7 @@ class WC_Gateway_PPEC_Client {
 			$shipping_state      = $old_wc ? $customer->get_state()        : $customer->get_billing_state();
 			$shipping_postcode   = $old_wc ? $customer->get_postcode()     : $customer->get_billing_postcode();
 			$shipping_country    = $old_wc ? $customer->get_country()      : $customer->get_billing_country();
+			// phpcs:enable
 		}
 
 		$shipping_address->setName( $shipping_first_name . ' ' . $shipping_last_name );
@@ -818,14 +826,14 @@ class WC_Gateway_PPEC_Client {
 		$items = array();
 		foreach ( $order->get_items( array( 'line_item', 'fee' ) ) as $cart_item_key => $order_item ) {
 
-			if( 'fee' === $order_item['type']) {
-				$item   = array(
+			if ( 'fee' === $order_item['type'] ) {
+				$item = array(
 					'name'     => $order_item['name'],
 					'quantity' => 1,
 					'amount'   => round( $order_item['line_total'], $decimals ),
 				);
 			} else {
-				$amount  = round( $order_item['line_subtotal'] / $order_item['qty'] , $decimals );
+				$amount  = round( $order_item['line_subtotal'] / $order_item['qty'], $decimals );
 				$product = version_compare( WC_VERSION, '3.0', '<' ) ? $order->get_product_from_item( $order_item ) : $order_item->get_product();
 				$item    = array(
 					'name'     => $order_item['name'],
@@ -857,15 +865,15 @@ class WC_Gateway_PPEC_Client {
 
 		$rounded_total = 0;
 		foreach ( $order->get_items( array( 'line_item', 'fee', 'coupon' ) ) as $cart_item_key => $values ) {
-			if( 'coupon' === $values['type']) {
-				$amount = round($values['line_total'], $decimals);
+			if ( 'coupon' === $values['type'] ) {
+				$amount         = round( $values['line_total'], $decimals );
 				$rounded_total -= $amount;
 				continue;
 			}
-			if( 'fee' === $values['type']) {
-				$amount = round( $values['line_total'], $decimals);
+			if ( 'fee' === $values['type'] ) {
+				$amount = round( $values['line_total'], $decimals );
 			} else {
-				$amount = round( $values['line_subtotal'] / $values['qty'] , $decimals );
+				$amount = round( $values['line_subtotal'] / $values['qty'], $decimals );
 				$amount = round( $amount * $values['qty'], $decimals );
 			}
 			$rounded_total += $amount;
@@ -920,8 +928,8 @@ class WC_Gateway_PPEC_Client {
 	 * @return array Params for DoExpressCheckoutPayment call
 	 */
 	public function get_do_express_checkout_params( array $args ) {
-		$settings     = wc_gateway_ppec()->settings;
-		$order        = wc_get_order( $args['order_id'] );
+		$settings = wc_gateway_ppec()->settings;
+		$order    = wc_get_order( $args['order_id'] );
 
 		$old_wc       = version_compare( WC_VERSION, '3.0', '<' );
 		$order_id     = $old_wc ? $order->id : $order->get_id();
@@ -943,11 +951,13 @@ class WC_Gateway_PPEC_Client {
 			'PAYMENTREQUEST_0_NOTIFYURL'     => WC()->api_request_url( 'WC_Gateway_PPEC' ),
 			'PAYMENTREQUEST_0_PAYMENTACTION' => $settings->get_paymentaction(),
 			'PAYMENTREQUEST_0_INVNUM'        => $settings->invoice_prefix . $order->get_order_number(),
-			'PAYMENTREQUEST_0_CUSTOM'        => json_encode( array(
-				'order_id'     => $order_id,
-				'order_number' => $order_number,
-				'order_key'    => $order_key,
-			) ),
+			'PAYMENTREQUEST_0_CUSTOM'        => wp_json_encode(
+				array(
+					'order_id'     => $order_id,
+					'order_number' => $order_number,
+					'order_key'    => $order_key,
+				)
+			),
 			'NOSHIPPING'                     => WC_Gateway_PPEC_Plugin::needs_shipping() ? 0 : 1,
 		);
 
@@ -963,7 +973,7 @@ class WC_Gateway_PPEC_Client {
 			foreach ( $details['items'] as $line_item_key => $values ) {
 				$line_item_params = array(
 					'L_PAYMENTREQUEST_0_NAME' . $count => $values['name'],
-					'L_PAYMENTREQUEST_0_DESC' . $count => ! empty( $values['description'] ) ? strip_tags( $values['description'] ) : '',
+					'L_PAYMENTREQUEST_0_DESC' . $count => ! empty( $values['description'] ) ? strip_tags( $values['description'] ) : '', // phpcs:ignore WordPress.WP.AlternativeFunctions.strip_tags_strip_tags
 					'L_PAYMENTREQUEST_0_QTY' . $count  => $values['quantity'],
 					'L_PAYMENTREQUEST_0_AMT' . $count  => $values['amount'],
 				);
@@ -1031,7 +1041,7 @@ class WC_Gateway_PPEC_Client {
 	 */
 	public function get_do_reference_transaction_params( array $args ) {
 		$settings = wc_gateway_ppec()->settings;
-		$order     = wc_get_order( $args['order_id'] );
+		$order    = wc_get_order( $args['order_id'] );
 
 		$old_wc    = version_compare( WC_VERSION, '3.0', '<' );
 		$order_id  = $old_wc ? $order->id : $order->get_id();
@@ -1051,10 +1061,12 @@ class WC_Gateway_PPEC_Client {
 			'NOTIFYURL'     => WC()->api_request_url( 'WC_Gateway_PPEC' ),
 			'PAYMENTACTION' => $settings->get_paymentaction(),
 			'INVNUM'        => $settings->invoice_prefix . $order->get_order_number(),
-			'CUSTOM'        => json_encode( array(
-				'order_id'  => $order_id,
-				'order_key' => $order_key,
-			) ),
+			'CUSTOM'        => wp_json_encode(
+				array(
+					'order_id'  => $order_id,
+					'order_key' => $order_key,
+				)
+			),
 		);
 
 		// We want to add the shipping parameters only if we have all of the required
@@ -1079,7 +1091,7 @@ class WC_Gateway_PPEC_Client {
 			foreach ( $details['items'] as $line_item_key => $values ) {
 				$line_item_params = array(
 					'L_NAME' . $count   => $values['name'],
-					'L_DESC' . $count   => ! empty( $values['description'] ) ? strip_tags( $values['description'] ) : '',
+					'L_DESC' . $count   => ! empty( $values['description'] ) ? strip_tags( $values['description'] ) : '', // phpcs:ignore WordPress.WP.AlternativeFunctions.strip_tags_strip_tags
 					'L_QTY' . $count    => $values['quantity'],
 					'L_AMT' . $count    => $values['amount'],
 					'L_NUMBER' . $count => $values['sku'],
@@ -1150,12 +1162,12 @@ class WC_Gateway_PPEC_Client {
 
 		$result = $this->get_pal_details();
 
-		if ( 'Success' != $result['ACK'] && 'SuccessWithWarning' != $result['ACK'] ) {
+		if ( 'Success' !== $result['ACK'] && 'SuccessWithWarning' !== $result['ACK'] ) {
 			// Look at the result a little more closely to make sure it's a credentialing issue.
 			$found_10002 = false;
 			foreach ( $result as $index => $value ) {
 				if ( preg_match( '/^L_ERRORCODE\d+$/', $index ) ) {
-					if ( '10002' == $value ) {
+					if ( '10002' == $value ) { // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
 						$found_10002 = true;
 					}
 				}
@@ -1182,7 +1194,7 @@ class WC_Gateway_PPEC_Client {
 		$this->set_credential( $credentials );
 		$this->set_environment( $environment );
 
-		$req = array(
+		$req    = array(
 			'RETURNURL'         => home_url( '/' ),
 			'CANCELURL'         => home_url( '/' ),
 			'REQBILLINGADDRESS' => '1',
@@ -1190,11 +1202,11 @@ class WC_Gateway_PPEC_Client {
 		);
 		$result = $this->set_express_checkout( $req );
 
-		if ( 'Success' != $result['ACK'] && 'SuccessWithWarning' != $result['ACK'] ) {
+		if ( 'Success' !== $result['ACK'] && 'SuccessWithWarning' !== $result['ACK'] ) {
 			$found_11601 = false;
 			foreach ( $result as $index => $value ) {
 				if ( preg_match( '/^L_ERRORCODE\d+$/', $index ) ) {
-					if ( '11601' == $value ) {
+					if ( '11601' == $value ) { // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
 						$found_11601 = true;
 					}
 				}
@@ -1223,7 +1235,7 @@ class WC_Gateway_PPEC_Client {
 		return (
 			isset( $response['ACK'] )
 			&&
-			in_array( $response['ACK'], array( 'Success', 'SuccessWithWarning' ) )
+			in_array( $response['ACK'], array( 'Success', 'SuccessWithWarning' ), true )
 		);
 	}
 

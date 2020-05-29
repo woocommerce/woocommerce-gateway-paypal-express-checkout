@@ -16,9 +16,9 @@ class PayPal_Address {
 	protected $_addressOwner;
 	protected $_addressStatus;
 
-	const AddressStatusNone                      = 'none';
-	const AddressStatusConfirmed                 = 'Confirmed';
-	const AddressStatusUnconfirmed               = 'Unconfirmed';
+	const AddressStatusNone        = 'none';
+	const AddressStatusConfirmed   = 'Confirmed';
+	const AddressStatusUnconfirmed = 'Unconfirmed';
 
 	public function setName( $name ) {
 		$this->_name = $name;
@@ -333,7 +333,7 @@ class PayPal_Address {
 			'yemen'                            => 'YE',
 			'zambia'                           => 'ZM',
 			// This one is here because some carts will make the mistake of using 'uk' instead of 'gb'.
-			'uk'                               => 'GB'
+			'uk'                               => 'GB',
 		);
 
 		// And now, the actual translation is as simple as...
@@ -357,7 +357,7 @@ class PayPal_Address {
 
 		$translation_table = array();
 
-		if ( 'AR' == $this->_country ) {
+		if ( 'AR' === $this->_country ) {
 			$translation_table = array(
 				'ciudad autónoma de buenos aires' => 'C',
 				'buenos aires'                    => 'B',
@@ -384,7 +384,7 @@ class PayPal_Address {
 				'tierra del fuego'                => 'V',
 				'tucumán'                         => 'T',
 			);
-		} elseif ( 'CA' == $this->_country ) {
+		} elseif ( 'CA' === $this->_country ) {
 			$translation_table = array(
 				'alberta'               => 'AB',
 				'british columbia'      => 'BC',
@@ -400,99 +400,99 @@ class PayPal_Address {
 				'saskatchewan'          => 'SK',
 				'yukon'                 => 'YT',
 				// This derivation doesn't show up on the list, but seems obvious
-				'yukon territory'       => 'YT'
+				'yukon territory'       => 'YT',
 			);
-		} elseif ( 'CN' == $this->_country ) {
+		} elseif ( 'CN' === $this->_country ) {
 			$translation_table = array(
-					'cn-yn' => 'CN1',
-					'cn-bj' => 'CN2',
-					'cn-tj' => 'CN3',
-					'cn-he' => 'CN4',
-					'cn-sx' => 'CN5',
-					'cn-nm' => 'CN6',
-					'cn-ln' => 'CN7',
-					'cn-jl' => 'CN8',
-					'cn-hl' => 'CN9',
-					'cn-sh' => 'CN10',
-					'cn-js' => 'CN11',
-					'cn-zj' => 'CN12',
-					'cn-ah' => 'CN13',
-					'cn-fj' => 'CN14',
-					'cn-jx' => 'CN15',
-					'cn-sd' => 'CN16',
-					'cn-ha' => 'CN17',
-					'cn-hb' => 'CN18',
-					'cn-hn' => 'CN19',
-					'cn-gd' => 'CN20',
-					'cn-gx' => 'CN21',
-					'cn-hi' => 'CN22',
-					'cn-cq' => 'CN23',
-					'cn-sc' => 'CN24',
-					'cn-gz' => 'CN25',
-					'cn-sn' => 'CN26',
-					'cn-gs' => 'CN27',
-					'cn-qh' => 'CN28',
-					'cn-nx' => 'CN29',
-					'cn-mo' => 'CN30',
-					'cn-xz' => 'CN31',
-					'cn-xj' => 'CN32',
+				'cn-yn' => 'CN1',
+				'cn-bj' => 'CN2',
+				'cn-tj' => 'CN3',
+				'cn-he' => 'CN4',
+				'cn-sx' => 'CN5',
+				'cn-nm' => 'CN6',
+				'cn-ln' => 'CN7',
+				'cn-jl' => 'CN8',
+				'cn-hl' => 'CN9',
+				'cn-sh' => 'CN10',
+				'cn-js' => 'CN11',
+				'cn-zj' => 'CN12',
+				'cn-ah' => 'CN13',
+				'cn-fj' => 'CN14',
+				'cn-jx' => 'CN15',
+				'cn-sd' => 'CN16',
+				'cn-ha' => 'CN17',
+				'cn-hb' => 'CN18',
+				'cn-hn' => 'CN19',
+				'cn-gd' => 'CN20',
+				'cn-gx' => 'CN21',
+				'cn-hi' => 'CN22',
+				'cn-cq' => 'CN23',
+				'cn-sc' => 'CN24',
+				'cn-gz' => 'CN25',
+				'cn-sn' => 'CN26',
+				'cn-gs' => 'CN27',
+				'cn-qh' => 'CN28',
+				'cn-nx' => 'CN29',
+				'cn-mo' => 'CN30',
+				'cn-xz' => 'CN31',
+				'cn-xj' => 'CN32',
 			);
-		} elseif ( 'ES' == $this->_country ) {
+		} elseif ( 'ES' === $this->_country ) {
 			$translation_table = array(
-				'a coruÑa'               =>'C',
-				'araba/Álava'            =>'VI',
-				'albacete'               =>'AB',
-				'alicante'               =>'A' ,
-				'almerÍa'                =>'AL',
-				'asturias'               =>'O' ,
-				'Ávila'                  =>'AV',
-				'badajoz'                =>'BA',
-				'baleares'               =>'PM',
-				'barcelona'              =>'B' ,
-				'burgos'                 =>'BU',
-				'cÁceres'                =>'CC',
-				'cÁdiz'                  =>'CA',
-				'cantabria'              =>'S' ,
-				'castellÓn'              =>'CS',
-				'ceuta'                  =>'CE',
-				'ciudad real'            =>'CR',
-				'cÓrdoba'                =>'CO',
-				'cuenca'                 =>'CU',
-				'girona'                 =>'GI',
-				'granada'                =>'GR',
-				'guadalajara'            =>'GU',
-				'gipuzkoa'               =>'SS',
-				'huelva'                 =>'H' ,
-				'huesca'                 =>'HU',
-				'jaÉn'                   =>'J',
-				'la rioja'               =>'LO',
-				'las palmas'             =>'GC',
-				'leÓn'                   =>'LE',
-				'lleida'                 =>'L' ,
-				'lugo'                   =>'LU',
-				'madrid'                 =>'M' ,
-				'mÁlaga'                 =>'MA',
-				'melilla'                =>'ML',
-				'murcia'                 =>'MU',
-				'navarra'                =>'NA',
-				'ourense'                =>'OR',
-				'palencia'               =>'P' ,
-				'pontevedra'             =>'PO',
-				'salamanca'              =>'SA',
-				'santa cruz de tenerife' =>'TF',
-				'segovia'                =>'SG',
-				'sevilla'                =>'SE',
-				'soria'                  =>'SO',
-				'tarragona'              =>'T' ,
-				'teruel'                 =>'TE',
-				'toledo'                 =>'TO',
-				'valencia'               =>'V' ,
-				'valladolid'             =>'VA',
-				'bizkaia'                =>'BI',
-				'zamora'                 =>'ZA',
-				'zaragoza'               =>'Z' ,
+				'a coruÑa'               => 'C',
+				'araba/Álava'            => 'VI',
+				'albacete'               => 'AB',
+				'alicante'               => 'A',
+				'almerÍa'                => 'AL',
+				'asturias'               => 'O',
+				'Ávila'                  => 'AV',
+				'badajoz'                => 'BA',
+				'baleares'               => 'PM',
+				'barcelona'              => 'B',
+				'burgos'                 => 'BU',
+				'cÁceres'                => 'CC',
+				'cÁdiz'                  => 'CA',
+				'cantabria'              => 'S',
+				'castellÓn'              => 'CS',
+				'ceuta'                  => 'CE',
+				'ciudad real'            => 'CR',
+				'cÓrdoba'                => 'CO',
+				'cuenca'                 => 'CU',
+				'girona'                 => 'GI',
+				'granada'                => 'GR',
+				'guadalajara'            => 'GU',
+				'gipuzkoa'               => 'SS',
+				'huelva'                 => 'H',
+				'huesca'                 => 'HU',
+				'jaÉn'                   => 'J',
+				'la rioja'               => 'LO',
+				'las palmas'             => 'GC',
+				'leÓn'                   => 'LE',
+				'lleida'                 => 'L',
+				'lugo'                   => 'LU',
+				'madrid'                 => 'M',
+				'mÁlaga'                 => 'MA',
+				'melilla'                => 'ML',
+				'murcia'                 => 'MU',
+				'navarra'                => 'NA',
+				'ourense'                => 'OR',
+				'palencia'               => 'P',
+				'pontevedra'             => 'PO',
+				'salamanca'              => 'SA',
+				'santa cruz de tenerife' => 'TF',
+				'segovia'                => 'SG',
+				'sevilla'                => 'SE',
+				'soria'                  => 'SO',
+				'tarragona'              => 'T',
+				'teruel'                 => 'TE',
+				'toledo'                 => 'TO',
+				'valencia'               => 'V',
+				'valladolid'             => 'VA',
+				'bizkaia'                => 'BI',
+				'zamora'                 => 'ZA',
+				'zaragoza'               => 'Z',
 			);
-		} elseif ( 'IE' == $this->_country ) {
+		} elseif ( 'IE' === $this->_country ) {
 			$translation_table = array(
 				'co clare'     => 'CE',
 				'co cork'      => 'CK',
@@ -545,7 +545,7 @@ class PayPal_Address {
 				'co wicklow'   => 'WW',
 				'co wexford'   => 'WX',
 			);
-		} elseif ( 'ID' == $this->_country ) {
+		} elseif ( 'ID' === $this->_country ) {
 			$translation_table = array(
 				'id-ac' => 'AC',
 				'id-ba' => 'BA',
@@ -582,11 +582,10 @@ class PayPal_Address {
 				'id-su' => 'SU',
 				'id-yo' => 'YO',
 			);
-		} elseif ( 'IN' == $this->_country ) {
+		} elseif ( 'IN' === $this->_country ) {
 			$translation_table = array(
 				'andaman and nicobar islands' => 'AN',
 				'andhra pradesh'              => 'AP',
-				//'apo'                         => '',
 				'arunachal pradesh'           => 'AR',
 				'assam'                       => 'AS',
 				'bihar'                       => 'BR',
@@ -622,7 +621,7 @@ class PayPal_Address {
 				'uttarakhand'                 => 'UK',
 				'west bengal'                 => 'WB',
 			);
-		} elseif ( 'IT' == $this->_country ) {
+		} elseif ( 'IT' === $this->_country ) {
 			$translation_table = array(
 				'agrigento'             => 'AG',
 				'alessandria'           => 'AL',
@@ -732,9 +731,9 @@ class PayPal_Address {
 				'verona'                => 'VR',
 				'vibo valentia'         => 'VV',
 				'vicenza'               => 'VI',
-				'viterbo'               => 'VT'
+				'viterbo'               => 'VT',
 			);
-		} elseif ( 'JP' == $this->_country ) {
+		} elseif ( 'JP' === $this->_country ) {
 			$translation_table = array(
 				'hokkaido'      => 'JP01',
 				'aomori-ken'    => 'JP02',
@@ -784,7 +783,7 @@ class PayPal_Address {
 				'kagoshima-ken' => 'JP46',
 				'okinawa-ken'   => 'JP47',
 			);
-		} elseif ( 'MX' == $this->_country ) {
+		} elseif ( 'MX' === $this->_country ) {
 			$translation_table = array(
 				'ags'   => 'AG',
 				'bc'    => 'BC',
@@ -820,7 +819,7 @@ class PayPal_Address {
 				'yuc'   => 'YU',
 				'zac'   => 'ZA',
 			);
-		} elseif ( 'NL' == $this->_country ) {
+		} elseif ( 'NL' === $this->_country ) {
 			$translation_table = array(
 				'drenthe'       => 'DR',
 				'flevoland'     => 'FL',
@@ -833,9 +832,9 @@ class PayPal_Address {
 				'overijssel'    => 'OV',
 				'utrecht'       => 'UT',
 				'zeeland'       => 'ZE',
-				'zuid-holland'  => 'ZH'
+				'zuid-holland'  => 'ZH',
 			);
-		} elseif ( 'TH' == $this->_country ) {
+		} elseif ( 'TH' === $this->_country ) {
 			$translation_table = array(
 				'amnat charoen'            => 'TH-37',
 				'ang thong'                => 'TH-15',
@@ -914,9 +913,8 @@ class PayPal_Address {
 				'uttaradit'                => 'TH-53',
 				'yala'                     => 'TH-95',
 				'yasothon'                 => 'TH-35',
-				//'phatthaya'              => '',
 			);
-		} elseif ( 'US' == $this->_country ) {
+		} elseif ( 'US' === $this->_country ) {
 			$translation_table = array(
 				'alabama'                                 => 'AL',
 				'alaska'                                  => 'AK',
@@ -993,7 +991,7 @@ class PayPal_Address {
 				'us virgin islands'                       => 'VI',
 				'u.s. virgin islands'                     => 'VI',
 				'u s virgin islands'                      => 'VI',
-				'u. s. virgin islands'                    => 'VI'
+				'u. s. virgin islands'                    => 'VI',
 			);
 		}
 
@@ -1009,14 +1007,14 @@ class PayPal_Address {
 
 	public function getAddressParams( $prefix = '' ) {
 		$params = array(
-			$prefix . 'NAME' => $this->_name,
-			$prefix . 'STREET' => $this->_street1,
-			$prefix . 'STREET2' => $this->_street2,
-			$prefix . 'CITY' => $this->_city,
-			$prefix . 'STATE' => $this->_state,
-			$prefix . 'ZIP' => $this->_zip,
+			$prefix . 'NAME'        => $this->_name,
+			$prefix . 'STREET'      => $this->_street1,
+			$prefix . 'STREET2'     => $this->_street2,
+			$prefix . 'CITY'        => $this->_city,
+			$prefix . 'STATE'       => $this->_state,
+			$prefix . 'ZIP'         => $this->_zip,
 			$prefix . 'COUNTRYCODE' => $this->_country,
-			$prefix . 'PHONENUM' => $this->_phoneNumber,
+			$prefix . 'PHONENUM'    => $this->_phoneNumber,
 		);
 
 		return $params;
@@ -1032,7 +1030,7 @@ class PayPal_Address {
 			'ZIP'           => '_zip',
 			'PHONENUM'      => '_phoneNumber',
 			'ADDRESSSTATUS' => '_addressStatus',
-			'ADDRESSOWNER'  => '_addressOwner'
+			'ADDRESSOWNER'  => '_addressOwner',
 		);
 
 		if ( $isBillingAddress ) {
@@ -1050,7 +1048,7 @@ class PayPal_Address {
 				// ADDRESSSTATUS is returned whether or not a billing address is requested, so we don't want
 				// the presence of this variable alone be enough to trigger recognition of a complete
 				// billing address.
-				if ( 'ADDRESSSTATUS' != $index || ! $isBillingAddress ) {
+				if ( 'ADDRESSSTATUS' !== $index || ! $isBillingAddress ) {
 					$found_any = true;
 				}
 			}

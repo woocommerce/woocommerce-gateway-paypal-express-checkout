@@ -78,14 +78,17 @@ class WC_Gateway_PPEC_Session_Data {
 	 * @param array $args Arguments for session data
 	 */
 	public function __construct( $args = array() ) {
-		$args = wp_parse_args( $args, array(
-			'token'             => '',
-			'source'            => 'cart',
-			'order_id'          => false,
-			'expires_in'        => 10800,
-			'use_paypal_credit' => false,
-			'cancel_url'        => '',
-		) );
+		$args = wp_parse_args(
+			$args,
+			array(
+				'token'             => '',
+				'source'            => 'cart',
+				'order_id'          => false,
+				'expires_in'        => 10800,
+				'use_paypal_credit' => false,
+				'cancel_url'        => '',
+			)
+		);
 
 		$this->token             = $args['token'];
 		$this->source            = $args['source'];

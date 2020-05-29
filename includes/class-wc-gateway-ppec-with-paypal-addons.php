@@ -162,17 +162,19 @@ class WC_Gateway_PPEC_With_PayPal_Addons extends WC_Gateway_PPEC_With_PayPal {
 			return;
 		}
 
-		if ( 0 == $amount ) {
+		if ( 0.0 === (float) $amount ) {
 			$order->payment_complete();
 			return;
 		}
 
 		$client = wc_gateway_ppec()->client;
-		$params = $client->get_do_reference_transaction_params( array(
-			'reference_id' => $billing_agreement_id,
-			'amount'       => $amount,
-			'order_id'     => $order_id,
-		) );
+		$params = $client->get_do_reference_transaction_params(
+			array(
+				'reference_id' => $billing_agreement_id,
+				'amount'       => $amount,
+				'order_id'     => $order_id,
+			)
+		);
 
 		$resp = $client->do_reference_transaction( $params );
 
@@ -214,13 +216,13 @@ class WC_Gateway_PPEC_With_PayPal_Addons extends WC_Gateway_PPEC_With_PayPal {
 				case 'Processed':
 				case 'In-Progress':
 					$transaction_id = $response['TRANSACTIONID'];
+					// Translators: %s is a transaction ID.
 					$order->add_order_note( sprintf( __( 'PayPal payment approved (ID: %s)', 'woocommerce-gateway-paypal-express-checkout' ), $transaction_id ) );
 					$order->payment_complete( $transaction_id );
 					break;
 				default:
 					throw new Exception( __( 'PayPal payment declined', 'woocommerce-gateway-paypal-express-checkout' ) );
 			}
-
 		} catch ( Exception $e ) {
 			$order->update_status( 'failed', $e->getMessage() );
 		}
