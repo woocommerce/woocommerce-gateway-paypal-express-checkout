@@ -217,3 +217,10 @@ function wc_gateway_ppec_save_transaction_data( $order, $transaction_response, $
 		$order->update_meta_data( '_woo_pp_txnData', $txnData );
 	}
 }
+
+function set_currency_format ( $value ) {
+	$settings = wc_gateway_ppec()->settings;
+	$decimals = $settings->get_number_of_decimal_digits();
+	$value = number_format( $value, $decimals );
+	return $value;
+}
