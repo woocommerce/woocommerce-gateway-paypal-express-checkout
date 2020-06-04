@@ -553,6 +553,8 @@ class WC_Gateway_PPEC_Cart_Handler {
 					'currency'    => get_woocommerce_currency(),
 				);
 
+				$script_args = apply_filters( 'woocommerce_paypal_express_checkout_sdk_script_args', $script_args, $settings, $client );
+
 				wp_register_script( 'paypal-checkout-sdk', add_query_arg( $script_args, 'https://www.paypal.com/sdk/js' ), array(), null, true ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
 				$spb_script_dependencies[] = 'paypal-checkout-sdk';
 
