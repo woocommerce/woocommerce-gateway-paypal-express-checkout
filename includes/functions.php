@@ -215,5 +215,6 @@ function wc_gateway_ppec_save_transaction_data( $order, $transaction_response, $
 		update_post_meta( $order_id, '_woo_pp_txnData', $txnData );
 	} else {
 		$order->update_meta_data( '_woo_pp_txnData', $txnData );
+		$order->save();
 	}
 }
