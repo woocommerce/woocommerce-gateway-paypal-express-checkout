@@ -414,6 +414,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 						update_post_meta( $order_id, '_woo_pp_txnData', $txn_data );
 					} else {
 						$order->update_meta_data( '_woo_pp_txnData', $txn_data );
+						$order->save();
 					}
 
 					return true;
@@ -438,6 +439,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 						update_post_meta( $order_id, '_woo_pp_txnData', $txn_data );
 					} else {
 						$order->update_meta_data( '_woo_pp_txnData', $txn_data );
+						$order->save();
 					}
 
 					return true;
@@ -489,6 +491,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 							update_post_meta( $order_id, '_woo_pp_txnData', $txn_data );
 						} else {
 							$order->update_meta_data( '_woo_pp_txnData', $txn_data );
+							$order->save();
 						}
 
 						return true;
