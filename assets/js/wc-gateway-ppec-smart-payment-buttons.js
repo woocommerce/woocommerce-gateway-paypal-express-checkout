@@ -177,7 +177,7 @@
 			},
 
 			onCancel: function( data, actions ) {
-				if ( 'orderID' in data ) {
+				if ( cancel_url && 'orderID' in data ) {
 					const query_args = '?woo-paypal-cancel=true&token=' + data.orderID;
 					return actions.redirect( cancel_url + query_args );
 				}
