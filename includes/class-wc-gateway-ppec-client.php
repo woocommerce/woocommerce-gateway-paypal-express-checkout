@@ -86,7 +86,7 @@ class WC_Gateway_PPEC_Client {
 			$environment = 'live';
 		}
 
-		$this->_environment = $environment;
+		$this->_environment = apply_filters( 'woocommerce_paypal_express_checkout_set_express_checkout_environment', $environment );
 	}
 
 	/**
