@@ -540,8 +540,8 @@ $settings['mark_enabled'] = array(
 	'title'       => __( 'PayPal Mark', 'woocommerce-gateway-paypal-express-checkout' ),
 	'type'        => 'checkbox',
 	'class'       => 'woocommerce_ppec_paypal_visibility_toggle',
-	'label'       => __( 'Enable the PayPal Mark on regular checkout', 'woocommerce-gateway-paypal-express-checkout' ),
-	'description' => __( 'This enables the PayPal mark, which can be shown on regular WooCommerce checkout to use PayPal Checkout like a regular WooCommerce gateway.', 'woocommerce-gateway-paypal-express-checkout' ),
+	'label'       => __( 'Show PayPal Checkout payment option on the regular WooCommerce checkout page', 'woocommerce-gateway-paypal-express-checkout' ),
+	'description' => __( 'Disabling this will hide PayPal mark from the regular WooCommerce checkout page', 'woocommerce-gateway-paypal-express-checkout' ),
 	'desc_tip'    => true,
 	'default'     => 'yes',
 );
