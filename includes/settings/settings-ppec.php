@@ -281,7 +281,7 @@ $settings = array(
 		'type'        => 'checkbox',
 		'label'       => __( 'Require Phone Number', 'woocommerce-gateway-paypal-express-checkout' ),
 		'default'     => 'no',
-		'description' => __( 'Require buyer to enter their telephone number during checkout if none is provided by PayPal. <br><strong>Note: Disabling this option doesn\'t affect direct Debit or Credit Card payments offered by PayPal.</strong>' , 'woocommerce-gateway-paypal-express-checkout' ),
+		'description' => __( 'Require buyer to enter their telephone number during checkout if none is provided by PayPal. <br><strong>Note: Disabling this option doesn\'t affect direct Debit or Credit Card payments offered by PayPal.</strong>', 'woocommerce-gateway-paypal-express-checkout' ),
 	),
 	'paymentaction' => array(
 		'title'       => __( 'Payment Action', 'woocommerce-gateway-paypal-express-checkout' ),
