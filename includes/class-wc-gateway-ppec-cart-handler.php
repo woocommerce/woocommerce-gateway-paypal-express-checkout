@@ -415,7 +415,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 		if ( 'woocommerce_widget_cart' === $widget_id ) {
 			$gateways = WC()->payment_gateways->get_available_payment_gateways();
 			$settings = wc_gateway_ppec()->settings;
-			if ( isset( $gateways['ppec_paypal'] ) && 'yes' === $settings->cart_checkout_enabled && 'yes' === $settings->use_spb ) {
+			if ( isset( $gateways['ppec_paypal'] ) && 'yes' === $settings->mini_cart_checkout_enabled && 'yes' === $settings->use_spb ) {
 				wp_enqueue_script( 'wc-gateway-ppec-smart-payment-buttons' );
 			}
 		}
@@ -523,6 +523,8 @@ class WC_Gateway_PPEC_Cart_Handler {
 			if ( ! is_null( $page ) ) {
 				if ( 'product' === $page && 'yes' === $settings->single_product_settings_toggle ) {
 					$button_settings = $this->get_button_settings( $settings, 'single_product' );
+				} elseif ( 'cart' === $page && 'yes' === $settings->cart_settings_toggle ) {
+					$button_settings = $this->get_button_settings( $settings, 'cart' );
 				} elseif ( 'checkout' === $page && 'yes' === $settings->mark_settings_toggle ) {
 					$button_settings = $this->get_button_settings( $settings, 'mark' );
 				} else {
@@ -532,14 +534,15 @@ class WC_Gateway_PPEC_Cart_Handler {
 				$data = array_merge( $data, $button_settings );
 			}
 
+			// Load Mini Cart Settings if enabled
 			$settings_toggle = 'yes' === $settings->mini_cart_settings_toggle;
 			$mini_cart_data  = $this->get_button_settings( $settings, $settings_toggle ? 'mini_cart' : '' );
 			foreach ( $mini_cart_data as $key => $value ) {
 				unset( $mini_cart_data[ $key ] );
 				$mini_cart_data[ 'mini_cart_' . $key ] = $value;
 			}
-
 			$data = array_merge( $data, $mini_cart_data );
+
 			$data = apply_filters( 'woocommerce_paypal_express_checkout_payment_button_data', $data, $page );
 
 			if ( ! $settings->use_legacy_checkout_js() ) {
@@ -579,8 +582,8 @@ class WC_Gateway_PPEC_Cart_Handler {
 	 * Adds the data-namespace attribute when enqueuing the PayPal SDK script
 	 *
 	 * @since 2.0.1
-	 * @param string  $tag
-	 * @param string  $handle
+	 * @param string $tag
+	 * @param string $handle
 	 * @return string
 	 */
 	public function add_paypal_sdk_namespace_attribute( $tag, $handle ) {
