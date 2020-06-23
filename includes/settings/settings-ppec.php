@@ -461,11 +461,10 @@ $per_context_settings['button_size']['class']    .= ' woocommerce_ppec_paypal_sp
 $per_context_settings['credit_enabled']['class'] .= ' woocommerce_ppec_paypal_spb';
 
 $settings['cart_checkout_enabled'] = array(
-	'title'       => __( 'Checkout on cart page', 'woocommerce-gateway-paypal-express-checkout' ),
+	'title'       => __( 'Enable on the cart page', 'woocommerce-gateway-paypal-express-checkout' ),
 	'type'        => 'checkbox',
 	'class'       => 'woocommerce_ppec_paypal_visibility_toggle',
-	'label'       => __( 'Enable PayPal Checkout on the cart page', 'woocommerce-gateway-paypal-express-checkout' ),
-	'description' => __( 'This shows or hides the PayPal Checkout button on the cart page.', 'woocommerce-gateway-paypal-express-checkout' ),
+	'label'       => __( 'Enable PayPal Checkout buttons on the cart page', 'woocommerce-gateway-paypal-express-checkout' ),
 	'desc_tip'    => true,
 	'default'     => 'yes',
 );
@@ -503,13 +502,12 @@ $settings['single_product_settings'] = array(
 );
 
 $settings['checkout_on_single_product_enabled'] = array(
-	'title'       => __( 'Checkout on Single Product', 'woocommerce-gateway-paypal-express-checkout' ),
+	'title'       => __( 'Enable on the single product page', 'woocommerce-gateway-paypal-express-checkout' ),
 	'type'        => 'checkbox',
 	'class'       => 'woocommerce_ppec_paypal_visibility_toggle',
-	'label'       => __( 'Checkout on Single Product', 'woocommerce-gateway-paypal-express-checkout' ),
+	'label'       => __( 'Enable PayPal Checkout buttons on the single product page', 'woocommerce-gateway-paypal-express-checkout' ),
 	'default'     => 'yes',
 	'desc_tip'    => true,
-	'description' => __( 'Enable PayPal Checkout on Single Product view.', 'woocommerce-gateway-paypal-express-checkout' ),
 );
 
 $settings['single_product_settings_toggle'] = array(
@@ -537,11 +535,10 @@ $settings['mark_settings'] = array(
 );
 
 $settings['mark_enabled'] = array(
-	'title'       => __( 'PayPal Mark', 'woocommerce-gateway-paypal-express-checkout' ),
+	'title'       => __( 'Enable on the checkout page', 'woocommerce-gateway-paypal-express-checkout' ),
 	'type'        => 'checkbox',
 	'class'       => 'woocommerce_ppec_paypal_visibility_toggle',
-	'label'       => __( 'Show PayPal Checkout payment option on the regular WooCommerce checkout page', 'woocommerce-gateway-paypal-express-checkout' ),
-	'description' => __( 'Disabling this will hide PayPal mark from the regular WooCommerce checkout page', 'woocommerce-gateway-paypal-express-checkout' ),
+	'label'       => __( 'Enable PayPal Checkout buttons on the regular checkout page', 'woocommerce-gateway-paypal-express-checkout' ),
 	'desc_tip'    => true,
 	'default'     => 'yes',
 );
