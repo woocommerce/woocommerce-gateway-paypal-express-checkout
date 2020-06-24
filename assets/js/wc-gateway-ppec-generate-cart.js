@@ -104,6 +104,10 @@
 				continue;
 			}
 
+			if ( -1 !== field_pairs[ i ].name.indexOf( 'addon-' ) ) {
+				field_pairs[ i ].name = field_pairs[ i ].name + field_pairs[ i ].value;
+			}
+
 			data[ field_pairs[ i ].name ] = field_pairs[ i ].value;
 		}
 
