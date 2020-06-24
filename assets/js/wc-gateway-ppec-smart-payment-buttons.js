@@ -141,10 +141,12 @@
 					if ( ! wc_ppec_context.use_checkout_js ) {
 						return fetch( wc_ppec_context.start_checkout_url, {
 							method: 'post',
+							cache: 'no-cache',
+							credentials: 'same-origin',
 							headers: {
 								'Content-Type': 'application/x-www-form-urlencoded',
 							},
-							body: data,
+							body: data
 						} ).then( function ( response ) {
 							return response.json();
 						} ).then( request_callback );
