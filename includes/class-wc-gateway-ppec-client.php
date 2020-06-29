@@ -515,7 +515,7 @@ class WC_Gateway_PPEC_Client {
 				'sku'         => $values['data']->get_sku(),
 			);
 
-			$items[] = apply_filters( 'woocommerce_paypal_express_get_line_item_from_cart', $item, $values, $cart_item_key );
+			$items[] = apply_filters( 'woocommerce_paypal_express_checkout_get_line_item_from_cart', $item, $values, $cart_item_key );
 		}
 
 		foreach ( WC()->cart->get_fees() as $fee_key => $fee_values ) {
@@ -526,7 +526,7 @@ class WC_Gateway_PPEC_Client {
 				'amount'      => round( $fee_values->total, $decimals ),
 			);
 
-			$items[] = apply_filters( 'woocommerce_paypal_express_get_fee_from_cart', $item, $fee_values, $fee_key );
+			$items[] = apply_filters( 'woocommerce_paypal_express_checkout_get_fee_from_cart', $item, $fee_values, $fee_key );
 		}
 
 		return $items;
@@ -843,7 +843,7 @@ class WC_Gateway_PPEC_Client {
 				);
 			}
 
-			$items[] = apply_filters( 'woocommerce_paypal_express_get_line_item_from_order', $item, $order_item, $cart_item_key );
+			$items[] = apply_filters( 'woocommerce_paypal_express_checkout_get_line_item_from_order', $item, $order_item, $cart_item_key );
 		}
 
 		return $items;
