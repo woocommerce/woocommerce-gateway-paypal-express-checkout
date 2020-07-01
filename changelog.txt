@@ -1,5 +1,13 @@
 *** Changelog ***
 
+= 2.0.3 - 2020-07-01 =
+* Fix - Records the proper refunded_amount to _woo_pp_txnData in the database PR#764
+* Fix - Redirect customers back to the original page they left on after closing PayPal modal PR#765
+* Fix - Preserve horizontal layout style setting when using standalone buttons PR#774
+* Fix - Smart payment buttons compatibility with older browsers PR#778
+* Tweak - Update the Require Phone Number field description PR#772
+* Dev - Make the SDK script args filterable PR#763
+
 = 2.0.2 - 2020-05-28 =
 * Fix - Javascript errors during checkout when the Payment Action is set to Authorize. PR#754
 * Fix - Style the Smart Payment Buttons according to the chosen button size setting. PR#753

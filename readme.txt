@@ -4,7 +4,7 @@ Tags: ecommerce, e-commerce, commerce, woothemes, wordpress ecommerce, store, sa
 Requires at least: 4.4
 Tested up to: 5.4
 Requires PHP: 5.5
-Stable tag: 2.0.2
+Stable tag: 2.0.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -101,6 +101,14 @@ Please use this to inform us about bugs, or make contributions via PRs.
 9. Initiate checkout from mini-cart.
 
 == Changelog ==
+
+= 2.0.3 - 2020-07-01 =
+* Fix - Records the proper refunded_amount to _woo_pp_txnData in the database PR#764
+* Fix - Redirect customers back to the original page they left on after closing PayPal modal PR#765
+* Fix - Preserve horizontal layout style setting when using standalone buttons PR#774
+* Fix - Smart payment buttons compatibility with older browsers PR#778
+* Tweak - Update the Require Phone Number field description PR#772
+* Dev - Make the SDK script args filterable PR#763
 
 = 2.0.2 - 2020-05-28 =
 * Fix - Javascript errors during checkout when the Payment Action is set to Authorize. PR#754
