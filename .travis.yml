@@ -1,5 +1,6 @@
 language: php
 os: linux
+dist: xenial
 sudo: false
 
 notifications:
@@ -8,30 +9,12 @@ notifications:
 php:
   - 7.0
 
-env:
-  - PHPCS_RANGE=repo
-  - PHPCS_RANGE=commits
-
-jobs:
-  allow_failures:
-    - env: PHPCS_RANGE=repo
-
 branches:
   only:
     - master
-    - 2.0_dev
 
 install:
   - composer install
 
 script:
-  - |
-    if [[ "${PHPCS_RANGE}" == "commits" ]]; then
-      CHANGED_FILES=`git diff --name-only --diff-filter=ACMR $TRAVIS_COMMIT_RANGE | grep \\\\.php | awk '{print}' ORS=' '`
-
-      if [ "$CHANGED_FILES" != "" ]; then
-        ./vendor/bin/phpcs -p $CHANGED_FILES
-      fi
-    else
-      ./vendor/bin/phpcs
-    fi
+  - vendor/bin/phpcs
