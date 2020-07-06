@@ -12,6 +12,7 @@
     "wp_org_slug": "woocommerce-gateway-paypal-express-checkout"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.10.4",
     "@woocommerce/e2e-environment": "^0.1.5"
   }
 }
