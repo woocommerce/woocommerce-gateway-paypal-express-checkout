@@ -10,5 +10,8 @@
   },
   "config": {
     "wp_org_slug": "woocommerce-gateway-paypal-express-checkout"
+  },
+  "devDependencies": {
+    "@woocommerce/e2e-environment": "^0.1.5"
   }
 }
