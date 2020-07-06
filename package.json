@@ -11,6 +11,12 @@
   "config": {
     "wp_org_slug": "woocommerce-gateway-paypal-express-checkout"
   },
+  "scripts": {
+    "test:e2e": "npm explore @woocommerce/e2e-environment -- npm run test:e2e",
+    "test:e2e-dev": "npm explore @woocommerce/e2e-environment -- npm run test:e2e-dev",
+    "docker:up": "npm explore @woocommerce/e2e-environment -- npm run docker:up",
+    "docker:down": "npm explore @woocommerce/e2e-environment -- npm run docker:down"
+  },
   "devDependencies": {
     "@babel/preset-env": "^7.10.4",
     "@woocommerce/e2e-environment": "^0.1.5",
