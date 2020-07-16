@@ -72,6 +72,11 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		}
 
 		add_filter( 'woocommerce_ajax_get_endpoint', array( $this, 'pass_return_args_to_ajax' ), 10, 2 );
+
+		if ( function_exists( 'add_image_size' ) ) {
+			add_image_size( 'ppec_logo_image_size', 190, 60 );
+			add_image_size( 'ppec_header_image_size', 750, 90 );
+		}
 	}
 
 	/**
@@ -576,7 +581,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 				<div class="image-preview-wrapper">
 					<?php
 					if ( ! $value_is_url ) {
-						echo wp_get_attachment_image( $value, 'thumbnail' );
+						echo wp_get_attachment_image( $value, 'logo_image_url' === $key ? 'ppec_logo_image_size' : 'ppec_header_image_size' );
 					} else {
 						// Translators: placeholder is an image's URL.
 						echo sprintf( esc_html__( 'Already using URL as image: %s', 'woocommerce-gateway-paypal-express-checkout' ), esc_attr( $value ) );
