@@ -72,6 +72,11 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		}
 
 		add_filter( 'woocommerce_ajax_get_endpoint', array( $this, 'pass_return_args_to_ajax' ), 10, 2 );
+
+		if ( function_exists( 'add_image_size' ) ) {
+			add_image_size( 'ppec_logo_image_size', 190, 60 );
+			add_image_size( 'ppec_header_image_size', 750, 90 );
+		}
 	}
 
 	/**
@@ -558,11 +563,6 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 
 		// For backwards compatibility (customers that already have set a url)
 		$value_is_url = filter_var( $value, FILTER_VALIDATE_URL ) !== false;
-
-		if ( function_exists( 'add_image_size' ) ) {
-			add_image_size( 'ppec_logo_image_size', 190, 60 );
-			add_image_size( 'ppec_header_image_size', 750, 90 );
-		}
 
 		if ( empty( $value ) || $value_is_url ) {
 			$maybe_hide_remove_style = 'display: none;';
