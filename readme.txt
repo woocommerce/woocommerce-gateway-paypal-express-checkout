@@ -282,4 +282,4 @@ Please use this to inform us about bugs, or make contributions via PRs.
 * Fix - Compatibility with Subscriptions and Checkout from Single Product page.
 * Fix - Make sure session object exists before use to prevent fatal error.
 
-[See changelog for all versions](https://raw.githubusercontent.com/woocommerce/woocommerce-gateway-paypal-express-checkout/master/changelog.txt).
+[See changelog for all versions](https://raw.githubusercontent.com/woocommerce/woocommerce-gateway-paypal-express-checkout/main/changelog.txt).

@@ -11,7 +11,7 @@ php:
 
 branches:
   only:
-    - master
+    - main
 
 install:
   - composer install
