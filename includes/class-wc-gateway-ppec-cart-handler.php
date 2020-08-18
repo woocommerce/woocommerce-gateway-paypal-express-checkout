@@ -675,7 +675,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 			return;
 		}
 
-		if ( ! empty( WC()->session ) && ! WC()->session->has_session() ) {
+		if ( ! empty( WC()->session ) && ! WC()->session->has_session() && is_product() ) {
 			WC()->session->set_customer_session_cookie( true );
 		}
 	}
