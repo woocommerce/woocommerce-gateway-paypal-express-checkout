@@ -48,9 +48,9 @@ This project enforces [WooCommerce coding standards](https://github.com/woocomme
 
 We are striving to subject this extension to tests at various levels. They are works in progress. The following will be updated as there is progress.
 Do check with us if you want to contribute in some way towards these.
-TBD - Travis Integration
-TBD - Unit Testing
-TBD - E2E Testing
+* TBD - Travis Integration
+* TBD - Unit Testing
+* TBD - E2E Testing
 
 ## Contribution
 Contribution can be done in many ways. We appreciate it.
