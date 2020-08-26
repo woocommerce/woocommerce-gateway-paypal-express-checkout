@@ -267,37 +267,57 @@
 			var display =
 				$( '#woocommerce_ppec_paypal_cart_checkout_enabled' ).is( ':checked' ) ||
 				( $( '#woocommerce_ppec_paypal_checkout_on_single_product_enabled' ).is( ':checked' ) && ! $( '#woocommerce_ppec_paypal_single_product_settings_toggle' ).is( ':checked' ) ) ||
-				( $( '#woocommerce_ppec_paypal_mark_enabled' ).is( ':checked' ) && ! $( '#woocommerce_ppec_paypal_mark_settings_toggle' ).is( ':checked' ) );
+				( $( '#woocommerce_ppec_paypal_mark_enabled' ).is( ':checked' ) && ! $( '#woocommerce_ppec_paypal_mark_settings_toggle' ).is( ':checked' ) ) ||
+				( $( '#woocommerce_ppec_paypal_cart_checkout_enabled').is( ':checked' ) && ! $( '#woocommerce_ppec_paypal_cart_settings_toggle' ).is( ':checked' ) ) ||
+				( $( '#woocommerce_ppec_paypal_mini_cart_checkout_enabled').is( ':checked' ) && ! $( '#woocommerce_ppec_paypal_mini_cart_settings_toggle' ).is( ':checked' ) );
 
 			$( '#woocommerce_ppec_paypal_button_layout, #woocommerce_ppec_paypal_button_size, #woocommerce_ppec_paypal_hide_funding_methods, #woocommerce_ppec_paypal_credit_enabled' ).closest( 'tr' ).toggle( display );
 			display && $( '#woocommerce_ppec_paypal_button_layout' ).change();
 		}
 
-		// Toggle mini-cart section based on whether checkout on cart page is enabled
-		$( '#woocommerce_ppec_paypal_cart_checkout_enabled' ).change( function( event ) {
-			if ( ! $( '#woocommerce_ppec_paypal_use_spb' ).is( ':checked' ) ) {
+		// Toggle cart section
+		$('#woocommerce_ppec_paypal_cart_checkout_enabled, #woocommerce_ppec_paypal_cart_settings_toggle').change(function (event) {
+			if ( ! $(' #woocommerce_ppec_paypal_use_spb' ).is( ':checked' ) ) {
 				return;
 			}
 
-			var checked = $( event.target ).is( ':checked' );
-			$( '#woocommerce_ppec_paypal_mini_cart_settings_toggle, .woocommerce_ppec_paypal_mini_cart' )
-				.closest( 'tr' )
-				.add( '#woocommerce_ppec_paypal_mini_cart_settings' ) // Select title.
-					.next( 'p' ) // Select description if present.
-				.addBack()
-				.toggle( checked );
-			checked && $( '#woocommerce_ppec_paypal_mini_cart_settings_toggle' ).change();
+			if ( ! $('#woocommerce_ppec_paypal_cart_checkout_enabled' ).is( ':checked' ) ) {
+				// If cart page button is disabled, hide remaining settings in section.
+				$( '#woocommerce_ppec_paypal_cart_settings_toggle, .woocommerce_ppec_paypal_cart' ).closest( 'tr' ).hide();
+			} else if ( ! $( '#woocommerce_ppec_paypal_cart_settings_toggle' ).is( ':checked' ) ) {
+				// If cart page button is enabled but not configured to override global settings, hide remaining settings in section.
+				$( '#woocommerce_ppec_paypal_cart_settings_toggle' ).closest( 'tr' ).show();
+				$( '.woocommerce_ppec_paypal_cart, #woocommerce_ppec_paypal_cart_hide_funding_methods' ).closest( 'tr') .hide();
+			} else {
+				// Show all settings in section.
+				$( '#woocommerce_ppec_paypal_cart_settings_toggle, .woocommerce_ppec_paypal_cart' ).closest( 'tr' ).show();
+				$( '#woocommerce_ppec_paypal_cart_button_layout' ).change();
+			}
 			showHideDefaultButtonSettings();
 		} ).change();
 
-		$( '#woocommerce_ppec_paypal_mini_cart_settings_toggle' ).change( function( event ) {
-			// Only show settings specific to mini-cart if configured to override global settings.
-			var checked = $( event.target ).is( ':checked' );
-			$( '.woocommerce_ppec_paypal_mini_cart' ).closest( 'tr' ).toggle( checked );
-			checked && $( '#woocommerce_ppec_paypal_mini_cart_button_layout' ).change();
-			showHideDefaultButtonSettings();
-		} ).change();
+		// Toggle Mini-cart section
+		$('#woocommerce_ppec_paypal_mini_cart_checkout_enabled, #woocommerce_ppec_paypal_mini_cart_settings_toggle').change(function (event) {
+			if (!$(' #woocommerce_ppec_paypal_use_spb').is(':checked')) {
+				return;
+			}
 
+			if (!$('#woocommerce_ppec_paypal_mini_cart_checkout_enabled').is(':checked')) {
+				// If cart page button is disabled, hide remaining settings in section.
+				$('#woocommerce_ppec_paypal_mini_cart_settings_toggle, .woocommerce_ppec_paypal_mini_cart').closest('tr').hide();
+			} else if (!$('#woocommerce_ppec_paypal_mini_cart_settings_toggle').is(':checked')) {
+				// If cart page button is enabled but not configured to override global settings, hide remaining settings in section.
+				$('#woocommerce_ppec_paypal_mini_cart_settings_toggle').closest('tr').show();
+				$('.woocommerce_ppec_paypal_mini_cart, #woocommerce_ppec_paypal_mini_cart_hide_funding_methods').closest('tr').hide();
+			} else {
+				// Show all settings in section.
+				$('#woocommerce_ppec_paypal_mini_cart_settings_toggle, .woocommerce_ppec_paypal_mini_cart').closest('tr').show();
+				$('#woocommerce_ppec_paypal_mini_cart_button_layout').change();
+			}
+			showHideDefaultButtonSettings();
+		}).change();
+
+		// Toggle Single Product section
 		$( '#woocommerce_ppec_paypal_checkout_on_single_product_enabled, #woocommerce_ppec_paypal_single_product_settings_toggle' ).change( function( event ) {
 			if ( ! $( '#woocommerce_ppec_paypal_use_spb' ).is( ':checked' ) ) {
 				return;
@@ -318,6 +338,7 @@
 			showHideDefaultButtonSettings();
 		} ).change();
 
+		// Toggle Checkout Section
 		$( '#woocommerce_ppec_paypal_mark_enabled, #woocommerce_ppec_paypal_mark_settings_toggle' ).change( function() {
 			if ( ! $( '#woocommerce_ppec_paypal_use_spb' ).is( ':checked' ) ) {
 				return;

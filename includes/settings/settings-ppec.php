@@ -317,9 +317,9 @@ $settings = array(
 	),
 
 	'button_settings' => array(
-		'title'       => __( 'Button Settings', 'woocommerce-gateway-paypal-express-checkout' ),
+		'title'       => __( 'Global Button Settings', 'woocommerce-gateway-paypal-express-checkout' ),
 		'type'        => 'title',
-		'description' => __( 'Customize the appearance of PayPal Checkout on your site.', 'woocommerce-gateway-paypal-express-checkout' ),
+		'description' => __( 'Customize the default appearance of PayPal Checkout on your site. If page specific customizations are not defined, these will be used by default. <br>For page specific customizations, use the configuration options inside <b>Cart / Mini-cart / Single Product / Regular Checkout</b>', 'woocommerce-gateway-paypal-express-checkout' ),
 	),
 	'use_spb' => array(
 		'title'       => __( 'Smart Payment Buttons', 'woocommerce-gateway-paypal-express-checkout' ),
@@ -452,13 +452,22 @@ $per_context_settings = array(
 	),
 );
 
+$per_context_settings['button_size']['class']    .= ' woocommerce_ppec_paypal_spb';
+$per_context_settings['credit_enabled']['class'] .= ' woocommerce_ppec_paypal_spb';
+
 /**
- * Cart / global button settings.
+ * Default button settings.
  */
 $settings = array_merge( $settings, $per_context_settings );
 
-$per_context_settings['button_size']['class']    .= ' woocommerce_ppec_paypal_spb';
-$per_context_settings['credit_enabled']['class'] .= ' woocommerce_ppec_paypal_spb';
+/**
+ * Cart / global button settings.
+ */
+$settings['cart_settings'] = array(
+	'title' => __( 'Cart Button Settings', 'woocommerce-gateway-paypal-express-checkout' ),
+	'type'  => 'title',
+	'class' => 'woocommerce_ppec_paypal_spb',
+);
 
 $settings['cart_checkout_enabled'] = array(
 	'title'       => __( 'Checkout on cart page', 'woocommerce-gateway-paypal-express-checkout' ),
@@ -470,6 +479,20 @@ $settings['cart_checkout_enabled'] = array(
 	'default'     => 'yes',
 );
 
+$settings['cart_settings_toggle'] = array(
+	'title'       => __( 'Configure Settings', 'woocommerce-gateway-paypal-express-checkout' ),
+	'label'       => __( 'Configure settings specific to cart', 'woocommerce-gateway-paypal-express-checkout' ),
+	'type'        => 'checkbox',
+	'class'       => 'woocommerce_ppec_paypal_spb woocommerce_ppec_paypal_visibility_toggle',
+	'default'     => 'no',
+	'desc_tip'    => true,
+	'description' => __( 'Optionally override global button settings above and configure buttons for this context.', 'woocommerce-gateway-paypal-express-checkout' ),
+);
+foreach ( $per_context_settings as $key => $value ) {
+	$value['class']            .= ' woocommerce_ppec_paypal_cart';
+	$settings[ 'cart_' . $key ] = $value;
+}
+
 /**
  * Mini-cart button settings.
  */
@@ -477,6 +500,16 @@ $settings['mini_cart_settings'] = array(
 	'title' => __( 'Mini-cart Button Settings', 'woocommerce-gateway-paypal-express-checkout' ),
 	'type'  => 'title',
 	'class' => 'woocommerce_ppec_paypal_spb',
+);
+
+$settings['mini_cart_checkout_enabled'] = array(
+	'title'       => __( 'Checkout on Mini-cart', 'woocommerce-gateway-paypal-express-checkout' ),
+	'type'        => 'checkbox',
+	'class'       => 'woocommerce_ppec_paypal_visibility_toggle',
+	'label'       => __( 'Enable PayPal Checkout on Mini-cart', 'woocommerce-gateway-paypal-express-checkout' ),
+	'description' => __( 'This shows or hides the PayPal Checkout button on the Mini-cart.', 'woocommerce-gateway-paypal-express-checkout' ),
+	'desc_tip'    => true,
+	'default'     => 'yes',
 );
 
 $settings['mini_cart_settings_toggle'] = array(
