@@ -56,6 +56,24 @@
 		return paypal_funding_methods;
 	}
 
+	var renderCreditMessaging = function( buttonSelector ) {
+		if ( 'undefined' === typeof wc_ppec_context.credit_messaging || ! wc_ppec_context.credit_messaging || 'undefined' === typeof paypal.Messages ) {
+			return;
+		}
+
+		if ( 'undefined' != typeof paypal.isFundingEligible && ! paypal.isFundingEligible( paypal.FUNDING.CREDIT ) && ! paypal.isFundingEligible( paypal.FUNDING.PAYLATER ) ) {
+			return;
+		}
+
+		if ( 0 === $( buttonSelector ).length ) {
+			return;
+		}
+
+		// Add an element for messaging.
+		var messagingWrapper = $( '<div></div>' ).insertBefore( buttonSelector ).get( 0 );
+		paypal.Messages( wc_ppec_context.credit_messaging ).render( messagingWrapper );
+	}
+
 	var render = function( isMiniCart ) {
 		var prefix        = isMiniCart ? 'mini_cart_' : '';
 		var button_size   = wc_ppec_context[ prefix + 'button_size' ];
@@ -194,6 +212,10 @@
 		};
 
 		if ( ! wc_ppec_context.use_checkout_js ) {
+			if ( ! isMiniCart ) {
+				renderCreditMessaging( selector );
+			}
+
 			// 'payment()' and 'onAuthorize()' callbacks from checkout.js are now 'createOrder()' and 'onApprove()'.
 			Object.defineProperty( button_args, 'createOrder', Object.getOwnPropertyDescriptor( button_args, 'payment' ) );
 			Object.defineProperty( button_args, 'onApprove', Object.getOwnPropertyDescriptor( button_args, 'onAuthorize' ) );
