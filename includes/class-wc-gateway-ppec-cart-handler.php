@@ -44,6 +44,9 @@ class WC_Gateway_PPEC_Cart_Handler {
 		if ( class_exists( 'WC_Subscriptions_Order' ) ) {
 			add_filter( 'woocommerce_paypal_express_checkout_payment_button_data', array( $this, 'hide_card_payment_buttons_for_subscriptions' ), 10, 2 );
 		}
+
+		// Credit messaging.
+		add_filter( 'woocommerce_paypal_express_checkout_payment_button_data', array( $this, 'inject_credit_messaging_configuration' ), 10, 2 );
 	}
 
 	/**
@@ -472,6 +475,70 @@ class WC_Gateway_PPEC_Cart_Handler {
 	}
 
 	/**
+	 * Adds PayPal Credit Message context to `wc_ppec_context` for consumption by frontend scripts.
+	 *
+	 * @since 2.0.4
+	 * @param array  $data
+	 * @param string $page
+	 * @return array
+	 */
+	public function inject_credit_messaging_configuration( $data, $page = '' ) {
+		$context = ( 'product' === $page ) ? 'single_product_' : ( 'checkout' === $page ? 'mark_' : '' );
+		$context = ( $context && 'yes' === wc_gateway_ppec()->settings->{ $context . 'settings_toggle' } ) ? $context : '';
+
+		$show_credit_messaging = in_array( $page, array( 'product', 'cart', 'checkout' ), true );
+		$show_credit_messaging = $show_credit_messaging && ( 'no' !== wc_gateway_ppec()->settings->{ $context . 'credit_message_enabled' } );
+
+		// Credit messaging is disabled when Credit is not supported/enabled.
+		$show_credit_messaging = $show_credit_messaging && wc_gateway_ppec_is_credit_supported();
+		$show_credit_messaging = $show_credit_messaging && ( empty( $data['disallowed_methods'] ) || ! in_array( 'CREDIT', $data['disallowed_methods'], true ) );
+
+		// Credit messaging is disabled for subscription products or carts requiring billing agreements to be created.
+		$show_credit_messaging = $show_credit_messaging && ! wc_gateway_ppec()->checkout->needs_billing_agreement_creation( array() );
+		$show_credit_messaging = $show_credit_messaging && ( ! class_exists( 'WC_Subscriptions' ) || ! is_product() || ! WC_Subscriptions_Product::is_subscription( $GLOBALS['post']->ID ) );
+
+		if ( $show_credit_messaging ) {
+			$style = wp_parse_args(
+				array(
+					'layout'        => wc_gateway_ppec()->settings->{ $context . 'credit_message_layout' },
+					'logo'          => wc_gateway_ppec()->settings->{ $context . 'credit_message_logo' },
+					'logo_position' => wc_gateway_ppec()->settings->{ $context . 'credit_message_logo_position' },
+					'text_color'    => wc_gateway_ppec()->settings->{ $context . 'credit_message_text_color' },
+					'flex_color'    => wc_gateway_ppec()->settings->{ $context . 'credit_message_flex_color' },
+					'flex_ratio'    => wc_gateway_ppec()->settings->{ $context . 'credit_message_flex_ratio' },
+				),
+				array(
+					'layout'        => 'text',
+					'logo'          => 'primary',
+					'logo_position' => 'left',
+					'text_color'    => 'black',
+					'flex_color'    => 'black',
+					'flex_ratio'    => '1x1',
+				)
+			);
+
+			$data['credit_messaging'] = array(
+				'style'     => array(
+					'layout' => $style['layout'],
+					'logo'   => array(
+						'type'     => $style['logo'],
+						'position' => $style['logo_position'],
+					),
+					'text'   => array(
+						'color' => $style['text_color'],
+					),
+					'color'  => $style['flex_color'],
+					'ratio'  => $style['flex_ratio'],
+				),
+				'placement' => ( 'checkout' === $page ) ? 'payment' : $page,
+				'amount'    => ( 'product' === $page ) ? wc_get_price_including_tax( wc_get_product() ) : WC()->cart->get_total( 'raw' ),
+			);
+		}
+
+		return $data;
+	}
+
+	/**
 	 * Frontend scripts
 	 */
 	public function enqueue_scripts() {
@@ -549,7 +616,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 					'merchant-id' => $client->get_payer_id(),
 					'intent'      => 'authorization' === $settings->get_paymentaction() ? 'authorize' : 'capture',
 					'locale'      => $settings->get_paypal_locale(),
-					'components'  => 'buttons,funding-eligibility',
+					'components'  => 'buttons,funding-eligibility,messages',
 					'commit'      => 'checkout' === $page ? 'true' : 'false',
 					'currency'    => get_woocommerce_currency(),
 				);
