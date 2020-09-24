@@ -644,7 +644,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 	}
 
 	/**
-	 * Adds the data-namespace attribute when enqueuing the PayPal SDK script
+	 * Adds the data-namespace and data-partner-attribution-id attributes when enqueuing the PayPal SDK script.
 	 *
 	 * @since 2.0.1
 	 * @param string  $tag
@@ -652,7 +652,11 @@ class WC_Gateway_PPEC_Cart_Handler {
 	 * @return string
 	 */
 	public function add_paypal_sdk_namespace_attribute( $tag, $handle ) {
-		return ( 'paypal-checkout-sdk' === $handle ) ? str_replace( ' src', ' data-namespace="paypal_sdk" src', $tag ) : $tag;
+		if ( 'paypal-checkout-sdk' === $handle ) {
+			$tag = str_replace( ' src=', ' data-namespace="paypal_sdk" data-partner-attribution-id="WooThemes_EC" src=', $tag );
+		}
+
+		return $tag;
 	}
 
 	/**
