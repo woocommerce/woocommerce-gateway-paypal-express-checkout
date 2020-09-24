@@ -38,7 +38,7 @@ A "_deployment_" in our sense means:
 
 ## Branches
 
-* [`woocommerce/woocommerce-gateway-paypal-express-checkout/main`](https://github.com/woocommerce/woocommerce-gateway-paypal-express-checkout/tree/main) includes all code for the current version and any new pull requests merged that will be released with the next version. It can be considered stable for staging and development sites but not for production.
+* [`woocommerce/woocommerce-gateway-paypal-express-checkout/trunk`](https://github.com/woocommerce/woocommerce-gateway-paypal-express-checkout/tree/trunk) includes all code for the current version and any new pull requests merged that will be released with the next version. It can be considered stable for staging and development sites but not for production.
 
 ## Coding Standards
 
