@@ -24,4 +24,7 @@
 - [ ] This PR needs documentation (has the "Documentation" label).
 <!-- For an extra 💯 include further details about which change requires documentation -->
 
+### Changelog entry
+> Enter a summary of all changes on this Pull Request. This will appear in the changelog if accepted.
+
 Closes # .
