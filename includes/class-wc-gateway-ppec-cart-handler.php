@@ -491,11 +491,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 		// Credit messaging is disabled when Credit is not supported/enabled.
 		$show_credit_messaging = $show_credit_messaging && wc_gateway_ppec_is_credit_supported();
-		$show_credit_messaging = $show_credit_messaging && ( empty( $data['disallowed_methods'] ) || ! in_array( 'CREDIT', $data['disallowed_methods'], true ) );
-
-		// Credit messaging is disabled for subscription products or carts requiring billing agreements to be created.
-		$show_credit_messaging = $show_credit_messaging && ! wc_gateway_ppec()->checkout->needs_billing_agreement_creation( array() );
-		$show_credit_messaging = $show_credit_messaging && ( ! class_exists( 'WC_Subscriptions' ) || ! is_product() || ! WC_Subscriptions_Product::is_subscription( $GLOBALS['post']->ID ) );
+		$show_credit_messaging = $show_credit_messaging && ( empty( $data['disallowed_methods'] ) || ( ! in_array( 'CREDIT', $data['disallowed_methods'], true ) && ! in_array( 'PAYLATER', $data['disallowed_methods'], true ) ) );
 
 		if ( $show_credit_messaging ) {
 			$style = wp_parse_args(
@@ -531,7 +527,8 @@ class WC_Gateway_PPEC_Cart_Handler {
 					'ratio'  => $style['flex_ratio'],
 				),
 				'placement' => ( 'checkout' === $page ) ? 'payment' : $page,
-				'amount'    => ( 'product' === $page ) ? wc_get_price_including_tax( wc_get_product() ) : WC()->cart->get_total( 'raw' ),
+				// If Subscriptions is installed, we should not pass the 'amount' value.
+				'amount'    => class_exists( 'WC_Subscriptions' ) ? '' : ( ( 'product' === $page ) ? wc_get_price_including_tax( wc_get_product() ) : WC()->cart->get_total( 'raw' ) ),
 			);
 		}
 
@@ -620,6 +617,10 @@ class WC_Gateway_PPEC_Cart_Handler {
 					'commit'      => 'checkout' === $page ? 'true' : 'false',
 					'currency'    => get_woocommerce_currency(),
 				);
+
+				if ( ( 'product' === $page && class_exists( 'WC_Subscriptions_Product' ) && WC_Subscriptions_Product::is_subscription( $GLOBALS['post']->ID ) ) || wc_gateway_ppec()->checkout->needs_billing_agreement_creation( array() ) ) {
+					$script_args['vault'] = 'true';
+				}
 
 				$script_args = apply_filters( 'woocommerce_paypal_express_checkout_sdk_script_args', $script_args, $settings, $client );
 
