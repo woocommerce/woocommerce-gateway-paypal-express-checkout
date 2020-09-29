@@ -438,11 +438,9 @@ class WC_Gateway_PPEC_Cart_Handler {
 	protected function get_button_settings( $settings, $context = '' ) {
 		$prefix = $context ? $context . '_' : $context;
 		$data   = array(
-			'button_layout'        => $settings->{ $prefix . 'button_layout' },
-			'button_size'          => $settings->{ $prefix . 'button_size' },
-			'button_label'         => $settings->{ $prefix . 'button_label' },
-			'hide_funding_methods' => $settings->{ $prefix . 'hide_funding_methods' },
-			'credit_enabled'       => $settings->{ $prefix . 'credit_enabled' },
+			'button_layout' => $settings->{ $prefix . 'button_layout' },
+			'button_size'   => $settings->{ $prefix . 'button_size' },
+			'button_label'  => $settings->{ $prefix . 'button_label' },
 		);
 
 		$button_layout       = $data['button_layout'];
@@ -450,22 +448,25 @@ class WC_Gateway_PPEC_Cart_Handler {
 			? 'medium'
 			: $data['button_size'];
 
-		if ( ! wc_gateway_ppec_is_credit_supported() ) {
-			$data['credit_enabled'] = 'no';
-			if ( ! is_array( $data['hide_funding_methods'] ) ) {
-				$data['hide_funding_methods'] = array( 'CREDIT' );
-			} elseif ( ! in_array( 'CREDIT', $data['hide_funding_methods'], true ) ) {
-				$data['hide_funding_methods'][] = 'CREDIT';
-			}
-		}
+		// PayPal Credit.
+		$credit_supported = wc_gateway_ppec_is_credit_supported();
 
-		if ( 'vertical' === $button_layout ) {
-			$data['disallowed_methods'] = $data['hide_funding_methods'];
+		if ( 'horizontal' === $button_layout ) {
+			$data['allowed_methods']    = ( $credit_supported && 'yes' === $settings->{ $prefix . 'credit_enabled' } ) ? array( 'PAYLATER' ) : array();
+			$data['disallowed_methods'] = ( ! $credit_supported || 'yes' !== $settings->{ $prefix . 'credit_enabled' } ) ? array( 'CREDIT', 'PAYLATER' ) : array();
 		} else {
-			$data['allowed_methods']    = 'yes' === $data['credit_enabled'] ? array( 'CREDIT' ) : array();
-			$data['disallowed_methods'] = 'yes' !== $data['credit_enabled'] ? array( 'CREDIT' ) : array();
+			$hide_funding_methods = $settings->{ $prefix . 'hide_funding_methods' };
+			$hide_funding_methods = is_array( $hide_funding_methods ) ? $hide_funding_methods : array();
+
+			$data['disallowed_methods'] = array_values(
+				array_unique(
+					array_merge(
+						$hide_funding_methods,
+						( ! $credit_supported || in_array( 'CREDIT', $hide_funding_methods, true ) ) ? array( 'CREDIT', 'PAYLATER' ) : array()
+					)
+				)
+			);
 		}
-		unset( $data['hide_funding_methods'], $data['credit_enabled'] );
 
 		return $data;
 	}
