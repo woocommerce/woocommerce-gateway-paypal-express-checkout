@@ -45,12 +45,14 @@
 		}
 
 		var paypal_funding_methods = [];
-		for ( var i = 0; i < methods.length; i++ ) {
-			var method = paypal.FUNDING[ methods[ i ].toUpperCase() ];
+
+		$.each( methods, function( index, method_name ) {
+			var method = paypal.FUNDING[ method_name.toUpperCase() ];
 			if ( method ) {
 				paypal_funding_methods.push( method );
 			}
-		}
+		} );
+
 		return paypal_funding_methods;
 	}
 
