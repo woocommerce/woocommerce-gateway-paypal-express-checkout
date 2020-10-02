@@ -618,7 +618,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 					'currency'    => get_woocommerce_currency(),
 				);
 
-				if ( ( 'product' === $page && class_exists( 'WC_Subscriptions_Product' ) && WC_Subscriptions_Product::is_subscription( $GLOBALS['post']->ID ) ) || wc_gateway_ppec()->checkout->needs_billing_agreement_creation( array() ) ) {
+				if ( ( 'product' === $page && class_exists( 'WC_Subscriptions_Product' ) && WC_Subscriptions_Product::is_subscription( $GLOBALS['post']->ID ) ) || ( 'product' !== $page && wc_gateway_ppec()->checkout->needs_billing_agreement_creation( array() ) ) ) {
 					$script_args['vault'] = 'true';
 				}
 
