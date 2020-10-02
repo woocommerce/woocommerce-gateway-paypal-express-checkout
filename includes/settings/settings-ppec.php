@@ -450,7 +450,108 @@ $per_context_settings = array(
 		'desc_tip'    => true,
 		'description' => $credit_enabled_description,
 	),
+
+	'credit_message_enabled' => array(
+		'title'       => 'Enable PayPal Credit messages',
+		'type'        => 'checkbox',
+		'class'       => '',
+		'disabled'    => ! wc_gateway_ppec_is_credit_supported(),
+		'default'     => 'yes',
+		'label'       => __( 'Enable PayPal Credit messages', 'woocommerce-gateway-paypal-express-checkout' ),
+		'desc_tip'    => true,
+		'description' => __( 'Display credit messages on your website to promote special financing offers, which help increase sales.', 'woocommerce-gateway-paypal-express-checkout' ),
+	),
+	'credit_message_layout' => array(
+		'title'   => __( 'Credit Messaging Layout', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'    => 'select',
+		'class'   => 'wc-enhanced-select',
+		'default' => 'text',
+		'options' => array(
+			'text' => __( 'Text', 'woocommerce-gateway-paypal-express-checkout' ),
+			'flex' => __( 'Graphic', 'woocommerce-gateway-paypal-express-checkout' ),
+		),
+		'disabled' => ! wc_gateway_ppec_is_credit_supported(),
+		'desc_tip' => true,
+		'description' => __( 'The layout of the message.', 'woocommerce-gateway-paypal-express-checkout' ),
+	),
+	'credit_message_logo' => array(
+		'title'   => __( 'Credit Messaging logo', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'    => 'select',
+		'class'   => 'wc-enhanced-select',
+		'default' => 'primary',
+		'options' => array(
+			'primary'     => __( 'Primary', 'woocommerce-gateway-paypal-express-checkout' ),
+			'alternative' => __( 'Alternative', 'woocommerce-gateway-paypal-express-checkout' ),
+			'inline'      => __( 'In-Line', 'woocommerce-gateway-paypal-express-checkout' ),
+			'none'        => __( 'None', 'woocommerce-gateway-paypal-express-checkout' ),
+		),
+		'disabled' => ! wc_gateway_ppec_is_credit_supported(),
+		'desc_tip' => true,
+		'description' => __( 'PayPal Credit logo used in the message.', 'woocommerce-gateway-paypal-express-checkout' ),
+	),
+	'credit_message_logo_position' => array(
+		'title'  => __( 'Credit Messaging logo position', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'   => 'select',
+		'class'   => 'wc-enhanced-select',
+		'default' => 'left',
+		'options' => array(
+			'left'  => __( 'Left', 'woocommerce-gateway-paypal-express-checkout' ),
+			'right' => __( 'Right', 'woocommerce-gateway-paypal-express-checkout' ),
+			'top'   => __( 'Top', 'woocommerce-gateway-paypal-express-checkout' ),
+		),
+		'disabled' => ! wc_gateway_ppec_is_credit_supported(),
+		'desc_tip' => true,
+		'description' => __( 'Position of the PayPal logo in the message.', 'woocommerce-gateway-paypal-express-checkout' ),
+	),
+	'credit_message_text_color' => array(
+		'title'   => __( 'Credit Messaging text color', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type'    => 'select',
+		'class'   => 'wc-enhanced-select',
+		'default' => 'black',
+		'options' => array(
+			'black'      => __( 'Black', 'woocommerce-gateway-paypal-express-checkout' ),
+			'white'      => __( 'White', 'woocommerce-gateway-paypal-express-checkout' ),
+			'monochrome' => __( 'Monochrome', 'woocommerce-gateway-paypal-express-checkout' ),
+			'grayscale'  => __( 'Grayscale', 'woocommerce-gateway-paypal-express-checkout' ),
+		),
+		'disabled' => ! wc_gateway_ppec_is_credit_supported(),
+		'desc_tip' => true,
+		'description' => __( 'Text and logo color of the message.', 'woocommerce-gateway-paypal-express-checkout' ),
+	),
+	'credit_message_flex_color' => array(
+		'title' => __( 'Credit Messaging color', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type' => 'select',
+		'class' => 'wc-enhanced-select',
+		'default' => 'black',
+		'options' => array(
+			'blue'            => __( 'Blue', 'woocommerce-gateway-paypal-express-checkout' ),
+			'black'           => __( 'Black', 'woocommerce-gateway-paypal-express-checkout' ),
+			'white'           => __( 'White', 'woocommerce-gateway-paypal-express-checkout' ),
+			'white-no-border' => __( 'White no border', 'woocommerce-gateway-paypal-express-checkout' ),
+			'gray'            => __( 'Gray', 'woocommerce-gateway-paypal-express-checkout' ),
+		),
+		'disabled' => ! wc_gateway_ppec_is_credit_supported(),
+		'desc_tip' => true,
+		'description' => __( 'Color of the message.', 'woocommerce-gateway-paypal-express-checkout' ),
+	),
+	'credit_message_flex_ratio' => array(
+		'title' => __( 'Credit Messaging ratio', 'woocommerce-gateway-paypal-express-checkout' ),
+		'type' => 'select',
+		'class' => 'wc-enhanced-select',
+		'default' => '1x1',
+		'options' => array(
+			'1x1'  => __( '1x1', 'woocommerce-gateway-paypal-express-checkout' ),
+			'1x4'  => __( '1x4', 'woocommerce-gateway-paypal-express-checkout' ),
+			'8x1'  => __( '8x1', 'woocommerce-gateway-paypal-express-checkout' ),
+			'20x1' => __( '20x1', 'woocommerce-gateway-paypal-express-checkout' ),
+		),
+		'disabled' => ! wc_gateway_ppec_is_credit_supported(),
+		'desc_tip' => true,
+		'description' => __( 'Shape and size of the message.', 'woocommerce-gateway-paypal-express-checkout' ),
+	),
+
 );
+
 
 /**
  * Cart / global button settings.
@@ -489,6 +590,11 @@ $settings['mini_cart_settings_toggle'] = array(
 	'description' => __( 'Optionally override global button settings above and configure buttons for this context.', 'woocommerce-gateway-paypal-express-checkout' ),
 );
 foreach ( $per_context_settings as $key => $value ) {
+	// No PayPal Credit messaging settings for mini-cart.
+	if ( 0 === strpos( $key, 'credit_message_' ) ) {
+		continue;
+	}
+
 	$value['class']                 .= ' woocommerce_ppec_paypal_mini_cart';
 	$settings[ 'mini_cart_' . $key ] = $value;
 }

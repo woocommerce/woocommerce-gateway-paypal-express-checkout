@@ -240,6 +240,71 @@
 			} );
 		}
 
+		// Handle Credit settings.
+		var creditSettings = {
+			init: function() {
+				var refreshOnChange = [ 'button_layout', 'hide_funding_methods[]', 'credit_enabled', 'credit_message_enabled', 'credit_message_layout', 'credit_message_logo' ];
+				var selector        = $.map( refreshOnChange, function( val ) { return '[name^="woocommerce_ppec_paypal_"][name$="' + val + '"]'; } ).join( ', ' );
+
+				$( selector ).change( this.refreshUI );
+
+				// Trigger this to configure initial state for cart settings.
+				$( '#woocommerce_ppec_paypal_credit_enabled' ).change();
+				$( '#woocommerce_ppec_paypal_hide_funding_methods' ).change();
+			},
+
+			refreshUI: function( event ) {
+				var $contextSettings = $( event.target ).closest( 'table' );
+				var $creditSettings  = $contextSettings.find( '[name*="credit_"]' );
+				var $creditToggle    = $creditSettings.filter( '[name$="credit_enabled"]' );
+				var $messageToggle   = $creditSettings.filter( '[name$="credit_message_enabled"]' );
+				var $messageSettings = $creditSettings.filter( '[name*="credit_message"]' );
+				var $messageLayout   = $creditSettings.filter( '[name$="credit_message_layout"]' );
+				var $messageLogo     = $creditSettings.filter( '[name$="credit_message_logo"]' );
+				var creditEnabled    = false;
+
+				if ( 'horizontal' === $contextSettings.find( '[name$="button_layout"]' ).val() ) {
+					creditEnabled = $creditToggle.is( ':checked' ) && ! $creditToggle.is(':disabled');
+				} else {
+					creditEnabled = ( -1 === $.inArray( 'CREDIT', $contextSettings.find( '[name$="hide_funding_methods[]"]' ).val() ) );
+				}
+
+				// Hide Credit settings if Credit is not enabled.
+				if ( ! creditEnabled ) {
+					$creditSettings.not( $creditToggle ).closest( 'tr' ).hide();
+					return;
+				}
+
+				// Show the Credit message toggle.
+				$messageToggle.closest( 'tr' ).show();
+
+				// Hide messaging related settings if Credit message is not enabled.
+				if ( ! $messageToggle.is( ':checked' ) ) {
+					$messageSettings.not( $messageToggle ).closest( 'tr' ).hide();
+					return;
+				}
+
+				// Display layout setting.
+				$messageLayout.closest( 'tr' ).show();
+
+				// Display layout specific settings.
+				switch ( $messageLayout.val() ) {
+					case 'flex':
+						$messageSettings.not( $messageToggle ).not( $messageLayout ).not( '[name*="_flex_"]' ).closest( 'tr' ).hide();
+						$messageSettings.filter( '[name*="_flex_"]' ).closest( 'tr' ).show();
+						break;
+					case 'text':
+					default:
+						$messageSettings.filter( '[name*="_flex_"] ').closest( 'tr' ).hide();
+						$messageLogo.closest( 'tr' ).show();
+						$messageSettings.filter( '[name$="logo_position"]' ).closest( 'tr' ).toggle( 'primary' === $messageLogo.val() || 'alternative' === $messageLogo.val() );
+						$messageSettings.filter( '[name$="text_color"]' ).closest( 'tr' ).show();
+						break;
+				}
+			}
+		};
+		creditSettings.init();
+
 		$( '.woocommerce_ppec_paypal_button_layout' ).change( function( event ) {
 			if ( ! $( '#woocommerce_ppec_paypal_use_spb' ).is( ':checked' ) ) {
 				return;
@@ -314,6 +379,7 @@
 				// Show all settings in section.
 				$( '#woocommerce_ppec_paypal_single_product_settings_toggle, .woocommerce_ppec_paypal_single_product' ).closest( 'tr' ).show();
 				$( '#woocommerce_ppec_paypal_single_product_button_layout' ).change();
+				$( '#woocommerce_ppec_paypal_single_product_credit_enabled' ).change();
 			}
 			showHideDefaultButtonSettings();
 		} ).change();
@@ -334,6 +400,7 @@
 				// Show all settings in section.
 				$( '#woocommerce_ppec_paypal_mark_settings_toggle, .woocommerce_ppec_paypal_mark' ).closest( 'tr' ).show();
 				$( '#woocommerce_ppec_paypal_mark_button_layout' ).change();
+				$( '#woocommerce_ppec_paypal_mark_credit_enabled' ).change();
 			}
 			showHideDefaultButtonSettings();
 		} ).change();

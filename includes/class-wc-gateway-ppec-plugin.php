@@ -128,10 +128,25 @@ class WC_Gateway_PPEC_Plugin {
 			delete_option( 'pp_woo_enabled' );
 		}
 
+		$previous_version = get_option( 'wc_ppec_version' );
+
 		// Check the the WC version on plugin update to determine if we need to display a warning.
 		// The option was added in 1.6.19 so we only need to check stores updating from before that version. Updating from 1.6.19 or greater would already have it set.
-		if ( version_compare( get_option( 'wc_ppec_version' ), '1.6.19', '<' ) && version_compare( WC_VERSION, '3.0', '<' ) ) {
+		if ( version_compare( $previous_version, '1.6.19', '<' ) && version_compare( WC_VERSION, '3.0', '<' ) ) {
 			update_option( 'wc_ppec_display_wc_3_0_warning', 'true' );
+		}
+
+		// Credit messaging is disabled by default for merchants upgrading from < 2.0.4.
+		if ( $previous_version && version_compare( $previous_version, '2.0.4', '<' ) ) {
+			$settings = get_option( 'woocommerce_ppec_paypal_settings', array() );
+
+			if ( is_array( $settings ) ) {
+				$settings['credit_message_enabled']                = 'no';
+				$settings['single_product_credit_message_enabled'] = 'no';
+				$settings['mark_credit_message_enabled']           = 'no';
+
+				update_option( 'woocommerce_ppec_paypal_settings', $settings );
+			}
 		}
 
 		update_option( 'wc_ppec_version', $new_version );
