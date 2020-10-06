@@ -70,7 +70,7 @@
 		}
 
 		// Add an element for messaging.
-		var messagingWrapper = $( '<div></div>' ).insertBefore( buttonSelector ).get( 0 );
+		var messagingWrapper = $( '<div id="woo-ppec-credit-messaging"></div>' ).prependTo( buttonSelector ).get( 0 );
 		paypal.Messages( wc_ppec_context.credit_messaging ).render( messagingWrapper );
 	}
 
