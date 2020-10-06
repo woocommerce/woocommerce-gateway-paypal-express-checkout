@@ -136,8 +136,8 @@ class WC_Gateway_PPEC_Plugin {
 			update_option( 'wc_ppec_display_wc_3_0_warning', 'true' );
 		}
 
-		// Credit messaging is disabled by default for merchants upgrading from < 2.0.4.
-		if ( $previous_version && version_compare( $previous_version, '2.0.4', '<' ) ) {
+		// Credit messaging is disabled by default for merchants upgrading from < 2.1.
+		if ( $previous_version && version_compare( $previous_version, '2.1.0', '<' ) ) {
 			$settings = get_option( 'woocommerce_ppec_paypal_settings', array() );
 
 			if ( is_array( $settings ) ) {
