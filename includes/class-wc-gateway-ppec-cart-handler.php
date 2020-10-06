@@ -477,7 +477,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 	/**
 	 * Adds PayPal Credit Message context to `wc_ppec_context` for consumption by frontend scripts.
 	 *
-	 * @since 2.0.4
+	 * @since 2.1
 	 * @param array  $data
 	 * @param string $page
 	 * @return array
