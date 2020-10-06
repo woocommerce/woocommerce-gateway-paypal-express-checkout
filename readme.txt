@@ -1,10 +1,10 @@
 === WooCommerce PayPal Checkout Payment Gateway ===
-Contributors: woocommerce, automattic, woothemes, akeda, dwainm, royho, allendav, slash1andy, woosteve, spraveenitpro, mikedmoore, fernashes, shellbeezy, danieldudzic, mikaey, fullysupportedphil, dsmithweb, corsonr, bor0, zandyring, pauldechov, robobot3000
+Contributors: woocommerce, automattic, woothemes, akeda, dwainm, royho, allendav, slash1andy, woosteve, spraveenitpro, mikedmoore, fernashes, shellbeezy, danieldudzic, mikaey, fullysupportedphil, dsmithweb, corsonr, bor0, zandyring, pauldechov, robobot3000, jorgeatorres, mattdallan, menakas, chickenn00dle, jamesgallan, achyuthajoy, codestor
 Tags: ecommerce, e-commerce, commerce, woothemes, wordpress ecommerce, store, sales, sell, shop, shopping, cart, checkout, configurable, paypal
 Requires at least: 4.4
-Tested up to: 5.4
+Tested up to: 5.5
 Requires PHP: 5.5
-Stable tag: 2.0.3
+Stable tag: 2.1.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -101,6 +101,11 @@ Please use this to inform us about bugs, or make contributions via PRs.
 9. Initiate checkout from mini-cart.
 
 == Changelog ==
+
+= 2.1.0 - 2020-10-06 =
+* New - Add support for PayPal Credit messaging. PR#810
+* Fix - Hide the "Pay Later" funding method when "PayPal Credit" is disabled. PR#811
+* Fix - Display correct image size in the PayPal Checkout window. PR#779
 
 = 2.0.3 - 2020-07-01 =
 * Fix - Records the proper refunded_amount to _woo_pp_txnData in the database PR#764

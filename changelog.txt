@@ -1,5 +1,10 @@
 *** Changelog ***
 
+= 2.1.0 - 2020-10-06 =
+* New - Add support for PayPal Credit messaging. PR#810
+* Fix - Hide the "Pay Later" funding method when "PayPal Credit" is disabled. PR#811
+* Fix - Display correct image size in the PayPal Checkout window. PR#779
+
 = 2.0.3 - 2020-07-01 =
 * Fix - Records the proper refunded_amount to _woo_pp_txnData in the database PR#764
 * Fix - Redirect customers back to the original page they left on after closing PayPal modal PR#765
