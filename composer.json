@@ -4,7 +4,7 @@
 	"homepage": "https://woocommerce.com/products/woocommerce-gateway-paypal-checkout/",
 	"type": "wordpress-plugin",
 	"require-dev": {
-	  "woocommerce/woocommerce-sniffs": "0.0.10"
+	  "woocommerce/woocommerce-sniffs": "0.1.0"
 	},
 	"scripts": {
 	  "phpcs": [
