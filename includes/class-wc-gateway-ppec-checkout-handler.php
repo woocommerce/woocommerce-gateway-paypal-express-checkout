@@ -135,7 +135,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			return $fields;
 		}
 
-		if ( method_exists( WC()->cart, 'needs_shipping' ) && ! WC()->cart->needs_shipping() && 'no' === wc_gateway_ppec()->settings->require_billing ) {
+		if ( is_callable( array( WC()->cart, 'needs_shipping' ) ) && ! WC()->cart->needs_shipping() && 'no' === wc_gateway_ppec()->settings->require_billing ) {
 			$not_required_fields = array( 'first_name', 'last_name', 'company', 'address_1', 'address_2', 'city', 'postcode', 'country' );
 			foreach ( $not_required_fields as $not_required_field ) {
 				if ( array_key_exists( $not_required_field, $fields ) ) {
