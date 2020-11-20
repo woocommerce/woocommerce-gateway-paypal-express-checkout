@@ -18,9 +18,11 @@
     "docker:down": "npm explore @woocommerce/e2e-environment -- npm run docker:down"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.10.4",
-    "@woocommerce/e2e-environment": "^0.1.5",
-    "@wordpress/e2e-test-utils": "^4.10.0",
-    "config": "^3.3.1"
+    "@woocommerce/e2e-environment": "^0.1.6",
+    "@wordpress/e2e-test-utils": "^4.15.0"
+  },
+  "dependencies": {
+    "@babel/preset-env": "^7.12.1",
+    "@woocommerce/e2e-utils": "^0.1.1"
   }
 }

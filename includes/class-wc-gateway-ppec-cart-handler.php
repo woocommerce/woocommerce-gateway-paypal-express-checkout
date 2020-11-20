@@ -551,6 +551,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 					'components'  => 'buttons,funding-eligibility',
 					'commit'      => 'checkout' === $page ? 'true' : 'false',
 					'currency'    => get_woocommerce_currency(),
+					'buyer-country' => 'US',
 				);
 
 				$script_args = apply_filters( 'woocommerce_paypal_express_checkout_sdk_script_args', $script_args, $settings, $client );
