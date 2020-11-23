@@ -4,7 +4,7 @@ Tags: ecommerce, e-commerce, commerce, woothemes, wordpress ecommerce, store, sa
 Requires at least: 4.4
 Tested up to: 5.5
 Requires PHP: 5.5
-Stable tag: 2.1.0
+Stable tag: 2.1.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -101,6 +101,10 @@ Please use this to inform us about bugs, or make contributions via PRs.
 9. Initiate checkout from mini-cart.
 
 == Changelog ==
+
+= 2.1.1 - 2020-11-24 =
+* Fix - Update the bundle.pem file to use the certificates from PayPal. PR#822
+* Tweak - PHP 8.0 compatibility. PR#837
 
 = 2.1.0 - 2020-10-06 =
 * New - Add support for PayPal Credit messaging. PR#810
