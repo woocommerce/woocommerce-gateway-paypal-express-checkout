@@ -1,5 +1,9 @@
 *** Changelog ***
 
+= 2.1.1 - 2020-11-24 =
+* Fix - Update the bundle.pem file to use the certificates from PayPal. PR#822
+* Tweak - PHP 8.0 compatibility. PR#837
+
 = 2.1.0 - 2020-10-06 =
 * New - Add support for PayPal Credit messaging. PR#810
 * Fix - Hide the "Pay Later" funding method when "PayPal Credit" is disabled. PR#811
