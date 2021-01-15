@@ -35,6 +35,9 @@ class WC_Gateway_PPEC_Cart_Handler {
 			add_action( 'woocommerce_after_add_to_cart_form', array( $this, 'display_paypal_button_product' ), 1 );
 			add_action( 'wc_ajax_wc_ppec_generate_cart', array( $this, 'wc_ajax_generate_cart' ) );
 			add_action( 'wp', array( $this, 'ensure_session' ) ); // Ensure there is a customer session so that nonce is not invalidated by new session created on AJAX POST request.
+		} else {
+			// We also have to ensure session when guests checkout via order-pay endpoint.
+			add_action( 'woocommerce_pay_order_after_submit', array( $this, 'ensure_session' ) );
 		}
 
 		add_action( 'wc_ajax_wc_ppec_update_shipping_costs', array( $this, 'wc_ajax_update_shipping_costs' ) );
