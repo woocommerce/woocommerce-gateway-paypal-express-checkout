@@ -248,7 +248,7 @@
 						onError:       button_args.onError,
 						onCancel:      button_args.onCancel,
 						fundingSource: fundingSource,
-						style:         ( paypal.FUNDING.PAYPAL === fundingSource ) ? button_args.style : { layout: button_args.style.layout }
+						style:         ( paypal.FUNDING.PAYPAL === fundingSource ) ? button_args.style : { layout: button_args.style.layout, shape: button_args.style.shape }
 					};
 
 					var button = paypal.Buttons( buttonSettings );
