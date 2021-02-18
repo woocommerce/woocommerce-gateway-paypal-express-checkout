@@ -19,7 +19,7 @@
 		// Adapted from https://github.com/woocommerce/woocommerce/blob/ea9aa8cd59c9fa735460abf0ebcb97fa18f80d03/assets/js/frontend/checkout.js#L514-L529
 		$( '.woocommerce-NoticeGroup-checkout, .woocommerce-error, .woocommerce-message' ).remove();
 		$container.prepend( '<div class="woocommerce-NoticeGroup woocommerce-NoticeGroup-checkout">' + errorMessage + '</div>' );
-		$container.find( '.input-text, select, input:checkbox' ).trigger( 'validate' ).blur();
+		$container.find( '.input-text, select, input:checkbox' ).trigger( 'validate' ).trigger( 'blur' );
 
 		var scrollElement = $( '.woocommerce-NoticeGroup-checkout' );
 		if ( ! scrollElement.length ) {
@@ -186,7 +186,7 @@
 					$( 'form.checkout' )
 						.append( $( '<input type="hidden" name="paymentToken" /> ' ).attr( 'value', ! wc_ppec_context.use_checkout_js ? data.orderID : data.paymentToken ) )
 						.append( $( '<input type="hidden" name="payerID" /> ' ).attr( 'value', data.payerID ) )
-						.submit();
+						.trigger( 'submit' );
 				} else {
 					// Navigate to order confirmation URL specified in original request to PayPal from back-end.
 					if ( ! wc_ppec_context.use_checkout_js ) {
@@ -268,6 +268,7 @@
 		if ( 'checkout' !== wc_ppec_context.page ) {
 			render();
 		}
+
 		$( document.body ).on( 'updated_cart_totals updated_checkout', render.bind( this, false ) );
 	}
 

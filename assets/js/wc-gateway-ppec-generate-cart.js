@@ -33,7 +33,7 @@
 				} )
 				.on( 'mouseup', function( event ) {
 					event.stopImmediatePropagation();
-					form.find( ':submit' ).click();
+					form.find( ':submit' ).trigger( 'click' );
 				} )
 				.find( '> *' )
 				.css( 'pointer-events', 'none' );
