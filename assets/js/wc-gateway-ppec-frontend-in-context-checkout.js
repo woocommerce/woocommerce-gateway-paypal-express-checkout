@@ -3,7 +3,7 @@
 
 	var $wc_ppec = {
 		init: function() {
-			window.paypalCheckoutReady = function() {				
+			window.paypalCheckoutReady = function() {
 				paypal.checkout.setup(
 					wc_ppec_context.payer_id,
 					{
@@ -19,7 +19,7 @@
 
 	var costs_updated = false;
 
-	$( '#woo_pp_ec_button' ).click( function( event ) {
+	$( '#woo_pp_ec_button' ).on( 'click', function( event ) {
 		if ( costs_updated ) {
 			costs_updated = false;
 
@@ -40,7 +40,7 @@
 			url:     wc_ppec_context.ajaxurl,
 			success: function( response ) {
 				costs_updated = true;
-				$( '#woo_pp_ec_button' ).click();
+				$( '#woo_pp_ec_button' ).trigger( 'click' );
 			}
 		} );
 	} );

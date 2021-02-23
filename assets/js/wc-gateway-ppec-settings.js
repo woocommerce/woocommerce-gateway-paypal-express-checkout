@@ -156,7 +156,7 @@
 			// If the enter key is pressed.
 			if ( 13 === event.which ) {
 				event.preventDefault();
-				$( ".woocommerce-save-button[name='save']" ).click();
+				$( ".woocommerce-save-button[name='save']" ).trigger( 'click' );
 			}
 		},
 	};
@@ -189,7 +189,7 @@
 		// as of v1.7.0 this option is enabled by default, but can be modified using a filter. Hiding the checkbox will let the settings page hide/show the correct settings depending on whether spb is enabled or disabled
 		$( '#woocommerce_ppec_paypal_use_spb' ).closest( 'tr' ).hide();
 
-		$( '#woocommerce_ppec_paypal_environment' ).change(function(){
+		$( '#woocommerce_ppec_paypal_environment' ).on( 'change', function(){
 			$( ppec_sandbox_fields + ',' + ppec_live_fields ).closest( 'tr' ).hide();
 
 			if ( 'live' === $( this ).val() ) {
@@ -207,23 +207,23 @@
 					$( ppec_sandbox_fields ).closest( 'tr' ).show();
 				}
 			}
-		}).change();
+		}).trigger( 'change' );
 
-		$( '#woocommerce_ppec_paypal_enabled' ).change(function(){
+		$( '#woocommerce_ppec_paypal_enabled' ).on( 'change', function(){
 			if ( $( this ).is( ':checked' ) ) {
 				$( ppec_mark_fields ).closest( 'tr' ).show();
 			} else {
 				$( ppec_mark_fields ).closest( 'tr' ).hide();
 			}
-		}).change();
+		}).trigger( 'change' );
 
-		$( '#woocommerce_ppec_paypal_paymentaction' ).change(function(){
+		$( '#woocommerce_ppec_paypal_paymentaction' ).on( 'change', function(){
 			if ( 'sale' === $( this ).val() ) {
 				$( '#woocommerce_ppec_paypal_instant_payments' ).closest( 'tr' ).show();
 			} else {
 				$( '#woocommerce_ppec_paypal_instant_payments' ).closest( 'tr' ).hide();
 			}
-		}).change();
+		}).trigger( 'change' );
 
 		if ( enable_toggle ) {
 			$( document ).off( 'click', '.ppec-toggle-settings' );
@@ -246,11 +246,11 @@
 				var refreshOnChange = [ 'button_layout', 'hide_funding_methods[]', 'credit_enabled', 'credit_message_enabled', 'credit_message_layout', 'credit_message_logo' ];
 				var selector        = $.map( refreshOnChange, function( val ) { return '[name^="woocommerce_ppec_paypal_"][name$="' + val + '"]'; } ).join( ', ' );
 
-				$( selector ).change( this.refreshUI );
+				$( selector ).on( 'change', this.refreshUI );
 
 				// Trigger this to configure initial state for cart settings.
-				$( '#woocommerce_ppec_paypal_credit_enabled' ).change();
-				$( '#woocommerce_ppec_paypal_hide_funding_methods' ).change();
+				$( '#woocommerce_ppec_paypal_credit_enabled' ).trigger( 'change' );
+				$( '#woocommerce_ppec_paypal_hide_funding_methods' ).trigger( 'change' );
 			},
 
 			refreshUI: function( event ) {
@@ -305,7 +305,7 @@
 		};
 		creditSettings.init();
 
-		$( '.woocommerce_ppec_paypal_button_layout' ).change( function( event ) {
+		$( '.woocommerce_ppec_paypal_button_layout' ).on( 'change', function( event ) {
 			if ( ! $( '#woocommerce_ppec_paypal_use_spb' ).is( ':checked' ) ) {
 				return;
 			}
@@ -323,9 +323,9 @@
 				button_size.removeClass( 'enhanced' );
 				button_size_option.prop( 'disabled', isVertical );
 				$( document.body ).trigger( 'wc-enhanced-select-init' );
-				! button_size.val() && button_size.val( 'responsive' ).change();
+				! button_size.val() && button_size.val( 'responsive' ).trigger( 'change' );
 			}
-		} ).change();
+		} ).trigger( 'change' );
 
 		// Hide default layout and size settings if they'll be overridden anyway.
 		function showHideDefaultButtonSettings() {
@@ -335,11 +335,11 @@
 				( $( '#woocommerce_ppec_paypal_mark_enabled' ).is( ':checked' ) && ! $( '#woocommerce_ppec_paypal_mark_settings_toggle' ).is( ':checked' ) );
 
 			$( '#woocommerce_ppec_paypal_button_layout, #woocommerce_ppec_paypal_button_size, #woocommerce_ppec_paypal_hide_funding_methods, #woocommerce_ppec_paypal_credit_enabled' ).closest( 'tr' ).toggle( display );
-			display && $( '#woocommerce_ppec_paypal_button_layout' ).change();
+			display && $( '#woocommerce_ppec_paypal_button_layout' ).trigger( 'change' );
 		}
 
 		// Toggle mini-cart section based on whether checkout on cart page is enabled
-		$( '#woocommerce_ppec_paypal_cart_checkout_enabled' ).change( function( event ) {
+		$( '#woocommerce_ppec_paypal_cart_checkout_enabled' ).on( 'change', function( event ) {
 			if ( ! $( '#woocommerce_ppec_paypal_use_spb' ).is( ':checked' ) ) {
 				return;
 			}
@@ -351,19 +351,19 @@
 					.next( 'p' ) // Select description if present.
 				.addBack()
 				.toggle( checked );
-			checked && $( '#woocommerce_ppec_paypal_mini_cart_settings_toggle' ).change();
+			checked && $( '#woocommerce_ppec_paypal_mini_cart_settings_toggle' ).trigger( 'change' );
 			showHideDefaultButtonSettings();
-		} ).change();
+		} ).trigger( 'change' );
 
-		$( '#woocommerce_ppec_paypal_mini_cart_settings_toggle' ).change( function( event ) {
+		$( '#woocommerce_ppec_paypal_mini_cart_settings_toggle' ).on( 'change', function( event ) {
 			// Only show settings specific to mini-cart if configured to override global settings.
 			var checked = $( event.target ).is( ':checked' );
 			$( '.woocommerce_ppec_paypal_mini_cart' ).closest( 'tr' ).toggle( checked );
-			checked && $( '#woocommerce_ppec_paypal_mini_cart_button_layout' ).change();
+			checked && $( '#woocommerce_ppec_paypal_mini_cart_button_layout' ).trigger( 'change' );
 			showHideDefaultButtonSettings();
-		} ).change();
+		} ).trigger( 'change' );
 
-		$( '#woocommerce_ppec_paypal_checkout_on_single_product_enabled, #woocommerce_ppec_paypal_single_product_settings_toggle' ).change( function( event ) {
+		$( '#woocommerce_ppec_paypal_checkout_on_single_product_enabled, #woocommerce_ppec_paypal_single_product_settings_toggle' ).on( 'change', function( event ) {
 			if ( ! $( '#woocommerce_ppec_paypal_use_spb' ).is( ':checked' ) ) {
 				return;
 			}
@@ -378,13 +378,13 @@
 			} else {
 				// Show all settings in section.
 				$( '#woocommerce_ppec_paypal_single_product_settings_toggle, .woocommerce_ppec_paypal_single_product' ).closest( 'tr' ).show();
-				$( '#woocommerce_ppec_paypal_single_product_button_layout' ).change();
-				$( '#woocommerce_ppec_paypal_single_product_credit_enabled' ).change();
+				$( '#woocommerce_ppec_paypal_single_product_button_layout' ).trigger( 'change' );
+				$( '#woocommerce_ppec_paypal_single_product_credit_enabled' ).trigger( 'change' );
 			}
 			showHideDefaultButtonSettings();
-		} ).change();
+		} ).trigger( 'change' );
 
-		$( '#woocommerce_ppec_paypal_mark_enabled, #woocommerce_ppec_paypal_mark_settings_toggle' ).change( function() {
+		$( '#woocommerce_ppec_paypal_mark_enabled, #woocommerce_ppec_paypal_mark_settings_toggle' ).on( 'change', function() {
 			if ( ! $( '#woocommerce_ppec_paypal_use_spb' ).is( ':checked' ) ) {
 				return;
 			}
@@ -399,16 +399,16 @@
 			} else {
 				// Show all settings in section.
 				$( '#woocommerce_ppec_paypal_mark_settings_toggle, .woocommerce_ppec_paypal_mark' ).closest( 'tr' ).show();
-				$( '#woocommerce_ppec_paypal_mark_button_layout' ).change();
-				$( '#woocommerce_ppec_paypal_mark_credit_enabled' ).change();
+				$( '#woocommerce_ppec_paypal_mark_button_layout' ).trigger( 'change' );
+				$( '#woocommerce_ppec_paypal_mark_credit_enabled' ).trigger( 'change' );
 			}
 			showHideDefaultButtonSettings();
-		} ).change();
+		} ).trigger( 'change' );
 
 		// Make sure handlers are only attached once if script is loaded multiple times.
 		$( '#woocommerce_ppec_paypal_use_spb' ).off( 'change' );
 
-		$( '#woocommerce_ppec_paypal_use_spb' ).change( function( event ) {
+		$( '#woocommerce_ppec_paypal_use_spb' ).on( 'change', function( event ) {
 			var checked = $( event.target ).is( ':checked' );
 
 			// Show settings specific to Smart Payment Buttons only if enabled.
@@ -417,7 +417,7 @@
 
 			if ( checked ) {
 				// Trigger all logic that controls visibility of other settings.
-				$( '.woocommerce_ppec_paypal_visibility_toggle' ).change();
+				$( '.woocommerce_ppec_paypal_visibility_toggle' ).trigger( 'change' );
 			} else {
 				// If non-SPB mode is enabled, show all settings that may have been hidden.
 				$( '#woocommerce_ppec_paypal_button_size, #woocommerce_ppec_paypal_credit_enabled' ).closest( 'tr' ).show();
@@ -428,16 +428,16 @@
 			button_size.find( 'option[value=\"responsive\"]' ).prop( 'disabled', ! checked );
 			! checked && button_size.find( 'option[value=\"small\"]' ).prop( 'disabled', false );
 			$( document.body ).trigger( 'wc-enhanced-select-init' );
-		} ).change();
+		} ).trigger( 'change' );
 
 		// Reset button size values to default when switching modes.
-		$( '#woocommerce_ppec_paypal_use_spb' ).change( function( event ) {
+		$( '#woocommerce_ppec_paypal_use_spb' ).on( 'change', function( event ) {
 			if ( $( event.target ).is( ':checked' ) ) {
 				// In SPB mode, set to recommended 'Responsive' value so it is not missed.
-				$( '#woocommerce_ppec_paypal_button_size' ).val( 'responsive' ).change();
+				$( '#woocommerce_ppec_paypal_button_size' ).val( 'responsive' ).trigger( 'change' );
 			} else if ( ! $( '#woocommerce_ppec_paypal_button_size' ).val() ) {
 				// Set back to original default for non-SPB mode.
-				$( '#woocommerce_ppec_paypal_button_size' ).val( 'large' ).change();
+				$( '#woocommerce_ppec_paypal_button_size' ).val( 'large' ).trigger( 'change' );
 			}
 		} );
 	} );
