@@ -839,7 +839,7 @@ class WC_Gateway_PPEC_Client {
 					'name'     => $order_item['name'],
 					'quantity' => $order_item['qty'],
 					'amount'   => $amount,
-					'sku'      => $product->get_sku(),
+					'sku'      => ( $product instanceof WC_Product ) ? $product->get_sku() : sanitize_title( $order_item['name'] ),
 				);
 			}
 
