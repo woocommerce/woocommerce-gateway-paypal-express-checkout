@@ -165,6 +165,7 @@ class WC_Gateway_PPEC_Plugin {
 		add_filter( 'plugin_action_links_' . plugin_basename( $this->file ), array( $this, 'plugin_action_links' ) );
 		add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 2 );
 		add_action( 'wp_ajax_ppec_dismiss_notice_message', array( $this, 'ajax_dismiss_notice' ) );
+		add_action( "after_plugin_row_" . WC_GATEWAY_PPEC_PLUGIN_BASE, array( $this, 'paypal_payments_upgrade_notice' ), 10, 3 );
 	}
 
 	public function bootstrap() {
@@ -490,6 +491,17 @@ class WC_Gateway_PPEC_Plugin {
 		}
 
 		return apply_filters( 'woocommerce_cart_needs_shipping', $needs_shipping );
+	}
+
+	/**
+	 * Displays notice to upgrade to PayPal Payments.
+	 *
+	 * @param string $plugin_file Path to the plugin file relative to the plugins directory.
+	 * @param array $plugin_data An array of plugin data.
+	 * @param string $status Status filter currently applied to the plugin list.
+	 */
+	public function paypal_payments_upgrade_notice( $plugin_file, $plugin_data, $status ) {
+
 	}
 
 	/* Deprecated Functions */
