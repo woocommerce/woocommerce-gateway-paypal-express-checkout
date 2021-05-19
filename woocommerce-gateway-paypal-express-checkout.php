@@ -29,6 +29,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 define( 'WC_GATEWAY_PPEC_VERSION', '2.1.1' );
 
+// Define plugin base
+define( 'WC_GATEWAY_PPEC_PLUGIN_BASE', plugin_basename( __FILE__ ) );
+
 /**
  * Return instance of WC_Gateway_PPEC_Plugin.
  *
