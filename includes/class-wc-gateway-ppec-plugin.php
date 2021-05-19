@@ -149,6 +149,10 @@ class WC_Gateway_PPEC_Plugin {
 			}
 		}
 
+		if ( function_exists( 'add_woocommerce_inbox_variant' ) ) {
+			add_woocommerce_inbox_variant();
+		}
+
 		update_option( 'wc_ppec_version', $new_version );
 	}
 
