@@ -165,7 +165,7 @@ class WC_Gateway_PPEC_Plugin {
 		add_filter( 'plugin_action_links_' . plugin_basename( $this->file ), array( $this, 'plugin_action_links' ) );
 		add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 2 );
 		add_action( 'wp_ajax_ppec_dismiss_notice_message', array( $this, 'ajax_dismiss_notice' ) );
-		add_action( "after_plugin_row_" . WC_GATEWAY_PPEC_PLUGIN_BASE, array( $this, 'paypal_payments_upgrade_notice' ), 10, 3 );
+		add_action( 'after_plugin_row_' . WC_GATEWAY_PPEC_PLUGIN_BASE, array( $this, 'paypal_payments_upgrade_notice' ), 10, 3 );
 	}
 
 	public function bootstrap() {
