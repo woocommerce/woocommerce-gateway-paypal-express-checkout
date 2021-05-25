@@ -12,7 +12,7 @@
  * Text Domain: woocommerce-gateway-paypal-express-checkout
  * Domain Path: /languages
  * WC tested up to: 5.3
- * WC requires at least: 2.6
+ * WC requires at least: 3.2.0
  */
 /**
  * Copyright (c) 2019 PayPal, Inc.
