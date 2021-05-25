@@ -47,3 +47,19 @@ function wc_gateway_ppec() {
 }
 
 wc_gateway_ppec()->maybe_run();
+
+/**
+ * Adds the WooCommerce Inbox option on plugin activation
+ *
+ * @since 2.1.2
+ */
+if ( ! function_exists( 'add_woocommerce_inbox_variant' ) ) {
+	function add_woocommerce_inbox_variant() {
+		$option = 'woocommerce_inbox_variant_assignment';
+
+		if ( false === get_option( $option, false ) ) {
+			update_option( $option, wp_rand( 1, 12 ) );
+		}
+	}
+}
+register_activation_hook( __FILE__, 'add_woocommerce_inbox_variant' );
