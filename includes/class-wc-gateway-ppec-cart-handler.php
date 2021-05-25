@@ -34,11 +34,10 @@ class WC_Gateway_PPEC_Cart_Handler {
 		if ( 'yes' === wc_gateway_ppec()->settings->checkout_on_single_product_enabled ) {
 			add_action( 'woocommerce_after_add_to_cart_form', array( $this, 'display_paypal_button_product' ), 1 );
 			add_action( 'wc_ajax_wc_ppec_generate_cart', array( $this, 'wc_ajax_generate_cart' ) );
-			add_action( 'wp', array( $this, 'ensure_session' ) ); // Ensure there is a customer session so that nonce is not invalidated by new session created on AJAX POST request.
-		} else {
-			// We also have to ensure session when guests checkout via order-pay endpoint.
-			add_action( 'woocommerce_pay_order_after_submit', array( $this, 'ensure_session' ) );
 		}
+
+		// Ensure there is a customer session so that nonce is not invalidated by new session created on AJAX POST request.
+		add_action( 'wp', array( $this, 'maybe_ensure_session' ) );
 
 		add_action( 'wc_ajax_wc_ppec_update_shipping_costs', array( $this, 'wc_ajax_update_shipping_costs' ) );
 		add_action( 'wc_ajax_wc_ppec_start_checkout', array( $this, 'wc_ajax_start_checkout' ) );
@@ -665,8 +664,10 @@ class WC_Gateway_PPEC_Cart_Handler {
 
 	/**
 	 * Creates a customer session if one is not already active.
+	 *
+	 * @since 2.1.2
 	 */
-	public function ensure_session() {
+	public function maybe_ensure_session() {
 		// TODO: this tries to replicate Woo core functionality of checking for frontend requests.
 		// It can be removed once we drop support for pre-3.5 versions.
 		$frontend = ( ! is_admin() || defined( 'DOING_AJAX' ) ) && ! defined( 'DOING_CRON' ) && ! defined( 'REST_REQUEST' );
@@ -675,7 +676,9 @@ class WC_Gateway_PPEC_Cart_Handler {
 			return;
 		}
 
-		if ( ! empty( WC()->session ) && ! WC()->session->has_session() && is_product() ) {
+		$ensure_sesion = ( 'yes' === wc_gateway_ppec()->settings->checkout_on_single_product_enabled && is_product() ) || is_wc_endpoint_url( 'order-pay' );
+
+		if ( ! empty( WC()->session ) && ! WC()->session->has_session() && $ensure_sesion ) {
 			WC()->session->set_customer_session_cookie( true );
 		}
 	}
@@ -744,5 +747,13 @@ class WC_Gateway_PPEC_Cart_Handler {
 	 */
 	public function setECParams() {
 		_deprecated_function( __METHOD__, '1.2.0', '' );
+	}
+
+	/**
+	 * @deprecated since 2.1.2
+	 */
+	public function ensure_session() {
+		_deprecated_function( __METHOD__, '2.1.2', 'WC_Gateway_PPEC_Cart_Handler::maybe_ensure_session()' );
+		$this->maybe_ensure_session();
 	}
 }
