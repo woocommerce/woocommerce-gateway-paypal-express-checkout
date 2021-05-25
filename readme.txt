@@ -2,7 +2,7 @@
 Contributors: woocommerce, automattic, woothemes, akeda, dwainm, royho, allendav, slash1andy, woosteve, spraveenitpro, mikedmoore, fernashes, shellbeezy, danieldudzic, mikaey, fullysupportedphil, dsmithweb, corsonr, bor0, zandyring, pauldechov, robobot3000, jorgeatorres, mattdallan, menakas, chickenn00dle, jamesgallan, achyuthajoy, codestor
 Tags: ecommerce, e-commerce, commerce, woothemes, wordpress ecommerce, store, sales, sell, shop, shopping, cart, checkout, configurable, paypal
 Requires at least: 4.4
-Tested up to: 5.5
+Tested up to: 5.7
 Requires PHP: 5.5
 Stable tag: 2.1.1
 License: GPLv3
