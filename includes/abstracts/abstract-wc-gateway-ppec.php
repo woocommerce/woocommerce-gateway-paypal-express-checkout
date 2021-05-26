@@ -226,9 +226,15 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 			}
 
 			$expiry_date = new WC_DateTime( "@{$valid_until}", new DateTimeZone( 'UTC' ) );
-			$expiry_date->setTimezone( wp_timezone() );
+			$timestamp   = $expiry_date->getTimestamp();
 
-			$expires = sprintf( $expires, date_i18n( get_option( 'date_format' ), $expiry_date->getTimestamp() + $expiry_date->getOffset() ), $expiry_date->format( 'T' ) );
+			// If there's support for wp_timezone(), display the expiry date in server time. Otherwise, use UTC.
+			if ( function_exists( 'wp_timezone' ) ) {
+				$timestamp += $expiry_date->getOffset();
+				$expiry_date->setTimezone( wp_timezone() );
+			}
+
+			$expires = sprintf( $expires, date_i18n( get_option( 'date_format' ), $timestamp ), $expiry_date->format( 'T' ) );
 			// Translators: 1) is a certificate's CN, 2) is the expiration date.
 			$output = sprintf( __( 'Certificate belongs to API username %1$s; %2$s.', 'woocommerce-gateway-paypal-express-checkout' ), $cert_info['subject']['CN'], $expires );
 		} else {

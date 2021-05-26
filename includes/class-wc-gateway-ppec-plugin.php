@@ -279,8 +279,8 @@ class WC_Gateway_PPEC_Plugin {
 			throw new Exception( __( 'WooCommerce Gateway PayPal Checkout requires WooCommerce to be activated', 'woocommerce-gateway-paypal-express-checkout' ), self::DEPENDENCIES_UNSATISFIED );
 		}
 
-		if ( version_compare( WC()->version, '2.5', '<' ) ) {
-			throw new Exception( __( 'WooCommerce Gateway PayPal Checkout requires WooCommerce version 2.5 or greater', 'woocommerce-gateway-paypal-express-checkout' ), self::DEPENDENCIES_UNSATISFIED );
+		if ( version_compare( WC()->version, '3.2.0', '<' ) ) {
+			throw new Exception( __( 'WooCommerce Gateway PayPal Checkout requires WooCommerce version 3.2.0 or greater', 'woocommerce-gateway-paypal-express-checkout' ), self::DEPENDENCIES_UNSATISFIED );
 		}
 
 		if ( ! function_exists( 'curl_init' ) ) {
