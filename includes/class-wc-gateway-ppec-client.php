@@ -508,8 +508,8 @@ class WC_Gateway_PPEC_Client {
 			}
 
 			$item = array(
-				'name'        => $name,
-				'description' => $description,
+				'name'        => apply_filters( 'woocommerce_paypal_express_checkout_cart_line_item_name', $name, $values, $cart_item_key ),
+				'description' => apply_filters( 'woocommerce_paypal_express_checkout_cart_line_item_description', $description, $values, $cart_item_key ),
 				'quantity'    => $values['quantity'],
 				'amount'      => $amount,
 				'sku'         => $values['data']->get_sku(),
@@ -520,8 +520,8 @@ class WC_Gateway_PPEC_Client {
 
 		foreach ( WC()->cart->get_fees() as $fee_key => $fee_values ) {
 			$item = array(
-				'name'        => $fee_values->name,
-				'description' => '',
+				'name'        => apply_filters( 'woocommerce_paypal_express_checkout_cart_fee_name', $fee_values->name, $fee_values, $fee_key ),
+				'description' => apply_filters( 'woocommerce_paypal_express_checkout_cart_fee_description', '', $fee_values, $fee_key ),
 				'quantity'    => 1,
 				'amount'      => round( $fee_values->total, $decimals ),
 			);
@@ -828,7 +828,7 @@ class WC_Gateway_PPEC_Client {
 
 			if ( 'fee' === $order_item['type'] ) {
 				$item = array(
-					'name'     => $order_item['name'],
+					'name'     => apply_filters( 'woocommerce_paypal_express_checkout_order_line_item_name', $order_item['name'], $order_item, $cart_item_key ),
 					'quantity' => 1,
 					'amount'   => round( $order_item['line_total'], $decimals ),
 				);
@@ -836,7 +836,7 @@ class WC_Gateway_PPEC_Client {
 				$amount  = round( $order_item['line_subtotal'] / $order_item['qty'], $decimals );
 				$product = version_compare( WC_VERSION, '3.0', '<' ) ? $order->get_product_from_item( $order_item ) : $order_item->get_product();
 				$item    = array(
-					'name'     => $order_item['name'],
+					'name'     => apply_filters( 'woocommerce_paypal_express_checkout_order_line_item_name', $order_item['name'], $order_item, $cart_item_key ),
 					'quantity' => $order_item['qty'],
 					'amount'   => $amount,
 					'sku'      => $product->get_sku(),
