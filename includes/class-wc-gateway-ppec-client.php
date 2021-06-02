@@ -839,7 +839,7 @@ class WC_Gateway_PPEC_Client {
 					'name'     => apply_filters( 'woocommerce_paypal_express_checkout_order_line_item_name', $order_item['name'], $order_item, $cart_item_key ),
 					'quantity' => $order_item['qty'],
 					'amount'   => $amount,
-					'sku'      => $product->get_sku(),
+					'sku'      => ( $product && is_callable( array( $product, 'get_sku' ) ) ) ? $product->get_sku() : '',
 				);
 			}
 
