@@ -89,13 +89,15 @@ if ( $is_active_paypal_payments && $is_active_paypal_payments ) {
 				<?php
 				$extra_attributes = '';
 				if ( ! empty( $button_data['attributes'] ) ) {
-					$extra_attributes = implode( ' ', array_map(
-						function ( $key, $value ) {
-							return $key . '=' . '"' . $value . '"';
-						},
-						array_keys( $button_data['attributes'] ),
-						$button_data['attributes'],
-					) );
+					$extra_attributes = implode( ' ',
+						array_map(
+							function ( $key, $value ) {
+								return $key . '=' . '"' . $value . '"';
+							},
+							array_keys( $button_data['attributes'] ),
+							$button_data['attributes'],
+						)
+					);
 				}
 				?>
 				<a id="<?php echo $button_data['id']; ?>" href="<?php echo $button_data['href']; ?>" <?php echo $extra_attributes; ?> class="button button-primary woocommerce-save-button"><?php echo $button_data['text']; ?></a>
