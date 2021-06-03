@@ -2,35 +2,34 @@
 /**
  * Show PayPal Payments upgrade notice on plugins page
  *
- * @author  WooCommerce
  * @package woocommerce-paypal-express-checkout/templates
  */
 
-$paypal_payments_path          = 'woocommerce-paypal-payments/woocommerce-paypal-payments.php';
-$is_installed_paypal_payments  = array_key_exists( $paypal_payments_path, get_plugins() );
-$is_active_paypal_payments     = is_plugin_active( $paypal_payments_path );
+$paypal_payments_path         = 'woocommerce-paypal-payments/woocommerce-paypal-payments.php';
+$is_installed_paypal_payments = array_key_exists( $paypal_payments_path, get_plugins() );
+$is_active_paypal_payments    = is_plugin_active( $paypal_payments_path );
 
 // Generate Install / Activation / Config links.
 $paypal_payments_install_link = wp_nonce_url(
 	add_query_arg(
 		array(
 			'action' => 'install-plugin',
-			'plugin' => 'woocommerce-paypal-payments'
+			'plugin' => dirname( $paypal_payments_path ),
 		),
 		admin_url( 'update.php' )
 	),
-	'install-plugin' . '_' . 'woocommerce-paypal-payments'
+	'install-plugin_' . dirname( $paypal_payments_path )
 );
 
 $paypal_payments_activate_link = wp_nonce_url(
 	add_query_arg(
 		array(
 			'action' => 'activate',
-			'plugin' => $paypal_payments_path
+			'plugin' => $paypal_payments_path,
 		),
 		admin_url( 'plugins.php' )
 	),
-	'activate-plugin' . '_' . $paypal_payments_path
+	'activate-plugin_' . $paypal_payments_path
 );
 
 // Template for rendering buttons.
@@ -99,7 +98,7 @@ if ( $is_active_paypal_payments && $is_active_paypal_payments ) {
 					) );
 				}
 				?>
-				<a id="<?php echo $button_data['id'];  ?>" href="<?php echo $button_data['href']; ?>" <?php echo $extra_attributes; ?> class="button button-primary woocommerce-save-button"><?php echo $button_data['text']; ?></a>
+				<a id="<?php echo $button_data['id']; ?>" href="<?php echo $button_data['href']; ?>" <?php echo $extra_attributes; ?> class="button button-primary woocommerce-save-button"><?php echo $button_data['text']; ?></a>
 				<a href="https://woocommerce.com/products/woocommerce-paypal-payments/" target="_blank" class="button woocommerce-save-button">Learn more</a>
 			</div>
 		</div>

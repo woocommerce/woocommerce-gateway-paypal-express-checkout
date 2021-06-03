@@ -509,11 +509,11 @@ class WC_Gateway_PPEC_Plugin {
 		}
 
 		// Load styles & scripts required for the notice.
-		wp_enqueue_style( 'ppec-upgrade-notice', plugin_dir_url( __DIR__ ) . '/assets/css/admin/ppec-upgrade-notice.css' );
-		wp_enqueue_script( 'ppec-upgrade-notice-js', plugin_dir_url( __DIR__ ) . '/assets/js/admin/ppec-upgrade-notice.js', array(), WC_GATEWAY_PPEC_VERSION );
+		wp_enqueue_style( 'ppec-upgrade-notice', plugin_dir_url( __DIR__ ) . '/assets/css/admin/ppec-upgrade-notice.css', array(), WC_GATEWAY_PPEC_VERSION );
+		wp_enqueue_script( 'ppec-upgrade-notice-js', plugin_dir_url( __DIR__ ) . '/assets/js/admin/ppec-upgrade-notice.js', array(), WC_GATEWAY_PPEC_VERSION, false );
 
 		// Load notice template.
-		include_once( $this->plugin_path . 'templates/paypal-payments-upgrade-notice.php' );
+		include_once $this->plugin_path . 'templates/paypal-payments-upgrade-notice.php';
 	}
 
 	/* Deprecated Functions */
