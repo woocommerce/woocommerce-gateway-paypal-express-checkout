@@ -89,10 +89,11 @@ if ( $is_active_paypal_payments && $is_active_paypal_payments ) {
 				<?php
 				$extra_attributes = '';
 				if ( ! empty( $button_data['attributes'] ) ) {
-					$extra_attributes = implode( ' ',
+					$extra_attributes = implode(
+						' ',
 						array_map(
 							function ( $key, $value ) {
-								return $key . '=' . '"' . $value . '"';
+								return $key . '="' . $value . '"';
 							},
 							array_keys( $button_data['attributes'] ),
 							$button_data['attributes'],
@@ -100,6 +101,7 @@ if ( $is_active_paypal_payments && $is_active_paypal_payments ) {
 					);
 				}
 				?>
+				<?php //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				<a id="<?php echo $button_data['id']; ?>" href="<?php echo $button_data['href']; ?>" <?php echo $extra_attributes; ?> class="button button-primary woocommerce-save-button"><?php echo $button_data['text']; ?></a>
 				<a href="https://woocommerce.com/products/woocommerce-paypal-payments/" target="_blank" class="button woocommerce-save-button">Learn more</a>
 			</div>
