@@ -96,7 +96,7 @@ if ( $is_active_paypal_payments && $is_active_paypal_payments ) {
 								return $key . '="' . $value . '"';
 							},
 							array_keys( $button_data['attributes'] ),
-							$button_data['attributes'],
+							$button_data['attributes']
 						)
 					);
 				}
