@@ -502,12 +502,6 @@ class WC_Gateway_PPEC_Plugin {
 	 * @param string $status Status filter currently applied to the plugin list.
 	 */
 	public function ppec_upgrade_notice( $plugin_file, $plugin_data, $status ) {
-		// Return if not on installed plugins page.
-		global $pagenow;
-		if ( 'plugins.php' !== $pagenow ) {
-			return;
-		}
-
 		// Load styles & scripts required for the notice.
 		wp_enqueue_style( 'ppec-upgrade-notice', plugin_dir_url( __DIR__ ) . '/assets/css/admin/ppec-upgrade-notice.css', array(), WC_GATEWAY_PPEC_VERSION );
 		wp_enqueue_script( 'ppec-upgrade-notice-js', plugin_dir_url( __DIR__ ) . '/assets/js/admin/ppec-upgrade-notice.js', array(), WC_GATEWAY_PPEC_VERSION, false );
