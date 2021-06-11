@@ -8,23 +8,21 @@
 	}
 
 	// Handle delete event for PayPal Payments.
-	$( document ).on( 'wp-plugin-delete-success', function( response ) {
-		setTimeout( function(){
-			if ( is_paypal_payments_installed && $( 'tr#woocommerce-paypal-payments-deleted' ).length ) {
-				is_paypal_payments_installed = false;
+	$( document ).on( 'wp-plugin-delete-success', function( event, response ) {
+		if ( is_paypal_payments_installed && 'woocommerce-paypal-payments' === response.slug ) {
+			is_paypal_payments_installed = false;
 
-				// Change PPEC notice activation button id, text & link.
-				const ppec_install_id   = $( '#ppec-activate-paypal-payments' ).data( 'install-id' );
-				const ppec_install_text = $( '#ppec-activate-paypal-payments' ).data( 'install-text' );
-				const ppec_install_link = $( '#ppec-activate-paypal-payments' ).data( 'install-link' );
+			// Change PPEC notice activation button id, text & link.
+			const ppec_install_id   = $( '#ppec-activate-paypal-payments' ).data( 'install-id' );
+			const ppec_install_text = $( '#ppec-activate-paypal-payments' ).data( 'install-text' );
+			const ppec_install_link = $( '#ppec-activate-paypal-payments' ).data( 'install-link' );
 
-				$( '#ppec-activate-paypal-payments' ).text( ppec_install_text );
-				$( '#ppec-activate-paypal-payments' ).attr({
-					href: ppec_install_link,
-					id: ppec_install_id
-				});
-			}
-		}, 500 );
+			$( '#ppec-activate-paypal-payments' ).text( ppec_install_text );
+			$( '#ppec-activate-paypal-payments' ).attr({
+				href: ppec_install_link,
+				id: ppec_install_id
+			});
+		}
 	} );
 
 	// Change button text when install link is clicked.
