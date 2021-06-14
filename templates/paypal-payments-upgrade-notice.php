@@ -5,10 +5,6 @@
  * @package woocommerce-paypal-express-checkout/templates
  */
 
-$paypal_payments_path         = 'woocommerce-paypal-payments/woocommerce-paypal-payments.php';
-$is_installed_paypal_payments = array_key_exists( $paypal_payments_path, get_plugins() );
-$is_active_paypal_payments    = is_plugin_active( $paypal_payments_path );
-
 // Generate Install / Activation / Config links.
 $paypal_payments_install_link = wp_nonce_url(
 	add_query_arg(

@@ -502,6 +502,16 @@ class WC_Gateway_PPEC_Plugin {
 	 * @param string $status Status filter currently applied to the plugin list.
 	 */
 	public function ppec_upgrade_notice( $plugin_file, $plugin_data, $status ) {
+		// Check whether PayPal Payments is installed / Active.
+		$paypal_payments_path         = 'woocommerce-paypal-payments/woocommerce-paypal-payments.php';
+		$is_installed_paypal_payments = array_key_exists( $paypal_payments_path, get_plugins() );
+		$is_active_paypal_payments    = is_plugin_active( $paypal_payments_path );
+
+		// Don't show the notice if PayPal Payments is installed and active.
+		if ( $is_installed_paypal_payments && $is_active_paypal_payments ) {
+			return;
+		}
+
 		// Load styles & scripts required for the notice.
 		wp_enqueue_style( 'ppec-upgrade-notice', plugin_dir_url( __DIR__ ) . '/assets/css/admin/ppec-upgrade-notice.css', array(), WC_GATEWAY_PPEC_VERSION );
 		wp_enqueue_script( 'ppec-upgrade-notice-js', plugin_dir_url( __DIR__ ) . '/assets/js/admin/ppec-upgrade-notice.js', array(), WC_GATEWAY_PPEC_VERSION, false );
