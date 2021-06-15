@@ -2,16 +2,26 @@
 	'use strict';
 
 	// Check whether PayPal Payments is installed.
-	let is_paypal_payments_installed = false;
-	if ( $( 'tr[data-slug="woocommerce-paypal-payments"]' ).length ) {
+	let is_paypal_payments_installed = false,
+		is_paypal_payments_active = false;
+
+	const targetElement = $( 'tr[data-slug="woocommerce-paypal-payments"]' );
+	if ( targetElement.length ) {
 		is_paypal_payments_installed = true;
+
+		if ( targetElement.hasClass( 'active' ) ) {
+			is_paypal_payments_active = true;
+		}
+	}
+
+	// Hide notice is PayPal Payments is installed and active.
+	if ( is_paypal_payments_installed && is_paypal_payments_active ) {
+		$( 'tr#ppec-migrate-notice' ).hide();
 	}
 
 	// Handle delete event for PayPal Payments.
 	$( document ).on( 'wp-plugin-delete-success', function( event, response ) {
 		if ( is_paypal_payments_installed && 'woocommerce-paypal-payments' === response.slug ) {
-			is_paypal_payments_installed = false;
-
 			// Change PPEC notice activation button id, text & link.
 			const ppec_install_id   = $( '#ppec-activate-paypal-payments' ).data( 'install-id' );
 			const ppec_install_text = $( '#ppec-activate-paypal-payments' ).data( 'install-text' );
