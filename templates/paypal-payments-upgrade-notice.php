@@ -48,7 +48,9 @@ $paypal_payments_activate_link = wp_nonce_url(
 				</ul>
 			</div>
 			<div class='ppec-notice-buttons ppec-notice-section'>
+				<?php //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				<a id="ppec-install-paypal-payments" href="<?php echo $paypal_payments_install_link; ?>" class="button button-primary woocommerce-save-button">Upgrade to PayPal Payments now</a>
+				<?php //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				<a id="ppec-activate-paypal-payments" href="<?php echo $paypal_payments_activate_link; ?>" class="button button-primary woocommerce-save-button">Activate PayPal Payments now</a>
 				<a href="https://woocommerce.com/products/woocommerce-paypal-payments/" target="_blank" class="button woocommerce-save-button">Learn more</a>
 			</div>
