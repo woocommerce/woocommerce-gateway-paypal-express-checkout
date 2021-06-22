@@ -47,7 +47,7 @@ $paypal_payments_activate_link = wp_nonce_url(
 					<li>Offer subscriptions and accept recurring payments as PayPal is compatible with <a target="_blank" href="https://woocommerce.com/products/woocommerce-subscriptions/"><strong>WooCommerce Subscriptions</strong></a>.</li>
 				</ul>
 			</div>
-			<div class='ppec-notice-buttons ppec-notice-section'>
+			<div class='ppec-notice-buttons ppec-notice-section hidden'>
 				<?php //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				<a id="ppec-install-paypal-payments" href="<?php echo $paypal_payments_install_link; ?>" class="button button-primary woocommerce-save-button">Upgrade to PayPal Payments now</a>
 				<?php //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>

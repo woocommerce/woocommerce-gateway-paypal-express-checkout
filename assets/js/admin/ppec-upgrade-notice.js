@@ -27,6 +27,9 @@
 		$( 'a#ppec-activate-paypal-payments' ).hide();
 	}
 
+	// Display buttons area
+	$( '#ppec-migrate-notice .ppec-notice-buttons' ).removeClass( 'hidden' );
+
 	// Handle delete event for PayPal Payments.
 	$( document ).on( 'wp-plugin-delete-success', function( event, response ) {
 		if ( is_paypal_payments_installed && 'woocommerce-paypal-payments' === response.slug ) {
