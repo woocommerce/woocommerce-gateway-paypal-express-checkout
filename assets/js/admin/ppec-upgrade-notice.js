@@ -12,6 +12,10 @@
 		if ( targetElement.hasClass( 'active' ) ) {
 			is_paypal_payments_active = true;
 		}
+
+		// Dynamically update plugin activation link to handle plugin folder renames.
+		let activation_url = $( targetElement ).find( 'span.activate a' ).attr( 'href' );
+		$( 'a#ppec-activate-paypal-payments' ).attr( 'href', activation_url );
 	}
 
 	// Hide notice/buttons conditionally.
