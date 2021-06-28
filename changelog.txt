@@ -1,5 +1,18 @@
 *** Changelog ***
 
+= 2.1.2 - 2021-06-28 =
+* Fix - Prevent fatal error when a line item isn't a WC_Product instance. PR#872
+* Fix - [WC Subscriptions] Update the shipping packages address using a dynamic key rather than assuming a 0 index. PR#871
+* New - Allow hiding of funding methods MercadoPago and BLIK. PR#870
+* Tweak - Make labels/descriptions more consistent on the settings screen. PR#771
+* Tweak - Make WooCommerce 3.2.0 explicit. PR#868
+* Dev - Add hooks to alter names and descriptions of line items sent to PayPal. PR#869
+* Fix - Create session cookie only when needed. PR#793, PR#845.
+* Tweak - Mark as compatible with latest WordPress and WooCommerce. PR#867
+* Fix - Replace jQuery 3.x deprecated functions. PR#852
+* Fix - Honor shape settings when rendering buttons for alternative funding sources. PR#844
+* New - Add notice on plugins page to upgrade to PayPal Payments. PR#866
+
 = 2.1.1 - 2020-11-24 =
 * Fix - Update the bundle.pem file to use the certificates from PayPal. PR#822
 * Tweak - PHP 8.0 compatibility. PR#837
