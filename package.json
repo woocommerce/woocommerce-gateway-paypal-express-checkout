@@ -10,5 +10,9 @@
   },
   "config": {
     "wp_org_slug": "woocommerce-gateway-paypal-express-checkout"
-  }
+  },
+	"scripts": {
+		"up": "docker-compose up --build --force-recreate -d && ./bin/docker-setup.sh",
+	  "down": "docker-compose down"
+	}
 }
