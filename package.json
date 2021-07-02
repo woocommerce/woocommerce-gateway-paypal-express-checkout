@@ -13,9 +13,9 @@
   },
 	"scripts": {
 		"up": "docker-compose up --build --force-recreate -d && ./bin/docker-setup.sh",
-	  "down": "docker-compose down",
+		"down": "docker-compose down",
 		"tube:setup": "./bin/jurassic-tube-setup.sh",
-    "tube:start": "./docker/bin/jt/tunnel.sh",
-    "tube:stop": "./docker/bin/jt/tunnel.sh break"
+		"tube:start": "./docker/bin/jt/tunnel.sh",
+		"tube:stop": "./docker/bin/jt/tunnel.sh break"
 	}
 }
