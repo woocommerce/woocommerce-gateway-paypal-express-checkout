@@ -23,6 +23,7 @@ services:
       - ./docker/logs/apache2/:/var/log/apache2
       - .:/var/www/html/wp-content/plugins/woocommerce-gateway-paypal-express-checkout
       - dockerdirectory:/var/www/html/wp-content/plugins/woocommerce-gateway-paypal-express-checkout/docker
+      - ./docker/bin:/var/scripts
   db:
     container_name: woocommerce_paypal_checkout_mysql
     image: mariadb:10.5.8
