@@ -206,7 +206,6 @@
 			},
 
 			onError: function() {
-				jQuery( selector ).empty();
 				render();
 			},
 		};
