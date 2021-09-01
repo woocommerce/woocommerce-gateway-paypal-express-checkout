@@ -485,6 +485,8 @@ class WC_Gateway_PPEC_Cart_Handler {
 	 * @return array
 	 */
 	public function inject_credit_messaging_configuration( $data, $page = '' ) {
+		global $post;
+
 		$context = ( 'product' === $page ) ? 'single_product_' : ( 'checkout' === $page ? 'mark_' : '' );
 		$context = ( $context && 'yes' === wc_gateway_ppec()->settings->{ $context . 'settings_toggle' } ) ? $context : '';
 
@@ -515,6 +517,18 @@ class WC_Gateway_PPEC_Cart_Handler {
 				)
 			);
 
+			$product_id = null;
+
+			if ( get_post_type( $post->ID ) !== 'product' && wc_post_content_has_shortcode( 'product_page' ) ) {
+				preg_match_all( '/' . get_shortcode_regex() . '/', $post->post_content, $matches, PREG_SET_ORDER );
+
+				foreach ( $matches as $shortcode ) {
+					if ( $shortcode[2] === 'product_page' ) {
+						$product_id = preg_replace( '/.*\bid="(\d+)".*/', '$1', $shortcode[3] );
+					}
+				}
+			}
+
 			$data['credit_messaging'] = array(
 				'style'     => array(
 					'layout' => $style['layout'],
@@ -530,7 +544,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 				),
 				'placement' => ( 'checkout' === $page ) ? 'payment' : $page,
 				// If Subscriptions is installed, we should not pass the 'amount' value.
-				'amount'    => class_exists( 'WC_Subscriptions' ) ? '' : ( ( 'product' === $page ) ? wc_get_price_including_tax( wc_get_product() ) : WC()->cart->get_total( 'raw' ) ),
+				'amount'    => class_exists( 'WC_Subscriptions' ) ? '' : ( ( 'product' === $page ) ? wc_get_price_including_tax( wc_get_product( $product_id ) ) : WC()->cart->get_total( 'raw' ) ),
 			);
 		}
 
