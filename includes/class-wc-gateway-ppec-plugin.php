@@ -171,6 +171,8 @@ class WC_Gateway_PPEC_Plugin {
 		add_action( 'wp_ajax_ppec_dismiss_notice_message', array( $this, 'ajax_dismiss_notice' ) );
 
 		add_action( 'after_plugin_row_' . plugin_basename( $this->file ), array( $this, 'ppec_upgrade_notice' ), 10, 3 );
+		// Upgrade notice.
+		add_action( 'after_plugin_row_' . plugin_basename( $this->file ), array( $this, 'ppec_upgrade_notice' ), 0, 3 );
 	}
 
 	public function bootstrap() {

@@ -1,4 +1,4 @@
-.plugins tr[data-slug=woocommerce-gateway-paypal-express-checkout] th, .plugins tr[data-slug=woocommerce-gateway-paypal-express-checkout] td {
+.plugins tr[data-slug=woocommerce-gateway-paypal-express-checkout].hide-border th, .plugins tr[data-slug=woocommerce-gateway-paypal-express-checkout].hide-border td {
   box-shadow: none !important;
 }
 
@@ -8,11 +8,9 @@
 #ppec-migrate-notice .ppec-notice-section {
   padding: 0 20px;
 }
-#ppec-migrate-notice .ppec-notice-title {
-  border-bottom: 1px solid #FFB900;
-}
 #ppec-migrate-notice .ppec-notice-title p {
-  line-height: 30px;
+	padding: 10px 0 0 0;
+	font-size: 110%;
 }
 #ppec-migrate-notice .ppec-notice-title p:before {
   vertical-align: middle;
@@ -31,6 +29,7 @@
   text-decoration: none;
   line-height: 34px;
   margin-right: 16px;
+	margin-top: 16px;
 }
 #ppec-migrate-notice .ppec-notice-buttons a:last-of-type {
   margin-right: 0;
@@ -38,6 +37,9 @@
 #ppec-migrate-notice .ppec-notice-buttons a:before {
   vertical-align: middle;
   margin: -2.5px 5px 0 0;
+}
+#ppec-migrate-notice .ppec-notice-buttons a.dismiss {
+	float: right;
 }
 #ppec-migrate-notice .ppec-notice-buttons a.updating-message:before {
   -webkit-animation: rotation 2s infinite linear;
