@@ -44,4 +44,25 @@
 			window.location = install_link;
 		}, 50 );
 	} );
+
+	// Dismiss button.
+	$( document).on( 'click', '#ppec-migrate-notice button.notice-dismiss', function( e ) {
+		$.ajax(
+			{
+				url: ajaxurl,
+				method: 'POST',
+				data: {
+					action: 'ppec_dismiss_ppec_upgrade_notice',
+					_ajax_nonce: $notice_row.attr( 'data-dismiss-nonce' )
+				},
+				dataType: 'json',
+				success: function( res ) {
+					$ppec_row.removeClass( 'hide-border' );
+				}
+			}
+		);
+	} );
+
+	updateUI();
+
 })( jQuery, window, document );
