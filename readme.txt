@@ -12,6 +12,8 @@ Accept PayPal, Credit Cards and Debit Cards on your WooCommerce store.
 
 == Description ==
 
+⚠️ **Support for PayPal Checkout will discontinue from *1 Mar 2022* and updates to the plugin have stopped as of *1 Sept 2021*. We recommend [switching to PayPal Payments](https://docs.woocommerce.com/document/woocommerce-paypal-payments/paypal-payments-upgrade-guide/) for the best experience and future feature upgrades.**
+
 This is a PayPal Checkout Payment Gateway for WooCommerce.
 
 PayPal Checkout allows you to securely sell your products and subscriptions online using In-Context Checkout to help you meet security requirements without causing your theme to suffer.  In-Context Checkout uses a modal window, hosted on PayPal's servers, that overlays the checkout form and provides a secure means for your customers to enter their account information.
