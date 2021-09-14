@@ -170,7 +170,9 @@ class WC_Gateway_PPEC_Plugin {
 		add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 2 );
 		add_action( 'wp_ajax_ppec_dismiss_notice_message', array( $this, 'ajax_dismiss_notice' ) );
 
-		add_action( 'after_plugin_row_' . plugin_basename( $this->file ), array( $this, 'ppec_upgrade_notice' ), 10, 3 );
+		// Upgrade notice.
+		add_action( 'after_plugin_row_' . plugin_basename( $this->file ), array( $this, 'ppec_upgrade_notice' ), 0, 3 );
+		add_action( 'wp_ajax_ppec_dismiss_ppec_upgrade_notice', array( $this, 'ppec_upgrade_notice_dismiss_ajax' ) );
 	}
 
 	public function bootstrap() {
@@ -506,12 +508,22 @@ class WC_Gateway_PPEC_Plugin {
 	 * @param string $status Status filter currently applied to the plugin list.
 	 */
 	public function ppec_upgrade_notice( $plugin_file, $plugin_data, $status ) {
+		if ( 'yes' === get_transient( 'ppec-upgrade-notice-dismissed' ) ) {
+			return;
+		}
+
 		// Load styles & scripts required for the notice.
 		wp_enqueue_style( 'ppec-upgrade-notice', plugin_dir_url( __DIR__ ) . '/assets/css/admin/ppec-upgrade-notice.css', array(), WC_GATEWAY_PPEC_VERSION );
 		wp_enqueue_script( 'ppec-upgrade-notice-js', plugin_dir_url( __DIR__ ) . '/assets/js/admin/ppec-upgrade-notice.js', array(), WC_GATEWAY_PPEC_VERSION, false );
 
 		// Load notice template.
 		include_once $this->plugin_path . 'templates/paypal-payments-upgrade-notice.php';
+	}
+
+	public function ppec_upgrade_notice_dismiss_ajax() {
+		check_ajax_referer( 'ppec-upgrade-notice-dismiss' );
+		set_transient( 'ppec-upgrade-notice-dismissed', 'yes', MONTH_IN_SECONDS );
+		wp_send_json_success();
 	}
 
 	/* Deprecated Functions */
