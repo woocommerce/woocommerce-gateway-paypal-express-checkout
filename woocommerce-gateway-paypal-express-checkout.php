@@ -2,7 +2,7 @@
 /**
  * Plugin Name: WooCommerce PayPal Checkout Gateway
  * Description: Accept all major credit and debit cards, plus Venmo and PayPal Credit in the US, presenting options in a customizable stack of payment buttons. Fast, seamless, and flexible.
- * Version: 2.1.2
+ * Version: 2.1.3
  * Author: WooCommerce
  * Author URI: https://woocommerce.com
  * Copyright: © 2021 WooCommerce / PayPal.
@@ -10,7 +10,7 @@
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain: woocommerce-gateway-paypal-express-checkout
  * Domain Path: /languages
- * WC tested up to: 5.4
+ * WC tested up to: 5.6
  * WC requires at least: 3.2.0
  */
 /**
@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-define( 'WC_GATEWAY_PPEC_VERSION', '2.1.2' );
+define( 'WC_GATEWAY_PPEC_VERSION', '2.1.3' );
 
 /**
  * Return instance of WC_Gateway_PPEC_Plugin.

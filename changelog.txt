@@ -1,5 +1,9 @@
 *** Changelog ***
 
+= 2.1.3 - 2021-09-16 =
+* Tweak - Remove broken URL from plugin headers. PR#887
+* Tweak - Update notice on plugins page about support and EOL. PR#886
+
 = 2.1.2 - 2021-06-28 =
 * Fix - Prevent fatal error when a line item isn't a WC_Product instance. PR#872
 * Fix - [WC Subscriptions] Update the shipping packages address using a dynamic key rather than assuming a 0 index. PR#871
