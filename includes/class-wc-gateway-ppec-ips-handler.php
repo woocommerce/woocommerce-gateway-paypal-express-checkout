@@ -51,13 +51,13 @@ class WC_Gateway_PPEC_IPS_Handler {
 			$env = 'live';
 		}
 
-		return add_query_arg(
+		return esc_url( add_query_arg(
 			array(
 				'env'                     => $env,
 				'wc_ppec_ips_admin_nonce' => wp_create_nonce( 'wc_ppec_ips' ),
 			),
 			wc_gateway_ppec()->get_admin_setting_link()
-		);
+		) );
 	}
 
 	/**
@@ -90,7 +90,7 @@ class WC_Gateway_PPEC_IPS_Handler {
 			'merchantId'  => md5( site_url( '/' ) . time() ),
 		);
 
-		return add_query_arg( $query_args, $this->get_middleware_login_url( $env ) );
+		return esc_url( add_query_arg( $query_args, $this->get_middleware_login_url( $env ) ) );
 	}
 
 	/**

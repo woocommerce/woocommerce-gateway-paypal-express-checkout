@@ -19,14 +19,14 @@ if ( $enable_ips && $needs_creds ) {
 	// Translators: placeholder is the button "Setup or link an existing PayPal account".
 	$api_creds_text = sprintf( __( '%s or <a href="#" class="ppec-toggle-settings">click here to toggle manual API credential input</a>.', 'woocommerce-gateway-paypal-express-checkout' ), $ips_button );
 } else {
-	$reset_link = add_query_arg(
+	$reset_link = esc_url( add_query_arg(
 		array(
 			'reset_ppec_api_credentials' => 'true',
 			'environment'                => 'live',
 			'reset_nonce'                => wp_create_nonce( 'reset_ppec_api_credentials' ),
 		),
 		wc_gateway_ppec()->get_admin_setting_link()
-	);
+	) );
 
 	$api_creds_text = sprintf(
 		// Translators: Placeholders are opening an closing link HTML tags.
@@ -42,14 +42,14 @@ if ( $enable_ips && $needs_sandbox_creds ) {
 	// Translators: placeholder is the button "Setup or link an existing PayPal sandbox account".
 	$sandbox_api_creds_text = sprintf( __( '%s or <a href="#" class="ppec-toggle-sandbox-settings">click here to toggle manual API credential input</a>.', 'woocommerce-gateway-paypal-express-checkout' ), $sandbox_ips_button );
 } else {
-	$reset_link = add_query_arg(
+	$reset_link = esc_url( add_query_arg(
 		array(
 			'reset_ppec_api_credentials' => 'true',
 			'environment'                => 'sandbox',
 			'reset_nonce'                => wp_create_nonce( 'reset_ppec_api_credentials' ),
 		),
 		wc_gateway_ppec()->get_admin_setting_link()
-	);
+	) );
 
 	$sandbox_api_creds_text = sprintf(
 		// Translators: Placeholders are opening and closing link HTML tags.

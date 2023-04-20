@@ -487,7 +487,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 				WC()->cart->empty_cart();
 
 				// Redirect
-				wp_redirect( $order->get_checkout_order_received_url() ); // phpcs:ignore WordPress.Security.SafeRedirect.wp_redirect_wp_redirect
+				wp_safe_redirect( $order->get_checkout_order_received_url() );
 				exit;
 			}
 		} catch ( PayPal_API_Exception $e ) {
@@ -1097,11 +1097,11 @@ class WC_Gateway_PPEC_Checkout_Handler {
 
 		foreach ( $fields as $field ) {
 			if ( ! empty( $_GET[ $field ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-				$params['wc_ajax_url'] = add_query_arg( $field, $_GET[ $field ], $params['wc_ajax_url'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+				$params['wc_ajax_url'] = esc_url( add_query_arg( $field, $_GET[ $field ], $params['wc_ajax_url'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			}
 		}
 
-		$params['wc_ajax_url'] = add_query_arg( 'wc-ajax', '%%endpoint%%', $params['wc_ajax_url'] );
+		$params['wc_ajax_url'] = esc_url( add_query_arg( 'wc-ajax', '%%endpoint%%', $params['wc_ajax_url'] ) );
 
 		return $params;
 	}
