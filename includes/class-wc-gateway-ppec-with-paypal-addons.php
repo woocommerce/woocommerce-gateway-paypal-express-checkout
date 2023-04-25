@@ -311,7 +311,7 @@ class WC_Gateway_PPEC_With_PayPal_Addons extends WC_Gateway_PPEC_With_PayPal {
 	 */
 	public function add_query_param_to_url_subscription_payment_method_change( $url, $order_id ) {
 		if ( $this->is_order_changing_payment_method_for_subscription( $order_id ) ) {
-			return add_query_arg( 'update_subscription_payment_method', 'true', $url );
+			return esc_url( add_query_arg( 'update_subscription_payment_method', 'true', $url ) );
 		}
 		return $url;
 	}
