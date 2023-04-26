@@ -15,9 +15,9 @@ $needs_sandbox_creds = ! $has_sandbox_credential && ! (bool) $sandbox_credential
 $enable_ips          = wc_gateway_ppec()->ips->is_supported();
 
 if ( $enable_ips && $needs_creds ) {
-	$ips_button = '<a href="' . esc_url( wc_gateway_ppec()->ips->get_signup_url( 'live' ) ) . '" class="button button-primary">' . __( 'Setup or link an existing PayPal account', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>';
-	// Translators: placeholder is the button "Setup or link an existing PayPal account".
-	$api_creds_text = sprintf( __( '%s or <a href="#" class="ppec-toggle-settings">click here to toggle manual API credential input</a>.', 'woocommerce-gateway-paypal-express-checkout' ), $ips_button );
+	$ips_button = '<a href="' . esc_url( wc_gateway_ppec()->ips->get_signup_url( 'live' ) ) . '" class="button button-primary">' . esc_html__( 'Setup or link an existing PayPal account', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>';
+	// Translators: 1: placeholder is the button "Setup or link an existing PayPal account" 2: anchor tag 3: closing anchor tag
+	$api_creds_text = sprintf( esc_html__( '%1$s or %2$sclick here to toggle manual API credential input%3$s.', 'woocommerce-gateway-paypal-express-checkout' ), $ips_button, '<a href="#" class="ppec-toggle-settings">', '</a>' );
 } else {
 	$reset_link = esc_url( add_query_arg(
 		array(
@@ -31,16 +31,16 @@ if ( $enable_ips && $needs_creds ) {
 	$api_creds_text = sprintf(
 		// Translators: Placeholders are opening an closing link HTML tags.
 		__( 'To reset current credentials and use another account %1$sclick here%2$s. %3$sLearn more about your API Credentials%2$s.', 'woocommerce-gateway-paypal-express-checkout' ),
-		'<a href="' . $reset_link . '" title="' . __( 'Reset current credentials', 'woocommerce-gateway-paypal-express-checkout' ) . '">',
+		'<a href="' . $reset_link . '" title="' . esc_html__( 'Reset current credentials', 'woocommerce-gateway-paypal-express-checkout' ) . '">',
 		'</a>',
-		'<a href="https://docs.woocommerce.com/document/paypal-express-checkout/#section-4" title="' . __( 'Learn more', 'woocommerce-gateway-paypal-express-checkout' ) . '">'
+		'<a href="https://docs.woocommerce.com/document/paypal-express-checkout/#section-4" title="' . esc_html__( 'Learn more', 'woocommerce-gateway-paypal-express-checkout' ) . '">'
 	);
 }
 
 if ( $enable_ips && $needs_sandbox_creds ) {
-	$sandbox_ips_button = '<a href="' . esc_url( wc_gateway_ppec()->ips->get_signup_url( 'sandbox' ) ) . '" class="button button-primary">' . __( 'Setup or link an existing PayPal Sandbox account', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>';
-	// Translators: placeholder is the button "Setup or link an existing PayPal sandbox account".
-	$sandbox_api_creds_text = sprintf( __( '%s or <a href="#" class="ppec-toggle-sandbox-settings">click here to toggle manual API credential input</a>.', 'woocommerce-gateway-paypal-express-checkout' ), $sandbox_ips_button );
+	$sandbox_ips_button = '<a href="' . esc_url( wc_gateway_ppec()->ips->get_signup_url( 'sandbox' ) ) . '" class="button button-primary">' . esc_html__( 'Setup or link an existing PayPal Sandbox account', 'woocommerce-gateway-paypal-express-checkout' ) . '</a>';
+	// Translators: 1: placeholder is the button "Setup or link an existing PayPal sandbox account" 2: anchor tag 3: closing anchor tag
+	$sandbox_api_creds_text = sprintf( esc_html__( '%1$s or %2$sclick here to toggle manual API credential input%3$s.', 'woocommerce-gateway-paypal-express-checkout' ), $sandbox_ips_button, '<a href="#" class="ppec-toggle-sandbox-settings">', '</a>' );
 } else {
 	$reset_link = esc_url( add_query_arg(
 		array(
@@ -54,18 +54,18 @@ if ( $enable_ips && $needs_sandbox_creds ) {
 	$sandbox_api_creds_text = sprintf(
 		// Translators: Placeholders are opening and closing link HTML tags.
 		__( 'Your account setting is set to sandbox, no real charging takes place. To accept live payments, switch your environment to live and connect your PayPal account. To reset current credentials and use other sandbox account %1$sclick here%2$s. %3$sLearn more about your API Credentials%2$s.', 'woocommerce-gateway-paypal-express-checkout' ),
-		'<a href="' . $reset_link . '" title="' . __( 'Reset current credentials', 'woocommerce-gateway-paypal-express-checkout' ) . '">',
+		'<a href="' . $reset_link . '" title="' . esc_html__( 'Reset current credentials', 'woocommerce-gateway-paypal-express-checkout' ) . '">',
 		'</a>',
-		'<a href="https://docs.woocommerce.com/document/paypal-express-checkout/#section-4" title="' . __( 'Learn more', 'woocommerce-gateway-paypal-express-checkout' ) . '">'
+		'<a href="https://docs.woocommerce.com/document/paypal-express-checkout/#section-4" title="' . esc_html__( 'Learn more', 'woocommerce-gateway-paypal-express-checkout' ) . '">'
 	);
 }
 
-$credit_enabled_label = __( 'Enable PayPal Credit to eligible customers', 'woocommerce-gateway-paypal-express-checkout' );
+$credit_enabled_label = esc_html__( 'Enable PayPal Credit to eligible customers', 'woocommerce-gateway-paypal-express-checkout' );
 if ( ! wc_gateway_ppec_is_credit_supported() ) {
-	$credit_enabled_label .= '<p><em>' . __( 'This option is disabled. Currently PayPal Credit only available for U.S. merchants using USD currency.', 'woocommerce-gateway-paypal-express-checkout' ) . '</em></p>';
+	$credit_enabled_label .= '<p><em>' . esc_html__( 'This option is disabled. Currently PayPal Credit only available for U.S. merchants using USD currency.', 'woocommerce-gateway-paypal-express-checkout' ) . '</em></p>';
 }
 
-$credit_enabled_description = __( 'This enables PayPal Credit, which displays a PayPal Credit button next to the primary PayPal Checkout button. PayPal Checkout lets you give customers access to financing through PayPal Credit® - at no additional cost to you. You get paid up front, even though customers have more time to pay. A pre-integrated payment button shows up next to the PayPal Button, and lets customers pay quickly with PayPal Credit®. (Should be unchecked for stores involved in Real Money Gaming.)', 'woocommerce-gateway-paypal-express-checkout' );
+$credit_enabled_description = esc_html__( 'This enables PayPal Credit, which displays a PayPal Credit button next to the primary PayPal Checkout button. PayPal Checkout lets you give customers access to financing through PayPal Credit® - at no additional cost to you. You get paid up front, even though customers have more time to pay. A pre-integrated payment button shows up next to the PayPal Button, and lets customers pay quickly with PayPal Credit®. (Should be unchecked for stores involved in Real Money Gaming.)', 'woocommerce-gateway-paypal-express-checkout' );
 
 /**
  * Settings for PayPal Gateway.

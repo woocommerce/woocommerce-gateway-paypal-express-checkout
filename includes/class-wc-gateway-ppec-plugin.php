@@ -319,7 +319,10 @@ class WC_Gateway_PPEC_Plugin {
 		if ( ! is_a( $credential, 'WC_Gateway_PPEC_Client_Credential' ) || '' === $credential->get_username() ) {
 			$setting_link = $this->get_admin_setting_link();
 			// Translators: placeholder is the URL of the gateway settings page.
-			throw new Exception( sprintf( __( 'PayPal Checkout is almost ready. To get started, <a href="%s">connect your PayPal account</a>.', 'woocommerce-gateway-paypal-express-checkout' ), esc_url( $setting_link ) ), self::NOT_CONNECTED );
+			throw new Exception( sprintf(
+				/* translators: 1: anchor tag 2: closing anchor tag */
+				esc_html__( 'PayPal Checkout is almost ready. To get started, %1$sconnect your PayPal account%2$s.', 'woocommerce-gateway-paypal-express-checkout' )
+			, '<a href="' . esc_url( $setting_link ) . '">', '</a>' ), self::NOT_CONNECTED );
 		}
 	}
 
@@ -550,8 +553,8 @@ class WC_Gateway_PPEC_Plugin {
 		}
 
 		$setting_link = $this->get_admin_setting_link();
-		// Translators: placeholder is the URL of the gateway settings page.
-		$message = sprintf( __( '<p>PayPal Checkout with new <strong>Smart Payment Buttons™</strong> gives your customers the power to pay the way they want without leaving your site.</p><p>The <strong>existing buttons will be removed</strong> in the <strong>next release</strong>. Please upgrade to Smart Payment Buttons on the <a href="%s">PayPal Checkout settings page</a>.</p>', 'woocommerce-gateway-paypal-express-checkout' ), esc_url( $setting_link ) );
+		/* translators: 1: paragraph tag 2: closing paragraph tag 3: strong tag 4: closing string tag 5: anchor tag 6: closing anchor tag */
+		$message = sprintf( esc_html__( '%1$sPayPal Checkout with new %3$sSmart Payment Buttons™%4$s gives your customers the power to pay the way they want without leaving your site.%2$s%1$sThe %3$sexisting buttons will be removed%4$s in the %3$snext release%4$s. Please upgrade to Smart Payment Buttons on the %5$sPayPal Checkout settings page%6$s.%2$s', 'woocommerce-gateway-paypal-express-checkout' ), '<p>', '</p>', '<strong>', '</strong>', '<a href="' . esc_url( $setting_link ) . '">', '</a>' );
 		?>
 		<div class="notice notice-error">
 			<?php echo wp_kses( $message, array( 'a' => array( 'href' => array() ), 'strong' => array(), 'p' => array() ) ); // phpcs:ignore WordPress.Arrays.ArrayDeclarationSpacing.AssociativeArrayFound ?>

@@ -50,8 +50,16 @@ class WC_Gateway_PPEC_Privacy extends WC_Abstract_Privacy {
 	 *
 	 */
 	public function get_privacy_message() {
-		// Translators: placeholder is the URL of WC's privacy statement (PPEC section).
-		return wpautop( sprintf( __( 'By using this extension, you may be storing personal data or sharing data with an external service. <a href="%s" target="_blank">Learn more about how this works, including what you may want to include in your privacy policy.</a>', 'woocommerce-gateway-paypal-express-checkout' ), 'https://docs.woocommerce.com/document/privacy-payments/#woocommerce-gateway-paypal-express-checkout' ) );
+		return wpautop(
+			sprintf(
+			/* translators: 1: anchor tag 2: closing anchor tag */
+				esc_html__(
+					'By using this extension, you may be storing personal data or sharing data with an external service. %1$sLearn more about how this works, including what you may want to include in your privacy policy.%2$s', 'woocommerce-gateway-paypal-express-checkout'
+				),
+				'<a href="https://docs.woocommerce.com/document/privacy-payments/#woocommerce-gateway-paypal-express-checkout" target="_blank">',
+				'</a>'
+			)
+		);
 	}
 
 	/**

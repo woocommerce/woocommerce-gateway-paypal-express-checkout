@@ -37,7 +37,7 @@ class PayPal_API_Exception extends Exception {
 	 * @param array $response Response from PayPal API
 	 */
 	public function __construct( $response ) {
-		parent::__construct( __( 'An error occurred while calling the PayPal API.', 'woocommerce-gateway-paypal-express-checkout' ) );
+		parent::__construct( esc_html__( 'An error occurred while calling the PayPal API.', 'woocommerce-gateway-paypal-express-checkout' ) );
 
 		$errors = array();
 		foreach ( $response as $index => $value ) {

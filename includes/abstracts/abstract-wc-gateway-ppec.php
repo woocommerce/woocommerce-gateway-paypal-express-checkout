@@ -395,7 +395,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		$order = wc_get_order( $order_id );
 
 		if ( 0 == $amount || null == $amount ) { // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
-			return new WP_Error( 'paypal_refund_error', __( 'Refund Error: You need to specify a refund amount.', 'woocommerce-gateway-paypal-express-checkout' ) );
+			return new WP_Error( 'paypal_refund_error', esc_html__( 'Refund Error: You need to specify a refund amount.', 'woocommerce-gateway-paypal-express-checkout' ) );
 		}
 
 		// load up refundable_txns from Post Meta
@@ -407,7 +407,7 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 		$order_currency = $old_wc ? $order->order_currency : $order->get_currency();
 
 		if ( ! isset( $txn_data['refundable_txns'] ) ) {
-			return new WP_Error( 'paypal_refund_error', __( 'Refund Error: Sorry! This is not a refundable transaction.', 'woocommerce-gateway-paypal-express-checkout' ) );
+			return new WP_Error( 'paypal_refund_error', esc_html__( 'Refund Error: Sorry! This is not a refundable transaction.', 'woocommerce-gateway-paypal-express-checkout' ) );
 		}
 
 		foreach ( $txn_data['refundable_txns'] as $key => $value ) {

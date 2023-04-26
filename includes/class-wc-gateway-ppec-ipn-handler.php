@@ -263,7 +263,7 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 			$order->update_status( 'refunded', sprintf( esc_html__( 'Payment %s via IPN.', 'woocommerce-gateway-paypal-express-checkout' ), strtolower( $posted_data['payment_status'] ) ) );
 			$this->send_ipn_email_notification(
 				/* Translators: placeholder is an order number (linked to its details screen). */
-				sprintf( __( 'Payment for order %s refunded', 'woocommerce-gateway-paypal-express-checkout' ), '<a class="link" href="' . esc_url( admin_url( 'post.php?post=' . $order_id . '&action=edit' ) ) . '">' . $order->get_order_number() . '</a>' ),
+				sprintf( esc_html__( 'Payment for order %s refunded', 'woocommerce-gateway-paypal-express-checkout' ), '<a class="link" href="' . esc_url( admin_url( 'post.php?post=' . $order_id . '&action=edit' ) ) . '">' . $order->get_order_number() . '</a>' ),
 				/* Translators: 1) is an order number, 2) is a PayPal reason code. */
 				sprintf( esc_html__( 'Order #%1$s has been marked as refunded - PayPal reason code: %2$s', 'woocommerce-gateway-paypal-express-checkout' ), $order->get_order_number(), $posted_data['reason_code'] )
 			);
@@ -282,7 +282,7 @@ class WC_Gateway_PPEC_IPN_Handler extends WC_Gateway_PPEC_PayPal_Request_Handler
 		$order->update_status( 'on-hold', sprintf( esc_html__( 'Payment %s via IPN.', 'woocommerce-gateway-paypal-express-checkout' ), wc_clean( $posted_data['payment_status'] ) ) );
 		$this->send_ipn_email_notification(
 			/* Translators: placeholder is an order number (linked to its details screen). */
-			sprintf( __( 'Payment for order %s reversed', 'woocommerce-gateway-paypal-express-checkout' ), '<a class="link" href="' . esc_url( admin_url( 'post.php?post=' . $order_id . '&action=edit' ) ) . '">' . $order->get_order_number() . '</a>' ),
+			sprintf( esc_html__( 'Payment for order %s reversed', 'woocommerce-gateway-paypal-express-checkout' ), '<a class="link" href="' . esc_url( admin_url( 'post.php?post=' . $order_id . '&action=edit' ) ) . '">' . $order->get_order_number() . '</a>' ),
 			/* Translators: 1) is an order number, 2) is a PayPal reason code. */
 			sprintf( esc_html__( 'Order #%1$s has been marked on-hold due to a reversal - PayPal reason code: %2$s', 'woocommerce-gateway-paypal-express-checkout' ), $order->get_order_number(), wc_clean( $posted_data['reason_code'] ) )
 		);
