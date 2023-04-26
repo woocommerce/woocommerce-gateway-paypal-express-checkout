@@ -195,7 +195,7 @@ class WC_Gateway_PPEC_With_PayPal_Addons extends WC_Gateway_PPEC_With_PayPal {
 
 		try {
 			if ( ! $client->response_has_success_status( $response ) ) {
-				throw new Exception( __( 'PayPal API error', 'woocommerce-gateway-paypal-express-checkout' ) );
+				throw new Exception( esc_html__( 'PayPal API error', 'woocommerce-gateway-paypal-express-checkout' ) );
 			}
 
 			wc_gateway_ppec_save_transaction_data( $order, $response );
@@ -221,7 +221,7 @@ class WC_Gateway_PPEC_With_PayPal_Addons extends WC_Gateway_PPEC_With_PayPal {
 					$order->payment_complete( $transaction_id );
 					break;
 				default:
-					throw new Exception( __( 'PayPal payment declined', 'woocommerce-gateway-paypal-express-checkout' ) );
+					throw new Exception( esc_html__( 'PayPal payment declined', 'woocommerce-gateway-paypal-express-checkout' ) );
 			}
 		} catch ( Exception $e ) {
 			$order->update_status( 'failed', $e->getMessage() );

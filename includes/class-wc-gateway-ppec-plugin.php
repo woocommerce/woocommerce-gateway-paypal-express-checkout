@@ -178,7 +178,7 @@ class WC_Gateway_PPEC_Plugin {
 	public function bootstrap() {
 		try {
 			if ( $this->_bootstrapped ) {
-				throw new Exception( __( 'bootstrap() in WooCommerce Gateway PayPal Checkout plugin can only be called once', 'woocommerce-gateway-paypal-express-checkout' ), self::ALREADY_BOOTSTRAPED );
+				throw new Exception( esc_html__( 'bootstrap() in WooCommerce Gateway PayPal Checkout plugin can only be called once', 'woocommerce-gateway-paypal-express-checkout' ), self::ALREADY_BOOTSTRAPED );
 			}
 
 			$this->_check_dependencies();
@@ -280,18 +280,18 @@ class WC_Gateway_PPEC_Plugin {
 	 */
 	protected function _check_dependencies() {
 		if ( ! function_exists( 'WC' ) ) {
-			throw new Exception( __( 'WooCommerce Gateway PayPal Checkout requires WooCommerce to be activated', 'woocommerce-gateway-paypal-express-checkout' ), self::DEPENDENCIES_UNSATISFIED );
+			throw new Exception( esc_html__( 'WooCommerce Gateway PayPal Checkout requires WooCommerce to be activated', 'woocommerce-gateway-paypal-express-checkout' ), self::DEPENDENCIES_UNSATISFIED );
 		}
 
 		if ( version_compare( WC()->version, '3.2.0', '<' ) ) {
-			throw new Exception( __( 'WooCommerce Gateway PayPal Checkout requires WooCommerce version 3.2.0 or greater', 'woocommerce-gateway-paypal-express-checkout' ), self::DEPENDENCIES_UNSATISFIED );
+			throw new Exception( esc_html__( 'WooCommerce Gateway PayPal Checkout requires WooCommerce version 3.2.0 or greater', 'woocommerce-gateway-paypal-express-checkout' ), self::DEPENDENCIES_UNSATISFIED );
 		}
 
 		if ( ! function_exists( 'curl_init' ) ) {
-			throw new Exception( __( 'WooCommerce Gateway PayPal Checkout requires cURL to be installed on your server', 'woocommerce-gateway-paypal-express-checkout' ), self::DEPENDENCIES_UNSATISFIED );
+			throw new Exception( esc_html__( 'WooCommerce Gateway PayPal Checkout requires cURL to be installed on your server', 'woocommerce-gateway-paypal-express-checkout' ), self::DEPENDENCIES_UNSATISFIED );
 		}
 
-		$openssl_warning = __( 'WooCommerce Gateway PayPal Checkout requires OpenSSL >= 1.0.1 to be installed on your server', 'woocommerce-gateway-paypal-express-checkout' );
+		$openssl_warning = esc_html__( 'WooCommerce Gateway PayPal Checkout requires OpenSSL >= 1.0.1 to be installed on your server', 'woocommerce-gateway-paypal-express-checkout' );
 		if ( ! defined( 'OPENSSL_VERSION_TEXT' ) ) {
 			throw new Exception( $openssl_warning, self::DEPENDENCIES_UNSATISFIED );
 		}

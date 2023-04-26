@@ -164,15 +164,15 @@ class WC_Gateway_PPEC_Client {
 	protected function _validate_request() {
 		// Make sure $_credential and $_environment have been configured.
 		if ( ! $this->_credential ) {
-			throw new Exception( __( 'Missing credential', 'woocommerce-gateway-paypal-express-checkout' ), self::INVALID_CREDENTIAL_ERROR );
+			throw new Exception( esc_html__( 'Missing credential', 'woocommerce-gateway-paypal-express-checkout' ), self::INVALID_CREDENTIAL_ERROR );
 		}
 
 		if ( ! is_a( $this->_credential, 'WC_Gateway_PPEC_Client_Credential' ) ) {
-			throw new Exception( __( 'Invalid credential object', 'woocommerce-gateway-paypal-express-checkout' ), self::INVALID_CREDENTIAL_ERROR );
+			throw new Exception( esc_html__( 'Invalid credential object', 'woocommerce-gateway-paypal-express-checkout' ), self::INVALID_CREDENTIAL_ERROR );
 		}
 
 		if ( ! in_array( $this->_environment, array( 'live', 'sandbox' ), true ) ) {
-			throw new Exception( __( 'Invalid environment', 'woocommerce-gateway-paypal-express-checkout' ), self::INVALID_ENVIRONMENT_ERROR );
+			throw new Exception( esc_html__( 'Invalid environment', 'woocommerce-gateway-paypal-express-checkout' ), self::INVALID_ENVIRONMENT_ERROR );
 		}
 	}
 
@@ -190,13 +190,13 @@ class WC_Gateway_PPEC_Client {
 	protected function _process_response( $response ) {
 		if ( is_wp_error( $response ) ) {
 			// Translators: placeholder is an error message.
-			throw new Exception( sprintf( __( 'An error occurred while trying to connect to PayPal: %s', 'woocommerce-gateway-paypal-express-checkout' ), $response->get_error_message() ), self::REQUEST_ERROR );
+			throw new Exception( sprintf( esc_html__( 'An error occurred while trying to connect to PayPal: %s', 'woocommerce-gateway-paypal-express-checkout' ), $response->get_error_message() ), self::REQUEST_ERROR );
 		}
 
 		parse_str( wp_remote_retrieve_body( $response ), $result );
 
 		if ( ! array_key_exists( 'ACK', $result ) ) {
-			throw new Exception( __( 'Malformed response received from PayPal', 'woocommerce-gateway-paypal-express-checkout' ), self::REQUEST_ERROR );
+			throw new Exception( esc_html__( 'Malformed response received from PayPal', 'woocommerce-gateway-paypal-express-checkout' ), self::REQUEST_ERROR );
 		}
 
 		wc_gateway_ppec_log( sprintf( '%s: acknowleged response body: %s', __METHOD__, print_r( $result, true ) ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
