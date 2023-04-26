@@ -205,7 +205,7 @@ class WC_Gateway_PPEC_With_PayPal_Addons extends WC_Gateway_PPEC_With_PayPal {
 			switch ( $status ) {
 				case 'Pending':
 					/* translators: placeholder is pending reason from PayPal API. */
-					$order_note = sprintf( __( 'PayPal transaction held: %s', 'woocommerce-gateway-paypal-express-checkout' ), $response['PENDINGREASON'] );
+					$order_note = sprintf( esc_html__( 'PayPal transaction held: %s', 'woocommerce-gateway-paypal-express-checkout' ), $response['PENDINGREASON'] );
 					if ( ! $order->has_status( 'on-hold' ) ) {
 						$order->update_status( 'on-hold', $order_note );
 					} else {
@@ -217,7 +217,7 @@ class WC_Gateway_PPEC_With_PayPal_Addons extends WC_Gateway_PPEC_With_PayPal {
 				case 'In-Progress':
 					$transaction_id = $response['TRANSACTIONID'];
 					// Translators: %s is a transaction ID.
-					$order->add_order_note( sprintf( __( 'PayPal payment approved (ID: %s)', 'woocommerce-gateway-paypal-express-checkout' ), $transaction_id ) );
+					$order->add_order_note( sprintf( esc_html__( 'PayPal payment approved (ID: %s)', 'woocommerce-gateway-paypal-express-checkout' ), $transaction_id ) );
 					$order->payment_complete( $transaction_id );
 					break;
 				default:

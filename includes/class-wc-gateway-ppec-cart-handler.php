@@ -73,7 +73,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 		global $post;
 
 		if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], '_wc_ppec_generate_cart_nonce' ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
-			wp_die( __( 'Cheatin&#8217; huh?', 'woocommerce-gateway-paypal-express-checkout' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			wp_die( esc_html__( 'Cheatin&#8217; huh?', 'woocommerce-gateway-paypal-express-checkout' ) );
 		}
 
 		if ( ! defined( 'WOOCOMMERCE_CART' ) ) {
@@ -143,7 +143,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 	 */
 	public function wc_ajax_update_shipping_costs() {
 		if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], '_wc_ppec_update_shipping_costs_nonce' ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
-			wp_die( __( 'Cheatin&#8217; huh?', 'woocommerce-gateway-paypal-express-checkout' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			wp_die( esc_html__( 'Cheatin&#8217; huh?', 'woocommerce-gateway-paypal-express-checkout' ) );
 		}
 
 		if ( ! defined( 'WOOCOMMERCE_CART' ) ) {
@@ -164,7 +164,7 @@ class WC_Gateway_PPEC_Cart_Handler {
 	 */
 	public function wc_ajax_start_checkout() {
 		if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], '_wc_ppec_start_checkout_nonce' ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
-			wp_die( __( 'Cheatin&#8217; huh?', 'woocommerce-gateway-paypal-express-checkout' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			wp_die( esc_html__( 'Cheatin&#8217; huh?', 'woocommerce-gateway-paypal-express-checkout' ) );
 		}
 
 		if ( isset( $_POST['from_checkout'] ) && 'yes' === $_POST['from_checkout'] ) {
