@@ -16,7 +16,7 @@ class PayPal_Missing_Session_Exception extends Exception {
 	 */
 	public function __construct( $message = '' ) {
 		if ( empty( $message ) ) {
-			$message = __( 'The buyer\'s session information could not be found.', 'woocommerce-gateway-paypal-express-checkout' );
+			$message = esc_html__( 'The buyer\'s session information could not be found.', 'woocommerce-gateway-paypal-express-checkout' );
 		}
 
 		parent::__construct( $message );

@@ -50,8 +50,16 @@ class WC_Gateway_PPEC_Privacy extends WC_Abstract_Privacy {
 	 *
 	 */
 	public function get_privacy_message() {
-		// Translators: placeholder is the URL of WC's privacy statement (PPEC section).
-		return wpautop( sprintf( __( 'By using this extension, you may be storing personal data or sharing data with an external service. <a href="%s" target="_blank">Learn more about how this works, including what you may want to include in your privacy policy.</a>', 'woocommerce-gateway-paypal-express-checkout' ), 'https://docs.woocommerce.com/document/privacy-payments/#woocommerce-gateway-paypal-express-checkout' ) );
+		return wpautop(
+			sprintf(
+			/* translators: 1: anchor tag 2: closing anchor tag */
+				esc_html__(
+					'By using this extension, you may be storing personal data or sharing data with an external service. %1$sLearn more about how this works, including what you may want to include in your privacy policy.%2$s', 'woocommerce-gateway-paypal-express-checkout'
+				),
+				'<a href="https://docs.woocommerce.com/document/privacy-payments/#woocommerce-gateway-paypal-express-checkout" target="_blank">',
+				'</a>'
+			)
+		);
 	}
 
 	/**
@@ -74,15 +82,15 @@ class WC_Gateway_PPEC_Privacy extends WC_Abstract_Privacy {
 			foreach ( $orders as $order ) {
 				$data_to_export[] = array(
 					'group_id'    => 'woocommerce_orders',
-					'group_label' => __( 'Orders', 'woocommerce-gateway-paypal-express-checkout' ),
+					'group_label' => esc_attr__( 'Orders', 'woocommerce-gateway-paypal-express-checkout' ),
 					'item_id'     => 'order-' . $order->get_id(),
 					'data'        => array(
 						array(
-							'name'  => __( 'PPEC Refundable transaction data', 'woocommerce-gateway-paypal-express-checkout' ),
+							'name'  => esc_attr__( 'PPEC Refundable transaction data', 'woocommerce-gateway-paypal-express-checkout' ),
 							'value' => wp_json_encode( get_post_meta( $order->get_id(), '_woo_pp_txnData', true ) ),
 						),
 						array(
-							'name'  => __( 'PPEC Billing agreement id', 'woocommerce-gateway-paypal-express-checkout' ),
+							'name'  => esc_attr__( 'PPEC Billing agreement id', 'woocommerce-gateway-paypal-express-checkout' ),
 							'value' => get_post_meta( $order->get_id(), '_ppec_billing_agreement_id', true ),
 						),
 					),
@@ -139,15 +147,15 @@ class WC_Gateway_PPEC_Privacy extends WC_Abstract_Privacy {
 			foreach ( $subscriptions as $subscription ) {
 				$data_to_export[] = array(
 					'group_id'    => 'woocommerce_subscriptions',
-					'group_label' => __( 'Subscriptions', 'woocommerce-gateway-paypal-express-checkout' ),
+					'group_label' => esc_attr__( 'Subscriptions', 'woocommerce-gateway-paypal-express-checkout' ),
 					'item_id'     => 'subscription-' . $subscription->get_id(),
 					'data'        => array(
 						array(
-							'name'  => __( 'PPEC Refundable transaction data', 'woocommerce-gateway-paypal-express-checkout' ),
+							'name'  => esc_attr__( 'PPEC Refundable transaction data', 'woocommerce-gateway-paypal-express-checkout' ),
 							'value' => wp_json_encode( get_post_meta( $subscription->get_id(), '_woo_pp_txnData', true ) ),
 						),
 						array(
-							'name'  => __( 'PPEC Billing agreement id', 'woocommerce-gateway-paypal-express-checkout' ),
+							'name'  => esc_attr__( 'PPEC Billing agreement id', 'woocommerce-gateway-paypal-express-checkout' ),
 							'value' => get_post_meta( $subscription->get_id(), '_ppec_billing_agreement_id', true ),
 						),
 					),
@@ -231,7 +239,7 @@ class WC_Gateway_PPEC_Privacy extends WC_Abstract_Privacy {
 
 		if ( $subscription->has_status( apply_filters( 'woocommerce_paypal_express_checkout_privacy_eraser_subs_statuses', array( 'on-hold', 'active' ) ) ) ) {
 			// Translators: placeholder is an order number.
-			return array( false, true, array( sprintf( __( 'Order ID %d contains an active Subscription', 'woocommerce-gateway-paypal-express-checkout' ), $order->get_id() ) ) );
+			return array( false, true, array( sprintf( esc_attr__( 'Order ID %d contains an active Subscription', 'woocommerce-gateway-paypal-express-checkout' ), $order->get_id() ) ) );
 		}
 
 		$renewal_orders = WC_Subscriptions_Renewal_Order::get_renewal_orders( $order->get_id() );
@@ -246,7 +254,7 @@ class WC_Gateway_PPEC_Privacy extends WC_Abstract_Privacy {
 		delete_post_meta( $subscription_id, '_ppec_billing_agreement_id' );
 		delete_post_meta( $subscription_id, '_paypal_status' );
 
-		return array( true, false, array( __( 'PayPal Checkout Subscriptions Data Erased.', 'woocommerce-gateway-paypal-express-checkout' ) ) );
+		return array( true, false, array( esc_attr__( 'PayPal Checkout Subscriptions Data Erased.', 'woocommerce-gateway-paypal-express-checkout' ) ) );
 	}
 
 	/**
@@ -269,7 +277,7 @@ class WC_Gateway_PPEC_Privacy extends WC_Abstract_Privacy {
 		delete_post_meta( $order_id, '_ppec_billing_agreement_id' );
 		delete_post_meta( $order_id, '_paypal_status' );
 
-		return array( true, false, array( __( 'PayPal Checkout Order Data Erased.', 'woocommerce-gateway-paypal-express-checkout' ) ) );
+		return array( true, false, array( esc_attr__( 'PayPal Checkout Order Data Erased.', 'woocommerce-gateway-paypal-express-checkout' ) ) );
 	}
 }
 

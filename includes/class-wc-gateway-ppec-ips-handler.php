@@ -141,7 +141,7 @@ class WC_Gateway_PPEC_IPS_Handler {
 
 		// Verify the nonce.
 		if ( ! wp_verify_nonce( $_GET['wc_ppec_ips_admin_nonce'], 'wc_ppec_ips' ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
-			wp_die( __( 'Invalid connection request', 'woocommerce-gateway-paypal-express-checkout' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			wp_die( esc_html__( 'Invalid connection request', 'woocommerce-gateway-paypal-express-checkout' ) );
 		}
 
 		wc_gateway_ppec_log( sprintf( '%s: returned back from IPS flow with parameters: %s', __METHOD__, print_r( $_GET, true ) ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
@@ -151,7 +151,7 @@ class WC_Gateway_PPEC_IPS_Handler {
 			$error_message = ! empty( $_GET['error_message'] ) ? $_GET['error_message'] : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 			wc_gateway_ppec_log( sprintf( '%s: returned back from IPS flow with error: %s', __METHOD__, $error_message ) );
 
-			$this->_redirect_with_messages( __( 'Sorry, Easy Setup encountered an error.  Please try again.', 'woocommerce-gateway-paypal-express-checkout' ) );
+			$this->_redirect_with_messages( esc_html__( 'Sorry, Easy Setup encountered an error.  Please try again.', 'woocommerce-gateway-paypal-express-checkout' ) );
 		}
 
 		// Make sure credentials present in query string.
@@ -159,7 +159,7 @@ class WC_Gateway_PPEC_IPS_Handler {
 			if ( empty( $_GET[ $param ] ) ) {
 				wc_gateway_ppec_log( sprintf( '%s: returned back from IPS flow but missing parameter %s', __METHOD__, $param ) );
 
-				$this->_redirect_with_messages( __( 'Sorry, Easy Setup encountered an error.  Please try again.', 'woocommerce-gateway-paypal-express-checkout' ) );
+				$this->_redirect_with_messages( esc_html__( 'Sorry, Easy Setup encountered an error.  Please try again.', 'woocommerce-gateway-paypal-express-checkout' ) );
 			}
 		}
 
@@ -170,16 +170,16 @@ class WC_Gateway_PPEC_IPS_Handler {
 			$payer_id = wc_gateway_ppec()->client->test_api_credentials( $creds, $env );
 
 			if ( ! $payer_id ) {
-				$this->_redirect_with_messages( __( 'Easy Setup was able to obtain your API credentials, but was unable to verify that they work correctly.  Please make sure your PayPal account is set up properly and try Easy Setup again.', 'woocommerce-gateway-paypal-express-checkout' ) );
+				$this->_redirect_with_messages( esc_html__( 'Easy Setup was able to obtain your API credentials, but was unable to verify that they work correctly.  Please make sure your PayPal account is set up properly and try Easy Setup again.', 'woocommerce-gateway-paypal-express-checkout' ) );
 			}
 		} catch ( PayPal_API_Exception $ex ) {
 			$error_msgs[] = array(
-				'warning' => __( 'Easy Setup was able to obtain your API credentials, but an error occurred while trying to verify that they work correctly.  Please try Easy Setup again.', 'woocommerce-gateway-paypal-express-checkout' ),
+				'warning' => esc_html__( 'Easy Setup was able to obtain your API credentials, but an error occurred while trying to verify that they work correctly.  Please try Easy Setup again.', 'woocommerce-gateway-paypal-express-checkout' ),
 			);
 		}
 
 		$error_msgs[] = array(
-			'success' => __( 'Success!  Your PayPal account has been set up successfully.', 'woocommerce-gateway-paypal-express-checkout' ),
+			'success' => esc_html__( 'Success!  Your PayPal account has been set up successfully.', 'woocommerce-gateway-paypal-express-checkout' ),
 		);
 
 		if ( ! empty( $error_msgs ) ) {

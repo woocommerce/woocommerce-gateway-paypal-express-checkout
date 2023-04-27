@@ -74,7 +74,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 	 */
 	public function endpoint_page_titles( $title ) {
 		if ( ! is_admin() && is_main_query() && in_the_loop() && is_page() && is_checkout() && $this->has_active_session() ) {
-			$title = __( 'Confirm your PayPal order', 'woocommerce-gateway-paypal-express-checkout' );
+			$title = esc_attr__( 'Confirm your PayPal order', 'woocommerce-gateway-paypal-express-checkout' );
 			remove_filter( 'the_title', array( $this, 'endpoint_page_titles' ) );
 		}
 		return $title;
@@ -441,7 +441,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		$session                  = WC()->session->get( 'paypal' );
 
 		if ( empty( $session ) || $this->session_has_expired( $token ) ) {
-			wc_add_notice( __( 'Your PayPal checkout session has expired. Please check out again.', 'woocommerce-gateway-paypal-express-checkout' ), 'error' );
+			wc_add_notice( esc_html__( 'Your PayPal checkout session has expired. Please check out again.', 'woocommerce-gateway-paypal-express-checkout' ), 'error' );
 			return;
 		}
 
@@ -491,12 +491,12 @@ class WC_Gateway_PPEC_Checkout_Handler {
 				exit;
 			}
 		} catch ( PayPal_API_Exception $e ) {
-			wc_add_notice( __( 'Sorry, an error occurred while trying to retrieve your information from PayPal. Please try again.', 'woocommerce-gateway-paypal-express-checkout' ), 'error' );
+			wc_add_notice( esc_html__( 'Sorry, an error occurred while trying to retrieve your information from PayPal. Please try again.', 'woocommerce-gateway-paypal-express-checkout' ), 'error' );
 			$this->maybe_clear_session_data();
 			wp_safe_redirect( wc_get_page_permalink( 'cart' ) );
 			exit;
 		} catch ( PayPal_Missing_Session_Exception $e ) {
-			wc_add_notice( __( 'Your PayPal checkout session has expired. Please check out again.', 'woocommerce-gateway-paypal-express-checkout' ), 'error' );
+			wc_add_notice( esc_html__( 'Your PayPal checkout session has expired. Please check out again.', 'woocommerce-gateway-paypal-express-checkout' ), 'error' );
 			$this->maybe_clear_session_data();
 			wp_safe_redirect( wc_get_page_permalink( 'cart' ) );
 			exit;
@@ -623,7 +623,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 		if ( is_cart() && ! empty( $_GET['wc-gateway-ppec-clear-session'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$this->maybe_clear_session_data();
 
-			$notice = __( 'You have cancelled Checkout with PayPal. Please try to process your order again.', 'woocommerce-gateway-paypal-express-checkout' );
+			$notice = esc_html__( 'You have cancelled Checkout with PayPal. Please try to process your order again.', 'woocommerce-gateway-paypal-express-checkout' );
 			if ( ! wc_has_notice( $notice, 'notice' ) ) {
 				wc_add_notice( $notice, 'notice' );
 			}
@@ -953,10 +953,10 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			}
 		} else {
 			if ( 'authorization' === $payment->pending_reason ) {
-				$order->update_status( 'on-hold', __( 'Payment authorized. Change payment status to processing or complete to capture funds.', 'woocommerce-gateway-paypal-express-checkout' ) );
+				$order->update_status( 'on-hold', esc_html__( 'Payment authorized. Change payment status to processing or complete to capture funds.', 'woocommerce-gateway-paypal-express-checkout' ) );
 			} else {
 				// Translators: placeholder is a reason (from PayPal) for the payment to be pending.
-				$order->update_status( 'on-hold', sprintf( __( 'Payment pending (%s).', 'woocommerce-gateway-paypal-express-checkout' ), $payment->pending_reason ) );
+				$order->update_status( 'on-hold', sprintf( esc_html__( 'Payment pending (%s).', 'woocommerce-gateway-paypal-express-checkout' ), $payment->pending_reason ) );
 			}
 			if ( $old_wc ) {
 				if ( ! get_post_meta( $order->id, '_order_stock_reduced', true ) ) {
@@ -1130,7 +1130,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			}
 
 			if ( empty( $session ) || $this->session_has_expired( $token ) ) {
-				wc_add_notice( __( 'Your PayPal checkout session has expired. Please check out again.', 'woocommerce-gateway-paypal-express-checkout' ), 'error' );
+				wc_add_notice( esc_html__( 'Your PayPal checkout session has expired. Please check out again.', 'woocommerce-gateway-paypal-express-checkout' ), 'error' );
 				return;
 			}
 
@@ -1141,12 +1141,12 @@ class WC_Gateway_PPEC_Checkout_Handler {
 
 			// Update the payment method for the current subscription.
 			WC_Subscriptions_Change_Payment_Gateway::update_payment_method( $order, 'ppec_paypal' );
-			$success_notice = __( 'The payment method was updated for this subscription.', 'woocommerce-gateway-paypal-express-checkout' );
+			$success_notice = esc_html__( 'The payment method was updated for this subscription.', 'woocommerce-gateway-paypal-express-checkout' );
 
 			// Update the payment method for all subscriptions if that checkbox was checked.
 			if ( wcs_is_subscription( $order ) && WC_Subscriptions_Change_Payment_Gateway::will_subscription_update_all_payment_methods( $order ) ) {
 				WC_Subscriptions_Change_Payment_Gateway::update_all_payment_methods_from_subscription( $order, $payment_method->id );
-				$success_notice = __( 'The payment method was updated for all your current subscriptions.', 'woocommerce-gateway-paypal-express-checkout' );
+				$success_notice = esc_html__( 'The payment method was updated for all your current subscriptions.', 'woocommerce-gateway-paypal-express-checkout' );
 			}
 
 			wc_clear_notices();
@@ -1155,7 +1155,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			exit;
 		} catch ( PayPal_API_Exception $e ) {
 			wc_clear_notices();
-			wc_add_notice( __( 'There was a problem updating your payment method. Please try again later or use a different payment method.', 'woocommerce-gateway-paypal-express-checkout' ), 'error' );
+			wc_add_notice( esc_html__( 'There was a problem updating your payment method. Please try again later or use a different payment method.', 'woocommerce-gateway-paypal-express-checkout' ), 'error' );
 			wp_safe_redirect( $order->get_view_order_url() );
 			exit;
 		}
@@ -1178,7 +1178,7 @@ class WC_Gateway_PPEC_Checkout_Handler {
 			? $order->get_view_order_url()
 			: false;
 		wc_clear_notices();
-		wc_add_notice( __( 'You have cancelled Checkout with PayPal. The payment method was not updated.', 'woocommerce-gateway-paypal-express-checkout' ), 'error' );
+		wc_add_notice( esc_html__( 'You have cancelled Checkout with PayPal. The payment method was not updated.', 'woocommerce-gateway-paypal-express-checkout' ), 'error' );
 		if ( $redirect_url ) {
 			wp_safe_redirect( $redirect_url );
 			exit;

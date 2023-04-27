@@ -178,7 +178,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 				$result = wc_gateway_ppec()->client->do_express_checkout_capture( $params );
 
 				if ( is_wp_error( $result ) ) {
-					$order->add_order_note( __( 'Unable to capture charge!', 'woocommerce-gateway-paypal-express-checkout' ) . ' ' . $result->get_error_message() );
+					$order->add_order_note( esc_html__( 'Unable to capture charge!', 'woocommerce-gateway-paypal-express-checkout' ) . ' ' . $result->get_error_message() );
 				} else {
 					update_post_meta( $order_id, '_paypal_status', ! empty( $trans_details['PAYMENTSTATUS'] ) ? $trans_details['PAYMENTSTATUS'] : 'completed' );
 
@@ -187,7 +187,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 					}
 
 					// Translators: %s is a transaction ID.
-					$order->add_order_note( sprintf( __( 'PayPal Checkout charge complete (Charge ID: %s)', 'woocommerce-gateway-paypal-express-checkout' ), $transaction_id ) );
+					$order->add_order_note( sprintf( esc_html__( 'PayPal Checkout charge complete (Charge ID: %s)', 'woocommerce-gateway-paypal-express-checkout' ), $transaction_id ) );
 				}
 			}
 		}
@@ -229,10 +229,10 @@ class WC_Gateway_PPEC_Admin_Handler {
 				$result = wc_gateway_ppec()->client->do_express_checkout_void( $params );
 
 				if ( is_wp_error( $result ) ) {
-					$order->add_order_note( __( 'Unable to void charge!', 'woocommerce-gateway-paypal-express-checkout' ) . ' ' . $result->get_error_message() );
+					$order->add_order_note( esc_html__( 'Unable to void charge!', 'woocommerce-gateway-paypal-express-checkout' ) . ' ' . $result->get_error_message() );
 				} else {
 					// Translators: %s is a transaction ID.
-					$order->add_order_note( sprintf( __( 'PayPal Checkout charge voided (Charge ID: %s)', 'woocommerce-gateway-paypal-express-checkout' ), $trans_id ) );
+					$order->add_order_note( sprintf( esc_html__( 'PayPal Checkout charge voided (Charge ID: %s)', 'woocommerce-gateway-paypal-express-checkout' ), $trans_id ) );
 				}
 			}
 		}
@@ -339,7 +339,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 
 		<tr>
 			<td class="label ppec-fee">
-				<?php echo wc_help_tip( __( 'This represents the fee PayPal collects for the transaction.', 'woocommerce-gateway-paypal-express-checkout' ) ); ?>
+				<?php echo wc_help_tip( esc_html__( 'This represents the fee PayPal collects for the transaction.', 'woocommerce-gateway-paypal-express-checkout' ) ); ?>
 				<?php esc_html_e( 'PayPal Fee:', 'woocommerce-gateway-paypal-express-checkout' ); ?>
 			</td>
 			<td width="1%"></td>
@@ -349,7 +349,7 @@ class WC_Gateway_PPEC_Admin_Handler {
 		</tr>
 		<tr>
 			<td class="label ppec-payout">
-				<?php echo wc_help_tip( __( 'This represents the net total that will be credited to your PayPal account. This may be in a different currency than is set in your PayPal account.', 'woocommerce-gateway-paypal-express-checkout' ) ); ?>
+				<?php echo wc_help_tip( esc_html__( 'This represents the net total that will be credited to your PayPal account. This may be in a different currency than is set in your PayPal account.', 'woocommerce-gateway-paypal-express-checkout' ) ); ?>
 				<?php esc_html_e( 'PayPal Payout:', 'woocommerce-gateway-paypal-express-checkout' ); ?>
 			</td>
 			<td width="1%"></td>
