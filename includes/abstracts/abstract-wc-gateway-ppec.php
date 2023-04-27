@@ -598,9 +598,9 @@ abstract class WC_Gateway_PPEC extends WC_Payment_Gateway {
 				<button
 					class="button image_upload"
 					data-field-id="<?php echo esc_attr( $field_key ); ?>"
-					data-media-frame-title="<?php echo esc_html__( 'Select a image to upload', 'woocommerce-gateway-paypal-express-checkout' ); ?>"
-					data-media-frame-button="<?php echo esc_html__( 'Use this image', 'woocommerce-gateway-paypal-express-checkout' ); ?>"
-					data-add-image-text="<?php echo esc_html__( 'Add image', 'woocommerce-gateway-paypal-express-checkout' ); ?>"
+					data-media-frame-title="<?php echo esc_attr__( 'Select a image to upload', 'woocommerce-gateway-paypal-express-checkout' ); ?>"
+					data-media-frame-button="<?php echo esc_attr__( 'Use this image', 'woocommerce-gateway-paypal-express-checkout' ); ?>"
+					data-add-image-text="<?php echo esc_attr__( 'Add image', 'woocommerce-gateway-paypal-express-checkout' ); ?>"
 					style="<?php echo esc_attr( $maybe_hide_add_style ); ?>"
 				>
 					<?php echo esc_html__( 'Add image', 'woocommerce-gateway-paypal-express-checkout' ); ?>

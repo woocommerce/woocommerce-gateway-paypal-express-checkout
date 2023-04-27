@@ -553,7 +553,7 @@ class WC_Gateway_PPEC_Plugin {
 		}
 
 		$setting_link = $this->get_admin_setting_link();
-		/* translators: 1: paragraph tag 2: closing paragraph tag 3: strong tag 4: closing string tag 5: anchor tag 6: closing anchor tag */
+		/* translators: 1: paragraph tag 2: closing paragraph tag 3: strong tag 4: closing strong tag 5: anchor tag 6: closing anchor tag */
 		$message = sprintf( esc_html__( '%1$sPayPal Checkout with new %3$sSmart Payment Buttons™%4$s gives your customers the power to pay the way they want without leaving your site.%2$s%1$sThe %3$sexisting buttons will be removed%4$s in the %3$snext release%4$s. Please upgrade to Smart Payment Buttons on the %5$sPayPal Checkout settings page%6$s.%2$s', 'woocommerce-gateway-paypal-express-checkout' ), '<p>', '</p>', '<strong>', '</strong>', '<a href="' . esc_url( $setting_link ) . '">', '</a>' );
 		?>
 		<div class="notice notice-error">
